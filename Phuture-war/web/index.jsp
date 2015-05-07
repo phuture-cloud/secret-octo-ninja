@@ -16,11 +16,11 @@
                         <h2 class="title text-uppercase text-bold m-none"><i class="fa fa-user mr-xs"></i> Sign In</h2>
                     </div>
                     <div class="panel-body">
-                        <form action="index.html" method="post">
+                        <form action="AccountManagementController" method="post">
                             <div class="form-group mb-lg">
-                                <label>Username</label>
+                                <label>Email</label>
                                 <div class="input-group input-group-icon">
-                                    <input name="username" type="text" class="form-control input-lg" />
+                                    <input name="email" type="email" class="form-control input-lg" />
                                     <span class="input-group-addon">
                                         <span class="icon icon-lg">
                                             <i class="fa fa-user"></i>
@@ -46,9 +46,11 @@
 
                             <div class="row">
                                 <div class="col-sm-12 text-right">
-                                    <button type="submit" class="btn btn-primary btn-block btn-lg visible-xs mt-lg">Sign In</button>
+                                    <button type="submit" class="btn btn-primary">Sign In</button>
                                 </div>
                             </div>
+                            
+                            <input type="hidden" name="target" value="StaffLogin">
 
                         </form>
                     </div>
