@@ -46,7 +46,6 @@
 
                             <div class="row">
                                 <div class="col-sm-12 text-right">
-                                    <button type="submit" class="btn btn-primary hidden-xs">Sign In</button>
                                     <button type="submit" class="btn btn-primary btn-block btn-lg visible-xs mt-lg">Sign In</button>
                                 </div>
                             </div>
