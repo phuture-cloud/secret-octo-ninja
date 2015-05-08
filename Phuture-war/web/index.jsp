@@ -21,7 +21,7 @@
                         <h2 class="title text-uppercase text-bold m-none"><i class="fa fa-user mr-xs"></i> Sign In</h2>
                     </div>
                     <div class="panel-body">
-                        <form action="AccountManagementController" method="post">
+                        <form action="AccountManagementController">
                             <div class="form-group mb-lg">
                                 <label>Username</label>
                                 <div class="input-group input-group-icon">
