@@ -24,7 +24,7 @@ public class AccountManagementBean implements AccountManagementBeanLocal {
         System.out.println("AccountManagementBean (EJB) created.");
         isStaffLoggedIn = false;
         loggedInStaff = null;
-    }
+    }     
 
     @PersistenceContext
     private EntityManager em;
@@ -86,6 +86,7 @@ public class AccountManagementBean implements AccountManagementBeanLocal {
     }
     @Override
     public Boolean checkCurrentUser() {
+        System.out.println(isStaffLoggedIn+"!!!!!!!!!!");
         return isStaffLoggedIn;
     }
 

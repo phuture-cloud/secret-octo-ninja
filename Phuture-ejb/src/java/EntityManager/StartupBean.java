@@ -7,6 +7,7 @@ import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 @Singleton
@@ -16,12 +17,14 @@ public class StartupBean {
     @EJB
     private AccountManagement.AccountManagementBeanLocal ambl;
 
+    @PersistenceContext
     private EntityManager em;
 
     @PostConstruct
     private void startup() {
         try {
-            Query q = em.createQuery("SELECT s FROM Staff s where s.username='admin'");
+            Query q = em.createQuery("SELECT s FROM Staff s where s.username=:username");
+            q.setParameter("username", "admin");
             List<Staff> staff = q.getResultList();
             // Don't insert anything if database appears to be initiated.
             if (staff != null && staff.size() > 0) {

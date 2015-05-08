@@ -20,5 +20,5 @@ public interface AccountManagementBeanLocal {
     public String generatePasswordHash(String salt, String password);
     public String generatePasswordSalt();
     
-    //public List<Staff> listAllStaffAccount();
+    public List<Staff> listAllStaffAccount();
 }
