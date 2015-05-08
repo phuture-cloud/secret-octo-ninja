@@ -7,7 +7,7 @@ public class ReturnHelper implements Serializable {
     private boolean result;
     private String resultDescription;
 
-    public boolean isResult() {
+    public boolean getResult() {
         return result;
     }
 
