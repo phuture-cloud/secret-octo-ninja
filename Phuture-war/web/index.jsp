@@ -2,7 +2,12 @@
 <!doctype html>
 <html class="fixed">
     <head>
-        <jsp:include page="head.html" />
+        <link href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800|Shadows+Into+Light" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.css" />
+        <link rel="stylesheet" href="assets/vendor/font-awesome/css/font-awesome.css" />
+        <link rel="stylesheet" href="assets/stylesheets/theme.css" />
+        <link rel="stylesheet" href="assets/stylesheets/skins/default.css" />
+        <script src="assets/vendor/modernizr/modernizr.js"></script>
     </head>
     <body>
         <!-- start: page -->
@@ -49,7 +54,7 @@
                                     <button type="submit" class="btn btn-primary">Sign In</button>
                                 </div>
                             </div>
-                            
+
                             <input type="hidden" name="target" value="StaffLogin">
 
                         </form>
@@ -61,7 +66,11 @@
         </section>
         <!-- end: page -->
 
-
+        <script src="assets/vendor/jquery/jquery.js"></script>
+        <script src="assets/vendor/jquery-browser-mobile/jquery.browser.mobile.js"></script>
+        <script src="assets/vendor/bootstrap/js/bootstrap.js"></script>
+        <script src="assets/javascripts/theme.js"></script>
+        <script src="assets/javascripts/theme.init.js"></script>
 
     </body>
 </html>

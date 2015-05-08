@@ -18,7 +18,7 @@ public class AccountManagementController extends HttpServlet {
         try {
             switch (target) {
                 case "StaffLogin":
-                    nextPage = "workspace.jsp";
+                    nextPage = "AccountManagement/workspace.jsp";
                     break;
             }
 

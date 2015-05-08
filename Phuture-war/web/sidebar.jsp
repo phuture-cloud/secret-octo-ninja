@@ -27,12 +27,12 @@
                         </a>
                         <ul class="nav nav-children">
                             <li>
-                                <a href="forms-basic.html">
+                                <a href="CustomerManagement.jsp">
                                     Customer Management
                                 </a>
                             </li>
                             <li>
-                                <a href="forms-advanced.html">
+                                <a href="StaffManagement.jsp">
                                     Staff Management
                                 </a>
                             </li>
