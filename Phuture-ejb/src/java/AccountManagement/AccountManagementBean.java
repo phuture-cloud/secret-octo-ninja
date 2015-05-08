@@ -163,19 +163,16 @@ public class AccountManagementBean implements AccountManagementBeanLocal {
         return Arrays.toString(salt);
     }
 
-//    @Override
-//    public List<Staff> listAllStaffAccount() {
-//        System.out.println("AccountManagementBean: listAllStaffAccount() called");
-//        ReturnHelper result = new ReturnHelper();
-//        Query q = em.createQuery("SELECT s FROM Staff s");
-//        q.setParameter("username", username);
-//        try {
-//            Staff staff = (Staff) q.getSingleResult();
-//        } catch (NoResultException ex) {
-//            return false;
-//        } catch (Exception ex) {
-//        }
-//        return true;
-//    }
-
+    @Override
+    public List<Staff> listAllStaffAccount() {
+        System.out.println("AccountManagementBean: listAllStaffAccount() called");
+        ReturnHelper result = new ReturnHelper();
+        Query q = em.createQuery("SELECT s FROM Staff s");
+        try {
+            List<Staff> staffs = q.getResultList();
+            return staffs;
+        } catch (Exception ex) {
+            return null;
+        }
+    }
 }
