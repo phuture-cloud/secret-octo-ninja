@@ -17,8 +17,8 @@ import javax.persistence.Query;
 @Stateful
 public class AccountManagementBean implements AccountManagementBeanLocal {
 
-    private Boolean isStaffLoggedIn;
-    private Staff loggedInStaff;
+    private Boolean isStaffLoggedIn = false;
+    private Staff loggedInStaff = null;
 
     public AccountManagementBean() {
         System.out.println("AccountManagementBean (EJB) created.");
