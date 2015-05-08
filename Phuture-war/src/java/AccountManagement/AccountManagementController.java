@@ -12,6 +12,7 @@ public class AccountManagementController extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String target = request.getParameter("target");
+        String name = request.getParameter("name");
         String username = request.getParameter("username");
         String password = request.getParameter("pwd");
 
@@ -22,6 +23,10 @@ public class AccountManagementController extends HttpServlet {
                     break;
 
                 case "RemoveStaff":
+                    nextPage = "AccountManagement/staffManagement.jsp";
+                    break;
+
+                case "AddStaff":
                     nextPage = "AccountManagement/staffManagement.jsp";
                     break;
             }

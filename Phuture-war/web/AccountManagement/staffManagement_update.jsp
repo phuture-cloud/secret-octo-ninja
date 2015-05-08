@@ -12,7 +12,7 @@
                 <jsp:include page="../sidebar.jsp" />
                 <section role="main" class="content-body">
                     <header class="page-header">
-                        <h2>Add Staff</h2>
+                        <h2>Update Staff</h2>
                         <div class="right-wrapper pull-right">
                             <ol class="breadcrumbs">
                                 <li>
@@ -41,21 +41,21 @@
                                         <div class="form-group">
                                             <label class="col-md-3 control-label">Name</label>
                                             <div class="col-md-6">
-                                                <input type="text" class="form-control" name="name" required>
+                                                <input type="text" class="form-control" name="name">
                                             </div>
                                         </div>
 
                                         <div class="form-group">
                                             <label class="col-md-3 control-label">Prefix</label>
                                             <div class="col-md-6">
-                                                <input type="text" class="form-control" name="prefix" required>
+                                                <input type="text" class="form-control" name="prefix">
                                             </div>
                                         </div>
 
                                         <div class="form-group">
                                             <label class="col-md-3 control-label">Username</label>
                                             <div class="col-md-6">
-                                                <input type="text" class="form-control" name="username" required>
+                                                <input type="text" class="form-control" name="username" disabled>
                                             </div>
                                         </div>
 

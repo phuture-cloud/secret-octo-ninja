@@ -55,7 +55,7 @@
                         <div class="right-wrapper pull-right">
                             <ol class="breadcrumbs">
                                 <li>
-                                    <a href="../index.jsp">
+                                    <a href="workspace.jsp">
                                         <i class="fa fa-home"></i>
                                     </a>
                                 </li>
@@ -85,10 +85,11 @@
                                 <table class="table table-bordered table-striped mb-none" id="datatable-default">
                                     <thead>
                                         <tr>
-                                            <th><input type="checkbox"onclick="checkAll(this)" /></th>
+                                            <th style="width: 5px;">&nbsp</th>
                                             <th>Name</th>
                                             <th>Prefix</th>
                                             <th>Username</th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -97,6 +98,7 @@
                                             <td>Neo Wei</td>
                                             <td>NW</td>
                                             <td>neowei</td>
+                                            <td>button</td>
                                         </tr>
                                     </tbody>
                                 </table>

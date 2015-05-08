@@ -12,15 +12,11 @@
                 <jsp:include page="../sidebar.jsp" />
                 <section role="main" class="content-body">
                     <header class="page-header">
-                        <h2>Dashboard</h2>
+                        <h2>Workspace</h2>
                         <div class="right-wrapper pull-right">
                             <ol class="breadcrumbs">
-                                <li>
-                                    <a href="../index.jsp">
-                                        <i class="fa fa-home"></i>
-                                    </a>
-                                </li>
-                                <li><span>Dashboard &nbsp;&nbsp</span></li>
+                                <li><i class="fa fa-home"></i></li>
+                                <li><span>Workspace &nbsp;&nbsp</span></li>
                             </ol>
                         </div>
                     </header>
