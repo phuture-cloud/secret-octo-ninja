@@ -1,12 +1,17 @@
 package AccountManagement;
 
+import EntityManager.ReturnHelper;
+import EntityManager.Staff;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 public class AccountManagementController extends HttpServlet {
+
+    AccountManagementBeanLocal accountManagementBean;
 
     String nextPage = "", goodMsg = "", errMsg = "";
 
@@ -16,10 +21,28 @@ public class AccountManagementController extends HttpServlet {
         String username = request.getParameter("username");
         String password = request.getParameter("pwd");
 
+        HttpSession session = request.getSession();
+        ReturnHelper returnHelper;
+
         try {
+            System.out.println(">>>>>?????????????>>>>>>>>>");
+            accountManagementBean.checkCurrentUser();
+            System.out.println(">>>>>???????aaaaaa??????>>>>>>>>>");
             switch (target) {
                 case "StaffLogin":
-                    nextPage = "AccountManagement/workspace.jsp";
+                    returnHelper = accountManagementBean.loginStaff(username, password);
+                    if (returnHelper.getResult()) {
+                        session.setAttribute("staff", accountManagementBean.checkCurrentUser());
+                        nextPage = "AccountManagement/workspace.jsp?goodMsg=" + returnHelper.getResultDescription();
+                    } else {
+                        nextPage = "AccountManagement/workspace.jsp?errMsg=" + returnHelper.getResultDescription();
+                    }
+                    break;
+
+                case "StaffLogout":
+                    session.invalidate();
+                    accountManagementBean.logoutStaff();
+                    nextPage = "index.jsp?goodMsg=Logout Successful";
                     break;
 
                 case "RemoveStaff":
@@ -29,6 +52,7 @@ public class AccountManagementController extends HttpServlet {
                 case "AddStaff":
                     nextPage = "AccountManagement/staffManagement.jsp";
                     break;
+
             }
 
             response.sendRedirect(nextPage);
