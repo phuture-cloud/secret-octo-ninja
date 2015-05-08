@@ -20,6 +20,10 @@ public class AccountManagementController extends HttpServlet {
                 case "StaffLogin":
                     nextPage = "AccountManagement/workspace.jsp";
                     break;
+
+                case "RemoveStaff":
+                    nextPage = "AccountManagement/staffManagement.jsp";
+                    break;
             }
 
             response.sendRedirect(nextPage);

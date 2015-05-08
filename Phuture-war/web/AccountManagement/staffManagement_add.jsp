@@ -1,3 +1,9 @@
+<%-- 
+    Document   : staffManagement_add
+    Created on : May 8, 2015, 2:37:08 PM
+    Author     : darius
+--%>
+
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
