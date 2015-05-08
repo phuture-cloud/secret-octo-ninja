@@ -2,7 +2,7 @@
 <!doctype html>
 <html class="fixed">
     <head>
-        <jsp:include page="header.html" />
+        <jsp:include page="head.html" />
     </head>
     <body>
         <!-- start: page -->
@@ -18,9 +18,9 @@
                     <div class="panel-body">
                         <form action="AccountManagementController" method="post">
                             <div class="form-group mb-lg">
-                                <label>Email</label>
+                                <label>Username</label>
                                 <div class="input-group input-group-icon">
-                                    <input name="email" type="email" class="form-control input-lg" />
+                                    <input name="username" type="text" class="form-control input-lg" />
                                     <span class="input-group-addon">
                                         <span class="icon icon-lg">
                                             <i class="fa fa-user"></i>

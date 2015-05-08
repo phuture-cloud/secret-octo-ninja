@@ -11,9 +11,8 @@ public class AccountManagementController extends HttpServlet {
     String nextPage = "", goodMsg = "", errMsg = "";
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("hiiii");
         String target = request.getParameter("target");
-        String email = request.getParameter("email");
+        String username = request.getParameter("username");
         String password = request.getParameter("pwd");
 
         try {
