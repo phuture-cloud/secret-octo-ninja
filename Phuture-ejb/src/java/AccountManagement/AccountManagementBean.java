@@ -2,14 +2,12 @@ package AccountManagement;
 
 import EntityManager.ReturnHelper;
 import EntityManager.Staff;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.PrintWriter;
+import static EntityManager.Staff_.username;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Arrays;
-import java.util.Date;
+import java.util.List;
 import javax.ejb.Stateful;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -19,7 +17,7 @@ import javax.persistence.Query;
 @Stateful
 public class AccountManagementBean implements AccountManagementBeanLocal {
 
-    Staff loggedInStaff;
+    private Staff loggedInStaff;
 
     public AccountManagementBean() {
         System.out.println("AccountManagementBean (EJB) created.");
@@ -30,10 +28,69 @@ public class AccountManagementBean implements AccountManagementBeanLocal {
     private EntityManager em;
 
     @Override
+    public ReturnHelper loginStaff(String username, String password) {
+        System.out.println("AccountManagementBean: loginStaff() called");
+        ReturnHelper result = new ReturnHelper();
+        try {
+            Query q = em.createQuery("SELECT s FROM Staff s where s.username=:username");
+            q.setParameter("username", username);
+            Staff staff = (Staff) q.getSingleResult();
+            String passwordSalt = staff.getPasswordSalt();
+            String passwordHash = generatePasswordHash(passwordSalt, password);
+            if (passwordHash.equals(staff.getPasswordHash())) {
+                if (staff.isIsDisabled()) {
+                    result.setResult(false);
+                    result.setResultDescription("Account disabled.");
+                    return result;
+                }
+                System.out.println("loginStaff(): Staff with username:" + username + " logged in successfully.");
+                em.detach(staff);
+                loggedInStaff = staff;
+                loggedInStaff.setPasswordHash(null);
+                loggedInStaff.setPasswordSalt(null);
+                result.setResult(true);
+                result.setResultDescription("Login successful.");
+                return result;
+            } else {
+                System.out.println("loginStaff(): Login credentials provided were incorrect, password wrong.");
+                result.setResult(false);
+                result.setResultDescription("Login credentials provided incorrect.");
+                return result;
+            }
+        } catch (NoResultException ex) {//cannot find staff with that email
+            System.out.println("loginStaff(): Login credentials provided were incorrect, no such username found.");
+            result.setResult(false);
+            result.setResultDescription("Login credentials provided incorrect.");
+            return result;
+        } catch (Exception ex) {
+            System.out.println("loginStaff(): Internal error");
+            ex.printStackTrace();
+            result.setResult(false);
+            result.setResultDescription("Unable to login, internal server error.");
+            return result;
+        }
+    }
+
+    @Override
+    public void logoutStaff() {
+        loggedInStaff = null;
+    }
+
+    @Override
+    public Staff checkCurrentUser() {
+        return loggedInStaff;
+    }
+
+    @Override
     public ReturnHelper registerStaffAccount(String name, String staffPrefix, String username, String password, boolean isAdmin) {
         System.out.println("AccountManagementBean: registerStaffAccount() called");
         ReturnHelper result = new ReturnHelper();
         try {
+            if (checkIfUsernameExists(username)) {
+                result.setResult(false);
+                result.setResultDescription("Unable to register, username already in use.");
+                return result;
+            }
             String passwordSalt = generatePasswordSalt();
             String passwordHash = generatePasswordHash(passwordSalt, password);
             Staff staff = new Staff(name, staffPrefix, username, passwordSalt, passwordHash, isAdmin);
@@ -50,10 +107,19 @@ public class AccountManagementBean implements AccountManagementBeanLocal {
         }
     }
 
-    private boolean checkIfUsernameExists() {
+    @Override
+    public boolean checkIfUsernameExists(String username) {
         System.out.println("AccountManagementBean: checkIfUsernameExists() called");
         ReturnHelper result = new ReturnHelper();
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Query q = em.createQuery("SELECT s FROM Staff s WHERE s.username=:username");
+        q.setParameter("username", username);
+        try {
+            Staff staff = (Staff) q.getSingleResult();
+        } catch (NoResultException ex) {
+            return false;
+        } catch (Exception ex) {
+        }
+        return true;
     }
 
     @Override
@@ -89,49 +155,19 @@ public class AccountManagementBean implements AccountManagementBeanLocal {
         return Arrays.toString(salt);
     }
 
-    @Override
-    public ReturnHelper loginStaff(String username, String password) {
-        System.out.println("AccountManagementBean: loginStaff() called");
-        ReturnHelper result = new ReturnHelper();
-        try {
-            Query q = em.createQuery("SELECT s FROM Staff s where s.username=:username");
-            q.setParameter("username", username);
-            Staff staff = (Staff) q.getSingleResult();
-            String passwordSalt = staff.getPasswordSalt();
-            String passwordHash = generatePasswordHash(passwordSalt, password);
-            if (passwordHash.equals(staff.getPasswordHash())) {
-                System.out.println("loginStaff(): Staff with username:" + username + " logged in successfully.");
-                loggedInStaff = staff;
-                result.setResult(true);
-                result.setResultDescription("Login successful.");
-                return result;
-            } else {
-                System.out.println("loginStaff(): Login credentials provided were incorrect, password wrong.");
-                result.setResult(false);
-                result.setResultDescription("Login credentials provided incorrect.");
-                return result;
-            }
-        } catch (NoResultException ex) {//cannot find staff with that email
-            System.out.println("loginStaff(): Login credentials provided were incorrect, no such username found.");
-            result.setResult(false);
-            result.setResultDescription("Login credentials provided incorrect.");
-            return result;
-        } catch (Exception ex) {
-            System.out.println("loginStaff(): Internal error");
-            ex.printStackTrace();
-            result.setResult(false);
-            result.setResultDescription("Unable to login, internal server error.");
-            return result;
-        }
-    }
-
-    @Override
-    public void logoutStaff() {
-        loggedInStaff = null;
-    }
-    
-    @Override
-    public Staff checkCurrentUser() {
-        return loggedInStaff;
-    }
+//    @Override
+//    public List<Staff> listAllStaffAccount() {
+//        System.out.println("AccountManagementBean: listAllStaffAccount() called");
+//        ReturnHelper result = new ReturnHelper();
+//        Query q = em.createQuery("SELECT s FROM Staff s");
+//        q.setParameter("username", username);
+//        try {
+//            Staff staff = (Staff) q.getSingleResult();
+//        } catch (NoResultException ex) {
+//            return false;
+//        } catch (Exception ex) {
+//        }
+//        return true;
+//    }
+//
 }

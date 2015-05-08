@@ -23,6 +23,7 @@ public class Staff implements Serializable {
     private String passwordSalt;
     private String passwordHash;
     private boolean isAdmin;
+    private boolean isDisabled;
 
     @OneToMany
     private List<SalesConfirmationOrder> sales;
@@ -37,6 +38,7 @@ public class Staff implements Serializable {
         this.passwordHash = passwordHash;
         this.passwordSalt = passwordSalt;
         this.isAdmin = isAdmin;
+        this.isDisabled = false;
     }
 
     public Long getId() {
@@ -101,6 +103,14 @@ public class Staff implements Serializable {
 
     public void setSales(List<SalesConfirmationOrder> sales) {
         this.sales = sales;
+    }
+
+    public boolean isIsDisabled() {
+        return isDisabled;
+    }
+
+    public void setIsDisabled(boolean isDisabled) {
+        this.isDisabled = isDisabled;
     }
 
     @Override

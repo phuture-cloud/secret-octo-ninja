@@ -9,11 +9,15 @@ import javax.ejb.Local;
 public interface AccountManagementBeanLocal {
     public ReturnHelper loginStaff(String username, String password);
     public void logoutStaff();
-    public ReturnHelper registerStaffAccount(String name, String staffPrefix, String username, String password, boolean isAdmin);
-    //public List<Staff> listAllStaffAccount();
+    public Staff checkCurrentUser();
     
+    //public ReturnHelper disableAccount(String username);
+    //public ReturnHelper enableAccount(String username);
+    
+    public ReturnHelper registerStaffAccount(String name, String staffPrefix, String username, String password, boolean isAdmin);  
+    public boolean checkIfUsernameExists(String username);
     public String generatePasswordHash(String salt, String password);
     public String generatePasswordSalt();
     
-    public Staff checkCurrentUser();
+    //public List<Staff> listAllStaffAccount();
 }

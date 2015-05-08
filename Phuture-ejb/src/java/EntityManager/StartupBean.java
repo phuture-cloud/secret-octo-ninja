@@ -1,11 +1,13 @@
 package EntityManager;
 
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 @Singleton
 @Startup
@@ -18,7 +20,19 @@ public class StartupBean {
 
     @PostConstruct
     private void startup() {
-        ambl.registerStaffAccount("Admin", "--", "admin", "admin", true);
+        try {
+            Query q = em.createQuery("SELECT s FROM Staff s where s.username='admin'");
+            List<Staff> staff = q.getResultList();
+            // Don't insert anything if database appears to be initiated.
+            if (staff != null && staff.size() > 0) {
+                System.out.println("Skipping init of database, already initated.");
+                return;
+            }
+            ambl.registerStaffAccount("Admin", "--", "admin", "admin", true);
+        } catch (Exception ex) {
+            System.out.println("Error initating database");
+            ex.printStackTrace();
+        }
     }
 
     @PreDestroy
