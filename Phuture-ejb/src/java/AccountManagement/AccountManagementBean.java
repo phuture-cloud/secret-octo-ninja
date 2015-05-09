@@ -16,13 +16,9 @@ import javax.persistence.Query;
 
 @Stateful
 public class AccountManagementBean implements AccountManagementBeanLocal {
-
-    private Boolean isStaffLoggedIn = false;
     private Staff loggedInStaff = null;
 
     public AccountManagementBean() {
-        System.out.println("AccountManagementBean (EJB) created.");
-        isStaffLoggedIn = false;
         loggedInStaff = null;
     }     
 
@@ -47,7 +43,6 @@ public class AccountManagementBean implements AccountManagementBeanLocal {
                 }
                 System.out.println("loginStaff(): Staff with username:" + username + " logged in successfully.");
                 em.detach(staff);
-                isStaffLoggedIn = true;
                 loggedInStaff = staff;
                 loggedInStaff.setPasswordHash(null);
                 loggedInStaff.setPasswordSalt(null);
@@ -77,17 +72,11 @@ public class AccountManagementBean implements AccountManagementBeanLocal {
     @Override
     public void logoutStaff() {
         loggedInStaff = null;
-        isStaffLoggedIn = false;
     }
 
     @Override
     public Staff getCurrentUser() {
         return loggedInStaff;
-    }
-    @Override
-    public Boolean checkCurrentUser() {
-        System.out.println(isStaffLoggedIn+"!!!!!!!!!!");
-        return isStaffLoggedIn;
     }
 
     @Override

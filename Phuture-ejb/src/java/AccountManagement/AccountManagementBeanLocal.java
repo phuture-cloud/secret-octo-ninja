@@ -10,7 +10,6 @@ public interface AccountManagementBeanLocal {
     public ReturnHelper loginStaff(String username, String password);
     public void logoutStaff();
     public Staff getCurrentUser();
-    public Boolean checkCurrentUser();
     
     //public ReturnHelper disableAccount(String username);
     //public ReturnHelper enableAccount(String username);

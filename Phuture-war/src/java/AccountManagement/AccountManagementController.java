@@ -30,7 +30,7 @@ public class AccountManagementController extends HttpServlet {
 
         try {
             System.out.println("??");
-            accountManagementBean.checkCurrentUser();
+            accountManagementBean.getCurrentUser();
             System.out.println(">>");
             switch (target) {
                 case "StaffLogin":
