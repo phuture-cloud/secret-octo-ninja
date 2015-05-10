@@ -57,7 +57,7 @@ public class Staff implements Serializable {
         this.staffPrefix = staffPrefix;
     }
 
-    public boolean isIsAdmin() {
+    public boolean getIsAdmin() {
         return isAdmin;
     }
 
@@ -105,7 +105,7 @@ public class Staff implements Serializable {
         this.sales = sales;
     }
 
-    public boolean isIsDisabled() {
+    public boolean getIsDisabled() {
         return isDisabled;
     }
 

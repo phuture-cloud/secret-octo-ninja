@@ -15,8 +15,9 @@ import javax.persistence.Query;
 
 @Stateless
 public class AccountManagementBean implements AccountManagementBeanLocal {
+
     public AccountManagementBean() {
-    }     
+    }
 
     @PersistenceContext
     private EntityManager em;
@@ -32,9 +33,9 @@ public class AccountManagementBean implements AccountManagementBeanLocal {
             String passwordSalt = staff.getPasswordSalt();
             String passwordHash = generatePasswordHash(passwordSalt, password);
             if (passwordHash.equals(staff.getPasswordHash())) {
-                if (staff.isIsDisabled()) {
+                if (staff.getIsDisabled()) {
                     result.setResult(false);
-                    result.setResultDescription("Account disabled.");
+                    result.setDescription("Account disabled.");
                     return result;
                 }
                 System.out.println("loginStaff(): Staff with username:" + username + " logged in successfully.");
@@ -42,26 +43,78 @@ public class AccountManagementBean implements AccountManagementBeanLocal {
                 staff.setPasswordHash(null);
                 staff.setPasswordSalt(null);
                 result.setResult(true);
-                result.setResultDescription("Login successful.");
+                result.setDescription("Login successful.");
                 return result;
             } else {
                 System.out.println("loginStaff(): Login credentials provided were incorrect, password wrong.");
                 result.setResult(false);
-                result.setResultDescription("Login credentials provided incorrect.");
+                result.setDescription("Login credentials provided incorrect.");
                 return result;
             }
         } catch (NoResultException ex) {//cannot find staff with that email
             System.out.println("loginStaff(): Login credentials provided were incorrect, no such username found.");
             result.setResult(false);
-            result.setResultDescription("Login credentials provided incorrect.");
+            result.setDescription("Login credentials provided incorrect.");
             return result;
         } catch (Exception ex) {
             System.out.println("loginStaff(): Internal error");
             ex.printStackTrace();
             result.setResult(false);
-            result.setResultDescription("Unable to login, internal server error.");
+            result.setDescription("Unable to login, internal server error.");
             return result;
         }
+    }
+
+    @Override
+    public ReturnHelper enableAccount(String username) {
+        System.out.println("AccountManagementBean: enableAccount() called");
+        ReturnHelper result = new ReturnHelper();
+        Query q = em.createQuery("SELECT s FROM Staff s where s.username=:username");
+        q.setParameter("username", username);
+        try {
+            Staff staff = (Staff) q.getSingleResult();
+            if (staff.getIsDisabled() == false) {
+                result.setResult(false);
+                result.setDescription("Account is not disabled.");
+            } else {
+                staff.setIsDisabled(false);
+                em.merge(staff);
+                result.setResult(true);
+                result.setDescription("Account enabled successfully.");
+            }
+        } catch (Exception ex) {
+            System.out.println("AccountManagementBean: enableAccount() failed");
+            result.setResult(false);
+            result.setDescription("Failed to enable account. Internal server error.");
+            ex.printStackTrace();
+        }
+        return result;
+    }
+    
+    @Override
+    public ReturnHelper disableAccount(String username) {
+        System.out.println("AccountManagementBean: disableAccount() called");
+        ReturnHelper result = new ReturnHelper();
+        Query q = em.createQuery("SELECT s FROM Staff s where s.username=:username");
+        q.setParameter("username", username);
+        try {
+            Staff staff = (Staff) q.getSingleResult();
+            if (staff.getIsDisabled() == true) {
+                result.setResult(false);
+                result.setDescription("Account is already disabled.");
+            } else {
+                staff.setIsDisabled(true);
+                em.merge(staff);
+                result.setResult(true);
+                result.setDescription("Account disabled successfully.");
+            }
+        } catch (Exception ex) {
+            System.out.println("AccountManagementBean: enableAccount() failed");
+            result.setResult(false);
+            result.setDescription("Failed to disable account. Internal server error.");
+            ex.printStackTrace();
+        }
+        return result;
     }
 
     @Override
@@ -71,7 +124,7 @@ public class AccountManagementBean implements AccountManagementBeanLocal {
         try {
             if (checkIfUsernameExists(username)) {
                 result.setResult(false);
-                result.setResultDescription("Unable to register, username already in use.");
+                result.setDescription("Unable to register, username already in use.");
                 return result;
             }
             String passwordSalt = generatePasswordSalt();
@@ -79,13 +132,13 @@ public class AccountManagementBean implements AccountManagementBeanLocal {
             Staff staff = new Staff(name, staffPrefix, username, passwordSalt, passwordHash, isAdmin);
             em.persist(staff);
             result.setResult(true);
-            result.setResultDescription("Account registered successfully.");
+            result.setDescription("Account registered successfully.");
             return result;
         } catch (Exception ex) {
             System.out.println("AccountManagementBean: registerStaffAccount() failed");
             ex.printStackTrace();
             result.setResult(false);
-            result.setResultDescription("Failed to register account due to internal server error.");
+            result.setDescription("Failed to register account due to internal server error.");
             return result;
         }
     }
@@ -93,7 +146,6 @@ public class AccountManagementBean implements AccountManagementBeanLocal {
     @Override
     public boolean checkIfUsernameExists(String username) {
         System.out.println("AccountManagementBean: checkIfUsernameExists() called");
-        ReturnHelper result = new ReturnHelper();
         Query q = em.createQuery("SELECT s FROM Staff s WHERE s.username=:username");
         q.setParameter("username", username);
         try {
@@ -101,6 +153,8 @@ public class AccountManagementBean implements AccountManagementBeanLocal {
         } catch (NoResultException ex) {
             return false;
         } catch (Exception ex) {
+            System.out.println("AccountManagementBean: checkIfUsernameExists() failed");
+            ex.printStackTrace();
         }
         return true;
     }
@@ -147,6 +201,8 @@ public class AccountManagementBean implements AccountManagementBeanLocal {
             List<Staff> staffs = q.getResultList();
             return staffs;
         } catch (Exception ex) {
+            System.out.println("AccountManagementBean: listAllStaffAccount() failed");
+            ex.printStackTrace();
             return null;
         }
     }

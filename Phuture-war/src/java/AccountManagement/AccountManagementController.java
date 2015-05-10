@@ -2,7 +2,6 @@ package AccountManagement;
 
 import EntityManager.ReturnHelper;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.naming.Context;
@@ -29,9 +28,6 @@ public class AccountManagementController extends HttpServlet {
         ReturnHelper returnHelper;
 
         try {
-            System.out.println("??");
-            accountManagementBean.getCurrentUser();
-            System.out.println(">>");
             switch (target) {
                 case "StaffLogin":
                     returnHelper = accountManagementBean.loginStaff(username, password);
@@ -45,7 +41,7 @@ public class AccountManagementController extends HttpServlet {
 
                 case "StaffLogout":
                     session.invalidate();
-                    accountManagementBean.logoutStaff();
+
                     nextPage = "index.jsp?goodMsg=Logout Successful";
                     break;
 

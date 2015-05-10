@@ -15,11 +15,11 @@ public class ReturnHelper implements Serializable {
         this.result = result;
     }
 
-    public String getResultDescription() {
+    public String getDescription() {
         return resultDescription;
     }
 
-    public void setResultDescription(String resultDescription) {
+    public void setDescription(String resultDescription) {
         this.resultDescription = resultDescription;
     }
 }
