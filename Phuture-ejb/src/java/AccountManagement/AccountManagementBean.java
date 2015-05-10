@@ -35,7 +35,7 @@ public class AccountManagementBean implements AccountManagementBeanLocal {
             if (passwordHash.equals(staff.getPasswordHash())) {
                 if (staff.getIsDisabled()) {
                     result.setResult(false);
-                    result.setDescription("Account disabled.");
+                    result.setDescription("Unable to login, account is disabled.");
                     return result;
                 }
                 System.out.println("loginStaff(): Staff with username:" + username + " logged in successfully.");
