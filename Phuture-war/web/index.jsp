@@ -7,9 +7,30 @@
         <link rel="stylesheet" href="assets/vendor/font-awesome/css/font-awesome.css" />
         <link rel="stylesheet" href="assets/stylesheets/theme.css" />
         <link rel="stylesheet" href="assets/stylesheets/skins/default.css" />
+        <link rel="stylesheet" href="assets/vendor/pnotify/pnotify.custom.css" />
         <script src="assets/vendor/modernizr/modernizr.js"></script>
     </head>
-    <body>
+
+    <body onload="alertFunc()">
+        <script>
+            <%
+                String test = request.getParameter("test");
+                if (test != null) {
+            %>
+            function alertFunc() {
+                alert('yo');
+                new PNotify({
+                    title: 'Regular Notice',
+                    text: 'Check me out! I\'m a notice.',
+                    type: 'custom',
+                    addclass: 'notification-primary',
+                    icon: 'fa fa-twitter'
+                });
+            }
+            <%
+                }
+            %>
+        </script>
         <!-- start: page -->
         <section class="body-sign">
             <div class="center-sign">
@@ -67,12 +88,14 @@
             </div>
         </section>
         <!-- end: page -->
-
         <script src="assets/vendor/jquery/jquery.js"></script>
         <script src="assets/vendor/jquery-browser-mobile/jquery.browser.mobile.js"></script>
         <script src="assets/vendor/bootstrap/js/bootstrap.js"></script>
         <script src="assets/javascripts/theme.js"></script>
         <script src="assets/javascripts/theme.init.js"></script>
+        <script src="assets/vendor/pnotify/pnotify.custom.js"></script>
+
+
 
     </body>
 </html>

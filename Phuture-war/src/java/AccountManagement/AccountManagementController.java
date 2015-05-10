@@ -1,8 +1,8 @@
 package AccountManagement;
 
 import EntityManager.ReturnHelper;
+import EntityManager.Staff;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.naming.Context;
@@ -30,7 +30,10 @@ public class AccountManagementController extends HttpServlet {
 
         try {
             System.out.println("??");
-            accountManagementBean.getCurrentUser();
+            Staff staff = accountManagementBean.getCurrentUser();
+            if(staff!=null) System.out.println(staff.getUsername());
+            else
+                System.out.println("lololol");
             System.out.println(">>");
             switch (target) {
                 case "StaffLogin":
