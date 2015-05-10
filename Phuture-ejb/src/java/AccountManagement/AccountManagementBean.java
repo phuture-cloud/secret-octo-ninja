@@ -64,6 +64,25 @@ public class AccountManagementBean implements AccountManagementBeanLocal {
             return result;
         }
     }
+    
+    @Override
+    public Staff getStaff(String username) {
+        System.out.println("AccountManagementBean: getStaff() called");
+        ReturnHelper result = new ReturnHelper();
+        try {
+            Query q = em.createQuery("SELECT s FROM Staff s where s.username=:username");
+            q.setParameter("username", username);
+            Staff staff = (Staff) q.getSingleResult();
+            return staff;
+        } catch (Exception ex) {
+            System.out.println("getStaff(): Internal error");
+            ex.printStackTrace();
+            result.setResult(false);
+            result.setDescription("Unable to getStaff, internal server error.");
+            return null;
+        }
+    }
+
 
     @Override
     public ReturnHelper enableAccount(String username) {
