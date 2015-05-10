@@ -3,11 +3,7 @@ package AccountManagement;
 import EntityManager.ReturnHelper;
 import EntityManager.Staff;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -15,8 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 public class AccountManagementController extends HttpServlet {
+    @EJB
+    private AccountManagementBeanLocal accountManagementBean;
 
-    AccountManagementBeanLocal accountManagementBean = lookupAccountManagementBeanLocal();
     String nextPage = "", goodMsg = "", errMsg = "";
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -29,16 +26,11 @@ public class AccountManagementController extends HttpServlet {
         ReturnHelper returnHelper;
 
         try {
-            System.out.println("??");
-            Staff staff = accountManagementBean.getCurrentUser();
-            if(staff!=null) System.out.println(staff.getUsername());
-            else
-                System.out.println("lololol");
-            System.out.println(">>");
             switch (target) {
                 case "StaffLogin":
                     returnHelper = accountManagementBean.loginStaff(username, password);
                     if (returnHelper.getResult()) {
+                        
                         //session.setAttribute("staff", accountManagementBean.checkCurrentUser());
                         nextPage = "AccountManagement/workspace.jsp?goodMsg=" + returnHelper.getResultDescription();
                     } else {
@@ -48,7 +40,6 @@ public class AccountManagementController extends HttpServlet {
 
                 case "StaffLogout":
                     session.invalidate();
-                    accountManagementBean.logoutStaff();
                     nextPage = "index.jsp?goodMsg=Logout Successful";
                     break;
 
@@ -107,14 +98,5 @@ public class AccountManagementController extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    private AccountManagementBeanLocal lookupAccountManagementBeanLocal() {
-        try {
-            Context c = new InitialContext();
-            return (AccountManagementBeanLocal) c.lookup("java:global/Phuture/Phuture-ejb/AccountManagementBean!AccountManagement.AccountManagementBeanLocal");
-        } catch (NamingException ne) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", ne);
-            throw new RuntimeException(ne);
-        }
-    }
 
 }
