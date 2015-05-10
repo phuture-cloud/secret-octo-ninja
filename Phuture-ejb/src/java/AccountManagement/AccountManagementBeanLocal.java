@@ -8,8 +8,6 @@ import javax.ejb.Local;
 @Local
 public interface AccountManagementBeanLocal {
     public ReturnHelper loginStaff(String username, String password);
-    public void logoutStaff();
-    public Staff getCurrentUser();
     
     //public ReturnHelper disableAccount(String username);
     //public ReturnHelper enableAccount(String username);
