@@ -18,5 +18,7 @@ public interface AccountManagementBeanLocal {
     public String generatePasswordHash(String salt, String password);
     public String generatePasswordSalt();
     
+    public ReturnHelper updateStaffName(Long staffID, String newName);
+    public ReturnHelper updateStaffPassword(Long staffID, String oldPassword, String newPassword);
     public List<Staff> listAllStaffAccount();
 }

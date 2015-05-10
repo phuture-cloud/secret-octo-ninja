@@ -64,7 +64,7 @@ public class AccountManagementBean implements AccountManagementBeanLocal {
             return result;
         }
     }
-    
+
     @Override
     public Staff getStaff(String username) {
         System.out.println("AccountManagementBean: getStaff() called");
@@ -82,7 +82,6 @@ public class AccountManagementBean implements AccountManagementBeanLocal {
             return null;
         }
     }
-
 
     @Override
     public ReturnHelper enableAccount(String username) {
@@ -109,7 +108,7 @@ public class AccountManagementBean implements AccountManagementBeanLocal {
         }
         return result;
     }
-    
+
     @Override
     public ReturnHelper disableAccount(String username) {
         System.out.println("AccountManagementBean: disableAccount() called");
@@ -209,6 +208,57 @@ public class AccountManagementBean implements AccountManagementBeanLocal {
             ex.printStackTrace();
         }
         return Arrays.toString(salt);
+    }
+
+    @Override
+    public ReturnHelper updateStaffName(Long staffID, String newName) {
+        System.out.println("AccountManagementBean: checkIfUsernameExists() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        Query q = em.createQuery("SELECT s FROM Staff s WHERE s.id=:id");
+        q.setParameter("id", staffID);
+        try {
+            Staff staff = (Staff) q.getSingleResult();
+            staff.setName(newName);
+            em.merge(staff);
+            result.setResult(true);
+            result.setDescription("Staff name updated successfully.");
+        } catch (NoResultException ex) {
+            result.setDescription("Unable to find staff with the provided ID.");
+        } catch (Exception ex) {
+            System.out.println("AccountManagementBean: updateStaffName() failed");
+            result.setDescription("Unable to update staff's name, internal server error.");
+            ex.printStackTrace();
+        }
+        return result;
+    }
+
+    @Override
+    public ReturnHelper updateStaffPassword(Long staffID, String oldPassword, String newPassword) {
+        System.out.println("AccountManagementBean: updateStaffPassword() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        Query q = em.createQuery("SELECT s FROM Staff s WHERE s.id=:id");
+        q.setParameter("id", staffID);
+        try {
+            Staff staff = (Staff) q.getSingleResult();
+            if (!generatePasswordHash(staff.getPasswordSalt(), oldPassword).equals(staff.getPasswordHash())) {
+                result.setDescription("Old password provided is invalid, password not updated.");
+            } else {
+                staff.setPasswordSalt(generatePasswordSalt());
+                staff.setPasswordHash(generatePasswordHash(staff.getPasswordSalt(), newPassword));
+                em.merge(staff);
+                result.setResult(true);
+                result.setDescription("Password updated successfully.");
+            }
+        } catch (NoResultException ex) {
+            result.setDescription("Unable to find staff with the provided ID.");
+        } catch (Exception ex) {
+            System.out.println("AccountManagementBean: updateStaffPassword() failed");
+            result.setDescription("Unable to update staff's password, internal server error.");
+            ex.printStackTrace();
+        }
+        return result;
     }
 
     @Override
