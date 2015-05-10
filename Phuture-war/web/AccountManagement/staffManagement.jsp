@@ -1,13 +1,24 @@
+<%@page import="java.util.List"%>
+<%@page import="EntityManager.Staff"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%
+    Staff staff = (Staff) (session.getAttribute("staff"));
+    if (session.isNew()) {
+        response.sendRedirect("../index.jsp?errMsg=Invalid Request. Please login.");
+    } else if (staff == null) {
+        response.sendRedirect("../index.jsp?errMsg=Session Expired.");
+    } else {
+%>
 <!doctype html>
 <html class="fixed">
     <head>
         <jsp:include page="../head.html" />
     </head>
-    <body>
+    <body onload="alertFunc()">
+        <jsp:include page="../displayNotification.jsp" />
         <script>
-            function updateStaff(id) {
-                staffManagement.id.value = id;
+            function updateStaff(username) {
+                staffManagement.username.value = username;
                 document.staffManagement.action = "staffManagement_update.jsp";
                 document.staffManagement.submit();
             }
@@ -75,8 +86,8 @@
 
                             <div class="row">
                                 <div class="col-md-12">
-                                    <input class="btn btn-primary" name="btnAdd" type="submit" value="Register Staff" onclick="addStaff()"  />
-                                    <a href="#myModal" data-toggle="modal"><button class="btn btn-primary">Remove Staff</button></a>
+                                    <input class="btn btn-primary" name="btnAdd" type="submit" value="Add Staff" onclick="addStaff()"  />
+                                    <a href="#myModal" data-toggle="modal"><button class="btn btn-primary">Disable Staff</button></a>
                                 </div>
                             </div>
                             <br/>
@@ -94,16 +105,29 @@
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td><input type="checkbox" name="delete" value="" /></td>
-                                            <td>Neo Wei</td>
-                                            <td>NW</td>
-                                            <td>neowei</td>
-                                            <td>button</td>
+                                            <%
+                                                List<Staff> staffs = (List<Staff>) (session.getAttribute("staffs"));
+                                                if (staffs != null) {
+                                                    for (int i = 0; i < staffs.size(); i++) {
+                                                        if (!staffs.get(i).getUsername().equals(staff.getUsername()) && !staffs.get(i).getIsDisabled()) {
+                                            %>
+                                            <td><input type="checkbox" name="delete" value="<%=staffs.get(i).getUsername()%>" /></td>
+                                            <td><%=staffs.get(i).getName()%></td>
+                                            <td><%=staffs.get(i).getStaffPrefix()%></td>
+                                            <td><%=staffs.get(i).getUsername()%></td>
+                                            <td><input type="button" name="btnEdit" class="btn btn-primary btn-block" id="<%=staffs.get(i).getUsername()%>" value="Update" onclick="javascript:updateStaff('<%=staffs.get(i).getUsername()%>')"/></td>
+                                                <%
+                                                            }
+                                                        }
+                                                    } else {
+                                                        out.print("<td></td><td></td><td></td><td></td><td></td>");
+                                                    }
+                                                %>
                                         </tr>
                                     </tbody>
                                 </table>
 
-                                <input type="hidden" name="id" value="">
+                                <input type="hidden" name="username" value="">
                                 <input type="hidden" name="target" value="">    
                             </form>
                         </div>
@@ -122,7 +146,7 @@
                         <h4>Alert</h4>
                     </div>
                     <div class="modal-body">
-                        <p id="messageBox">Staff will be removed. Are you sure?</p>
+                        <p id="messageBox">Staff will be disabled. Are you sure?</p>
                     </div>
                     <div class="modal-footer">                        
                         <input class="btn btn-primary" name="btnRemove" type="submit" value="Confirm" onclick="removeStaff()"  />
@@ -135,3 +159,6 @@
         <jsp:include page="../foot.html" />
     </body>
 </html>
+<%
+    }
+%>

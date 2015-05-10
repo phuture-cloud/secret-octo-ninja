@@ -14,7 +14,7 @@
 
         <span class="separator"></span>
 
-   
+
         <div id="userbox" class="userbox">
             <a href="#" data-toggle="dropdown">
                 <figure class="profile-picture">
@@ -38,7 +38,7 @@
                         <a role="menuitem" tabindex="-1" href="#" data-lock-screen="true"><i class="fa fa-lock"></i> Lock Screen</a>
                     </li>
                     <li>
-                        <a role="menuitem" tabindex="-1" href="pages-signin.html"><i class="fa fa-power-off"></i> Logout</a>
+                        <a role="menuitem" tabindex="-1" href="../AccountManagementController?target=StaffLogout"><i class="fa fa-power-off"></i> Logout</a>
                     </li>
                 </ul>
             </div>
