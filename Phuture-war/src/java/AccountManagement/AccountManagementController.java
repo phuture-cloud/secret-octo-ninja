@@ -32,9 +32,9 @@ public class AccountManagementController extends HttpServlet {
                     if (returnHelper.getResult()) {
                         
                         //session.setAttribute("staff", accountManagementBean.checkCurrentUser());
-                        nextPage = "AccountManagement/workspace.jsp?goodMsg=" + returnHelper.getResultDescription();
+                        nextPage = "AccountManagement/workspace.jsp?goodMsg=" + returnHelper.getDescription();
                     } else {
-                        nextPage = "AccountManagement/workspace.jsp?errMsg=" + returnHelper.getResultDescription();
+                        nextPage = "AccountManagement/workspace.jsp?errMsg=" + returnHelper.getDescription();
                     }
                     break;
 
