@@ -2,24 +2,20 @@ package AccountManagement;
 
 import EntityManager.ReturnHelper;
 import EntityManager.Staff;
-import static EntityManager.Staff_.username;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.List;
-import javax.ejb.Stateful;
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-@Stateful
+@Stateless
 public class AccountManagementBean implements AccountManagementBeanLocal {
-    private Staff loggedInStaff = null;
-
     public AccountManagementBean() {
-        loggedInStaff = null;
     }     
 
     @PersistenceContext
@@ -43,9 +39,8 @@ public class AccountManagementBean implements AccountManagementBeanLocal {
                 }
                 System.out.println("loginStaff(): Staff with username:" + username + " logged in successfully.");
                 em.detach(staff);
-                loggedInStaff = staff;
-                loggedInStaff.setPasswordHash(null);
-                loggedInStaff.setPasswordSalt(null);
+                staff.setPasswordHash(null);
+                staff.setPasswordSalt(null);
                 result.setResult(true);
                 result.setResultDescription("Login successful.");
                 return result;
@@ -67,16 +62,6 @@ public class AccountManagementBean implements AccountManagementBeanLocal {
             result.setResultDescription("Unable to login, internal server error.");
             return result;
         }
-    }
-
-    @Override
-    public void logoutStaff() {
-        loggedInStaff = null;
-    }
-
-    @Override
-    public Staff getCurrentUser() {
-        return loggedInStaff;
     }
 
     @Override

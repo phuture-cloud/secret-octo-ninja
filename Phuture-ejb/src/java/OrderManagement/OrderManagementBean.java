@@ -1,8 +1,8 @@
 package OrderManagement;
 
-import javax.ejb.Stateful;
+import javax.ejb.Stateless;
 
-@Stateful
+@Stateless
 public class OrderManagementBean implements OrderManagementBeanLocal {
 
     // Add business logic below. (Right-click in editor and choose
