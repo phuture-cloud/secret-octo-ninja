@@ -65,7 +65,7 @@ public class CustomerManagementBean implements CustomerManagementBeanLocal {
     }
 
     @Override
-    public List<Customer> listAllCustomers() {
+    public List<Customer> listCustomers() {
         System.out.println("CustomerManagementBean: getCustomerList() called");
         ReturnHelper result = new ReturnHelper();
         Query q = em.createQuery("SELECT c FROM Customer c where c.isDeleted = false");
@@ -143,6 +143,59 @@ public class CustomerManagementBean implements CustomerManagementBeanLocal {
             System.out.println("CustomerManagementBean: deleteContact() failed");
             result.setResult(false);
             result.setDescription("Failed to delete contact. Internal server error.");
+            ex.printStackTrace();
+        }
+        return result;
+    }
+
+    @Override
+    public List<Contact> listCustomerContacts(Long customerID) {
+        System.out.println("CustomerManagementBean: listCustomerContacts() called");
+        ReturnHelper result = new ReturnHelper();
+        Query q = em.createQuery("SELECT c FROM Contact c where c.customer.id=:id");
+        try {
+            List<Contact> customerContacts = q.getResultList();
+            return customerContacts;
+        } catch (Exception ex) {
+            System.out.println("CustomerManagementBean: listCustomerContacts() failed");
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public ReturnHelper setPrimaryContact(Long customerID, Long contactID) {
+        System.out.println("CustomerManagementBean: setPrimaryContact() called");
+        ReturnHelper result = new ReturnHelper();
+        Query q = em.createQuery("SELECT c FROM Contact c where c.id=:id");
+        q.setParameter("id", contactID);
+        try {
+            Contact contact = (Contact) q.getSingleResult();
+            if (contact.getIsPrimaryContact()) {
+                result.setResult(false);
+                result.setDescription("Contact is already the primary contact for this customer.");
+            } else if (contact.getIsDeleted() == true) {
+                result.setResult(false);
+                result.setDescription("Unable to set contact as primary as it has been deleted.");
+            } else {
+                q = em.createQuery("SELECT c FROM Customer c where c.id=:id");
+                Customer customer = (Customer) q.getSingleResult();
+                if (customer.getIsDeleted() == true) {
+                    result.setResult(false);
+                    result.setDescription("Unable to set contact as primary as the customer has been deleted.");
+                } else {
+                    customer.setPrimaryContact(contact);
+                    em.merge(customer);
+                    contact.setIsPrimaryContact(true);
+                    em.merge(contact);
+                    result.setResult(true);
+                    result.setDescription("Contact as primary.");
+                }
+            }
+        } catch (Exception ex) {
+            System.out.println("CustomerManagementBean: setPrimaryContact() failed");
+            result.setResult(false);
+            result.setDescription("Failed to set primary contact. Internal server error.");
             ex.printStackTrace();
         }
         return result;
