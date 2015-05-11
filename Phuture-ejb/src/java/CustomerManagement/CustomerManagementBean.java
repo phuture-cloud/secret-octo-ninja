@@ -62,7 +62,7 @@ public class CustomerManagementBean implements CustomerManagementBeanLocal {
     }
 
     @Override
-    public List<Customer> getCustomerList() {
+    public List<Customer> listAllCustomers() {
         System.out.println("AccountManagementBean: getCustomerList() called");
         ReturnHelper result = new ReturnHelper();
         Query q = em.createQuery("SELECT c FROM Customer c where c.isDeleted = false");

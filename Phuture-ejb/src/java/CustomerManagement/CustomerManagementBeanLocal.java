@@ -10,7 +10,7 @@ import javax.ejb.Local;
 public interface CustomerManagementBeanLocal {
     public ReturnHelper addCustomer(String customerName);
     public ReturnHelper deleteCustomer(Long customerID);
-    public List<Customer> getCustomerList();
+    public List<Customer> listAllCustomers();
     
     public ReturnHelper addContact(Long customerID, String name, String email, String officeNo, String mobileNo, String faxNo, String address, String notes);
     public ReturnHelper deleteContact(Long customerID);
