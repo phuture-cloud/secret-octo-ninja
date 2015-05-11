@@ -24,6 +24,8 @@ public class Contact implements Serializable {
     private String mobileNo;
     private String faxNo;
     @Lob
+    private String address;
+    @Lob
     private String notes;
 
     public Contact() {
@@ -96,6 +98,14 @@ public class Contact implements Serializable {
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     @Override

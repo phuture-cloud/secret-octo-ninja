@@ -25,12 +25,14 @@ public class Customer implements Serializable {
     private List<SalesConfirmationOrder> SCOs;
     @OneToMany
     private List<CreditNote> creditNotes;
+    private boolean isDeleted;
 
     public Customer() {
     }
 
     public Customer(String customerName) {
         this.customerName = customerName;
+        this.isDeleted = false;
     }
 
     public Long getId() {
@@ -79,6 +81,14 @@ public class Customer implements Serializable {
 
     public void setCreditNotes(List<CreditNote> creditNotes) {
         this.creditNotes = creditNotes;
+    }
+
+    public boolean getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
     }
 
     @Override
