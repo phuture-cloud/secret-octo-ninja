@@ -27,6 +27,8 @@ public class Contact implements Serializable {
     private String address;
     @Lob
     private String notes;
+    private boolean isPrimaryContact;
+    private boolean isDeleted;
 
     public Contact() {
     }
@@ -106,6 +108,22 @@ public class Contact implements Serializable {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public boolean getIsPrimaryContact() {
+        return isPrimaryContact;
+    }
+
+    public void setIsPrimaryContact(boolean isPrimaryContact) {
+        this.isPrimaryContact = isPrimaryContact;
+    }
+
+    public boolean getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
     }
 
     @Override

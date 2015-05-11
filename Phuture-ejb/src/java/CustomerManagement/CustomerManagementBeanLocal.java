@@ -13,7 +13,7 @@ public interface CustomerManagementBeanLocal {
     public List<Customer> listAllCustomers();
     
     public ReturnHelper addContact(Long customerID, String name, String email, String officeNo, String mobileNo, String faxNo, String address, String notes);
-    public ReturnHelper deleteContact(Long customerID);
+    public ReturnHelper deleteContact(Long contactID);
     //public List<Contact> getCustomerContactList(Long customerID);
     //public ReturnHelper setPrimaryContact(Long custoemrID, Long contactID);
     

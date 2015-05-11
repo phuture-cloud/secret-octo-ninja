@@ -1,6 +1,7 @@
 package EntityManager;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -32,6 +33,9 @@ public class Customer implements Serializable {
 
     public Customer(String customerName) {
         this.customerName = customerName;
+        this.companyContacts = new ArrayList();
+        this.SCOs = new ArrayList();
+        this.creditNotes = new ArrayList();
         this.isDeleted = false;
     }
 
