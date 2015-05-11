@@ -1,4 +1,13 @@
+<%@page import="EntityManager.Staff"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%
+    Staff staff = (Staff) (session.getAttribute("staff"));
+    if (session.isNew()) {
+        response.sendRedirect("../index.jsp?errMsg=Invalid Request. Please login.");
+    } else if (staff == null) {
+        response.sendRedirect("../index.jsp?errMsg=Session Expired.");
+    } else {
+%>
 <!doctype html>
 <html class="fixed">
     <head>
@@ -97,3 +106,6 @@
         <jsp:include page="../foot.html" />
     </body>
 </html>
+<%
+    }
+%>

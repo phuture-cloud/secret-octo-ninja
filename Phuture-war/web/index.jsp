@@ -94,8 +94,5 @@
         <script src="assets/javascripts/theme.js"></script>
         <script src="assets/javascripts/theme.init.js"></script>
         <script src="assets/vendor/pnotify/pnotify.custom.js"></script>
-
-
-
     </body>
 </html>

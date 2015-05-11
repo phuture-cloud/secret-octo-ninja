@@ -11,18 +11,21 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 public class AccountManagementController extends HttpServlet {
+
     @EJB
     private AccountManagementBeanLocal accountManagementBean;
 
     String nextPage = "", goodMsg = "", errMsg = "";
+    HttpSession session;
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String target = request.getParameter("target");
         String name = request.getParameter("name");
+        String prefix = request.getParameter("prefix");
         String username = request.getParameter("username");
         String password = request.getParameter("pwd");
 
-        HttpSession session = request.getSession();
+        session = request.getSession();
         ReturnHelper returnHelper;
 
         try {
@@ -30,11 +33,10 @@ public class AccountManagementController extends HttpServlet {
                 case "StaffLogin":
                     returnHelper = accountManagementBean.loginStaff(username, password);
                     if (returnHelper.getResult()) {
-                        
-                        //session.setAttribute("staff", accountManagementBean.checkCurrentUser());
-                        nextPage = "AccountManagement/workspace.jsp?goodMsg=" + returnHelper.getDescription();
+                        session.setAttribute("staff", accountManagementBean.getStaff(username));
+                        nextPage = "AccountManagement/workspace.jsp";
                     } else {
-                        nextPage = "AccountManagement/workspace.jsp?errMsg=" + returnHelper.getDescription();
+                        nextPage = "index.jsp?errMsg=" + returnHelper.getDescription();
                     }
                     break;
 
@@ -44,18 +46,52 @@ public class AccountManagementController extends HttpServlet {
                     break;
 
                 case "RemoveStaff":
+
                     nextPage = "AccountManagement/staffManagement.jsp";
                     break;
 
                 case "AddStaff":
-                    nextPage = "AccountManagement/staffManagement.jsp";
+                    if (checkLogin(response)) {
+                        returnHelper = accountManagementBean.registerStaffAccount(name, prefix, username, password, false);
+                        if (returnHelper.getResult()) {
+                            session.setAttribute("staffs", accountManagementBean.listAllStaffAccount());
+                            nextPage = "AccountManagement/staffManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                        } else {
+                            nextPage = "AccountManagement/staffManagement.jsp?errMsg=" + returnHelper.getDescription();
+                        }
+                    }
                     break;
 
+                case "ListAllStaff":
+                    if (checkLogin(response)) {
+                        session.setAttribute("staffs", accountManagementBean.listAllStaffAccount());
+                        nextPage = "AccountManagement/staffManagement.jsp";
+                    }
+                    break;
             }
 
-            response.sendRedirect(nextPage);
+            if (nextPage.equals("")) {
+                response.sendRedirect("index.jsp?errMsg=Session Expired.");
+            } else {
+                response.sendRedirect(nextPage);
+            }
+
         } catch (Exception ex) {
             ex.printStackTrace();
+        }
+    }
+
+    public boolean checkLogin(HttpServletResponse response) {
+        try {
+            Staff staff = (Staff) (session.getAttribute("staff"));
+            if (staff == null) {
+                response.sendRedirect("index.jsp?errMsg=Session Expired.");
+                return false;
+            } else {
+                return true;
+            }
+        } catch (Exception ex) {
+            return false;
         }
     }
 
@@ -97,6 +133,5 @@ public class AccountManagementController extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
 
 }
