@@ -3,6 +3,7 @@ package AccountManagement;
 import EntityManager.ReturnHelper;
 import EntityManager.Staff;
 import java.io.IOException;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -20,6 +21,7 @@ public class AccountManagementController extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String target = request.getParameter("target");
+        String staffID = request.getParameter("staffID");
         String name = request.getParameter("name");
         String prefix = request.getParameter("prefix");
         String username = request.getParameter("username");
@@ -45,11 +47,6 @@ public class AccountManagementController extends HttpServlet {
                     nextPage = "index.jsp?goodMsg=Logout Successful";
                     break;
 
-                case "RemoveStaff":
-
-                    nextPage = "AccountManagement/staffManagement.jsp";
-                    break;
-
                 case "AddStaff":
                     if (checkLogin(response)) {
                         returnHelper = accountManagementBean.registerStaffAccount(name, prefix, username, password, false);
@@ -62,10 +59,48 @@ public class AccountManagementController extends HttpServlet {
                     }
                     break;
 
+                case "UpdateStaff":
+                    if (checkLogin(response)) {
+                        if (password != null && !password.equals("")) {
+                            returnHelper = accountManagementBean.updateStaffPassword(Long.parseLong(staffID), password, password);
+                            if (!returnHelper.getResult()) {
+                                nextPage = "AccountManagement/staffManagement_update.jsp?id=" + staffID + "&errMsg=" + returnHelper.getDescription();
+                            }
+                        }
+                        //need to add 1 more arg for prefix
+                        returnHelper = accountManagementBean.updateStaffName(Long.parseLong(staffID), name);
+
+                        if (returnHelper.getResult()) {
+                            session.setAttribute("staffs", accountManagementBean.listAllStaffAccount());
+                            nextPage = "AccountManagement/staffManagement_update.jsp?id=" + staffID + "&goodMsg=" + returnHelper.getDescription();
+                        } else {
+                            nextPage = "AccountManagement/staffManagement_update.jsp?id=" + staffID + "&errMsg=" + returnHelper.getDescription();
+                        }
+
+                    }
+                    break;
+
+                case "DisableStaff":
+                    if (checkLogin(response)) {
+                        returnHelper = accountManagementBean.disableAccount(username);
+                        if (returnHelper.getResult()) {
+                            session.setAttribute("staffs", accountManagementBean.listAllStaffAccount());
+                            nextPage = "AccountManagement/staffManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                        } else {
+                            nextPage = "AccountManagement/staffManagement.jsp?errMsg=" + returnHelper.getDescription();
+                        }
+                    }
+                    break;
+
                 case "ListAllStaff":
                     if (checkLogin(response)) {
-                        session.setAttribute("staffs", accountManagementBean.listAllStaffAccount());
-                        nextPage = "AccountManagement/staffManagement.jsp";
+                        List<Staff> staffs = accountManagementBean.listAllStaffAccount();
+                        if (staffs == null) {
+                            nextPage = "error500.html";
+                        } else {
+                            session.setAttribute("staffs", staffs);
+                            nextPage = "AccountManagement/staffManagement.jsp";
+                        }
                     }
                     break;
             }
