@@ -27,7 +27,7 @@
                         </a>
                         <ul class="nav nav-children">
                             <li>
-                                <a href="../CustomerManagement/customerManagement.jsp">
+                                <a href="../CustomerManagementController?target=ListAllCustomer">
                                     Customer Management
                                 </a>
                             </li>
