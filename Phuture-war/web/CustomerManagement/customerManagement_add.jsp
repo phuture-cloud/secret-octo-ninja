@@ -88,7 +88,7 @@
                                                 <input type="text" class="form-control" name="mobileNo" required>
                                             </div>
                                         </div>
-                                        
+
                                         <div class="form-group">
                                             <label class="col-md-3 control-label">Fax Numbers</label>
                                             <div class="col-md-6">
@@ -105,12 +105,11 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="col-md-3 control-label">Notes</label>
+                                            <label class="col-md-3 control-label" for="textareaDefault">Notes</label>
                                             <div class="col-md-6">
-                                                <input type="text" class="form-control" name="notes" required>
+                                                <textarea class="form-control" rows="3" name="notes"></textarea>
                                             </div>
                                         </div>
-
 
                                         <input type="hidden" name="target" value="AddCustomer">   
                                     </div>
