@@ -85,6 +85,7 @@
                                             <th>Name</th>
                                             <th>Prefix</th>
                                             <th>Username</th>
+                                            <th>Status</th>
                                             <th style="width: 300px;">Action</th>
                                         </tr>
                                     </thead>
@@ -92,16 +93,35 @@
                                         <tr>
                                             <%
                                                 List<Staff> staffs = (List<Staff>) (session.getAttribute("staffs"));
-                                                if (staffs.size() > 1) {
+                                                int temp = 2;
+                                                if (staff.getIsAdmin()) {
+                                                    temp = 1;
+                                                }
+
+                                                if (staffs.size() > temp) {
                                                     for (int i = 0; i < staffs.size(); i++) {
-                                                        if (!staffs.get(i).getUsername().equals(staff.getUsername()) && !staffs.get(i).getIsDisabled() && !staffs.get(i).getIsAdmin()) {
+                                                        if (!staffs.get(i).getUsername().equals(staff.getUsername()) && !staffs.get(i).getIsAdmin()) {
                                             %>
                                             <td><%=staffs.get(i).getName()%></td>
                                             <td><%=staffs.get(i).getStaffPrefix()%></td>
                                             <td><%=staffs.get(i).getUsername()%></td>
                                             <td>
+                                                <%
+                                                    if (!staffs.get(i).getIsDisabled()) {
+                                                        out.print("<span class='label label-success' style='font-size: 85%;'>Active</span>");
+                                                    } else {
+                                                        out.print("<span class='label label-warning' style='font-size: 85%;background-color:#B8B8B8;'>Disabled</span>");
+                                                    }
+                                                %>
+                                            </td>
+                                            <td>
+                                                <% if (!staffs.get(i).getIsDisabled()) {%>
                                                 <input type="button" name="btnEdit" class="btn btn-primary" value="Update" onclick="javascript:updateStaff('<%=staffs.get(i).getId()%>')"/>
                                                 <input type="button" name="btnDisable" class="btn btn-primary" value="Disable" onclick="javascript:removeStaff('<%=staffs.get(i).getId()%>')"/>
+                                                <% } else {%>
+                                                <input type="button" class="btn btn-primary" value="Update" disabled/>
+                                                <input type="button" class="btn btn-primary" value="Disable" disabled/>
+                                                <%  }  %>
                                             </td>
 
                                             <%

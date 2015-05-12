@@ -103,7 +103,7 @@
                                                 <input id="repassword" type="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}" name="repassword" class="form-control">
                                             </div>
                                         </div>
-                                        <input type="hidden" name="staffID" value="<%=staffID%>">   
+                                        <input type="hidden" name="id" value="<%=staffID%>">   
                                         <input type="hidden" name="target" value="UpdateStaff">   
                                     </div>
 
