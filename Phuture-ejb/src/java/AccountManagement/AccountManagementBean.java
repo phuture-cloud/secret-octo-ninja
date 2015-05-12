@@ -84,11 +84,11 @@ public class AccountManagementBean implements AccountManagementBeanLocal {
     }
 
     @Override
-    public ReturnHelper enableAccount(String username) {
+    public ReturnHelper enableAccount(Long accountID) {
         System.out.println("AccountManagementBean: enableAccount() called");
         ReturnHelper result = new ReturnHelper();
-        Query q = em.createQuery("SELECT s FROM Staff s where s.username=:username");
-        q.setParameter("username", username);
+        Query q = em.createQuery("SELECT s FROM Staff s where s.id:id");
+        q.setParameter("id", accountID);
         try {
             Staff staff = (Staff) q.getSingleResult();
             if (staff.getIsDisabled() == false) {
@@ -110,11 +110,11 @@ public class AccountManagementBean implements AccountManagementBeanLocal {
     }
 
     @Override
-    public ReturnHelper disableAccount(String username) {
+    public ReturnHelper disableAccount(Long accountID) {
         System.out.println("AccountManagementBean: disableAccount() called");
         ReturnHelper result = new ReturnHelper();
-        Query q = em.createQuery("SELECT s FROM Staff s where s.username=:username");
-        q.setParameter("username", username);
+        Query q = em.createQuery("SELECT s FROM Staff s where s.id=:id");
+        q.setParameter("id", accountID);
         try {
             Staff staff = (Staff) q.getSingleResult();
             if (staff.getIsDisabled() == true) {
