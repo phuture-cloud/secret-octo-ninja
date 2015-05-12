@@ -29,6 +29,8 @@ public class CustomerManagementBean implements CustomerManagementBeanLocal {
             em.persist(customer);
             result.setResult(true);
             result.setDescription("Customer added successfully.");
+            em.flush();
+            result.setID(customer.getId());
         } catch (Exception ex) {
             System.out.println("CustomerManagementBean: addCustomer() failed");
             ex.printStackTrace();
