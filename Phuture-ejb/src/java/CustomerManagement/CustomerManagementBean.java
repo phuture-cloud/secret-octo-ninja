@@ -100,6 +100,8 @@ public class CustomerManagementBean implements CustomerManagementBeanLocal {
             List<Contact> companyContacts = customer.getCompanyContacts();
             companyContacts.add(contact);
             customer.setCompanyContacts(companyContacts);
+            em.flush();
+            result.setID(contact.getId());
             em.merge(customer);
             result.setResult(true);
             result.setDescription("Contact added successfully.");
