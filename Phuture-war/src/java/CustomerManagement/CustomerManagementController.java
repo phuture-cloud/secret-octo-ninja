@@ -1,6 +1,7 @@
 package CustomerManagement;
 
 import EntityManager.Customer;
+import EntityManager.ReturnHelper;
 import EntityManager.Staff;
 import java.io.IOException;
 import java.util.List;
@@ -18,12 +19,20 @@ public class CustomerManagementController extends HttpServlet {
 
     String nextPage = "", goodMsg = "", errMsg = "";
     HttpSession session;
+    ReturnHelper returnHelper;
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String target = request.getParameter("target");
+        String companyName = request.getParameter("companyName");
+        String name = request.getParameter("name");
+        String email = request.getParameter("email");
+        String officeNo = request.getParameter("officeNo");
+        String mobileNo = request.getParameter("mobileNo");
+        String faxNo = request.getParameter("faxNo");
+        String address = request.getParameter("address");
+        String notes = request.getParameter("notes");
         session = request.getSession();
 
-        System.out.println("target>>>>" + target);
         try {
             switch (target) {
                 case "ListAllCustomer":
@@ -34,6 +43,30 @@ public class CustomerManagementController extends HttpServlet {
                         } else {
                             session.setAttribute("customers", customers);
                             nextPage = "CustomerManagement/customerManagement.jsp";
+                        }
+                    }
+                    break;
+
+                case "AddCustomer":
+                    if (checkLogin(response)) {
+                        returnHelper = customerManagementBean.addCustomer(companyName);
+                        if (returnHelper.getResult()) {
+                            Long customerID = returnHelper.getID();
+                            returnHelper = customerManagementBean.addContact(customerID, name, email, officeNo, mobileNo, faxNo, address, notes);
+                            if (returnHelper.getResult()) {
+                                Long contactID = returnHelper.getID();
+                                returnHelper = customerManagementBean.setPrimaryContact(customerID, contactID);
+                                if (returnHelper.getResult()) {
+                                    session.setAttribute("customers", customerManagementBean.listCustomers());
+                                    nextPage = "CustomerManagement/customerManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                                } else {
+                                    nextPage = "CustomerManagement/customerManagement.jsp?errMsg=" + returnHelper.getDescription();
+                                }
+                            } else {
+                                nextPage = "CustomerManagement/customerManagement.jsp?errMsg=" + returnHelper.getDescription();
+                            }
+                        } else {
+                            nextPage = "CustomerManagement/customerManagement.jsp?errMsg=" + returnHelper.getDescription();
                         }
                     }
                     break;
@@ -56,7 +89,6 @@ public class CustomerManagementController extends HttpServlet {
                 response.sendRedirect("index.jsp?errMsg=Session Expired.");
                 return false;
             } else {
-                System.out.println("Good to go");
                 return true;
             }
         } catch (Exception ex) {

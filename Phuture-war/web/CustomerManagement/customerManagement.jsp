@@ -25,7 +25,7 @@
             }
             function removeCustomer(id) {
                 customerManagement.id.value = id;
-                customerManagement.target.value = "DisableStaff";
+                customerManagement.target.value = "RemoveCustomer";
                 document.customerManagement.action = "../AccountManagementController";
                 document.customerManagement.submit();
             }
@@ -96,7 +96,7 @@
                                             <td><%=customers.get(i).getCustomerName()%></td>
                                             <td>
                                                 <input type="button" name="btnEdit" class="btn btn-primary" value="Update" onclick="javascript:updateCustomer('<%=customers.get(i).getId()%>')"/>
-                                                <input type="button" name="btnDisable" class="btn btn-primary" value="Remove" onclick="javascript:removeCustomer('<%=customers.get(i).getId()%>')"/>
+                                                <input type="button" name="btnRemove" class="btn btn-primary" value="Remove" onclick="javascript:removeCustomer('<%=customers.get(i).getId()%>')"/>
                                             </td>
 
                                             <%
@@ -128,7 +128,7 @@
                         <h4>Alert</h4>
                     </div>
                     <div class="modal-body">
-                        <p id="messageBox">Staff will be disabled. Are you sure?</p>
+                        <p id="messageBox">Customer will be Remove. Are you sure?</p>
                     </div>
                     <div class="modal-footer">                        
                         <input class="btn btn-primary" name="btnRemove" type="submit" value="Confirm" onclick="removeCustomer()"  />
