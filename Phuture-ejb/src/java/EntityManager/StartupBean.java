@@ -32,6 +32,7 @@ public class StartupBean {
                 return;
             }
             ambl.registerStaffAccount("Admin", "--", "admin", "admin", true);
+            ambl.registerStaffAccount("Test Staff", "--", "test", "test", false);
         } catch (Exception ex) {
             System.out.println("Error initating database");
             ex.printStackTrace();
