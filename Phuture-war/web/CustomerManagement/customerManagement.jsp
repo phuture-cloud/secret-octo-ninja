@@ -1,3 +1,4 @@
+<%@page import="EntityManager.Customer"%>
 <%@page import="java.util.List"%>
 <%@page import="EntityManager.Staff"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -17,21 +18,21 @@
     <body onload="alertFunc()">
         <jsp:include page="../displayNotification.jsp" />
         <script>
-            function updateStaff(id) {
-                staffManagement.id.value = id;
-                document.staffManagement.action = "staffManagement_update.jsp";
-                document.staffManagement.submit();
+            function updateCustomer(id) {
+                customerManagement.id.value = id;
+                document.customerManagement.action = "customerManagement_update.jsp";
+                document.customerManagement.submit();
             }
-            function removeStaff(id) {
-                staffManagement.id.value = id;
-                staffManagement.target.value = "DisableStaff";
-                document.staffManagement.action = "../AccountManagementController";
-                document.staffManagement.submit();
+            function removeCustomer(id) {
+                customerManagement.id.value = id;
+                customerManagement.target.value = "DisableStaff";
+                document.customerManagement.action = "../AccountManagementController";
+                document.customerManagement.submit();
             }
-            function addStaff() {
+            function addCustomer() {
                 window.event.returnValue = true;
-                document.staffManagement.action = "staffManagement_add.jsp";
-                document.staffManagement.submit();
+                document.customerManagement.action = "customerManagement_add.jsp";
+                document.customerManagement.submit();
             }
             function checkAll(source) {
                 checkboxes = document.getElementsByName('delete');
@@ -48,7 +49,7 @@
                 <jsp:include page="../sidebar.jsp" />
                 <section role="main" class="content-body">
                     <header class="page-header">
-                        <h2>Staff Management</h2>
+                        <h2>Customer Management</h2>
                         <div class="right-wrapper pull-right">
                             <ol class="breadcrumbs">
                                 <li>
@@ -56,8 +57,7 @@
                                         <i class="fa fa-home"></i>
                                     </a>
                                 </li>
-                                <li><span>Account Management</span></li>
-                                <li><span>Staff Management &nbsp;&nbsp</span></li>
+                                <li><span>Customer Management &nbsp;&nbsp</span></li>
                             </ol>
                         </div>
                     </header>
@@ -66,49 +66,43 @@
 
                     <section class="panel">
                         <header class="panel-heading">
-                            <h2 class="panel-title">Staff Management</h2>
+                            <h2 class="panel-title">Customer Management</h2>
                         </header>
                         <div class="panel-body">
 
                             <div class="row">
                                 <div class="col-md-12">
-                                    <input class="btn btn-primary" name="btnAdd" type="submit" value="Add Staff" onclick="addStaff()"  />
-                                    <a href="#myModal" data-toggle="modal"><button class="btn btn-primary">Disable Staff</button></a>
+                                    <input class="btn btn-primary" name="btnAdd" type="submit" value="Add Customer" onclick="addCustomer()"  />
+                                    <a href="#myModal" data-toggle="modal"><button class="btn btn-primary">Remove Customer</button></a>
                                 </div>
                             </div>
                             <br/>
 
-                            <form name="staffManagement">
+                            <form name="customerManagement">
                                 <table class="table table-bordered table-striped mb-none" id="datatable-default">
                                     <thead>
                                         <tr>
                                             <th>Name</th>
-                                            <th>Prefix</th>
-                                            <th>Username</th>
                                             <th style="width: 300px;">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
                                             <%
-                                                List<Staff> staffs = (List<Staff>) (session.getAttribute("staffs"));
-                                                if (staffs.size() > 1) {
-                                                    for (int i = 0; i < staffs.size(); i++) {
-                                                        if (!staffs.get(i).getUsername().equals(staff.getUsername()) && !staffs.get(i).getIsDisabled() && !staffs.get(i).getIsAdmin()) {
+                                                List<Customer> customers = (List<Customer>) (session.getAttribute("customers"));
+                                                if (customers.size() > 0) {
+                                                    for (int i = 0; i < customers.size(); i++) {
                                             %>
-                                            <td><%=staffs.get(i).getName()%></td>
-                                            <td><%=staffs.get(i).getStaffPrefix()%></td>
-                                            <td><%=staffs.get(i).getUsername()%></td>
+                                            <td><%=customers.get(i).getCustomerName()%></td>
                                             <td>
-                                                <input type="button" name="btnEdit" class="btn btn-primary" value="Update" onclick="javascript:updateStaff('<%=staffs.get(i).getId()%>')"/>
-                                                <input type="button" name="btnDisable" class="btn btn-primary" value="Disable" onclick="javascript:removeStaff('<%=staffs.get(i).getId()%>')"/>
+                                                <input type="button" name="btnEdit" class="btn btn-primary" value="Update" onclick="javascript:updateCustomer('<%=customers.get(i).getId()%>')"/>
+                                                <input type="button" name="btnDisable" class="btn btn-primary" value="Remove" onclick="javascript:removeCustomer('<%=customers.get(i).getId()%>')"/>
                                             </td>
 
                                             <%
-                                                        }
                                                     }
                                                 } else {
-                                                    out.print("<td></td><td></td><td></td><td></td><td></td>");
+                                                    out.print("<td></td><td></td>");
                                                 }
                                             %>
                                         </tr>
@@ -137,7 +131,7 @@
                         <p id="messageBox">Staff will be disabled. Are you sure?</p>
                     </div>
                     <div class="modal-footer">                        
-                        <input class="btn btn-primary" name="btnRemove" type="submit" value="Confirm" onclick="removeStaff()"  />
+                        <input class="btn btn-primary" name="btnRemove" type="submit" value="Confirm" onclick="removeCustomer()"  />
                         <a class="btn btn-default" data-dismiss ="modal">Close</a>
                     </div>
                 </div>

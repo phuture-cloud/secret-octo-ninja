@@ -4,9 +4,17 @@
         <servlet-name>AccountManagementController</servlet-name>
         <servlet-class>AccountManagement.AccountManagementController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>CustomerManagementController</servlet-name>
+        <servlet-class>CustomerManagement.CustomerManagementController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>AccountManagementController</servlet-name>
         <url-pattern>/AccountManagementController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CustomerManagementController</servlet-name>
+        <url-pattern>/CustomerManagementController</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

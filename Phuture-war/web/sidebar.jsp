@@ -27,12 +27,12 @@
                         </a>
                         <ul class="nav nav-children">
                             <li>
-                                <a href="customerManagement.jsp">
+                                <a href="../CustomerManagementController?target=ListAllCustomer">
                                     Customer Management
                                 </a>
                             </li>
                             <li>
-                                <a href="staffManagement.jsp">
+                                <a href="../AccountManagementController?target=ListAllStaff">
                                     Staff Management
                                 </a>
                             </li>
