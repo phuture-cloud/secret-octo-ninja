@@ -262,6 +262,30 @@ public class AccountManagementBean implements AccountManagementBeanLocal {
     }
 
     @Override
+    public ReturnHelper updateStaffPassword(Long staffID, String newPassword) {
+        System.out.println("AccountManagementBean: updateStaffPassword() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        Query q = em.createQuery("SELECT s FROM Staff s WHERE s.id=:id");
+        q.setParameter("id", staffID);
+        try {
+            Staff staff = (Staff) q.getSingleResult();
+            staff.setPasswordSalt(generatePasswordSalt());
+            staff.setPasswordHash(generatePasswordHash(staff.getPasswordSalt(), newPassword));
+            em.merge(staff);
+            result.setResult(true);
+            result.setDescription("Password updated successfully.");
+        } catch (NoResultException ex) {
+            result.setDescription("Unable to find staff with the provided ID.");
+        } catch (Exception ex) {
+            System.out.println("AccountManagementBean: updateStaffPassword() failed");
+            result.setDescription("Unable to update staff's password, internal server error.");
+            ex.printStackTrace();
+        }
+        return result;
+    }
+
+    @Override
     public List<Staff> listAllStaffAccount() {
         System.out.println("AccountManagementBean: listAllStaffAccount() called");
         ReturnHelper result = new ReturnHelper();

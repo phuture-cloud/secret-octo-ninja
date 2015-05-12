@@ -20,5 +20,6 @@ public interface AccountManagementBeanLocal {
     
     public ReturnHelper updateStaffName(Long staffID, String newName);
     public ReturnHelper updateStaffPassword(Long staffID, String oldPassword, String newPassword);
+    public ReturnHelper updateStaffPassword(Long staffID, String newPassword);
     public List<Staff> listAllStaffAccount();
 }
