@@ -14,6 +14,11 @@
         <jsp:include page="../head.html" />
     </head>
     <body>
+        <script>
+            function back() {
+                window.location.href = "../CustomerManagementController?target=ListAllCustomer";
+            }
+        </script>
         <section class="body">
             <jsp:include page="../header.jsp" />
 
@@ -118,6 +123,7 @@
                                         <div class="row">
                                             <div class="col-sm-9 col-sm-offset-3">
                                                 <button class="btn btn-primary">Submit</button>
+                                                <input type="button"  class="btn btn-primary" value="Back" onclick="javascript:back()"/>
                                                 <button type="reset" class="btn btn-default">Reset</button>
                                             </div>
                                         </div>
@@ -130,8 +136,6 @@
                 </section>
             </div>
         </section>
-
-
         <jsp:include page="../foot.html" />
     </body>
 </html>

@@ -108,16 +108,41 @@
                                             <td>
                                                 <%
                                                     if (!staffs.get(i).getIsDisabled()) {
-                                                        out.print("<span class='label label-success' style='font-size: 85%;'>Active</span>");
+                                                        out.print("<span class='label label-success' style='font-size: 100%;'>Active</span>");
                                                     } else {
-                                                        out.print("<span class='label label-warning' style='font-size: 85%;background-color:#B8B8B8;'>Disabled</span>");
+                                                        out.print("<span class='label label-warning' style='font-size: 100%; background-color:#B8B8B8;'>Disabled</span>");
                                                     }
                                                 %>
                                             </td>
                                             <td>
                                                 <% if (!staffs.get(i).getIsDisabled()) {%>
                                                 <input type="button" name="btnEdit" class="btn btn-primary" value="Update" onclick="javascript:updateStaff('<%=staffs.get(i).getId()%>')"/>
-                                                <input type="button" name="btnDisable" class="btn btn-primary" value="Disable" onclick="javascript:removeStaff('<%=staffs.get(i).getId()%>')"/>
+                                                <a class="mb-xs mt-xs mr-xs modal-with-move-anim btn btn-primary" href="#modalRemove">Disable</a>
+                                                <div id="modalRemove" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+                                                    <section class="panel">
+                                                        <header class="panel-heading">
+                                                            <h2 class="panel-title">Are you sure?</h2>
+                                                        </header>
+                                                        <div class="panel-body">
+                                                            <div class="modal-wrapper">
+                                                                <div class="modal-icon">
+                                                                    <i class="fa fa-question-circle"></i>
+                                                                </div>
+                                                                <div class="modal-text">
+                                                                    <p>Are you sure that you want to disable this staff?</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <footer class="panel-footer">
+                                                            <div class="row">
+                                                                <div class="col-md-12 text-right">
+                                                                    <button class="btn btn-primary modal-confirm" onclick="removeStaff(<%=staffs.get(i).getId()%>)">Confirm</button>
+                                                                    <button class="btn btn-default modal-dismiss">Cancel</button>
+                                                                </div>
+                                                            </div>
+                                                        </footer>
+                                                    </section>
+                                                </div>
                                                 <% } else {%>
                                                 <input type="button" class="btn btn-primary" value="Update" disabled/>
                                                 <input type="button" class="btn btn-primary" value="Disable" disabled/>
@@ -145,24 +170,6 @@
                 </section>
             </div>
         </section>
-
-
-        <div role="dialog" class="modal fade" id="myModal">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4>Alert</h4>
-                    </div>
-                    <div class="modal-body">
-                        <p id="messageBox">Staff will be disabled. Are you sure?</p>
-                    </div>
-                    <div class="modal-footer">                        
-                        <input class="btn btn-primary" name="btnRemove" type="submit" value="Confirm" onclick="removeStaff()"  />
-                        <a class="btn btn-default" data-dismiss ="modal">Close</a>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <jsp:include page="../foot.html" />
     </body>
