@@ -211,7 +211,7 @@ public class AccountManagementBean implements AccountManagementBeanLocal {
     }
 
     @Override
-    public ReturnHelper updateStaffName(Long staffID, String newName) {
+    public ReturnHelper updateStaff(Long staffID, String newName, String newStaffPrefix) {
         System.out.println("AccountManagementBean: checkIfUsernameExists() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -219,7 +219,12 @@ public class AccountManagementBean implements AccountManagementBeanLocal {
         q.setParameter("id", staffID);
         try {
             Staff staff = (Staff) q.getSingleResult();
-            staff.setName(newName);
+            if (newName != null) {
+                staff.setName(newName);
+            }
+            if (newStaffPrefix != null) {
+                staff.setStaffPrefix(newStaffPrefix);
+            }
             em.merge(staff);
             result.setResult(true);
             result.setDescription("Staff name updated successfully.");
