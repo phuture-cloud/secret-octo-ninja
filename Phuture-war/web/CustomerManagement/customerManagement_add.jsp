@@ -34,7 +34,11 @@
                                         <i class="fa fa-home"></i>
                                     </a>
                                 </li>
-                                <li><span>Customer Management</span></li>
+                                <li>
+                                    <a href="../CustomerManagementController?target=ListAllCustomer">
+                                        Customer Management
+                                    </a>
+                                </li>
                                 <li><span>Add Customer &nbsp;&nbsp</span></li>
                             </ol>
                         </div>
@@ -90,14 +94,14 @@
                                         <div class="form-group">
                                             <label class="col-md-3 control-label">Mobile Numbers</label>
                                             <div class="col-md-6">
-                                                <input type="text" class="form-control" name="mobileNo" required>
+                                                <input type="text" class="form-control" name="mobileNo">
                                             </div>
                                         </div>
 
                                         <div class="form-group">
                                             <label class="col-md-3 control-label">Fax Numbers</label>
                                             <div class="col-md-6">
-                                                <input type="text" class="form-control" name="faxNo" required>
+                                                <input type="text" class="form-control" name="faxNo">
                                             </div>
                                         </div>
 

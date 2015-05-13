@@ -67,8 +67,7 @@ public class AccountManagementController extends HttpServlet {
                                 nextPage = "AccountManagement/staffManagement_update.jsp?id=" + staffID + "&errMsg=" + returnHelper.getDescription();
                             }
                         }
-                        //need to add 1 more arg for prefix
-                        returnHelper = accountManagementBean.updateStaffName(Long.parseLong(staffID), name);
+                        returnHelper = accountManagementBean.updateStaff(Long.parseLong(staffID), name, prefix);
 
                         if (returnHelper.getResult()) {
                             session.setAttribute("staffs", accountManagementBean.listAllStaffAccount());
