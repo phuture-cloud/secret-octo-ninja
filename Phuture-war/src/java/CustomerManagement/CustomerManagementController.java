@@ -1,5 +1,6 @@
 package CustomerManagement;
 
+import EntityManager.Contact;
 import EntityManager.Customer;
 import EntityManager.ReturnHelper;
 import EntityManager.Staff;
@@ -23,7 +24,7 @@ public class CustomerManagementController extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String target = request.getParameter("target");
-        String customerID = request.getParameter("id");
+        String id = request.getParameter("id");
         String companyName = request.getParameter("companyName");
         String name = request.getParameter("name");
         String email = request.getParameter("email");
@@ -74,12 +75,36 @@ public class CustomerManagementController extends HttpServlet {
 
                 case "RemoveCustomer":
                     if (checkLogin(response)) {
-                        returnHelper = customerManagementBean.deleteCustomer(Long.parseLong(customerID));
+                        returnHelper = customerManagementBean.deleteCustomer(Long.parseLong(id));
                         if (returnHelper.getResult()) {
                             session.setAttribute("customers", customerManagementBean.listCustomers());
                             nextPage = "CustomerManagement/customerManagement.jsp?goodMsg=" + returnHelper.getDescription();
                         } else {
                             nextPage = "CustomerManagement/customerManagement.jsp?errMsg=" + returnHelper.getDescription();
+                        }
+                    }
+                    break;
+
+                case "ListCustomerContacts":
+                    if (checkLogin(response)) {
+                        List<Contact> contacts = customerManagementBean.listCustomerContacts(Long.parseLong(id));
+                        if (contacts == null) {
+                            nextPage = "error500.html";
+                        } else {
+                            session.setAttribute("contacts", contacts);
+                            nextPage = "CustomerManagement/contactManagement.jsp?id=" + id;
+                        }
+                    }
+                    break;
+
+                case "RemoveContact":
+                    if (checkLogin(response)) {
+                        returnHelper = customerManagementBean.deleteContact(Long.parseLong(id));
+                        if (returnHelper.getResult()) {
+                            session.setAttribute("contacts", customerManagementBean.listCustomerContacts(Long.parseLong(id)));
+                            nextPage = "CustomerManagement/contactManagement.jsp?id=" + id + "&goodMsg=" + returnHelper.getDescription();
+                        } else {
+                            nextPage = "CustomerManagement/contactManagement.jsp?id=" + id + "&errMsg=" + returnHelper.getDescription();
                         }
                     }
                     break;

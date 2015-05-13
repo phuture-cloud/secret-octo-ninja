@@ -1,4 +1,4 @@
-<%@page import="EntityManager.Customer"%>
+<%@page import="EntityManager.Contact"%>
 <%@page import="java.util.List"%>
 <%@page import="EntityManager.Staff"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -9,6 +9,10 @@
     } else if (staff == null) {
         response.sendRedirect("../index.jsp?errMsg=Session Expired.");
     } else {
+        String customerID = request.getParameter("id");
+        if (customerID == null || customerID.isEmpty()) {
+            response.sendRedirect("customerManagement.jsp?errMsg=An error has occured.");
+        } else {
 %>
 <!doctype html>
 <html class="fixed">
@@ -18,27 +22,21 @@
     <body onload="alertFunc()">
         <jsp:include page="../displayNotification.jsp" />
         <script>
-            function updateCustomer(id) {
-                customerManagement.id.value = id;
-                document.customerManagement.action = "customerManagement_update.jsp";
-                document.customerManagement.submit();
+            function updateContact(id) {
+                contactManagement.id.value = id;
+                document.contactManagement.action = "contactManagement_update.jsp";
+                document.contactManagement.submit();
             }
-            function removeCustomer(id) {
-                customerManagement.id.value = id;
-                customerManagement.target.value = "RemoveCustomer";
-                document.customerManagement.action = "../CustomerManagementController";
-                document.customerManagement.submit();
+            function removeContact(id) {
+                contactManagement.id.value = id;
+                contactManagement.target.value = "RemoveContact";
+                document.contactManagement.action = "../CustomerManagementController";
+                document.contactManagement.submit();
             }
-            function addCustomer() {
+            function addContact() {
                 window.event.returnValue = true;
-                document.customerManagement.action = "customerManagement_add.jsp";
-                document.customerManagement.submit();
-            }
-            function viewContact(id) {
-                customerManagement.id.value = id;
-                customerManagement.target.value = "ListCustomerContacts";
-                document.customerManagement.action = "../CustomerManagementController";
-                document.customerManagement.submit();
+                document.contactManagement.action = "contactManagement_add.jsp";
+                document.contactManagement.submit();
             }
         </script>
 
@@ -49,7 +47,7 @@
                 <jsp:include page="../sidebar.jsp" />
                 <section role="main" class="content-body">
                     <header class="page-header">
-                        <h2>Customer Management</h2>
+                        <h2>Contact Management</h2>
                         <div class="right-wrapper pull-right">
                             <ol class="breadcrumbs">
                                 <li>
@@ -57,7 +55,12 @@
                                         <i class="fa fa-home"></i>
                                     </a>
                                 </li>
-                                <li><span>Customer Management &nbsp;&nbsp</span></li>
+                                <li>
+                                    <a href="../CustomerManagementController?target=ListAllCustomer">
+                                        Customer Management
+                                    </a>
+                                </li>
+                                <li><span>Contact Management &nbsp;&nbsp</span></li>
                             </ol>
                         </div>
                     </header>
@@ -72,36 +75,45 @@
 
                             <div class="row">
                                 <div class="col-md-12">
-                                    <input class="btn btn-primary" name="btnAdd" type="submit" value="Add Customer" onclick="addCustomer()"  />
-                                    <a href="#myModal" data-toggle="modal"><button class="btn btn-primary">Remove Customer</button></a>
+                                    <input class="btn btn-primary" name="btnAdd" type="submit" value="Add Contact" onclick="addContact()"  />
+                                    <a href="#myModal" data-toggle="modal"><button class="btn btn-primary">Remove Contact</button></a>
                                 </div>
                             </div>
                             <br/>
 
-                            <form name="customerManagement">
+                            <form name="contactManagement">
                                 <table class="table table-bordered table-striped mb-none" id="datatable-default">
                                     <thead>
                                         <tr>
-                                            <th>Company</th>
-                                            <th>Primary Contact</th>
-                                            <th style="width: 300px;">Action</th>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Office Number</th>
+                                            <th>Fax Number</th>
+                                            <th>Address</th>
+                                            <th>Notes</th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
                                             <%
-                                                List<Customer> customers = (List<Customer>) (session.getAttribute("customers"));
-                                                if (customers.size() > 0) {
-                                                    for (int i = 0; i < customers.size(); i++) {
+                                                List<Contact> contacts = (List<Contact>) (session.getAttribute("contacts"));
+                                                if (contacts.size() > 0) {
+                                                    for (int i = 0; i < contacts.size(); i++) {
+                                                        if (!contacts.get(i).getIsDeleted()) {
                                             %>
-                                            <td><%=customers.get(i).getCustomerName()%></td>
-                                            <td> <input type="button" class="btn btn-default" value="Contact Management" onclick="javascript:viewContact('<%=customers.get(i).getId()%>')"/></td>
+                                            <td><%=contacts.get(i).getName()%></td>
+                                            <td><%=contacts.get(i).getEmail()%></td>
+                                            <td><%=contacts.get(i).getOfficeNo()%></td>
+                                            <td><%=contacts.get(i).getMobileNo()%></td>
+                                            <td><%=contacts.get(i).getFaxNo()%></td>
+                                            <td><%=contacts.get(i).getAddress()%></td>
+                                            <td><%=contacts.get(i).getNotes()%></td>
                                             <td>
-                                                <input type="button" name="btnEdit" class="btn btn-primary" value="Update" onclick="javascript:updateCustomer('<%=customers.get(i).getId()%>')"/>
-                                                <input type="button" name="btnRemove" class="btn btn-primary" value="Remove" onclick="javascript:removeCustomer('<%=customers.get(i).getId()%>')"/>
+                                                <input type="button" name="btnEdit" class="btn btn-primary" value="Update" onclick="javascript:updateContact('<%=contacts.get(i).getId()%>')"/>
                                             </td>
-
                                             <%
+                                                        }
                                                     }
                                                 } else {
                                                     out.print("<td></td><td></td><td></td>");
@@ -130,10 +142,10 @@
                         <h4>Alert</h4>
                     </div>
                     <div class="modal-body">
-                        <p id="messageBox">Customer will be Remove. Are you sure?</p>
+                        <p id="messageBox">Contact will be Remove. Are you sure?</p>
                     </div>
                     <div class="modal-footer">                        
-                        <input class="btn btn-primary" name="btnRemove" type="submit" value="Confirm" onclick="removeCustomer()"  />
+                        <input class="btn btn-primary" name="btnRemove" type="submit" value="Confirm" onclick="removeContact()"  />
                         <a class="btn btn-default" data-dismiss ="modal">Close</a>
                     </div>
                 </div>
@@ -144,5 +156,6 @@
     </body>
 </html>
 <%
+        }
     }
 %>
