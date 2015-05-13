@@ -65,6 +65,32 @@ public class CustomerManagementBean implements CustomerManagementBeanLocal {
         }
         return result;
     }
+    
+    @Override
+    public ReturnHelper updateCustomer(Long customerID, String newCustomerName) {
+        System.out.println("CustomerManagementBean: updateCustomer() called");
+        ReturnHelper result = new ReturnHelper();
+        Query q = em.createQuery("SELECT c FROM Customer c where c.id=:id");
+        q.setParameter("id", customerID);
+        try {
+            Customer customer = (Customer) q.getSingleResult();
+            if (customer.getIsDeleted() == true) {
+                result.setResult(false);
+                result.setDescription("Customer cannot be updated, it is deleted.");
+            } else {
+                customer.setCustomerName(newCustomerName);
+                em.merge(customer);
+                result.setResult(true);
+                result.setDescription("Customer updated successfully.");
+            }
+        } catch (Exception ex) {
+            System.out.println("CustomerManagementBean: updateCustomer() failed");
+            result.setResult(false);
+            result.setDescription("Failed to update customer. Internal server error.");
+            ex.printStackTrace();
+        }
+        return result;
+    }
 
     @Override
     public List<Customer> listCustomers() {
