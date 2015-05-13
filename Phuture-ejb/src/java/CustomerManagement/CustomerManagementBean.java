@@ -183,6 +183,7 @@ public class CustomerManagementBean implements CustomerManagementBeanLocal {
                 result.setDescription("Unable to set contact as primary as it has been deleted.");
             } else {
                 q = em.createQuery("SELECT c FROM Customer c where c.id=:id");
+                q.setParameter("id", customerID);
                 Customer customer = (Customer) q.getSingleResult();
                 if (customer.getIsDeleted() == true) {
                     result.setResult(false);
