@@ -82,7 +82,6 @@ public class AccountManagementController extends HttpServlet {
 
                 case "DisableStaff":
                     if (checkLogin(response)) {
-                        System.out.println("<<<<<<" + staffID);
                         returnHelper = accountManagementBean.disableAccount(Long.parseLong(staffID));
                         if (returnHelper.getResult()) {
                             session.setAttribute("staffs", accountManagementBean.listAllStaffAccount());

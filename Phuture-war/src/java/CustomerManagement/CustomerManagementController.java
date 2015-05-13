@@ -23,6 +23,7 @@ public class CustomerManagementController extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String target = request.getParameter("target");
+        String customerID = request.getParameter("id");
         String companyName = request.getParameter("companyName");
         String name = request.getParameter("name");
         String email = request.getParameter("email");
@@ -51,11 +52,11 @@ public class CustomerManagementController extends HttpServlet {
                     if (checkLogin(response)) {
                         returnHelper = customerManagementBean.addCustomer(companyName);
                         if (returnHelper.getResult()) {
-                            Long customerID = returnHelper.getID();
-                            returnHelper = customerManagementBean.addContact(customerID, name, email, officeNo, mobileNo, faxNo, address, notes);
+                            Long custID = returnHelper.getID();
+                            returnHelper = customerManagementBean.addContact(custID, name, email, officeNo, mobileNo, faxNo, address, notes);
                             if (returnHelper.getResult()) {
                                 Long contactID = returnHelper.getID();
-                                returnHelper = customerManagementBean.setPrimaryContact(customerID, contactID);
+                                returnHelper = customerManagementBean.setPrimaryContact(custID, contactID);
                                 if (returnHelper.getResult()) {
                                     session.setAttribute("customers", customerManagementBean.listCustomers());
                                     nextPage = "CustomerManagement/customerManagement.jsp?goodMsg=" + returnHelper.getDescription();
@@ -65,6 +66,18 @@ public class CustomerManagementController extends HttpServlet {
                             } else {
                                 nextPage = "CustomerManagement/customerManagement.jsp?errMsg=" + returnHelper.getDescription();
                             }
+                        } else {
+                            nextPage = "CustomerManagement/customerManagement.jsp?errMsg=" + returnHelper.getDescription();
+                        }
+                    }
+                    break;
+
+                case "RemoveCustomer":
+                    if (checkLogin(response)) {
+                        returnHelper = customerManagementBean.deleteCustomer(Long.parseLong(customerID));
+                        if (returnHelper.getResult()) {
+                            session.setAttribute("customers", customerManagementBean.listCustomers());
+                            nextPage = "CustomerManagement/customerManagement.jsp?goodMsg=" + returnHelper.getDescription();
                         } else {
                             nextPage = "CustomerManagement/customerManagement.jsp?errMsg=" + returnHelper.getDescription();
                         }
