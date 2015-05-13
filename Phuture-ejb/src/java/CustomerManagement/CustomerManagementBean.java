@@ -183,6 +183,7 @@ public class CustomerManagementBean implements CustomerManagementBeanLocal {
         System.out.println("CustomerManagementBean: listCustomerContacts() called");
         ReturnHelper result = new ReturnHelper();
         Query q = em.createQuery("SELECT c FROM Contact c where c.customer.id=:id");
+        q.setParameter("id", customerID);
         try {
             List<Contact> customerContacts = q.getResultList();
             return customerContacts;
