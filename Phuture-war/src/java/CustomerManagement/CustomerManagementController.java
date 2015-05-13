@@ -73,6 +73,19 @@ public class CustomerManagementController extends HttpServlet {
                     }
                     break;
 
+                case "UpdateCustomer":
+                    if (checkLogin(response)) {
+                        returnHelper = customerManagementBean.updateCustomer(Long.parseLong(id), name);
+
+                        if (returnHelper.getResult()) {
+                            session.setAttribute("customers", customerManagementBean.listCustomers());
+                            nextPage = "CustomerManagement/customerManagement_update.jsp?id=" + id + "&name=" + name + "&goodMsg=" + returnHelper.getDescription();
+                        } else {
+                            nextPage = "CustomerManagement/customerManagement_update.jsp?id=" + id + "&name=" + name + "&errMsg=" + returnHelper.getDescription();
+                        }
+                    }
+                    break;
+
                 case "RemoveCustomer":
                     if (checkLogin(response)) {
                         returnHelper = customerManagementBean.deleteCustomer(Long.parseLong(id));

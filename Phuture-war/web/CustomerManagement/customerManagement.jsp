@@ -18,8 +18,9 @@
     <body onload="alertFunc()">
         <jsp:include page="../displayNotification.jsp" />
         <script>
-            function updateCustomer(id) {
+            function updateCustomer(id, name) {
                 customerManagement.id.value = id;
+                customerManagement.name.value = name;
                 document.customerManagement.action = "customerManagement_update.jsp";
                 document.customerManagement.submit();
             }
@@ -83,8 +84,8 @@
                                     <thead>
                                         <tr>
                                             <th>Company</th>
-                                            <th>Primary Contact</th>
-                                            <th style="width: 300px;">Action</th>
+                                            <th style="width: 250px;">Primary Contact</th>
+                                            <th style="width: 250px;">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -97,7 +98,7 @@
                                             <td><%=customers.get(i).getCustomerName()%></td>
                                             <td> <input type="button" class="btn btn-default" value="Contact Management" onclick="javascript:viewContact('<%=customers.get(i).getId()%>')"/></td>
                                             <td>
-                                                <input type="button" name="btnEdit" class="btn btn-primary" value="Update" onclick="javascript:updateCustomer('<%=customers.get(i).getId()%>')"/>
+                                                <input type="button" name="btnEdit" class="btn btn-primary" value="Update" onclick="javascript:updateCustomer('<%=customers.get(i).getId()%>','<%=customers.get(i).getCustomerName()%>')"/>
                                                 <input type="button" name="btnRemove" class="btn btn-primary" value="Remove" onclick="javascript:removeCustomer('<%=customers.get(i).getId()%>')"/>
                                             </td>
 
@@ -110,7 +111,7 @@
                                         </tr>
                                     </tbody>
                                 </table>
-
+                                <input type="hidden" name="name" value="">
                                 <input type="hidden" name="id" value="">
                                 <input type="hidden" name="target" value="">    
                             </form>

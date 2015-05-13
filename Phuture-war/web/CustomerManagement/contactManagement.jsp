@@ -69,7 +69,7 @@
 
                     <section class="panel">
                         <header class="panel-heading">
-                            <h2 class="panel-title">Customer Management</h2>
+                            <h2 class="panel-title">Contact Management</h2>
                         </header>
                         <div class="panel-body">
 
@@ -88,6 +88,7 @@
                                             <th>Name</th>
                                             <th>Email</th>
                                             <th>Office Number</th>
+                                            <th>Mobile Number</th>
                                             <th>Fax Number</th>
                                             <th>Address</th>
                                             <th>Notes</th>
