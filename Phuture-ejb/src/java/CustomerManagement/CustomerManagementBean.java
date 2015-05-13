@@ -65,7 +65,7 @@ public class CustomerManagementBean implements CustomerManagementBeanLocal {
         }
         return result;
     }
-    
+
     @Override
     public ReturnHelper updateCustomer(Long customerID, String newCustomerName) {
         System.out.println("CustomerManagementBean: updateCustomer() called");
@@ -220,7 +220,11 @@ public class CustomerManagementBean implements CustomerManagementBeanLocal {
                     contact.setIsPrimaryContact(true);
                     em.merge(contact);
                     result.setResult(true);
-                    result.setDescription("Contact as primary.");
+                    if (customer.getCompanyContacts().size() == 1) {
+                        result.setDescription("Primary contact added & marked successfully.");
+                    } else {
+                        result.setDescription("Contact marked as primary contact.");
+                    }
                 }
             }
         } catch (Exception ex) {
