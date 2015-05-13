@@ -25,6 +25,7 @@ public class CustomerManagementController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String target = request.getParameter("target");
         String id = request.getParameter("id");
+        String id2 = request.getParameter("id2");
         String companyName = request.getParameter("companyName");
         String name = request.getParameter("name");
         String email = request.getParameter("email");
@@ -33,6 +34,7 @@ public class CustomerManagementController extends HttpServlet {
         String faxNo = request.getParameter("faxNo");
         String address = request.getParameter("address");
         String notes = request.getParameter("notes");
+        String[] deleteArr = request.getParameterValues("delete");
         session = request.getSession();
 
         try {
@@ -110,14 +112,46 @@ public class CustomerManagementController extends HttpServlet {
                     }
                     break;
 
-                case "RemoveContact":
+                case "SetPrimaryContact":
                     if (checkLogin(response)) {
-                        returnHelper = customerManagementBean.deleteContact(Long.parseLong(id));
+                        returnHelper = customerManagementBean.setPrimaryContact(Long.parseLong(id), Long.parseLong(id2));
                         if (returnHelper.getResult()) {
                             session.setAttribute("contacts", customerManagementBean.listCustomerContacts(Long.parseLong(id)));
                             nextPage = "CustomerManagement/contactManagement.jsp?id=" + id + "&goodMsg=" + returnHelper.getDescription();
                         } else {
                             nextPage = "CustomerManagement/contactManagement.jsp?id=" + id + "&errMsg=" + returnHelper.getDescription();
+                        }
+                    }
+                    break;
+
+                case "AddContact":
+                    if (checkLogin(response)) {
+                        returnHelper = customerManagementBean.addContact(Long.parseLong(id), name, email, officeNo, mobileNo, faxNo, address, notes);
+                        if (returnHelper.getResult()) {
+                            session.setAttribute("contacts", customerManagementBean.listCustomerContacts(Long.parseLong(id)));
+                            nextPage = "CustomerManagement/contactManagement.jsp?id=" + id + "&goodMsg=" + returnHelper.getDescription();
+                        } else {
+                            nextPage = "CustomerManagement/contactManagement.jsp?id=" + id + "&errMsg=" + returnHelper.getDescription();
+                        }
+                    }
+                    break;
+
+                case "RemoveContact":
+                    if (checkLogin(response)) {
+                        if (deleteArr != null) {
+                            for (int i = 0; i < deleteArr.length; i++) {
+                                System.out.println("delete >>>> ContactID>>>>" + deleteArr[i]);
+                                returnHelper = customerManagementBean.deleteContact(Long.parseLong(deleteArr[i]));
+                            }
+
+                            if (returnHelper.getResult()) {
+                                session.setAttribute("contacts", customerManagementBean.listCustomerContacts(Long.parseLong(id)));
+                                nextPage = "CustomerManagement/contactManagement.jsp?id=" + id + "&goodMsg=" + returnHelper.getDescription();
+                            } else {
+                                nextPage = "CustomerManagement/contactManagement.jsp?id=" + id + "&errMsg=" + returnHelper.getDescription();
+                            }
+                        } else {
+                            nextPage = "CustomerManagement/contactManagement.jsp?id=" + id + "&errMsg=Nothing is selected";
                         }
                     }
                     break;
