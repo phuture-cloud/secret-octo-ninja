@@ -21,7 +21,7 @@ public class AccountManagementController extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String target = request.getParameter("target");
-        String staffID = request.getParameter("staffID");
+        String staffID = request.getParameter("id");
         String name = request.getParameter("name");
         String prefix = request.getParameter("prefix");
         String username = request.getParameter("username");
@@ -62,7 +62,7 @@ public class AccountManagementController extends HttpServlet {
                 case "UpdateStaff":
                     if (checkLogin(response)) {
                         if (password != null && !password.equals("")) {
-                            returnHelper = accountManagementBean.updateStaffPassword(Long.parseLong(staffID), password, password);
+                            returnHelper = accountManagementBean.updateStaffPassword(Long.parseLong(staffID), password);
                             if (!returnHelper.getResult()) {
                                 nextPage = "AccountManagement/staffManagement_update.jsp?id=" + staffID + "&errMsg=" + returnHelper.getDescription();
                             }
@@ -82,7 +82,7 @@ public class AccountManagementController extends HttpServlet {
 
                 case "DisableStaff":
                     if (checkLogin(response)) {
-                        returnHelper = accountManagementBean.disableAccount(username);
+                        returnHelper = accountManagementBean.disableAccount(Long.parseLong(staffID));
                         if (returnHelper.getResult()) {
                             session.setAttribute("staffs", accountManagementBean.listAllStaffAccount());
                             nextPage = "AccountManagement/staffManagement.jsp?goodMsg=" + returnHelper.getDescription();

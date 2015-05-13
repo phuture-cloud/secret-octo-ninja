@@ -26,7 +26,7 @@
             function removeCustomer(id) {
                 customerManagement.id.value = id;
                 customerManagement.target.value = "RemoveCustomer";
-                document.customerManagement.action = "../AccountManagementController";
+                document.customerManagement.action = "../CustomerManagementController";
                 document.customerManagement.submit();
             }
             function addCustomer() {
@@ -82,7 +82,8 @@
                                 <table class="table table-bordered table-striped mb-none" id="datatable-default">
                                     <thead>
                                         <tr>
-                                            <th>Name</th>
+                                            <th>Company</th>
+                                            <th>Primary Contact</th>
                                             <th style="width: 300px;">Action</th>
                                         </tr>
                                     </thead>
