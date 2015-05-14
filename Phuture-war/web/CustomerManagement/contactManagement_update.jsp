@@ -14,7 +14,7 @@
         if (contactID == null || customerID == null || contactID.isEmpty() || customerID.isEmpty()) {
             response.sendRedirect("customerManagement.jsp?errMsg=An error has occured.");
         } else {
-            List<Contact> contacts = (List<Contact>) session.getAttribute("customers");
+            List<Contact> contacts = (List<Contact>) session.getAttribute("contacts");
             Contact contact = new Contact();
             for (int i = 0; i < contacts.size(); i++) {
                 if (contacts.get(i).getId() == Long.parseLong(contactID)) {

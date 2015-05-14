@@ -63,7 +63,9 @@
                 document.contactManagement.submit();
             }
             function back() {
-                window.location.href = "../CustomerManagementController?target=ListAllCustomer";
+                contactManagement.target.value = "ListAllCustomer";
+                document.contactManagement.action = "../CustomerManagementController";
+                document.contactManagement.submit();
             }
         </script>
 
@@ -191,7 +193,7 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <input type="button" name="btnEdit" class="btn btn-primary" value="Update" onclick="javascript:updateContact('<%=customerID%>','<%=contacts.get(i).getId()%>')"/>
+                                                <input type="button" name="btnEdit" class="btn btn-primary" value="Update" onclick="javascript:updateContact('<%=customerID%>', '<%=contacts.get(i).getId()%>')"/>
                                             </td>
                                             <td>
                                                 <%
