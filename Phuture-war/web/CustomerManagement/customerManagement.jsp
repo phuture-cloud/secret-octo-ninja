@@ -74,7 +74,6 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <input class="btn btn-primary" name="btnAdd" type="submit" value="Add Customer" onclick="addCustomer()"  />
-                                    <a href="#myModal" data-toggle="modal"><button class="btn btn-primary">Remove Customer</button></a>
                                 </div>
                             </div>
                             <br/>
@@ -99,7 +98,32 @@
                                             <td><input type="button" class="btn btn-default" value="Contact Management" onclick="javascript:viewContact('<%=customers.get(i).getId()%>')"/></td>
                                             <td>
                                                 <input type="button" name="btnEdit" class="btn btn-primary" value="Update" onclick="javascript:updateCustomer('<%=customers.get(i).getId()%>', '<%=customers.get(i).getCustomerName()%>')"/>
-                                                <input type="button" name="btnRemove" class="btn btn-primary" value="Remove" onclick="javascript:removeCustomer('<%=customers.get(i).getId()%>')"/>
+                                                <a class="mb-xs mt-xs mr-xs modal-with-move-anim btn btn-primary" href="#modalRemove">Remove</a>
+                                                <div id="modalRemove" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+                                                    <section class="panel">
+                                                        <header class="panel-heading">
+                                                            <h2 class="panel-title">Are you sure?</h2>
+                                                        </header>
+                                                        <div class="panel-body">
+                                                            <div class="modal-wrapper">
+                                                                <div class="modal-icon">
+                                                                    <i class="fa fa-question-circle"></i>
+                                                                </div>
+                                                                <div class="modal-text">
+                                                                    <p>Are you sure that you want to delete this customer?</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <footer class="panel-footer">
+                                                            <div class="row">
+                                                                <div class="col-md-12 text-right">
+                                                                    <button class="btn btn-primary modal-confirm" onclick="javascript:removeCustomer('<%=customers.get(i).getId()%>')">Confirm</button>
+                                                                    <button class="btn btn-default modal-dismiss">Cancel</button>
+                                                                </div>
+                                                            </div>
+                                                        </footer>
+                                                    </section>
+                                                </div>
                                             </td>
 
                                             <%

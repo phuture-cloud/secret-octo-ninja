@@ -32,12 +32,13 @@
     <body onload="alertFunc()">
         <jsp:include page="../displayNotification.jsp" />
         <script>
-            function updateContact(id) {
+            function updateContact(id, contactID) {
                 contactManagement.id.value = id;
+                contactManagement.contactID.value = contactID;
                 document.contactManagement.action = "contactManagement_update.jsp";
                 document.contactManagement.submit();
             }
-            function removeContact() {
+            function removeContact(id) {
                 checkboxes = document.getElementsByName('delete');
                 var numOfTicks = 0;
                 for (var i = 0, n = checkboxes.length; i < n; i++) {
@@ -45,15 +46,10 @@
                         numOfTicks++;
                     }
                 }
-                if (checkboxes.length === 0 || numOfTicks === 0) {
-                    contactManagement.target.value = "ListCustomerContacts";
-                    document.contactManagement.action = "../CustomerManagementController";
-                    document.contactManagement.submit();
-                } else {
-                    contactManagement.target.value = "RemoveContact";
-                    document.contactManagement.action = "../CustomerManagementController";
-                    document.contactManagement.submit();
-                }
+                contactManagement.id.value = id;
+                contactManagement.target.value = "RemoveContact";
+                document.contactManagement.action = "../CustomerManagementController";
+                document.contactManagement.submit();
             }
             function checkAll(source) {
                 checkboxes = document.getElementsByName('delete');
@@ -62,10 +58,14 @@
                 }
             }
             function addContact(id) {
-                window.location.href = "contactManagement_add.jsp?id=" + id;
+                contactManagement.id.value = id;
+                document.contactManagement.action = "contactManagement_add.jsp";
+                document.contactManagement.submit();
             }
             function back() {
-                window.location.href = "../CustomerManagementController?target=ListAllCustomer";
+                contactManagement.target.value = "ListAllCustomer";
+                document.contactManagement.action = "../CustomerManagementController";
+                document.contactManagement.submit();
             }
         </script>
 
@@ -124,14 +124,13 @@
                                                 <footer class="panel-footer">
                                                     <div class="row">
                                                         <div class="col-md-12 text-right">
-                                                            <input class="btn btn-primary modal-confirm" name="btnRemove" type="submit" value="Confirm" onclick="removeContact()"  />
+                                                            <input class="btn btn-primary modal-confirm" name="btnRemove" type="submit" value="Confirm" onclick="removeContact(<%=customerID%>)"  />
                                                             <button class="btn btn-default modal-dismiss">Cancel</button>
                                                         </div>
                                                     </div>
                                                 </footer>
                                             </section>
                                         </div>
-
                                         <input class="btn btn-primary" name="btnBack" type="submit" value="Back" onclick="back()"  />
                                     </div>
                                 </div>
@@ -194,7 +193,7 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <input type="button" name="btnEdit" class="btn btn-primary" value="Update" onclick="javascript:updateContact('<%=contacts.get(i).getId()%>')"/>
+                                                <input type="button" name="btnEdit" class="btn btn-primary" value="Update" onclick="javascript:updateContact('<%=customerID%>', '<%=contacts.get(i).getId()%>')"/>
                                             </td>
                                             <td>
                                                 <%
@@ -216,7 +215,7 @@
                                         </tr>
                                     </tbody>
                                 </table>
-
+                                <input type="hidden" name="contactID" value="">
                                 <input type="hidden" name="id" value="">
                                 <input type="hidden" name="target" value="">    
 
