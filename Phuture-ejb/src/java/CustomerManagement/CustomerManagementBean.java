@@ -53,6 +53,12 @@ public class CustomerManagementBean implements CustomerManagementBeanLocal {
                 result.setDescription("Customer is already deleted.");
             } else {
                 customer.setIsDeleted(true);
+                //Loop all it's contact and mark them as deleted also
+                List<Contact> contacts = customer.getCustomerContacts();
+                for (Contact contact:contacts) {
+                    contact.setIsDeleted(true);
+                    em.merge(contact);
+                }
                 em.merge(customer);
                 result.setResult(true);
                 result.setDescription("Customer deleted successfully.");
@@ -123,7 +129,7 @@ public class CustomerManagementBean implements CustomerManagementBeanLocal {
             contact.setAddress(address);
             contact.setNotes(notes);
             em.persist(contact);
-            List<Contact> companyContacts = customer.getCompanyContacts();
+            List<Contact> companyContacts = customer.getCustomerContacts();
             companyContacts.add(contact);
             customer.setCompanyContacts(companyContacts);
             em.flush();
@@ -162,7 +168,7 @@ public class CustomerManagementBean implements CustomerManagementBeanLocal {
                 contact.setIsDeleted(true);
                 em.merge(contact);
                 Customer customer = contact.getCustomer();
-                List<Contact> companyContacts = customer.getCompanyContacts();
+                List<Contact> companyContacts = customer.getCustomerContacts();
                 companyContacts.remove(contact);
                 customer.setCompanyContacts(companyContacts);
                 em.merge(customer);
@@ -228,7 +234,7 @@ public class CustomerManagementBean implements CustomerManagementBeanLocal {
                     contact.setIsPrimaryContact(true);
                     em.merge(contact);
                     result.setResult(true);
-                    if (customer.getCompanyContacts().size() == 1) {
+                    if (customer.getCustomerContacts().size() == 1) {
                         result.setDescription("Primary contact added & marked successfully.");
                     } else {
                         result.setDescription("Contact marked as primary contact.");
