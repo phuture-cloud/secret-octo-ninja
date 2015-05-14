@@ -18,8 +18,9 @@
     <body onload="alertFunc()">
         <jsp:include page="../displayNotification.jsp" />
         <script>
-            function updateCustomer(id) {
+            function updateCustomer(id, name) {
                 customerManagement.id.value = id;
+                customerManagement.name.value = name;
                 document.customerManagement.action = "customerManagement_update.jsp";
                 document.customerManagement.submit();
             }
@@ -83,8 +84,8 @@
                                     <thead>
                                         <tr>
                                             <th>Company</th>
-                                            <th>Primary Contact</th>
-                                            <th style="width: 300px;">Action</th>
+                                            <th style="width: 250px;">Primary Contact</th>
+                                            <th style="width: 250px;">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -95,9 +96,9 @@
                                                     for (int i = 0; i < customers.size(); i++) {
                                             %>
                                             <td><%=customers.get(i).getCustomerName()%></td>
-                                            <td> <input type="button" class="btn btn-default" value="Contact Management" onclick="javascript:viewContact('<%=customers.get(i).getId()%>')"/></td>
+                                            <td><input type="button" class="btn btn-default" value="Contact Management" onclick="javascript:viewContact('<%=customers.get(i).getId()%>')"/></td>
                                             <td>
-                                                <input type="button" name="btnEdit" class="btn btn-primary" value="Update" onclick="javascript:updateCustomer('<%=customers.get(i).getId()%>')"/>
+                                                <input type="button" name="btnEdit" class="btn btn-primary" value="Update" onclick="javascript:updateCustomer('<%=customers.get(i).getId()%>', '<%=customers.get(i).getCustomerName()%>')"/>
                                                 <input type="button" name="btnRemove" class="btn btn-primary" value="Remove" onclick="javascript:removeCustomer('<%=customers.get(i).getId()%>')"/>
                                             </td>
 
@@ -110,7 +111,7 @@
                                         </tr>
                                     </tbody>
                                 </table>
-
+                                <input type="hidden" name="name" value="">
                                 <input type="hidden" name="id" value="">
                                 <input type="hidden" name="target" value="">    
                             </form>
@@ -121,25 +122,6 @@
                 </section>
             </div>
         </section>
-
-
-        <div role="dialog" class="modal fade" id="myModal">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4>Alert</h4>
-                    </div>
-                    <div class="modal-body">
-                        <p id="messageBox">Customer will be Remove. Are you sure?</p>
-                    </div>
-                    <div class="modal-footer">                        
-                        <input class="btn btn-primary" name="btnRemove" type="submit" value="Confirm" onclick="removeCustomer()"  />
-                        <a class="btn btn-default" data-dismiss ="modal">Close</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <jsp:include page="../foot.html" />
     </body>
 </html>

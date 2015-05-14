@@ -67,7 +67,6 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <input class="btn btn-primary" name="btnAdd" type="submit" value="Add Staff" onclick="addStaff()"  />
-                                    <a href="#myModal" data-toggle="modal"><button class="btn btn-primary">Disable Staff</button></a>
                                 </div>
                             </div>
                             <br/>

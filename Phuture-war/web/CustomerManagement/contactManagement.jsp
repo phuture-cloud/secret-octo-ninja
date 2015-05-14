@@ -1,3 +1,5 @@
+<%@page import="EntityManager.Customer"%>
+<%@page import="EntityManager.Customer"%>
 <%@page import="EntityManager.Contact"%>
 <%@page import="java.util.List"%>
 <%@page import="EntityManager.Staff"%>
@@ -13,6 +15,14 @@
         if (customerID == null || customerID.isEmpty()) {
             response.sendRedirect("customerManagement.jsp?errMsg=An error has occured.");
         } else {
+            List<Customer> customers = (List<Customer>) session.getAttribute("customers");
+            Customer customer = new Customer();
+            for (int i = 0; i < customers.size(); i++) {
+                if (customers.get(i).getId() == Long.parseLong(customerID)) {
+                    customer = customers.get(i);
+                }
+            }
+
 %>
 <!doctype html>
 <html class="fixed">
@@ -27,16 +37,35 @@
                 document.contactManagement.action = "contactManagement_update.jsp";
                 document.contactManagement.submit();
             }
-            function removeContact(id) {
-                contactManagement.id.value = id;
-                contactManagement.target.value = "RemoveContact";
-                document.contactManagement.action = "../CustomerManagementController";
-                document.contactManagement.submit();
+            function removeContact() {
+                checkboxes = document.getElementsByName('delete');
+                var numOfTicks = 0;
+                for (var i = 0, n = checkboxes.length; i < n; i++) {
+                    if (checkboxes[i].checked) {
+                        numOfTicks++;
+                    }
+                }
+                if (checkboxes.length === 0 || numOfTicks === 0) {
+                    contactManagement.target.value = "ListCustomerContacts";
+                    document.contactManagement.action = "../CustomerManagementController";
+                    document.contactManagement.submit();
+                } else {
+                    contactManagement.target.value = "RemoveContact";
+                    document.contactManagement.action = "../CustomerManagementController";
+                    document.contactManagement.submit();
+                }
             }
-            function addContact() {
-                window.event.returnValue = true;
-                document.contactManagement.action = "contactManagement_add.jsp";
-                document.contactManagement.submit();
+            function checkAll(source) {
+                checkboxes = document.getElementsByName('delete');
+                for (var i = 0, n = checkboxes.length; i < n; i++) {
+                    checkboxes[i].checked = source.checked;
+                }
+            }
+            function addContact(id) {
+                window.location.href = "contactManagement_add.jsp?id=" + id;
+            }
+            function back() {
+                window.location.href = "../CustomerManagementController?target=ListAllCustomer";
             }
         </script>
 
@@ -66,57 +95,122 @@
                     </header>
 
                     <!-- start: page -->
+                    <form name="contactManagement">
+                        <section class="panel">
+                            <header class="panel-heading">
+                                <h2 class="panel-title">Contact Management - <%=customer.getCustomerName()%></h2>
+                            </header>
+                            <div class="panel-body">
 
-                    <section class="panel">
-                        <header class="panel-heading">
-                            <h2 class="panel-title">Customer Management</h2>
-                        </header>
-                        <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <input class="btn btn-primary" name="btnAdd" type="submit" value="Add Contact" onclick="addContact(<%=customerID%>)"  />
+                                        <a class="mb-xs mt-xs mr-xs modal-with-move-anim btn btn-primary" href="#modalRemove">Remove Contact</a>
+                                        <div id="modalRemove" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+                                            <section class="panel">
+                                                <header class="panel-heading">
+                                                    <h2 class="panel-title">Are you sure?</h2>
+                                                </header>
+                                                <div class="panel-body">
+                                                    <div class="modal-wrapper">
+                                                        <div class="modal-icon">
+                                                            <i class="fa fa-question-circle"></i>
+                                                        </div>
+                                                        <div class="modal-text">
+                                                            <p>Are you sure that you want to remove these contact(s)?</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <footer class="panel-footer">
+                                                    <div class="row">
+                                                        <div class="col-md-12 text-right">
+                                                            <input class="btn btn-primary modal-confirm" name="btnRemove" type="submit" value="Confirm" onclick="removeContact()"  />
+                                                            <button class="btn btn-default modal-dismiss">Cancel</button>
+                                                        </div>
+                                                    </div>
+                                                </footer>
+                                            </section>
+                                        </div>
 
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <input class="btn btn-primary" name="btnAdd" type="submit" value="Add Contact" onclick="addContact()"  />
-                                    <a href="#myModal" data-toggle="modal"><button class="btn btn-primary">Remove Contact</button></a>
+                                        <input class="btn btn-primary" name="btnBack" type="submit" value="Back" onclick="back()"  />
+                                    </div>
                                 </div>
-                            </div>
-                            <br/>
+                                <br/>
 
-                            <form name="contactManagement">
+
                                 <table class="table table-bordered table-striped mb-none" id="datatable-default">
                                     <thead>
                                         <tr>
+                                            <th><input type="checkbox"onclick="checkAll(this)" /></th>
                                             <th>Name</th>
                                             <th>Email</th>
                                             <th>Office Number</th>
+                                            <th>Mobile Number</th>
                                             <th>Fax Number</th>
                                             <th>Address</th>
                                             <th>Notes</th>
                                             <th>Action</th>
+                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        <%
+                                            List<Contact> contacts = (List<Contact>) (session.getAttribute("contacts"));
+                                            if (contacts.size() > 0) {
+                                                for (int i = 0; i < contacts.size(); i++) {
+                                                    if (!contacts.get(i).getIsDeleted()) {
+                                        %>
                                         <tr>
-                                            <%
-                                                List<Contact> contacts = (List<Contact>) (session.getAttribute("contacts"));
-                                                if (contacts.size() > 0) {
-                                                    for (int i = 0; i < contacts.size(); i++) {
-                                                        if (!contacts.get(i).getIsDeleted()) {
-                                            %>
+                                            <td><input type="checkbox" name="delete" value="<%=contacts.get(i).getId()%>" /></td>
                                             <td><%=contacts.get(i).getName()%></td>
                                             <td><%=contacts.get(i).getEmail()%></td>
                                             <td><%=contacts.get(i).getOfficeNo()%></td>
                                             <td><%=contacts.get(i).getMobileNo()%></td>
                                             <td><%=contacts.get(i).getFaxNo()%></td>
                                             <td><%=contacts.get(i).getAddress()%></td>
-                                            <td><%=contacts.get(i).getNotes()%></td>
+                                            <td>
+                                                <a class="modal-with-move-anim btn btn-default" href="#modalNotes">View</a>
+
+                                                <div id="modalNotes" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+                                                    <section class="panel">
+                                                        <header class="panel-heading">
+                                                            <h2 class="panel-title">Notes</h2>
+                                                        </header>
+                                                        <div class="panel-body">
+                                                            <div class="modal-wrapper">
+                                                                <div class="modal-text" style="height: 350px;">
+                                                                    <textarea style="height:100%; width: 100%;"><%=contacts.get(i).getNotes()%></textarea>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <footer class="panel-footer">
+                                                            <div class="row">
+                                                                <div class="col-md-12 text-right">
+                                                                    <button class="btn btn-default modal-dismiss">Close</button>
+                                                                </div>
+                                                            </div>
+                                                        </footer>
+                                                    </section>
+                                                </div>
+                                            </td>
                                             <td>
                                                 <input type="button" name="btnEdit" class="btn btn-primary" value="Update" onclick="javascript:updateContact('<%=contacts.get(i).getId()%>')"/>
                                             </td>
+                                            <td>
+                                                <%
+                                                    if (contacts.get(i).getIsPrimaryContact()) {
+                                                        out.print("<i class='fa fa-star' style='color:gold'></i>");
+                                                    } else {
+                                                        out.print("<a href='../CustomerManagementController?target=SetPrimaryContact&id=" + customerID + "&id2=" + contacts.get(i).getId() + "'><i class='fa fa-star-o'></i></a>");
+                                                    }
+                                                %>
+                                            </td>
+
                                             <%
                                                         }
                                                     }
                                                 } else {
-                                                    out.print("<td></td><td></td><td></td>");
+                                                    out.print("<td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>");
                                                 }
                                             %>
                                         </tr>
@@ -125,33 +219,15 @@
 
                                 <input type="hidden" name="id" value="">
                                 <input type="hidden" name="target" value="">    
-                            </form>
-                        </div>
 
-                    </section>
+                            </div>
+
+                        </section>
+                    </form>
                     <!-- end: page -->
                 </section>
             </div>
         </section>
-
-
-        <div role="dialog" class="modal fade" id="myModal">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4>Alert</h4>
-                    </div>
-                    <div class="modal-body">
-                        <p id="messageBox">Contact will be Remove. Are you sure?</p>
-                    </div>
-                    <div class="modal-footer">                        
-                        <input class="btn btn-primary" name="btnRemove" type="submit" value="Confirm" onclick="removeContact()"  />
-                        <a class="btn btn-default" data-dismiss ="modal">Close</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <jsp:include page="../foot.html" />
     </body>
 </html>
