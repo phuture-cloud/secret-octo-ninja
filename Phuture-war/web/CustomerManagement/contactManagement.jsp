@@ -32,8 +32,9 @@
     <body onload="alertFunc()">
         <jsp:include page="../displayNotification.jsp" />
         <script>
-            function updateContact(id) {
+            function updateContact(id, contactID) {
                 contactManagement.id.value = id;
+                contactManagement.contactID.value = contactID;
                 document.contactManagement.action = "contactManagement_update.jsp";
                 document.contactManagement.submit();
             }
@@ -190,7 +191,7 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <input type="button" name="btnEdit" class="btn btn-primary" value="Update" onclick="javascript:updateContact('<%=contacts.get(i).getId()%>')"/>
+                                                <input type="button" name="btnEdit" class="btn btn-primary" value="Update" onclick="javascript:updateContact('<%=customerID%>','<%=contacts.get(i).getId()%>')"/>
                                             </td>
                                             <td>
                                                 <%
@@ -212,7 +213,7 @@
                                         </tr>
                                     </tbody>
                                 </table>
-
+                                <input type="hidden" name="contactID" value="">
                                 <input type="hidden" name="id" value="">
                                 <input type="hidden" name="target" value="">    
 
