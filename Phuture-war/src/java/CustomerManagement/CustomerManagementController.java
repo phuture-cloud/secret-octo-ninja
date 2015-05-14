@@ -139,9 +139,12 @@ public class CustomerManagementController extends HttpServlet {
                 case "RemoveContact":
                     if (checkLogin(response)) {
                         if (deleteArr != null) {
+                            System.out.println("?????????????????????" + deleteArr.length);
                             for (int i = 0; i < deleteArr.length; i++) {
                                 System.out.println("delete >>>> ContactID>>>>" + deleteArr[i]);
-                                returnHelper = customerManagementBean.deleteContact(Long.parseLong(deleteArr[i]));
+                                if (!deleteArr[i].equals("")) {
+                                    returnHelper = customerManagementBean.deleteContact(Long.parseLong(deleteArr[i]));
+                                }
                             }
 
                             if (returnHelper.getResult()) {
