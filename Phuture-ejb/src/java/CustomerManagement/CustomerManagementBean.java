@@ -183,6 +183,36 @@ public class CustomerManagementBean implements CustomerManagementBeanLocal {
         }
         return result;
     }
+ @Override
+    public ReturnHelper updateContact(Long contactID, String newName, String newEmail, String newOfficeNo, String newMobileNo, String newFaxNo, String newAddress, String newNotes) {
+        System.out.println("CustomerManagementBean: updateContact() called");
+        ReturnHelper result = new ReturnHelper();
+        Query q = em.createQuery("SELECT c FROM Contact c where c.id=:id");
+        q.setParameter("id", contactID);
+        try {
+            Contact contact = (Contact) q.getSingleResult();
+           if (contact.getIsDeleted() == true) {
+                result.setResult(false);
+                result.setDescription("Contact is deleted and cannot be updated.");
+            } else {
+                contact.setEmail(newEmail);
+                contact.setOfficeNo(newOfficeNo);
+                contact.setMobileNo(newMobileNo);
+                contact.setFaxNo(newFaxNo);
+                contact.setAddress(newAddress);
+                contact.setNotes(newNotes);
+                em.merge(contact);
+                result.setResult(true);
+                result.setDescription("Contact updated successfully.");
+            }
+        } catch (Exception ex) {
+            System.out.println("CustomerManagementBean: updateContact() failed");
+            result.setResult(false);
+            result.setDescription("Failed to update contact. Internal server error.");
+            ex.printStackTrace();
+        }
+        return result;
+    }
 
     @Override
     public List<Contact> listCustomerContacts(Long customerID) {

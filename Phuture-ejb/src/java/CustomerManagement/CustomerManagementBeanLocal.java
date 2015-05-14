@@ -15,6 +15,7 @@ public interface CustomerManagementBeanLocal {
     
     public ReturnHelper addContact(Long customerID, String name, String email, String officeNo, String mobileNo, String faxNo, String address, String notes);
     public ReturnHelper deleteContact(Long contactID);
+    public ReturnHelper updateContact(Long contactID, String newName, String newEmail, String newOfficeNo, String newMobileNo, String newFaxNo, String newAddress, String newNotes);
     public List<Contact> listCustomerContacts(Long customerID);
     public ReturnHelper setPrimaryContact(Long customerID, Long contactID);
     

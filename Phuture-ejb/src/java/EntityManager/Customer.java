@@ -63,7 +63,7 @@ public class Customer implements Serializable {
         this.primaryContact = primaryContact;
     }
 
-    public List<Contact> getCompanyContacts() {
+    public List<Contact> getCustomerContacts() {
         return companyContacts;
     }
 
