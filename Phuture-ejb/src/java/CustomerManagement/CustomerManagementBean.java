@@ -216,6 +216,13 @@ public class CustomerManagementBean implements CustomerManagementBeanLocal {
                     result.setResult(false);
                     result.setDescription("Unable to set contact as primary as the customer has been deleted.");
                 } else {
+                    //Clear away the current primary contact first
+                    Contact currentPrimaryContact = customer.getPrimaryContact();
+                    if (currentPrimaryContact != null) {
+                        currentPrimaryContact.setIsPrimaryContact(false);
+                        em.merge(currentPrimaryContact);
+                    }
+                    //Update primary contact
                     customer.setPrimaryContact(contact);
                     em.merge(customer);
                     contact.setIsPrimaryContact(true);
