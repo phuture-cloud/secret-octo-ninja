@@ -191,7 +191,6 @@ public class CustomerManagementController extends HttpServlet {
                 return true;
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
             return false;
         }
     }

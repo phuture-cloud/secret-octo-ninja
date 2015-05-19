@@ -1,7 +1,7 @@
 /*
 Name: 			Tables / Editable - Examples
 Written by: 	Okler Themes - (http://www.okler.net)
-Theme Version: 	1.4.0
+Theme Version: 	1.4.1
 */
 
 (function( $ ) {
@@ -81,7 +81,7 @@ Theme Version: 	1.4.0
 
 					$.magnificPopup.open({
 						items: {
-							src: '#dialog',
+							src: _self.options.dialog.wrapper,
 							type: 'inline'
 						},
 						preloader: false,

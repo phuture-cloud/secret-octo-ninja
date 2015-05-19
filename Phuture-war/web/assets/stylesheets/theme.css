@@ -1,7 +1,7 @@
 /*
 Name: 			Theme Base
 Written by: 	Okler Themes - (http://www.okler.net)
-Theme Version: 	1.4.0
+Theme Version: 	1.4.1
 */
 html,
 body {
@@ -3098,19 +3098,19 @@ html.dark .text-muted {
 }
 
 /* weights */
-.text-light {
+.text-weight-light {
 	font-weight: 300;
 }
 
-.text-normal {
+.text-weight-normal {
 	font-weight: 400;
 }
 
-.text-semibold {
+.text-weight-semibold {
 	font-weight: 600;
 }
 
-.text-bold {
+.text-weight-bold {
 	font-weight: 700;
 }
 
@@ -4272,6 +4272,18 @@ div.validation-message ul label.error:before {
 	font-size: 16px;
 	color: #D9534F;
 	display: inline-block;
+}
+
+.select2-drop-mask {
+	z-index: 10010;
+}
+
+.select2-drop {
+	z-index: 10011;
+}
+
+.select2-search {
+	z-index: 10012;
 }
 
 html.dark .fileupload .uneditable-input {
