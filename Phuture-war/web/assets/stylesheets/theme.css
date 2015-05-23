@@ -1536,7 +1536,7 @@ html.header-dark .header .input-search .input-group-btn .btn-default {
 }
 
 .sidebar-left .sidebar-header .sidebar-title {
-	color: #465162;
+	color: #A6B4AF;
 	padding: 15px;
 	font-size: 15px;
 	font-size: 1.5rem;
@@ -2453,7 +2453,7 @@ ul.nav-main li .nav-children .nav-children .nav-children li a {
 }
 
 .page-header .breadcrumbs li {
-	color: #c3c3c3;
+	color: #FFFFF7;
 	display: inline-block;
 	font-weight: 300;
 }
@@ -2482,7 +2482,7 @@ ul.nav-main li .nav-children .nav-children .nav-children li a {
 
 .page-header .breadcrumbs a,
 .page-header .breadcrumbs span {
-	color: #c3c3c3;
+	color: #FFFFF7;
 	display: inline-block;
 	font-size: 14px;
 	font-size: 1.4rem;
