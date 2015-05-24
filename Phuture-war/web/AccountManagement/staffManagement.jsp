@@ -66,7 +66,7 @@
 
                             <div class="row">
                                 <div class="col-md-12"> 
-                                    <button class="btn btn-primary" onclick="addStaff()">Add Staff <i class="fa fa-plus"></i></button>
+                                    <button class="btn btn-primary" onclick="addStaff()">Add Staff</button>
                                 </div>
                             </div>
                             <br/>

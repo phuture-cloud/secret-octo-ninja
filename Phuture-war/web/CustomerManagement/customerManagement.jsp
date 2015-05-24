@@ -73,7 +73,7 @@
 
                             <div class="row">
                                 <div class="col-md-12">
-                                    <button class="btn btn-primary" onclick="addCustomer()">Add Customer <i class="fa fa-plus"></i></button>
+                                    <button class="btn btn-primary" onclick="addCustomer()">Add Customer</button>
                                 </div>
                             </div>
                             <br/>
