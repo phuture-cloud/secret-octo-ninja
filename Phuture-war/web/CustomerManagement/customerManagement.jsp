@@ -73,7 +73,7 @@
 
                             <div class="row">
                                 <div class="col-md-12">
-                                    <input class="btn btn-primary" name="btnAdd" type="submit" value="Add Customer" onclick="addCustomer()"  />
+                                    <button class="btn btn-primary" onclick="addCustomer()">Add Customer <i class="fa fa-plus"></i></button>
                                 </div>
                             </div>
                             <br/>
@@ -95,10 +95,13 @@
                                                     for (int i = 0; i < customers.size(); i++) {
                                             %>
                                             <td><%=customers.get(i).getCustomerName()%></td>
-                                            <td><input type="button" class="btn btn-default" value="Contact Management" onclick="javascript:viewContact('<%=customers.get(i).getId()%>')"/></td>
+                                            <td><input type="button" class="btn btn-default btn-block" value="Contact Management" onclick="javascript:viewContact('<%=customers.get(i).getId()%>')"/></td>
                                             <td>
-                                                <input type="button" name="btnEdit" class="btn btn-primary" value="Update" onclick="javascript:updateCustomer('<%=customers.get(i).getId()%>', '<%=customers.get(i).getCustomerName()%>')"/>
-                                                <a class="mb-xs mt-xs mr-xs modal-with-move-anim btn btn-primary" href="#modalRemove">Remove</a>
+                                                <div class="btn-group" role="group" aria-label="...">
+                                                    <button type="button" class="btn btn-default" onclick="javascript:updateCustomer('<%=customers.get(i).getId()%>', '<%=customers.get(i).getCustomerName()%>')">Update</button>
+                                                    <button type="button" class="modal-with-move-anim btn btn-default"  href="#modalRemove">Remove</button>
+                                                </div>
+
                                                 <div id="modalRemove" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
                                                     <section class="panel">
                                                         <header class="panel-heading">

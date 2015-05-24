@@ -32,6 +32,9 @@
             function back() {
                 window.location.href = "../CustomerManagementController?target=ListCustomerContacts&id=<%=customerID%>";
             }
+            window.onbeforeunload = function () {
+                return 'There are unsaved changes to this page. If you continue, you will lose them';
+            };
         </script>
         <section class="body">
             <jsp:include page="../header.jsp" />
@@ -84,28 +87,48 @@
                                         <div class="form-group">
                                             <label class="col-md-3 control-label">Email</label>
                                             <div class="col-md-6">
-                                                <input type="email" class="form-control" name="email" value="<%=contact.getEmail()%>" required>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">
+                                                        <i class="fa fa-envelope"></i>
+                                                    </span>
+                                                    <input type="email" class="form-control" name="email" value="<%=contact.getEmail()%>" required>
+                                                </div>
                                             </div>
                                         </div>
 
                                         <div class="form-group">
                                             <label class="col-md-3 control-label">Office Numbers</label>
                                             <div class="col-md-6">
-                                                <input type="text" class="form-control" name="officeNo" value="<%=contact.getOfficeNo()%>" required>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">
+                                                        <i class="fa fa-phone"></i>
+                                                    </span>
+                                                    <input type="text" class="form-control" name="officeNo" value="<%=contact.getOfficeNo()%>" required>
+                                                </div>
                                             </div>
                                         </div>
 
                                         <div class="form-group">
                                             <label class="col-md-3 control-label">Mobile Numbers</label>
                                             <div class="col-md-6">
-                                                <input type="text" class="form-control" name="mobileNo" value="<%=contact.getMobileNo()%>">
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">
+                                                        <i class="fa fa-phone"></i>
+                                                    </span>
+                                                    <input type="text" class="form-control" name="mobileNo" value="<%=contact.getMobileNo()%>">
+                                                </div>
                                             </div>
                                         </div>
 
                                         <div class="form-group">
                                             <label class="col-md-3 control-label">Fax Numbers</label>
                                             <div class="col-md-6">
-                                                <input type="text" class="form-control" name="faxNo" value="<%=contact.getFaxNo()%>">
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">
+                                                        <i class="fa fa-fax"></i>
+                                                    </span>
+                                                    <input type="text" class="form-control" name="faxNo" value="<%=contact.getFaxNo()%>">
+                                                </div>
                                             </div>
                                         </div>
 

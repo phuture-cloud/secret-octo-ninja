@@ -105,7 +105,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <input class="btn btn-primary" name="btnAdd" type="submit" value="Add Contact" onclick="addContact(<%=customerID%>)"  />
-                                        <a class="mb-xs mt-xs mr-xs modal-with-move-anim btn btn-primary" href="#modalRemove">Remove Contact</a>
+                                        <a class="modal-with-move-anim btn btn-primary" href="#modalRemove">Remove Contact</a>
                                         <div id="modalRemove" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
                                             <section class="panel">
                                                 <header class="panel-heading">
@@ -168,7 +168,7 @@
                                             <td><%=contacts.get(i).getFaxNo()%></td>
                                             <td><%=contacts.get(i).getAddress()%></td>
                                             <td>
-                                                <a class="modal-with-move-anim btn btn-default" href="#modalNotes">View</a>
+                                                <a class="modal-with-move-anim btn btn-default btn-block" href="#modalNotes">View</a>
 
                                                 <div id="modalNotes" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
                                                     <section class="panel">
@@ -193,7 +193,7 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <input type="button" name="btnEdit" class="btn btn-primary" value="Update" onclick="javascript:updateContact('<%=customerID%>', '<%=contacts.get(i).getId()%>')"/>
+                                                <input type="button" name="btnEdit" class="btn btn-primary btn-block" value="Update" onclick="javascript:updateContact('<%=customerID%>', '<%=contacts.get(i).getId()%>')"/>
                                             </td>
                                             <td>
                                                 <%

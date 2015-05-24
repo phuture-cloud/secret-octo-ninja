@@ -26,7 +26,7 @@
                 <jsp:include page="../sidebar.jsp" />
                 <section role="main" class="content-body">
                     <header class="page-header">
-                        <h2>Staff Management</h2>
+                        <h2>Order Management</h2>
                         <div class="right-wrapper pull-right">
                             <ol class="breadcrumbs">
                                 <li>
@@ -707,6 +707,7 @@
         </section>
 
         <jsp:include page="../foot.html" />
+        <script src="../assets/javascripts/tables/examples.datatables.editable.js"></script>
     </body>
 </html>
 <%
