@@ -65,8 +65,8 @@
                         <div class="panel-body">
 
                             <div class="row">
-                                <div class="col-md-12">
-                                    <input class="btn btn-primary" name="btnAdd" type="submit" value="Add Staff" onclick="addStaff()"  />
+                                <div class="col-md-12"> 
+                                    <button class="btn btn-primary" onclick="addStaff()">Add Staff</button>
                                 </div>
                             </div>
                             <br/>
@@ -109,8 +109,10 @@
                                             </td>
                                             <td>
                                                 <% if (!staffs.get(i).getIsDisabled()) {%>
-                                                <input type="button" name="btnEdit" class="btn btn-primary" value="Update" onclick="javascript:updateStaff('<%=staffs.get(i).getId()%>')"/>
-                                                <a class="mb-xs mt-xs mr-xs modal-with-move-anim btn btn-primary" href="#modalRemove">Disable</a>
+                                                <div class="btn-group" role="group" aria-label="...">
+                                                    <button type="button" name="btnEdit" class="btn btn-default" onclick="javascript:updateStaff('<%=staffs.get(i).getId()%>')">Update</button>
+                                                    <button type="button" class="modal-with-move-anim btn btn-default"  href="#modalRemove">Disable</button>
+                                                </div>
                                                 <div id="modalRemove" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
                                                     <section class="panel">
                                                         <header class="panel-heading">

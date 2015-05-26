@@ -74,28 +74,48 @@
                                         <div class="form-group">
                                             <label class="col-md-3 control-label">Email</label>
                                             <div class="col-md-6">
-                                                <input type="email" class="form-control" name="email" required>
-                                            </div>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">
+                                                        <i class="fa fa-envelope"></i>
+                                                    </span>
+                                                    <input type="email" class="form-control" name="email" required>
+                                                </div>
+                                            </div> 
                                         </div>
 
                                         <div class="form-group">
                                             <label class="col-md-3 control-label">Office Numbers</label>
                                             <div class="col-md-6">
-                                                <input type="text" class="form-control" name="officeNo" required>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">
+                                                        <i class="fa fa-phone"></i>
+                                                    </span>
+                                                    <input type="text" class="form-control" name="officeNo" required>
+                                                </div>
                                             </div>
                                         </div>
 
                                         <div class="form-group">
                                             <label class="col-md-3 control-label">Mobile Numbers</label>
                                             <div class="col-md-6">
-                                                <input type="text" class="form-control" name="mobileNo">
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">
+                                                        <i class="fa fa-phone"></i>
+                                                    </span>
+                                                    <input type="text" class="form-control" name="mobileNo">
+                                                </div>
                                             </div>
                                         </div>
 
                                         <div class="form-group">
                                             <label class="col-md-3 control-label">Fax Numbers</label>
                                             <div class="col-md-6">
-                                                <input type="text" class="form-control" name="faxNo">
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">
+                                                        <i class="fa fa-fax"></i>
+                                                    </span>
+                                                    <input type="text" class="form-control" name="faxNo">
+                                                </div>
                                             </div>
                                         </div>
 

@@ -11,26 +11,7 @@
         <script src="assets/vendor/modernizr/modernizr.js"></script>
     </head>
 
-    <body onload="alertFunc()">
-        <script>
-            <%
-                String test = request.getParameter("test");
-                if (test != null) {
-            %>
-            function alertFunc() {
-                alert('yo');
-                new PNotify({
-                    title: 'Regular Notice',
-                    text: 'Check me out! I\'m a notice.',
-                    type: 'custom',
-                    addclass: 'notification-primary',
-                    icon: 'fa fa-twitter'
-                });
-            }
-            <%
-                }
-            %>
-        </script>
+    <body>
         <!-- start: page -->
         <section class="body-sign">
             <div class="center-sign">

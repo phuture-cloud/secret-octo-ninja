@@ -13,34 +13,32 @@
         <div class="nano-content">
             <nav id="menu" class="nav-main" role="navigation">
                 <ul class="nav nav-main">
-                    <li class="nav-active">
+                    <li>
                         <a href="../AccountManagement/workspace.jsp">
                             <i class="fa fa-home" aria-hidden="true"></i>
                             <span>Dashboard</span>
                         </a>
                     </li>
-
-                    <li class="nav-parent">
-                        <a>
-                            <i class="fa fa-user" aria-hidden="true"></i>
-                            <span>Account Management</span>
+                    <li>
+                        <a href="../AccountManagementController?target=ListAllStaff">
+                            <i class="fa fa-users" aria-hidden="true"></i>
+                            <span>Staffs</span>
                         </a>
-                        <ul class="nav nav-children">
-                            <li>
-                                <a href="../CustomerManagementController?target=ListAllCustomer">
-                                    Customer Management
-                                </a>
-                            </li>
-                            <li>
-                                <a href="../AccountManagementController?target=ListAllStaff">
-                                    Staff Management
-                                </a>
-                            </li>
-                        </ul>
+                    </li>
+                    <li>
+                        <a href="../CustomerManagementController?target=ListAllCustomer">
+                            <i class="fa fa-user" aria-hidden="true"></i>
+                            <span>Customers</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../OrderManagement/orderManagement.jsp">
+                            <i class="fa fa-file-text-o" aria-hidden="true"></i>
+                            <span>Order</span>
+                        </a>
                     </li>
                 </ul>
             </nav>
         </div>
     </div>
-
 </aside>

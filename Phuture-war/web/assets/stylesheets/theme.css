@@ -1,7 +1,7 @@
 /*
 Name: 			Theme Base
 Written by: 	Okler Themes - (http://www.okler.net)
-Theme Version: 	1.4.0
+Theme Version: 	1.4.1
 */
 html,
 body {
@@ -1536,7 +1536,7 @@ html.header-dark .header .input-search .input-group-btn .btn-default {
 }
 
 .sidebar-left .sidebar-header .sidebar-title {
-	color: #465162;
+	color: #A6B4AF;
 	padding: 15px;
 	font-size: 15px;
 	font-size: 1.5rem;
@@ -2453,7 +2453,7 @@ ul.nav-main li .nav-children .nav-children .nav-children li a {
 }
 
 .page-header .breadcrumbs li {
-	color: #c3c3c3;
+	color: #FFFFF7;
 	display: inline-block;
 	font-weight: 300;
 }
@@ -2482,7 +2482,7 @@ ul.nav-main li .nav-children .nav-children .nav-children li a {
 
 .page-header .breadcrumbs a,
 .page-header .breadcrumbs span {
-	color: #c3c3c3;
+	color: #FFFFF7;
 	display: inline-block;
 	font-size: 14px;
 	font-size: 1.4rem;
@@ -3098,19 +3098,19 @@ html.dark .text-muted {
 }
 
 /* weights */
-.text-light {
+.text-weight-light {
 	font-weight: 300;
 }
 
-.text-normal {
+.text-weight-normal {
 	font-weight: 400;
 }
 
-.text-semibold {
+.text-weight-semibold {
 	font-weight: 600;
 }
 
-.text-bold {
+.text-weight-bold {
 	font-weight: 700;
 }
 
@@ -4272,6 +4272,18 @@ div.validation-message ul label.error:before {
 	font-size: 16px;
 	color: #D9534F;
 	display: inline-block;
+}
+
+.select2-drop-mask {
+	z-index: 10010;
+}
+
+.select2-drop {
+	z-index: 10011;
+}
+
+.select2-search {
+	z-index: 10012;
 }
 
 html.dark .fileupload .uneditable-input {
