@@ -20,4 +20,5 @@ public interface CustomerManagementBeanLocal {
     public ReturnHelper setPrimaryContact(Long customerID, Long contactID);
     
     //public ReturnHelper addCreditNote(Long customerID, Double creditAmount);
+    //public ReturnHelper updateCreditNote(Long creditNoteID, Double creditAmount);
 }
