@@ -138,7 +138,7 @@ public class CustomerManagementController extends HttpServlet {
 
                 case "UpdateContact":
                     if (checkLogin(response)) {
-                        returnHelper = customerManagementBean.updateCustomer(Long.parseLong(id2), name);
+                        returnHelper = customerManagementBean.updateContact(Long.parseLong(id2), name, email, officeNo, mobileNo, faxNo, address, notes);
 
                         if (returnHelper.getResult()) {
                             session.setAttribute("contacts", customerManagementBean.listCustomerContacts(Long.parseLong(id)));

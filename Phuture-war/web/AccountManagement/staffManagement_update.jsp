@@ -25,15 +25,11 @@
     <head>
         <jsp:include page="../head.html" />
     </head>
-    <body onload="alertFunc()">
-        <jsp:include page="../displayNotification.jsp" />
+    <body>
         <script>
             function back() {
                 window.location.href = "../AccountManagementController?target=ListAllStaff";
             }
-            window.onbeforeunload = function () {
-                return 'There are unsaved changes to this page. If you continue, you will lose them';
-            };
         </script>
         <section class="body">
             <jsp:include page="../header.jsp" />
