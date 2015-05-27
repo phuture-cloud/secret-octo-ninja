@@ -195,6 +195,7 @@ public class CustomerManagementBean implements CustomerManagementBeanLocal {
                 result.setResult(false);
                 result.setDescription("Contact is deleted and cannot be updated.");
             } else {
+               contact.setName(newName);
                 contact.setEmail(newEmail);
                 contact.setOfficeNo(newOfficeNo);
                 contact.setMobileNo(newMobileNo);
