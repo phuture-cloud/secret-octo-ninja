@@ -4,6 +4,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
     Staff staff = (Staff) (session.getAttribute("staff"));
+    List<Customer> customers = (List<Customer>) (session.getAttribute("customers"));
     if (session.isNew()) {
         response.sendRedirect("../index.jsp?errMsg=Invalid Request. Please login.");
     } else if (staff == null) {
@@ -88,12 +89,12 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <%
-                                                List<Customer> customers = (List<Customer>) (session.getAttribute("customers"));
-                                                if (customers.size() > 0) {
-                                                    for (int i = 0; i < customers.size(); i++) {
-                                            %>
+
+                                        <%
+                                            if (customers != null && customers.size() > 0) {
+                                                for (int i = 0; i < customers.size(); i++) {
+                                        %>
+                                        <tr>        
                                             <td><%=customers.get(i).getCustomerName()%></td>
                                             <td><input type="button" class="btn btn-default btn-block" value="Contact Management" onclick="javascript:viewContact('<%=customers.get(i).getId()%>')"/></td>
                                             <td>
@@ -128,14 +129,12 @@
                                                     </section>
                                                 </div>
                                             </td>
-
-                                            <%
-                                                    }
-                                                } else {
-                                                    out.print("<td></td><td></td><td></td>");
-                                                }
-                                            %>
                                         </tr>
+                                        <%
+                                                }
+                                            }
+                                        %>
+
                                     </tbody>
                                 </table>
                                 <input type="hidden" name="name" value="">

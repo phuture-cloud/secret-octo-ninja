@@ -13,8 +13,8 @@
     <head>
         <jsp:include page="../head.html" />
     </head>
-    <body>
-        <section class="body">
+    <body onload="alertFunc()">
+            <jsp:include page="../displayNotification.jsp" />
             <jsp:include page="../header.jsp" />
             <div class="inner-wrapper">
                 <jsp:include page="../sidebar.jsp" />

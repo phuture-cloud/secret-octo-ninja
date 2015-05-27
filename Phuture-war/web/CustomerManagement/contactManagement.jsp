@@ -6,6 +6,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
     Staff staff = (Staff) (session.getAttribute("staff"));
+    List<Contact> contacts = (List<Contact>) (session.getAttribute("contacts"));
     if (session.isNew()) {
         response.sendRedirect("../index.jsp?errMsg=Invalid Request. Please login.");
     } else if (staff == null) {
@@ -154,8 +155,7 @@
                                     </thead>
                                     <tbody>
                                         <%
-                                            List<Contact> contacts = (List<Contact>) (session.getAttribute("contacts"));
-                                            if (contacts.size() > 0) {
+                                            if (contacts != null && contacts.size() > 0) {
                                                 for (int i = 0; i < contacts.size(); i++) {
                                                     if (!contacts.get(i).getIsDeleted()) {
                                         %>
