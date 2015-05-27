@@ -64,16 +64,16 @@ public class AccountManagementController extends HttpServlet {
                         if (password != null && !password.equals("")) {
                             returnHelper = accountManagementBean.updateStaffPassword(Long.parseLong(staffID), password);
                             if (!returnHelper.getResult()) {
-                                nextPage = "AccountManagement/staffManagement_update.jsp?id=" + staffID + "&errMsg=" + returnHelper.getDescription();
+                                nextPage = "AccountManagement/staffManagement.jsp?errMsg=" + returnHelper.getDescription();
                             }
                         }
                         returnHelper = accountManagementBean.updateStaff(Long.parseLong(staffID), name, prefix);
 
                         if (returnHelper.getResult()) {
                             session.setAttribute("staffs", accountManagementBean.listAllStaffAccount());
-                            nextPage = "AccountManagement/staffManagement_update.jsp?id=" + staffID + "&goodMsg=" + returnHelper.getDescription();
+                            nextPage = "AccountManagement/staffManagement.jsp?goodMsg=" + returnHelper.getDescription();
                         } else {
-                            nextPage = "AccountManagement/staffManagement_update.jsp?id=" + staffID + "&errMsg=" + returnHelper.getDescription();
+                            nextPage = "AccountManagement/staffManagement.jsp?errMsg=" + returnHelper.getDescription();
                         }
 
                     }

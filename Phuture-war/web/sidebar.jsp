@@ -32,9 +32,9 @@
                         </a>
                     </li>
                     <li>
-                        <a href="../OrderManagement/orderManagement.jsp">
+                        <a href="../OrderManagement/scoManagement.jsp">
                             <i class="fa fa-file-text-o" aria-hidden="true"></i>
-                            <span>Order</span>
+                            <span>Sales Confirmation Order</span>
                         </a>
                     </li>
                 </ul>
