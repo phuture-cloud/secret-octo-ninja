@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
@@ -29,6 +30,14 @@ public class DeliveryOrder implements Serializable {
     private Date dateCreated;
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateDelivered;
+
+    private String shippingContactName;
+    private String shippingContactEmail;
+    private String shippingContactOfficeNo;
+    private String shippingContactMobileNo;
+    private String shippingContactFaxNo;
+    @Lob
+    private String shippingContactAddress;
 
     public DeliveryOrder() {
         this.dateCreated = new Date();
