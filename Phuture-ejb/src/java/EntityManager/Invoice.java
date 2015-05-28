@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
@@ -29,6 +30,14 @@ public class Invoice implements Serializable {
     private Date dateSent;
     @Temporal(TemporalType.TIMESTAMP)
     private Date datePaid;
+
+    private String billingContactName;
+    private String billingContactEmail;
+    private String billingContactOfficeNo;
+    private String billingContactMobileNo;
+    private String billingContactFaxNo;
+    @Lob
+    private String billingContactAddress;
 
     public Invoice() {
         setStatusAsCreated();

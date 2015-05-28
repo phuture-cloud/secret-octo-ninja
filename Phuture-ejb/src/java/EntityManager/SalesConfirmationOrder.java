@@ -11,7 +11,6 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -27,35 +26,35 @@ public class SalesConfirmationOrder implements Serializable {
     private Date dateCreated;
     
     private String customerName;
-    private String shippingContactName;
-    private String shippingContactEmail;
-    private String shippingContactOfficeNo;
-    private String shippingContactMobileNo;
-    private String shippingContactFaxNo;
+    private String contactName;
+    private String contactEmail;
+    private String contactOfficeNo;
+    private String contactMobileNo;
+    private String contactFaxNo;
     @Lob
-    private String shippingContactAddress;
+    private String contactAddress;
     
-    private String billingContactName;
-    private String billingContactEmail;
-    private String billingContactOfficeNo;
-    private String billingContactMobileNo;
-    private String billingContactFaxNo;
-    @Lob
-    private String billingContactAddress;
+
     
     @ManyToOne
     private Customer customerLink;
     @ManyToOne
     private Staff salesPerson;
+    private String status;
+    private Integer terms;
     @OneToMany
     private List<DeliveryOrder> deliveryOrders;
     @OneToMany
     private List<PurchaseOrder> purchaseOrders;
     @OneToMany
     private List<Invoice> invoices;
-    private String status;
     @OneToMany
     private List<LineItem> items;
+    @Lob
+    private String remarks;//Will appear on order
+    @Lob
+    private String notes;//For internal staff use on the CRM system only
+    private boolean isDeleted;
 
     public SalesConfirmationOrder() {
         this.status = "Created";
@@ -63,9 +62,12 @@ public class SalesConfirmationOrder implements Serializable {
         this.purchaseOrders = new ArrayList();
         this.invoices = new ArrayList();
         this.dateCreated = new Date();
+        this.isDeleted = false;
+        this.remarks = "";
+        this.notes = "";
     }
 
-    public SalesConfirmationOrder(String salesConfirmationOrderNumber, Customer customer, Staff salesPerson, Contact shippingContact, Contact billingContact) {
+    public SalesConfirmationOrder(String salesConfirmationOrderNumber, Customer customer, Staff salesPerson, Integer term, String remarks, String notes) {
         this.status = "Created";
         this.salesConfirmationOrderNumber = salesConfirmationOrderNumber;
         this.customerLink = customer;
@@ -74,6 +76,10 @@ public class SalesConfirmationOrder implements Serializable {
         this.purchaseOrders = new ArrayList();
         this.invoices = new ArrayList();
         this.dateCreated = new Date();
+        this.terms = term;
+        this.isDeleted = false;
+        this.remarks = remarks;
+        this.notes = notes;
     }
 
     public Long getId() {
@@ -128,100 +134,52 @@ public class SalesConfirmationOrder implements Serializable {
         this.customerName = customerName;
     }
 
-    public String getShippingContactName() {
-        return shippingContactName;
+    public String getContactName() {
+        return contactName;
     }
 
-    public void setShippingContactName(String shippingContactName) {
-        this.shippingContactName = shippingContactName;
+    public void setContactName(String contactName) {
+        this.contactName = contactName;
     }
 
-    public String getShippingContactEmail() {
-        return shippingContactEmail;
+    public String getContactEmail() {
+        return contactEmail;
     }
 
-    public void setShippingContactEmail(String shippingContactEmail) {
-        this.shippingContactEmail = shippingContactEmail;
+    public void setContactEmail(String contactEmail) {
+        this.contactEmail = contactEmail;
     }
 
-    public String getShippingContactOfficeNo() {
-        return shippingContactOfficeNo;
+    public String getContactOfficeNo() {
+        return contactOfficeNo;
     }
 
-    public void setShippingContactOfficeNo(String shippingContactOfficeNo) {
-        this.shippingContactOfficeNo = shippingContactOfficeNo;
+    public void setContactOfficeNo(String contactOfficeNo) {
+        this.contactOfficeNo = contactOfficeNo;
     }
 
-    public String getShippingContactMobileNo() {
-        return shippingContactMobileNo;
+    public String getContactMobileNo() {
+        return contactMobileNo;
     }
 
-    public void setShippingContactMobileNo(String shippingContactMobileNo) {
-        this.shippingContactMobileNo = shippingContactMobileNo;
+    public void setContactMobileNo(String contactMobileNo) {
+        this.contactMobileNo = contactMobileNo;
     }
 
-    public String getShippingContactFaxNo() {
-        return shippingContactFaxNo;
+    public String getContactFaxNo() {
+        return contactFaxNo;
     }
 
-    public void setShippingContactFaxNo(String shippingContactFaxNo) {
-        this.shippingContactFaxNo = shippingContactFaxNo;
+    public void setContactFaxNo(String contactFaxNo) {
+        this.contactFaxNo = contactFaxNo;
     }
 
-    public String getShippingContactAddress() {
-        return shippingContactAddress;
+    public String getContactAddress() {
+        return contactAddress;
     }
 
-    public void setShippingContactAddress(String shippingContactAddress) {
-        this.shippingContactAddress = shippingContactAddress;
-    }
-
-    public String getBillingContactName() {
-        return billingContactName;
-    }
-
-    public void setBillingContactName(String billingContactName) {
-        this.billingContactName = billingContactName;
-    }
-
-    public String getBillingContactEmail() {
-        return billingContactEmail;
-    }
-
-    public void setBillingContactEmail(String billingContactEmail) {
-        this.billingContactEmail = billingContactEmail;
-    }
-
-    public String getBillingContactOfficeNo() {
-        return billingContactOfficeNo;
-    }
-
-    public void setBillingContactOfficeNo(String billingContactOfficeNo) {
-        this.billingContactOfficeNo = billingContactOfficeNo;
-    }
-
-    public String getBillingContactMobileNo() {
-        return billingContactMobileNo;
-    }
-
-    public void setBillingContactMobileNo(String billingContactMobileNo) {
-        this.billingContactMobileNo = billingContactMobileNo;
-    }
-
-    public String getBillingContactFaxNo() {
-        return billingContactFaxNo;
-    }
-
-    public void setBillingContactFaxNo(String billingContactFaxNo) {
-        this.billingContactFaxNo = billingContactFaxNo;
-    }
-
-    public String getBillingContactAddress() {
-        return billingContactAddress;
-    }
-
-    public void setBillingContactAddress(String billingContactAddress) {
-        this.billingContactAddress = billingContactAddress;
+    public void setContactAddress(String contactAddress) {
+        this.contactAddress = contactAddress;
     }
 
     public List<DeliveryOrder> getDeliveryOrders() {
@@ -263,6 +221,40 @@ public class SalesConfirmationOrder implements Serializable {
     public void setItems(List<LineItem> items) {
         this.items = items;
     }
+
+    public Integer getTerms() {
+        return terms;
+    }
+
+    public void setTerms(Integer terms) {
+        this.terms = terms;
+    }
+
+    public boolean getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
+    
+    
 
     @Override
     public int hashCode() {

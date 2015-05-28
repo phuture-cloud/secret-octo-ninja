@@ -68,7 +68,6 @@ public class AccountManagementBean implements AccountManagementBeanLocal {
     @Override
     public Staff getStaff(String username) {
         System.out.println("AccountManagementBean: getStaff() called");
-        ReturnHelper result = new ReturnHelper();
         try {
             Query q = em.createQuery("SELECT s FROM Staff s where s.username=:username");
             q.setParameter("username", username);
@@ -77,8 +76,6 @@ public class AccountManagementBean implements AccountManagementBeanLocal {
         } catch (Exception ex) {
             System.out.println("getStaff(): Internal error");
             ex.printStackTrace();
-            result.setResult(false);
-            result.setDescription("Unable to getStaff, internal server error.");
             return null;
         }
     }
