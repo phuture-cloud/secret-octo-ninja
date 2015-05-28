@@ -161,6 +161,7 @@
                                                 <th id="cell-desc"   class="text-weight-semibold">Description</th>
                                                 <th id="cell-price"  class="text-center text-weight-semibold">Unit Price</th>
                                                 <th id="cell-total"  class="text-center text-weight-semibold">Amount</th>
+                                                <th id="cell-total"  class="text-center text-weight-semibold">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -170,6 +171,7 @@
                                                 <td>Multipourpouse Website Template</td>
                                                 <td class="text-center">$14.00</td>
                                                 <td class="text-center">$28.00</td>
+                                                <td class="text-center"><button class="btn btn-default btn-block">Add</button></td>
                                             </tr>
                                         </tbody>
                                     </table>
