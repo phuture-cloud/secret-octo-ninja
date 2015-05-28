@@ -17,7 +17,7 @@ public class LineItem implements Serializable {
     @Lob
     private String itemDescription;
     private Integer itemQty;
-    private Double itemTotalPrice;
+    private Double itemUnitPrice;
 
     public Long getId() {
         return id;
@@ -51,12 +51,12 @@ public class LineItem implements Serializable {
         this.itemQty = itemQty;
     }
 
-    public Double getItemTotalPrice() {
-        return itemTotalPrice;
+    public Double getItemUnitPrice() {
+        return itemUnitPrice;
     }
 
-    public void setItemTotalPrice(Double itemTotalPrice) {
-        this.itemTotalPrice = itemTotalPrice;
+    public void setItemUnitPrice(Double itemUnitPrice) {
+        this.itemUnitPrice = itemUnitPrice;
     }
     
     @Override
