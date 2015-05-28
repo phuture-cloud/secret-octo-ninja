@@ -30,8 +30,13 @@
     <body>
         <script>
             function back() {
+                window.onbeforeunload = null;
                 window.location.href = "../CustomerManagementController?target=ListCustomerContacts&id=<%=customerID%>";
             }
+
+            window.onbeforeunload = function () {
+                return 'There are unsaved changes to this page. If you continue, you will lose them';
+            };
         </script>
         <section class="body">
             <jsp:include page="../header.jsp" />
@@ -153,7 +158,6 @@
                                             <div class="col-sm-9 col-sm-offset-3">
                                                 <button class="btn btn-primary">Submit</button>
                                                 <input type="button"  class="btn btn-primary" value="Back" onclick="javascript:back()"/>
-                                                <button type="reset" class="btn btn-default">Reset</button>
                                             </div>
                                         </div>
                                     </footer>

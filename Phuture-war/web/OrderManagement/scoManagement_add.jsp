@@ -23,15 +23,17 @@
         <section class="body">
             <script>
                 function back() {
-                    window.location.href = "../AccountManagementController?target=ListAllStaff";
+                    window.location.href = "../OrderManagementController?target=ListAllSCO";
                 }
                 function getCustomerContacts() {
+                    window.onbeforeunload = null;
                     var customerID = document.getElementById("customerList").value;
                     if (customerID !== "") {
                         window.location.href = "../OrderManagementController?target=ListCustomerContacts&id=" + customerID;
                     }
                 }
                 function getCustomerContact() {
+                    window.onbeforeunload = null;
                     var customerID = document.getElementById("customerList").value;
                     if (customerID !== "") {
                         var contactID = document.getElementById("customerContactid").value;
@@ -40,8 +42,24 @@
                 }
 
                 function addLineItem() {
+                    window.onbeforeunload = null;
 
                 }
+
+                function saveSCO(id) {
+                    window.onbeforeunload = null;
+
+                }
+
+                function createSCO() {
+                    window.onbeforeunload = null;
+
+                }
+
+                window.onbeforeunload = function () {
+                    return 'There are unsaved changes to this page. If you continue, you will lose them';
+                };
+
             </script>
             <jsp:include page="../header.jsp" />
 
@@ -57,7 +75,7 @@
                                         <i class="fa fa-home"></i>
                                     </a>
                                 </li>
-                                <li><span>Sales Confirmation Order</span></li>
+                                <li><span><a href= "../OrderManagementController?target=ListAllSCO">Sales Confirmation Order</a></span></li>
                                 <li><span>New Sales Confirmation Order &nbsp;&nbsp</span></li>
                             </ol>
                         </div>
@@ -85,7 +103,7 @@
                                                 Phone: (65) 6842 0198
                                             </address>
                                             <div class="ib">
-                                                <img src="../assets/images/invoice-logo.png" alt="OKLER Themes" />
+                                                <img src="../assets/images/invoice-logo.png" alt="Phuture International" />
                                             </div>
                                         </div>
                                     </div>
@@ -98,7 +116,7 @@
                                                 <address>
                                                     <div class="col-md-6" style="padding-left: 0px;">
                                                         <form name="customerform">
-                                                            <select id="customerList" data-plugin-selectTwo class="form-control populate" onchange="javascript:getCustomerContacts()" required>
+                                                            <select id="customerList" data-plugin-selectTwo class="form-control populate" onchange="javascript:getCustomerContacts()" equired>
                                                                 <option value="">Select a customer</option>
                                                                 <%
                                                                     String selectedCustomerID = request.getParameter("selectedCustomerID");

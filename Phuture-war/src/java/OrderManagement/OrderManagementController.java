@@ -38,13 +38,13 @@ public class OrderManagementController extends HttpServlet {
             switch (target) {
                 case "ListAllSCO":
                     if (checkLogin(response)) {
-//                        List<SalesConfirmationOrder> salesConfirmationOrders = orderManagementBean.listAllSalesConfirmationOrder();
-//                        if (salesConfirmationOrders == null) {
-//                            nextPage = "error500.html";
-//                        } else {
-                        //session.setAttribute("salesConfirmationOrders", salesConfirmationOrders);
-                        nextPage = "OrderManagement/scoManagement.jsp";
-                        //   }
+                        List<SalesConfirmationOrder> salesConfirmationOrders = orderManagementBean.listAllSalesConfirmationOrder();
+                        if (salesConfirmationOrders == null) {
+                            nextPage = "error500.html";
+                        } else {
+                            session.setAttribute("salesConfirmationOrders", salesConfirmationOrders);
+                            nextPage = "OrderManagement/scoManagement.jsp";
+                        }
                         session.removeAttribute("contacts");
                     }
                     break;
