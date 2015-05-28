@@ -1,12 +1,12 @@
 package OrderManagement;
 
-import EntityManager.Contact;
 import EntityManager.Customer;
 import EntityManager.Invoice;
 import EntityManager.LineItem;
 import EntityManager.ReturnHelper;
 import EntityManager.SalesConfirmationOrder;
 import EntityManager.Staff;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -24,7 +24,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
     private EntityManager em;
 
     @Override
-    public ReturnHelper createSalesConfirmationOrder(String salesConfirmationOrderNumber, Long customerID, Long salesStaffID, Integer terms, String remarks, String notes) {
+    public ReturnHelper createSalesConfirmationOrder(String salesConfirmationOrderNumber, Date salesConfirmationOrderDate, Long customerID, Long salesStaffID, Integer terms, String remarks, String notes) {
         System.out.println("OrderManagementBean: addSalesConfirmationOrder() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -46,7 +46,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             if (notes == null) {
                 notes = "";
             }
-            SalesConfirmationOrder sco = new SalesConfirmationOrder(salesConfirmationOrderNumber, customerName, staff, terms, remarks, notes);
+            SalesConfirmationOrder sco = new SalesConfirmationOrder(salesConfirmationOrderNumber, salesConfirmationOrderDate, customerName, staff, terms, remarks, notes);
             sco.setCustomer(customer);
             em.persist(sco);
             //Add links to other
@@ -74,7 +74,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
     }
 
     @Override
-    public ReturnHelper updateSalesConfirmationOrder(Long salesConfirmationOrderID, String newSalesConfirmationOrderNumber, Long newCustomerID, Long newSalesStaffID, Integer newTerms, String newRemarks, String newNotes, Boolean adminOverwrite) {
+    public ReturnHelper updateSalesConfirmationOrder(Long salesConfirmationOrderID, String newSalesConfirmationOrderNumber, Date newSalesConfirmationOrderDate, Long newCustomerID, Long newSalesStaffID, Integer newTerms, String newRemarks, String newNotes, Boolean adminOverwrite) {
         System.out.println("OrderManagementBean: updateSalesConfirmationOrder() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -127,6 +127,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             sco.setCustomerName(newCustomerName);
             sco.setCustomer(newCustomer);
             sco.setSalesConfirmationOrderNumber(newSalesConfirmationOrderNumber);
+            sco.setSalesConfirmationOrderDate(newSalesConfirmationOrderDate);
             sco.setTerms(newTerms);
             sco.setRemarks(newRemarks);
             sco.setNotes(newNotes);

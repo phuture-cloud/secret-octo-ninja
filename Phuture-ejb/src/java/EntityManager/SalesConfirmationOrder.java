@@ -24,6 +24,8 @@ public class SalesConfirmationOrder implements Serializable {
     private String salesConfirmationOrderNumber;
     @Temporal(TemporalType.DATE)
     private Date dateCreated;
+    @Temporal(TemporalType.DATE)
+    private Date salesConfirmationOrderDate;
     
     private String customerName;
     private String contactName;
@@ -33,8 +35,6 @@ public class SalesConfirmationOrder implements Serializable {
     private String contactFaxNo;
     @Lob
     private String contactAddress;
-    
-
     
     @ManyToOne
     private Customer customerLink;
@@ -67,9 +67,10 @@ public class SalesConfirmationOrder implements Serializable {
         this.notes = "";
     }
 
-    public SalesConfirmationOrder(String salesConfirmationOrderNumber, String customerName, Staff salesPerson, Integer term, String remarks, String notes) {
+    public SalesConfirmationOrder(String salesConfirmationOrderNumber, Date salesConfirmationOrderDate, String customerName, Staff salesPerson, Integer term, String remarks, String notes) {
         this.status = "Created";
         this.salesConfirmationOrderNumber = salesConfirmationOrderNumber;
+        this.salesConfirmationOrderDate = salesConfirmationOrderDate;
         this.customerName = customerName;
         this.salesPerson = salesPerson;
         this.deliveryOrders = new ArrayList();
@@ -253,8 +254,22 @@ public class SalesConfirmationOrder implements Serializable {
     public void setRemarks(String remarks) {
         this.remarks = remarks;
     }
-    
-    
+
+    public Date getSalesConfirmationOrderDate() {
+        return salesConfirmationOrderDate;
+    }
+
+    public void setSalesConfirmationOrderDate(Date salesConfirmationOrderDate) {
+        this.salesConfirmationOrderDate = salesConfirmationOrderDate;
+    }
+
+    public Customer getCustomerLink() {
+        return customerLink;
+    }
+
+    public void setCustomerLink(Customer customerLink) {
+        this.customerLink = customerLink;
+    }
 
     @Override
     public int hashCode() {
