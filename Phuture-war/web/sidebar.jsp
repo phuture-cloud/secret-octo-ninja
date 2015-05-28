@@ -33,8 +33,32 @@
                     </li>
                     <li>
                         <a href="../OrderManagementController?target=ListAllSCO">
-                            <i class="fa fa-file-text-o" aria-hidden="true"></i>
+                            <i class="fa fa-file-text" aria-hidden="true"></i>
                             <span>Sales Confirmation Order</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fa fa-file" aria-hidden="true"></i>
+                            <span>Purchase Order</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fa fa-truck" aria-hidden="true"></i>
+                            <span>Delivery Order</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fa fa-dollar" aria-hidden="true"></i>
+                            <span>Invoice</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fa fa-book" aria-hidden="true"></i>
+                            <span>Statement of Account</span>
                         </a>
                     </li>
                 </ul>

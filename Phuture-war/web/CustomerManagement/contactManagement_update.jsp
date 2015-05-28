@@ -30,8 +30,13 @@
     <body>
         <script>
             function back() {
+                window.onbeforeunload = null;
                 window.location.href = "../CustomerManagementController?target=ListCustomerContacts&id=<%=customerID%>";
             }
+
+            window.onbeforeunload = function () {
+                return 'There are unsaved changes to this page. If you continue, you will lose them';
+            };
         </script>
         <section class="body">
             <jsp:include page="../header.jsp" />
@@ -94,7 +99,7 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="col-md-3 control-label">Office Numbers</label>
+                                            <label class="col-md-3 control-label">Telephone</label>
                                             <div class="col-md-6">
                                                 <div class="input-group">
                                                     <span class="input-group-addon">
@@ -106,7 +111,7 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="col-md-3 control-label">Mobile Numbers</label>
+                                            <label class="col-md-3 control-label">Mobile</label>
                                             <div class="col-md-6">
                                                 <div class="input-group">
                                                     <span class="input-group-addon">
@@ -118,7 +123,7 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="col-md-3 control-label">Fax Numbers</label>
+                                            <label class="col-md-3 control-label">Fasimile</label>
                                             <div class="col-md-6">
                                                 <div class="input-group">
                                                     <span class="input-group-addon">
@@ -153,7 +158,6 @@
                                             <div class="col-sm-9 col-sm-offset-3">
                                                 <button class="btn btn-primary">Submit</button>
                                                 <input type="button"  class="btn btn-primary" value="Back" onclick="javascript:back()"/>
-                                                <button type="reset" class="btn btn-default">Reset</button>
                                             </div>
                                         </div>
                                     </footer>

@@ -84,8 +84,7 @@
                                     <thead>
                                         <tr>
                                             <th>Company</th>
-                                            <th style="width: 250px;">Primary Contact</th>
-                                            <th style="width: 250px;">Action</th>
+                                            <th style="width: 400px;">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -96,11 +95,11 @@
                                         %>
                                         <tr>        
                                             <td><%=customers.get(i).getCustomerName()%></td>
-                                            <td><input type="button" class="btn btn-default btn-block" value="Contact Management" onclick="javascript:viewContact('<%=customers.get(i).getId()%>')"/></td>
                                             <td>
                                                 <div class="btn-group" role="group" aria-label="...">
-                                                    <button type="button" class="btn btn-default" onclick="javascript:updateCustomer('<%=customers.get(i).getId()%>', '<%=customers.get(i).getCustomerName()%>')">Update</button>
-                                                    <button type="button" class="modal-with-move-anim btn btn-default"  href="#modalRemove">Remove</button>
+                                                    <button  class="btn btn-default" onclick="javascript:viewContact('<%=customers.get(i).getId()%>')" ">Contact Management</button>
+                                                    <button  class="btn btn-default" onclick="javascript:updateCustomer('<%=customers.get(i).getId()%>', '<%=customers.get(i).getCustomerName()%>')">Update</button>
+                                                    <button  class="modal-with-move-anim btn btn-default"  href="#modalRemove">Remove</button>
                                                 </div>
 
                                                 <div id="modalRemove" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">

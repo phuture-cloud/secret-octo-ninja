@@ -1,7 +1,9 @@
 package OrderManagement;
 
 import CustomerManagement.CustomerManagementBeanLocal;
+import EntityManager.Contact;
 import EntityManager.Customer;
+import EntityManager.LineItem;
 import EntityManager.ReturnHelper;
 import EntityManager.SalesConfirmationOrder;
 import EntityManager.Staff;
@@ -29,6 +31,17 @@ public class OrderManagementController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String target = request.getParameter("target");
         String id = request.getParameter("id");
+        String scoNumber = request.getParameter("scoNumber");
+        String customerID = request.getParameter("customerID");
+        String salesStaffID = request.getParameter("salesStaffID");
+        String date = request.getParameter("date");
+        String terms = request.getParameter("terms");
+        String remarks = request.getParameter("remarks");
+        String notes = request.getParameter("notes");
+        String itemName = request.getParameter("itemName");
+        String itemDescription = request.getParameter("itemDescription");
+        String itemQty = request.getParameter("itemQty");
+        String itemUnitPrice = request.getParameter("itemUnitPrice");
 
         session = request.getSession();
         ReturnHelper returnHelper;
@@ -37,13 +50,14 @@ public class OrderManagementController extends HttpServlet {
             switch (target) {
                 case "ListAllSCO":
                     if (checkLogin(response)) {
-//                        List<SalesConfirmationOrder> salesConfirmationOrders = orderManagementBean.listAllSalesConfirmationOrder();
-//                        if (salesConfirmationOrders == null) {
-//                            nextPage = "error500.html";
-//                        } else {
-                        //session.setAttribute("salesConfirmationOrders", salesConfirmationOrders);
-                        nextPage = "OrderManagement/scoManagement.jsp";
-                        //   }
+                        List<SalesConfirmationOrder> salesConfirmationOrders = orderManagementBean.listAllSalesConfirmationOrder();
+                        if (salesConfirmationOrders == null) {
+                            nextPage = "error500.html";
+                        } else {
+                            session.setAttribute("salesConfirmationOrders", salesConfirmationOrders);
+                            nextPage = "OrderManagement/scoManagement.jsp";
+                        }
+                        session.removeAttribute("contacts");
                     }
                     break;
 
@@ -59,6 +73,45 @@ public class OrderManagementController extends HttpServlet {
                     }
                     break;
 
+                case "ListCustomerContacts":
+                    if (checkLogin(response)) {
+                        List<Contact> contacts = customerManagementBean.listCustomerContacts(Long.parseLong(id));
+                        if (contacts == null) {
+                            nextPage = "error500.html";
+                        } else {
+                            session.setAttribute("contacts", contacts);
+                            nextPage = "OrderManagement/scoManagement_add.jsp?selectedCustomerID=" + id + "&scoNumber=" + scoNumber;
+                        }
+                    }
+                    break;
+
+                case "AddLineItemToNewSCO":
+                    if (checkLogin(response)) {
+                        System.out.println("scoNumber: " + scoNumber);
+                        System.out.println("customerID: " + customerID);
+                        System.out.println("salesStaffID: " + salesStaffID);
+                        System.out.println("terms: " + terms);
+
+                        returnHelper = orderManagementBean.createSalesConfirmationOrder(scoNumber, Long.parseLong(customerID), Long.parseLong(salesStaffID), Integer.parseInt(terms), remarks, notes);
+                        if (returnHelper.getResult()) {
+                            Long scoID = returnHelper.getID();
+
+                            System.out.println("scoID: " + scoID);
+                            System.out.println("itemName: " + itemName);
+                            System.out.println("itemDescription: " + itemDescription);
+                            System.out.println("itemQty: " + itemQty);
+                            System.out.println("itemUnitPrice: " + itemUnitPrice);
+
+                            returnHelper = orderManagementBean.addSCOlineItem(scoID, itemName, itemDescription, Integer.parseInt(itemQty), Double.parseDouble(itemUnitPrice), false);
+                            if (returnHelper.getResult()) {
+                                session.setAttribute("scoLineItems", orderManagementBean.listSCOlineItems(scoID));
+                                nextPage = "OrderManagement/scoManagement_add.jsp?selectedCustomerID=" + customerID + "&scoNumber=" + scoNumber;
+                            }
+
+                        }
+
+                    }
+                    break;
             }
 
             if (nextPage.equals("")) {
@@ -67,7 +120,9 @@ public class OrderManagementController extends HttpServlet {
                 response.sendRedirect(nextPage);
             }
         } catch (Exception ex) {
+            response.sendRedirect("OrderManagement/scoManagement.jsp?errMsg=An error has occured");
             ex.printStackTrace();
+
         }
     }
 

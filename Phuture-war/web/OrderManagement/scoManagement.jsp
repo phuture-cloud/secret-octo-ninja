@@ -26,9 +26,7 @@
             });
 
             function createSCO() {
-                window.event.returnValue = true;
-                document.scoManagement.action = "scoManagement_add.jsp";
-                document.scoManagement.submit();
+                window.location.href = "../OrderManagementController?target=ListAllCustomer";
             }
         </script>
 
@@ -84,9 +82,10 @@
                                                 for (int i = 0; i < salesConfirmationOrders.size(); i++) {
                                         %>
                                         <tr>
-                                            <td><%=salesConfirmationOrders.get(i).getId()%></td>
-                                            <td><a href="../CustomerManagement/contactManagement.jsp?id=<%=salesConfirmationOrders.get(i).getCustomerName()%>"><%=salesConfirmationOrders.get(i).getCustomerName()%></a></td>
+                                            <td><%=salesConfirmationOrders.get(i).getSalesConfirmationOrderNumber()%></td>
+                                            <td><a href="../CustomerManagementController?target=ListCustomerContacts&id=<%=salesConfirmationOrders.get(i).getCustomer().getId()%>"><%=salesConfirmationOrders.get(i).getCustomerName()%></a></td>
                                             <td><%=salesConfirmationOrders.get(i).getDateCreated()%></td>
+                                            <td>$$</td>
                                             <td><%=salesConfirmationOrders.get(i).getStatus()%></td>
                                             <td><input type="button" class="btn btn-default btn-block" value="View" onclick="javascript:viewSCO'<%=salesConfirmationOrders.get(i).getId()%>')"/></td>
                                         </tr>
