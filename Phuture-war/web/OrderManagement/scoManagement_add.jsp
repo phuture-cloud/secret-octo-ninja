@@ -7,6 +7,7 @@
     Staff staff = (Staff) (session.getAttribute("staff"));
     List<Customer> customers = (List<Customer>) (session.getAttribute("customers"));
     List<Contact> contacts = (List<Contact>) (session.getAttribute("contacts"));
+    Contact contact = null;
     if (session.isNew()) {
         response.sendRedirect("../index.jsp?errMsg=Invalid Request. Please login.");
     } else if (staff == null) {
@@ -30,13 +31,16 @@
                         window.location.href = "../OrderManagementController?target=ListCustomerContacts&id=" + customerID;
                     }
                 }
-
                 function getCustomerContact() {
                     var customerID = document.getElementById("customerList").value;
                     if (customerID !== "") {
                         var contactID = document.getElementById("customerContactid").value;
                         window.location.href = "scoManagement_add.jsp?selectedCustomerID=" + customerID + "&selectedContactID=" + contactID;
                     }
+                }
+
+                function addLineItem() {
+
                 }
             </script>
             <jsp:include page="../header.jsp" />
@@ -95,8 +99,9 @@
                                                     <div class="col-md-6" style="padding-left: 0px;">
                                                         <form name="customerform">
                                                             <select id="customerList" data-plugin-selectTwo class="form-control populate" onchange="javascript:getCustomerContacts()" required>
-                                                                <option value="">Select a company</option>
-                                                                <%                                                                    String selectedCustomerID = request.getParameter("selectedCustomerID");
+                                                                <option value="">Select a customer</option>
+                                                                <%
+                                                                    String selectedCustomerID = request.getParameter("selectedCustomerID");
                                                                     if (customers != null && customers.size() > 0) {
                                                                         for (int i = 0; i < customers.size(); i++) {
                                                                             if (selectedCustomerID != null && selectedCustomerID.equals(customers.get(i).getId().toString())) {
@@ -121,20 +126,27 @@
                                                                 if (contacts != null && contacts.size() > 0) {
                                                                     for (int i = 0; i < contacts.size(); i++) {
                                                                         if (selectedContactID != null && selectedContactID.equals(contacts.get(i).getId().toString())) {
+                                                                            contact = contacts.get(i);
                                                                             out.print("<option value='" + contacts.get(i).getId() + "' selected>" + contacts.get(i).getName() + "</option>");
                                                                         } else {
                                                                             out.print("<option value='" + contacts.get(i).getId() + "'>" + contacts.get(i).getName() + "</option>");
                                                                         }
                                                                     }
                                                                 }
+
                                                             %>
                                                         </select>
                                                     </div>
 
                                                     <br/><br/>
 
-
-
+                                                    <%                                                        if (contact != null) {
+                                                            out.println("Address: " + contact.getAddress());
+                                                            out.println("<br/>Telephone: " + contact.getOfficeNo());
+                                                            out.println("<br/>Fasimile: " + contact.getFaxNo());
+                                                            out.println("<br/>Mobile: " + contact.getMobileNo());
+                                                        }
+                                                    %>
                                                 </address>
                                             </div>
                                         </div>
@@ -149,7 +161,8 @@
                                                 <p class="mb-none">
                                                     <span class="text-dark">Terms:</span>
                                                     <span class="value" style="min-width: 100px">
-                                                        <select class="form-control input-sm mb-md">
+                                                        <select class="form-control input-sm mb-md" required>
+                                                            <option value=""></option>
                                                             <option value="0">COD</option>
                                                             <option value="14">14 Days</option>
                                                             <option value="30">30 Days</option>

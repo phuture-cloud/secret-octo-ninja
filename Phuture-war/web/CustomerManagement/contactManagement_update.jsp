@@ -94,7 +94,7 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="col-md-3 control-label">Office Numbers</label>
+                                            <label class="col-md-3 control-label">Telephone</label>
                                             <div class="col-md-6">
                                                 <div class="input-group">
                                                     <span class="input-group-addon">
@@ -106,7 +106,7 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="col-md-3 control-label">Mobile Numbers</label>
+                                            <label class="col-md-3 control-label">Mobile</label>
                                             <div class="col-md-6">
                                                 <div class="input-group">
                                                     <span class="input-group-addon">
@@ -118,7 +118,7 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="col-md-3 control-label">Fax Numbers</label>
+                                            <label class="col-md-3 control-label">Fasimile</label>
                                             <div class="col-md-6">
                                                 <div class="input-group">
                                                     <span class="input-group-addon">

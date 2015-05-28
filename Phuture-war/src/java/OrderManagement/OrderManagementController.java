@@ -45,6 +45,7 @@ public class OrderManagementController extends HttpServlet {
                         //session.setAttribute("salesConfirmationOrders", salesConfirmationOrders);
                         nextPage = "OrderManagement/scoManagement.jsp";
                         //   }
+                        session.removeAttribute("contacts");
                     }
                     break;
 
