@@ -3,6 +3,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
     Staff staff = (Staff) (session.getAttribute("staff"));
+    List<Staff> staffs = (List<Staff>) (session.getAttribute("staffs"));
     if (session.isNew()) {
         response.sendRedirect("../index.jsp?errMsg=Invalid Request. Please login.");
     } else if (staff == null) {
@@ -83,18 +84,17 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <%
-                                                List<Staff> staffs = (List<Staff>) (session.getAttribute("staffs"));
-                                                int temp = 2;
-                                                if (staff.getIsAdmin()) {
-                                                    temp = 1;
-                                                }
+                                        <%
+                                            int temp = 2;
+                                            if (staff.getIsAdmin()) {
+                                                temp = 1;
+                                            }
 
-                                                if (staffs.size() > temp) {
-                                                    for (int i = 0; i < staffs.size(); i++) {
-                                                        if (!staffs.get(i).getUsername().equals(staff.getUsername()) && !staffs.get(i).getIsAdmin()) {
-                                            %>
+                                            if (staffs.size() > temp) {
+                                                for (int i = 0; i < staffs.size(); i++) {
+                                                    if (staffs != null && !staffs.get(i).getUsername().equals(staff.getUsername()) && !staffs.get(i).getIsAdmin()) {
+                                        %>
+                                        <tr>        
                                             <td><%=staffs.get(i).getName()%></td>
                                             <td><%=staffs.get(i).getStaffPrefix()%></td>
                                             <td><%=staffs.get(i).getUsername()%></td>
@@ -143,15 +143,13 @@
                                                 <input type="button" class="btn btn-primary" value="Disable" disabled/>
                                                 <%  }  %>
                                             </td>
-
-                                            <%
-                                                        }
-                                                    }
-                                                } else {
-                                                    out.print("<td></td><td></td><td></td><td></td><td></td>");
-                                                }
-                                            %>
                                         </tr>
+                                        <%
+                                                    }
+                                                }
+                                            }
+                                        %>
+
                                     </tbody>
                                 </table>
 

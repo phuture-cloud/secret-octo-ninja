@@ -32,7 +32,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="../OrderManagement/scoManagement.jsp">
+                        <a href="../OrderManagementController?target=ListAllSCO">
                             <i class="fa fa-file-text-o" aria-hidden="true"></i>
                             <span>Sales Confirmation Order</span>
                         </a>
