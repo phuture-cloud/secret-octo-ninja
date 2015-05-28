@@ -34,8 +34,7 @@
                                         <i class="fa fa-home"></i>
                                     </a>
                                 </li>
-                                <li><span>Account Management</span></li>
-                                <li><span>Staff Management</span></li>
+                                <li><span><a href="../AccountManagementController?target=ListAllStaff">Staff Management</a></span></li>
                                 <li><span>Add Staff &nbsp;&nbsp</span></li>
                             </ol>
                         </div>

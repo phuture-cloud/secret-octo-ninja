@@ -27,7 +27,7 @@
 
             function createSCO() {
                 window.event.returnValue = true;
-                document.scoManagement.action = "staffManagement_add.jsp";
+                document.scoManagement.action = "scoManagement_add.jsp";
                 document.scoManagement.submit();
             }
         </script>
@@ -79,26 +79,21 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-
                                         <%
                                             if (salesConfirmationOrders != null && salesConfirmationOrders.size() > 0) {
                                                 for (int i = 0; i < salesConfirmationOrders.size(); i++) {
                                         %>
                                         <tr>
                                             <td><%=salesConfirmationOrders.get(i).getId()%></td>
-                                            <td><%=salesConfirmationOrders.get(i).getCustomerName()%></td>
+                                            <td><a href="../CustomerManagement/contactManagement.jsp?id=<%=salesConfirmationOrders.get(i).getCustomerName()%>"><%=salesConfirmationOrders.get(i).getCustomerName()%></a></td>
                                             <td><%=salesConfirmationOrders.get(i).getDateCreated()%></td>
                                             <td><%=salesConfirmationOrders.get(i).getStatus()%></td>
-
-
                                             <td><input type="button" class="btn btn-default btn-block" value="View" onclick="javascript:viewSCO'<%=salesConfirmationOrders.get(i).getId()%>')"/></td>
-
                                         </tr>
                                         <%
                                                 }
                                             }
                                         %>
-
                                     </tbody>
                                 </table>
 

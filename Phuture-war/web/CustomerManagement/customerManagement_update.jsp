@@ -42,7 +42,11 @@
                                         <i class="fa fa-home"></i>
                                     </a>
                                 </li>
-                                <li><span>Customer Management</span></li>
+                                <li>
+                                    <a href="../CustomerManagementController?target=ListAllCustomer">
+                                        Customer Management
+                                    </a>
+                                </li>
                                 <li><span>Update Customer &nbsp;&nbsp</span></li>
                             </ol>
                         </div>

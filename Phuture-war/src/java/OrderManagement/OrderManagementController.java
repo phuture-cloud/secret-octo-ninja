@@ -1,5 +1,7 @@
 package OrderManagement;
 
+import CustomerManagement.CustomerManagementBeanLocal;
+import EntityManager.Customer;
 import EntityManager.ReturnHelper;
 import EntityManager.SalesConfirmationOrder;
 import EntityManager.Staff;
@@ -17,6 +19,10 @@ public class OrderManagementController extends HttpServlet {
 
     @EJB
     private OrderManagementBeanLocal orderManagementBean;
+
+    @EJB
+    private CustomerManagementBeanLocal customerManagementBean;
+
     String nextPage = "", goodMsg = "", errMsg = "";
     HttpSession session;
 
@@ -38,6 +44,18 @@ public class OrderManagementController extends HttpServlet {
                         //session.setAttribute("salesConfirmationOrders", salesConfirmationOrders);
                         nextPage = "OrderManagement/scoManagement.jsp";
                         //   }
+                    }
+                    break;
+
+                case "ListAllCustomer":
+                    if (checkLogin(response)) {
+                        List<Customer> customers = customerManagementBean.listCustomers();
+                        if (customers == null) {
+                            nextPage = "error500.html";
+                        } else {
+                            session.setAttribute("customers", customers);
+                            nextPage = "OrderManagement/scoManagement_add.jsp";
+                        }
                     }
                     break;
 

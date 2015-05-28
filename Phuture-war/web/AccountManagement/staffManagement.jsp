@@ -51,7 +51,6 @@
                                         <i class="fa fa-home"></i>
                                     </a>
                                 </li>
-                                <li><span>Account Management</span></li>
                                 <li><span>Staff Management &nbsp;&nbsp</span></li>
                             </ol>
                         </div>
