@@ -31,6 +31,13 @@
                     }
                 }
 
+                function getCustomerContact() {
+                    var customerID = document.getElementById("customerList").value;
+                    if (customerID !== "") {
+                        var contactID = document.getElementById("customerContactid").value;
+                        window.location.href = "scoManagement_add.jsp?selectedCustomerID=" + customerID + "&selectedContactID=" + contactID;
+                    }
+                }
             </script>
             <jsp:include page="../header.jsp" />
 
@@ -60,8 +67,11 @@
                                     <div class="row">
                                         <div class="col-sm-6 mt-md">
                                             <h2 class="h2 mt-none mb-sm text-dark text-weight-bold">Sales Confirmation Order</h2>
-                                            <h4 class="h4 m-none text-dark text-weight-bold">#76598345</h4>
+                                            <input type="text" class="form-control" placeholder="Enter SCO number" style="max-width: 300px" required/>
                                         </div>
+
+                                        <br/>
+
                                         <div class="col-sm-6 text-right mt-md mb-md">
                                             <address class="ib mr-xlg">
                                                 Phuture International Ltd
@@ -86,12 +96,9 @@
                                                         <form name="customerform">
                                                             <select id="customerList" data-plugin-selectTwo class="form-control populate" onchange="javascript:getCustomerContacts()" required>
                                                                 <option value="">Select a company</option>
-                                                                <%
-                                                                    String selectedCustomerID = request.getParameter("selectedCustomerID");
-
+                                                                <%                                                                    String selectedCustomerID = request.getParameter("selectedCustomerID");
                                                                     if (customers != null && customers.size() > 0) {
                                                                         for (int i = 0; i < customers.size(); i++) {
-
                                                                             if (selectedCustomerID != null && selectedCustomerID.equals(customers.get(i).getId().toString())) {
                                                                                 out.print("<option value='" + customers.get(i).getId() + "' selected>" + customers.get(i).getCustomerName() + "</option>");
                                                                             } else {
@@ -107,17 +114,19 @@
                                                     <br/><br/>
 
                                                     <div class="col-md-6" style="padding-left: 0px;">
-                                                        <select data-plugin-selectTwo class="form-control populate" required>
+                                                        <select id="customerContactid" data-plugin-selectTwo class="form-control populate"  onchange="javascript:getCustomerContact()" required>
                                                             <option value="">Select a contact</option>
                                                             <%
+                                                                String selectedContactID = request.getParameter("selectedContactID");
                                                                 if (contacts != null && contacts.size() > 0) {
                                                                     for (int i = 0; i < contacts.size(); i++) {
-                                                            %>
-                                                            <option value="<%=contacts.get(i).getId()%>"><%=contacts.get(i).getName()%></option>
-                                                            <%  }
+                                                                        if (selectedContactID != null && selectedContactID.equals(contacts.get(i).getId().toString())) {
+                                                                            out.print("<option value='" + contacts.get(i).getId() + "' selected>" + contacts.get(i).getName() + "</option>");
+                                                                        } else {
+                                                                            out.print("<option value='" + contacts.get(i).getId() + "'>" + contacts.get(i).getName() + "</option>");
+                                                                        }
+                                                                    }
                                                                 }
-                                                                contacts = null;
-                                                                session.setAttribute("contacts", contacts);
                                                             %>
                                                         </select>
                                                     </div>
@@ -156,23 +165,47 @@
                                     <table class="table invoice-items">
                                         <thead>
                                             <tr class="h4 text-dark">
-                                                <th id="cell-qty"    class="text-center text-weight-semibold">Quantity</th>
                                                 <th id="cell-item"   class="text-weight-semibold">Item</th>
                                                 <th id="cell-desc"   class="text-weight-semibold">Description</th>
                                                 <th id="cell-price"  class="text-center text-weight-semibold">Unit Price</th>
+                                                <th id="cell-qty"    class="text-center text-weight-semibold">Quantity</th>
                                                 <th id="cell-total"  class="text-center text-weight-semibold">Amount</th>
-                                                <th id="cell-total"  class="text-center text-weight-semibold">Action</th>
+                                                <th id="cell-total"  class="text-center text-weight-semibold"></th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <td class="text-center">2</td>
-                                                <td class="text-weight-semibold text-dark">Porto HTML5 Template</td>
-                                                <td>Multipourpouse Website Template</td>
-                                                <td class="text-center">$14.00</td>
-                                                <td class="text-center">$28.00</td>
-                                                <td class="text-center"><button class="btn btn-default btn-block">Add</button></td>
+                                                <td>
+                                                    <input type="text" class="form-control" name="item" required/>
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control" name="description" required/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon">
+                                                            <i class="fa fa-dollar"></i>
+                                                        </span>
+                                                        <input type="number" class="form-control" name="unit-price" required/>
+                                                    </div>
+                                                </td>
+                                                <td class="text-center">
+                                                    <input type="number" class="form-control" name="quantity" required/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon">
+                                                            <i class="fa fa-dollar"></i>
+                                                        </span>
+                                                        <input type="number" class="form-control" name="amount" required/>
+                                                    </div>
+                                                </td>
+                                                <td class="text-center"><button class="btn btn-default btn-block">Add Item</button></td>
                                             </tr>
+
+                                            <!-- loop line item page -->
+                                            <!-- end loop line item page -->
+
                                         </tbody>
                                     </table>
                                 </div>
@@ -210,8 +243,13 @@
                             </div>
 
                             <div class="text-right mr-lg">
-                                <a href="#" class="btn btn-default">Submit Invoice</a>
-                                <a href="#" target="_blank" class="btn btn-primary ml-sm"><i class="fa fa-print"></i> Print</a>
+                                <form action="#">
+                                    <a href="#" target="_blank" class="btn btn-default"><i class="fa fa-print"></i> Print PDF</a>
+                                    <a href="#" class="btn btn-danger">Delete</a>
+                                    <a href="#" class="btn btn-primary">Generate PO</a>
+                                    <button class="btn btn-primary">Generate DO</button>
+                                    <button class="btn btn-success" onmousedown="changed_flag = 0">Save</button>
+                                </form>
                             </div>
                         </div>
                     </section>
