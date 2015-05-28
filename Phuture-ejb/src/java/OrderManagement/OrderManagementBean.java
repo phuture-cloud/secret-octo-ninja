@@ -3,6 +3,7 @@ package OrderManagement;
 import EntityManager.Contact;
 import EntityManager.Customer;
 import EntityManager.Invoice;
+import EntityManager.LineItem;
 import EntityManager.ReturnHelper;
 import EntityManager.SalesConfirmationOrder;
 import EntityManager.Staff;
@@ -28,10 +29,11 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
         try {
-            Query q = em.createQuery("SELECT c FROM Customer c where c.id=:id");
+            Query q = em.createQuery("SELECT c FROM Customer c WHERE c.id=:id");
             q.setParameter("id", customerID);
             Customer customer = (Customer) q.getSingleResult();
-            q = em.createQuery("SELECT s FROM Staff s where s.id=:id");
+            String customerName = customer.getCustomerName();
+            q = em.createQuery("SELECT s FROM Staff s WHERE s.id=:id");
             q.setParameter("id", salesStaffID);
             Staff staff = (Staff) q.getSingleResult();
             if (customer.getIsDeleted()) {
@@ -44,7 +46,8 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             if (notes == null) {
                 notes = "";
             }
-            SalesConfirmationOrder sco = new SalesConfirmationOrder(salesConfirmationOrderNumber, customer, staff, terms, remarks, notes);
+            SalesConfirmationOrder sco = new SalesConfirmationOrder(salesConfirmationOrderNumber, customerName, staff, terms, remarks, notes);
+            sco.setCustomer(customer);
             em.persist(sco);
             //Add links to other
             List<SalesConfirmationOrder> customerSCOs = customer.getSCOs();
@@ -55,8 +58,6 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             staffSCOs.add(sco);
             staff.setSales(staffSCOs);
             em.merge(staff);
-
-            //Finish
             result.setID(sco.getId());
             result.setResult(true);
             result.setDescription("SCO created successfully.");
@@ -78,7 +79,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
         try {
-            Query q = em.createQuery("SELECT s FROM SalesConfirmationOrder s where s.id=:id");
+            Query q = em.createQuery("SELECT s FROM SalesConfirmationOrder s WHERE s.id=:id");
             q.setParameter("id", salesConfirmationOrderID);
             SalesConfirmationOrder sco = (SalesConfirmationOrder) q.getSingleResult();
 
@@ -87,13 +88,14 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
                 result.setDescription(checkResult.getDescription());
                 return result;
             }
-            q = em.createQuery("SELECT c FROM Customer c where c.id=:id");
+            q = em.createQuery("SELECT c FROM Customer c WHERE c.id=:id");
             q.setParameter("id", newCustomerID);
-            Customer customer = (Customer) q.getSingleResult();
-            q = em.createQuery("SELECT s FROM Staff s where s.id=:id");
+            Customer newCustomer = (Customer) q.getSingleResult();
+            String newCustomerName = newCustomer.getCustomerName();
+            q = em.createQuery("SELECT s FROM Staff s WHERE s.id=:id");
             q.setParameter("id", newSalesStaffID);
             Staff staff = (Staff) q.getSingleResult();
-            if (customer.getIsDeleted()) {
+            if (newCustomer.getIsDeleted()) {
                 result.setDescription("Failed to edit the SCO. The selected customer may have been deleted while the SCO is being updated. Please try again.");
                 return result;
             }
@@ -104,7 +106,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
                 newNotes = "";
             }
             //Remove away the old links
-            Customer oldCustomer = sco.getCustomerLink();
+            Customer oldCustomer = sco.getCustomer();
             List<SalesConfirmationOrder> oldCustomerSCOs = oldCustomer.getSCOs();
             oldCustomerSCOs.remove(sco);
             em.merge(oldCustomer);
@@ -113,15 +115,17 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             oldStaffSCOs.remove(sco);
             em.merge(oldStaff);
             //Add links to other
-            List<SalesConfirmationOrder> customerSCOs = customer.getSCOs();
+            List<SalesConfirmationOrder> customerSCOs = newCustomer.getSCOs();
             customerSCOs.add(sco);
-            customer.setSCOs(customerSCOs);
-            em.merge(customer);
+            newCustomer.setSCOs(customerSCOs);
+            em.merge(newCustomer);
             List<SalesConfirmationOrder> staffSCOs = staff.getSales();
             staffSCOs.add(sco);
             staff.setSales(staffSCOs);
             em.merge(staff);
             //Update fields
+            sco.setCustomerName(newCustomerName);
+            sco.setCustomer(newCustomer);
             sco.setSalesConfirmationOrderNumber(newSalesConfirmationOrderNumber);
             sco.setTerms(newTerms);
             sco.setRemarks(newRemarks);
@@ -148,7 +152,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
         try {
-            Query q = em.createQuery("SELECT s FROM SalesConfirmationOrder s where s.id=:id");
+            Query q = em.createQuery("SELECT s FROM SalesConfirmationOrder s WHERE s.id=:id");
             q.setParameter("id", salesConfirmationOrderID);
             SalesConfirmationOrder sco = (SalesConfirmationOrder) q.getSingleResult();
 
@@ -179,7 +183,29 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
 
     @Override
     public ReturnHelper deleteSalesConfirmationOrder(Long salesConfirmationOrderID) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        System.out.println("OrderManagementBean: deleteSalesConfirmationOrder() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        try {
+            Query q = em.createQuery("SELECT s FROM SalesConfirmationOrder s WHERE s.id=:id");
+            q.setParameter("id", salesConfirmationOrderID);
+            SalesConfirmationOrder sco = (SalesConfirmationOrder) q.getSingleResult();
+            Boolean adminOverwrite = false; //Admin also has to stick by the cannot delete SCO rule
+            ReturnHelper checkResult = checkIfSCOisEditable(salesConfirmationOrderID, adminOverwrite);
+            if (!checkResult.getResult()) {
+                result.setDescription(checkResult.getDescription());
+                return result;
+            }
+            sco.setIsDeleted(true);
+            em.merge(sco);
+            result.setResult(true);
+            result.setDescription("SCO deleted successfully.");
+        } catch (Exception ex) {
+            System.out.println("OrderManagementBean: deleteSalesConfirmationOrder() failed");
+            result.setDescription("Internal server error.");
+            ex.printStackTrace();
+        }
+        return result;
     }
 
     @Override
@@ -188,7 +214,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
         try {
-            Query q = em.createQuery("SELECT s FROM SalesConfirmationOrder s where s.id=:id");
+            Query q = em.createQuery("SELECT s FROM SalesConfirmationOrder s WHERE s.id=:id");
             q.setParameter("id", salesConfirmationOrderID);
             SalesConfirmationOrder sco = (SalesConfirmationOrder) q.getSingleResult();
             if (!adminOverwrite) {//If not admin account
@@ -197,18 +223,19 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
                 List<Invoice> invoices = sco.getInvoices();
                 for (Invoice invoice : invoices) {
                     if (invoice.getStatus().equals("Sent")) {
-                        result.setDescription("SCO can not be edited as the first invoice has already been issued.");
+                        result.setDescription("SCO can not be edited/deleted as the first invoice has already been issued.");
                         return result;
                     }
                 }
             }
             if (sco.getIsDeleted()) {
-                result.setDescription("SCO can not be edited as it has been deleted.");
+                result.setDescription("SCO can not be edited/deleted as it has already been deleted.");
                 return result;
             }
             result.setResult(true);
             result.setDescription("Editable SCO.");
         } catch (Exception ex) {
+            System.out.println("OrderManagementBean: checkIfSCOisEditable() failed");
             result.setDescription("Internal server error.");
             ex.printStackTrace();
         }
@@ -217,12 +244,58 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
 
     @Override
     public List<SalesConfirmationOrder> listAllSalesConfirmationOrder() {
+        System.out.println("OrderManagementBean: listAllSalesConfirmationOrder() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        try {
+            Query q = em.createQuery("SELECT s FROM SalesConfirmationOrder s WHERE s.isDeleted=false");
+            List<SalesConfirmationOrder> salesConfirmationOrders = q.getResultList();
+            return salesConfirmationOrders;
+        } catch (Exception ex) {
+            System.out.println("OrderManagementBean: listAllSalesConfirmationOrder() failed");
+            result.setDescription("Internal server error.");
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public List<SalesConfirmationOrder> listCustomerSalesConfirmationOrder(Long customerID) {
+        System.out.println("OrderManagementBean: listCustomerSalesConfirmationOrder() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        try {
+            Query q = em.createQuery("SELECT s FROM SalesConfirmationOrder s WHERE s.isDeleted=false AND s.customerLink.id=:id");
+            q.setParameter("id", customerID);
+            List<SalesConfirmationOrder> salesConfirmationOrders = q.getResultList();
+            return salesConfirmationOrders;
+        } catch (Exception ex) {
+            System.out.println("OrderManagementBean: listAllSalesConfirmationOrder() failed");
+            result.setDescription("Internal server error.");
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public ReturnHelper addSCOlineItem(Long salesConfirmationOrderID, String itemName, String itemDescription, Integer itemQty, Double itemTotalPrice) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public List<SalesConfirmationOrder> listCustomerSalesConfirmationOrder() {
+    public ReturnHelper updateSCOlineItem(Long lineItemID, String newItemName, String newItemDescription, Integer newItemQty, Double newItemTotalPrice) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public ReturnHelper deleteSCOlineItem(Long lineItemID) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<LineItem> listSCOlineItems(Long salesConfirmationOrderID) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    
 }

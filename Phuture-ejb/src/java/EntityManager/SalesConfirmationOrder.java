@@ -67,10 +67,10 @@ public class SalesConfirmationOrder implements Serializable {
         this.notes = "";
     }
 
-    public SalesConfirmationOrder(String salesConfirmationOrderNumber, Customer customer, Staff salesPerson, Integer term, String remarks, String notes) {
+    public SalesConfirmationOrder(String salesConfirmationOrderNumber, String customerName, Staff salesPerson, Integer term, String remarks, String notes) {
         this.status = "Created";
         this.salesConfirmationOrderNumber = salesConfirmationOrderNumber;
-        this.customerLink = customer;
+        this.customerName = customerName;
         this.salesPerson = salesPerson;
         this.deliveryOrders = new ArrayList();
         this.purchaseOrders = new ArrayList();
@@ -118,12 +118,12 @@ public class SalesConfirmationOrder implements Serializable {
         this.salesConfirmationOrderNumber = salesConfirmationOrderNumber;
     }
 
-    public Customer getCustomerLink() {
+    public Customer getCustomer() {
         return customerLink;
     }
 
-    public void setCustomerLink(Customer customerLink) {
-        this.customerLink = customerLink;
+    public void setCustomer(Customer customer) {
+        this.customerLink = customer;
     }
 
     public String getCustomerName() {
