@@ -313,11 +313,11 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             lineItem.setItemName(itemName);
             lineItem.setItemDescription(itemDescription);
             lineItem.setItemQty(itemQty);
-            lineItem.setItemTotalPrice(itemTotalPrice);
+            lineItem.setItemUnitPrice(itemTotalPrice);
             em.persist(lineItem);
             Query q = em.createQuery("SELECT s FROM SalesConfirmationOrder s WHERE s.id=:id");
             q.setParameter("id", salesConfirmationOrderID);
-            SalesConfirmationOrder salesConfirmationOrder = (SalesConfirmationOrder) q.getResultList();
+            SalesConfirmationOrder salesConfirmationOrder = (SalesConfirmationOrder) q.getSingleResult();
             List<LineItem> lineItems = salesConfirmationOrder.getItems();
             lineItems.add(lineItem);
             salesConfirmationOrder.setItems(lineItems);
@@ -349,7 +349,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             lineItem.setItemName(newItemName);
             lineItem.setItemDescription(newItemDescription);
             lineItem.setItemQty(newItemQty);
-            lineItem.setItemTotalPrice(newItemTotalPrice);
+            lineItem.setItemUnitPrice(newItemTotalPrice);
             em.merge(lineItem);
             result.setResult(true);
             result.setDescription("Line item updated.");
@@ -389,6 +389,38 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
         } catch (Exception ex) {
             System.out.println("OrderManagementBean: deleteSCOlineItem() failed");
             result.setDescription("Unable to delete line item, internal server error.");
+            ex.printStackTrace();
+            return null;
+        }
+        return result;
+    }
+    
+     @Override
+    public ReturnHelper deleteSCOallLineItem(Long salesConfirmationOrderID, Boolean adminOverwrite) {
+        System.out.println("OrderManagementBean: deleteSCOallLineItem() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        try {
+            ReturnHelper checkResult = checkIfSCOisEditable(salesConfirmationOrderID, adminOverwrite);
+            if (!checkResult.getResult()) {
+                result.setDescription(checkResult.getDescription());
+                return result;
+            }
+            Query q = em.createQuery("SELECT s FROM SalesConfirmationOrder s WHERE s.id=:id");
+            q.setParameter("id", salesConfirmationOrderID);
+            SalesConfirmationOrder salesConfirmationOrder = (SalesConfirmationOrder) q.getResultList();
+            List<LineItem> lineItems = salesConfirmationOrder.getItems();
+            for (LineItem lineItem: lineItems) {
+                lineItems.remove(lineItem);
+                em.remove(lineItem);
+            }
+            salesConfirmationOrder.setItems(lineItems);
+            em.merge(salesConfirmationOrder);
+            result.setResult(true);
+            result.setDescription("Line items deleted.");
+        } catch (Exception ex) {
+            System.out.println("OrderManagementBean: deleteSCOallLineItem() failed");
+            result.setDescription("Unable to delete line items, internal server error.");
             ex.printStackTrace();
             return null;
         }

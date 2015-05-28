@@ -22,16 +22,16 @@ public interface OrderManagementBeanLocal {
     public ReturnHelper addSCOlineItem(Long salesConfirmationOrderID, String itemName, String itemDescription, Integer itemQty, Double itemTotalPrice,Boolean adminOverwrite);
     public ReturnHelper updateSCOlineItem(Long salesConfirmationOrderID, Long lineItemID, String newItemName, String newItemDescription, Integer newItemQty, Double newItemTotalPrice, Boolean adminOverwrite);
     public ReturnHelper deleteSCOlineItem(Long salesConfirmationOrderID, Long lineItemID, Boolean adminOverwrite);
+    public ReturnHelper deleteSCOallLineItem(Long salesConfirmationOrderID, Boolean adminOverwrite);
     public List<LineItem> listSCOlineItems(Long salesConfirmationOrderID);
             
-    //DO
+  
+//    public ReturnHelper addDOlineItem(Long deliveryOrderID, String itemName, String itemDescription, Integer itemQty, Double itemTotalPrice,Boolean adminOverwrite);
+//    public ReturnHelper updateDOlineItem(Long deliveryOrderID, Long lineItemID, String newItemName, String newItemDescription, Integer newItemQty, Double newItemTotalPrice, Boolean adminOverwrite);
+//    public ReturnHelper deleteDOlineItem(Long deliveryOrderID, Long lineItemID, Boolean adminOverwrite);
+//    public List<LineItem> listDOlineItems(Long deliveryOrderID);
     
-    
-    //public ReturnHelper createDeliveryOrder(Long salesConfirmationOrderID, String deliveryOrderNumber);
-    //public ReturnHelper updateDeliveryOrder();
-    //public ReturnHelper updateDeliveryOrderContactDetails();
-    //public ReturnHelper deleteDeliveryOrder();
-//    
+//    Invoice
 //    public ReturnHelper createInvoice();
 //    public ReturnHelper updateInvoice();
 //    public ReturnHelper deleteInvoice();
