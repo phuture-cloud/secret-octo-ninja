@@ -26,9 +26,7 @@
             });
 
             function createSCO() {
-                window.event.returnValue = true;
-                document.scoManagement.action = "scoManagement_add.jsp";
-                document.scoManagement.submit();
+                window.location.href = "../OrderManagementController?target=ListAllCustomer";
             }
         </script>
 

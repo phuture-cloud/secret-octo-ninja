@@ -37,6 +37,30 @@
                             <span>Sales Confirmation Order</span>
                         </a>
                     </li>
+                    <li>
+                        <a href="#">
+                            <i class="fa fa-file-text-o" aria-hidden="true"></i>
+                            <span>Purchase Order</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fa fa-file-text-o" aria-hidden="true"></i>
+                            <span>Delivery Order</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fa fa-file-text-o" aria-hidden="true"></i>
+                            <span>Invoice</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fa fa-file-text-o" aria-hidden="true"></i>
+                            <span>Statement of Account</span>
+                        </a>
+                    </li>
                 </ul>
             </nav>
         </div>

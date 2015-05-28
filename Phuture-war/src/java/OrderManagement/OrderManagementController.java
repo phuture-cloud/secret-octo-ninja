@@ -1,6 +1,7 @@
 package OrderManagement;
 
 import CustomerManagement.CustomerManagementBeanLocal;
+import EntityManager.Contact;
 import EntityManager.Customer;
 import EntityManager.ReturnHelper;
 import EntityManager.SalesConfirmationOrder;
@@ -55,6 +56,18 @@ public class OrderManagementController extends HttpServlet {
                         } else {
                             session.setAttribute("customers", customers);
                             nextPage = "OrderManagement/scoManagement_add.jsp";
+                        }
+                    }
+                    break;
+
+                case "ListCustomerContacts":
+                    if (checkLogin(response)) {
+                        List<Contact> contacts = customerManagementBean.listCustomerContacts(Long.parseLong(id));
+                        if (contacts == null) {
+                            nextPage = "error500.html";
+                        } else {
+                            session.setAttribute("contacts", contacts);
+                            nextPage = "OrderManagement/scoManagement_add.jsp?selectedCustomerID=" + id;
                         }
                     }
                     break;

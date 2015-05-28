@@ -1,3 +1,4 @@
+<%@page import="EntityManager.Contact"%>
 <%@page import="EntityManager.Customer"%>
 <%@page import="EntityManager.Staff"%>
 <%@page import="java.util.List"%>
@@ -5,6 +6,7 @@
 <%
     Staff staff = (Staff) (session.getAttribute("staff"));
     List<Customer> customers = (List<Customer>) (session.getAttribute("customers"));
+    List<Contact> contacts = (List<Contact>) (session.getAttribute("contacts"));
     if (session.isNew()) {
         response.sendRedirect("../index.jsp?errMsg=Invalid Request. Please login.");
     } else if (staff == null) {
@@ -22,6 +24,13 @@
                 function back() {
                     window.location.href = "../AccountManagementController?target=ListAllStaff";
                 }
+                function getCustomerContacts() {
+                    var customerID = document.getElementById("customerList").value;
+                    if (customerID !== "") {
+                        window.location.href = "../OrderManagementController?target=ListCustomerContacts&id=" + customerID;
+                    }
+                }
+
             </script>
             <jsp:include page="../header.jsp" />
 
@@ -73,27 +82,50 @@
                                             <div class="bill-to">
                                                 <p class="h5 mb-xs text-dark text-weight-semibold">To:</p>
                                                 <address>
-                                                    <form class="form-horizontal form-bordered" action="#">
-                                                        <div class="col-md-6" style="padding-left: 0px;">
-                                                            <select data-plugin-selectTwo class="form-control populate">
-                                                                <optgroup label="Customer">
-                                                                    <%
-                                                                        if (customers != null && customers.size() > 0) {
-                                                                            for (int i = 0; i < customers.size(); i++) {
+                                                    <div class="col-md-6" style="padding-left: 0px;">
+                                                        <form name="customerform">
+                                                            <select id="customerList" data-plugin-selectTwo class="form-control populate" onchange="javascript:getCustomerContacts()" required>
+                                                                <option value="">Select a company</option>
+                                                                <%
+                                                                    String selectedCustomerID = request.getParameter("selectedCustomerID");
+
+                                                                    if (customers != null && customers.size() > 0) {
+                                                                        for (int i = 0; i < customers.size(); i++) {
+
+                                                                            if (selectedCustomerID != null && selectedCustomerID.equals(customers.get(i).getId().toString())) {
+                                                                                out.print("<option value='" + customers.get(i).getId() + "' selected>" + customers.get(i).getCustomerName() + "</option>");
+                                                                            } else {
                                                                                 out.print("<option value='" + customers.get(i).getId() + "'>" + customers.get(i).getCustomerName() + "</option>");
                                                                             }
                                                                         }
-                                                                    %>
-                                                                </optgroup>
+                                                                    }
+                                                                %>
                                                             </select>
-                                                        </div>
-                                                    </form>
+                                                        </form>
+                                                    </div>
+
                                                     <br/><br/>
-                                                    121 King Street, Melbourne, Australia
-                                                    <br/>
-                                                    Phone: +61 3 8376 6284
-                                                    <br/>
-                                                    info@envato.com
+
+                                                    <div class="col-md-6" style="padding-left: 0px;">
+                                                        <select data-plugin-selectTwo class="form-control populate" required>
+                                                            <option value="">Select a contact</option>
+                                                            <%
+                                                                if (contacts != null && contacts.size() > 0) {
+                                                                    for (int i = 0; i < contacts.size(); i++) {
+                                                            %>
+                                                            <option value="<%=contacts.get(i).getId()%>"><%=contacts.get(i).getName()%></option>
+                                                            <%  }
+                                                                }
+                                                                contacts = null;
+                                                                session.setAttribute("contacts", contacts);
+                                                            %>
+                                                        </select>
+                                                    </div>
+
+                                                    <br/><br/>
+
+
+
                                                 </address>
                                             </div>
                                         </div>
@@ -101,11 +133,19 @@
                                             <div class="bill-data text-right">
                                                 <p class="mb-none">
                                                     <span class="text-dark">Date:</span>
-                                                    <span class="value"></span>
+                                                    <span class="value" style="min-width: 100px">
+                                                        <input  type="text" data-plugin-datepicker class="form-control">
+                                                    </span>
                                                 </p>
                                                 <p class="mb-none">
                                                     <span class="text-dark">Terms:</span>
-                                                    <span class="value">06/20/2014</span>
+                                                    <span class="value" style="min-width: 100px">
+                                                        <select class="form-control input-sm mb-md">
+                                                            <option value="0">COD</option>
+                                                            <option value="14">14 Days</option>
+                                                            <option value="30">30 Days</option>
+                                                        </select>
+                                                    </span>
                                                 </p>
                                             </div>
                                         </div>
@@ -116,30 +156,20 @@
                                     <table class="table invoice-items">
                                         <thead>
                                             <tr class="h4 text-dark">
-                                                <th id="cell-id"     class="text-weight-semibold">#</th>
+                                                <th id="cell-qty"    class="text-center text-weight-semibold">Quantity</th>
                                                 <th id="cell-item"   class="text-weight-semibold">Item</th>
                                                 <th id="cell-desc"   class="text-weight-semibold">Description</th>
-                                                <th id="cell-price"  class="text-center text-weight-semibold">Price</th>
-                                                <th id="cell-qty"    class="text-center text-weight-semibold">Quantity</th>
-                                                <th id="cell-total"  class="text-center text-weight-semibold">Total</th>
+                                                <th id="cell-price"  class="text-center text-weight-semibold">Unit Price</th>
+                                                <th id="cell-total"  class="text-center text-weight-semibold">Amount</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <td>123456</td>
+                                                <td class="text-center">2</td>
                                                 <td class="text-weight-semibold text-dark">Porto HTML5 Template</td>
                                                 <td>Multipourpouse Website Template</td>
                                                 <td class="text-center">$14.00</td>
-                                                <td class="text-center">2</td>
                                                 <td class="text-center">$28.00</td>
-                                            </tr>
-                                            <tr>
-                                                <td>654321</td>
-                                                <td class="text-weight-semibold text-dark">Tucson HTML5 Template</td>
-                                                <td>Awesome Website Template</td>
-                                                <td class="text-center">$17.00</td>
-                                                <td class="text-center">1</td>
-                                                <td class="text-center">$17.00</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -147,7 +177,14 @@
 
                                 <div class="invoice-summary">
                                     <div class="row">
-                                        <div class="col-sm-4 col-sm-offset-8">
+                                        <div class="col-sm-8">
+                                            <p>Terms & Conditions</p>
+                                            <ul>
+                                                <li>Acceptance of this Sales Order constitutes a contract between the buyer & Phuture International Pte Ltd <br>whereby buyer will adhere to conditions stated on this Sales Order</li>
+                                                <li>Buyer shall be liable for at least 50% of total sales amount if buyer opt to cancel the order</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-sm-4">
                                             <table class="table h5 text-dark">
                                                 <tbody>
                                                     <tr class="b-top-none">
@@ -155,16 +192,17 @@
                                                         <td class="text-left">$73.00</td>
                                                     </tr>
                                                     <tr>
-                                                        <td colspan="2">Shipping</td>
+                                                        <td colspan="2">7% GST</td>
                                                         <td class="text-left">$0.00</td>
                                                     </tr>
                                                     <tr class="h4">
-                                                        <td colspan="2">Grand Total</td>
+                                                        <td colspan="2">Total (SGD)</td>
                                                         <td class="text-left">$73.00</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
                                         </div>
+
                                     </div>
                                 </div>
                             </div>
