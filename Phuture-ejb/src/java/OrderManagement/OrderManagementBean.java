@@ -147,7 +147,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
     }
 
     @Override
-    public ReturnHelper updateSalesConfirmationOrderContactDetails(Long salesConfirmationOrderID, String name, String email, String officeNo, String mobileNo, String faxNo, String address, boolean adminOverwrite) {
+    public ReturnHelper updateSalesConfirmationOrderContactDetails(Long salesConfirmationOrderID, String name, String email, String officeNo, String mobileNo, String faxNo, String address, Boolean adminOverwrite) {
         System.out.println("OrderManagementBean: updateSalesConfirmationOrderContactDetails() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -234,12 +234,33 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             }
             result.setResult(true);
             result.setDescription("Editable SCO.");
+        } catch (NoResultException ex) {
+            System.out.println("OrderManagementBean: checkIfSCOisEditable() can not find SCO");
+            result.setDescription("Unable to complete request, SCO not found.");
         } catch (Exception ex) {
             System.out.println("OrderManagementBean: checkIfSCOisEditable() failed");
             result.setDescription("Internal server error.");
             ex.printStackTrace();
         }
         return result;
+    }
+
+    @Override
+    public SalesConfirmationOrder getSalesConfirmationOrder(Long salesConfirmationOrderID) {
+        System.out.println("OrderManagementBean: getSalesConfirmationOrder() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        try {
+            Query q = em.createQuery("SELECT s FROM SalesConfirmationOrder s WHERE s.id=:id AND s.isDeleted=false");
+            q.setParameter("id", salesConfirmationOrderID);
+            SalesConfirmationOrder salesConfirmationOrder = (SalesConfirmationOrder) q.getSingleResult();
+            return salesConfirmationOrder;
+        } catch (Exception ex) {
+            System.out.println("OrderManagementBean: getSalesConfirmationOrder() failed");
+            result.setDescription("Internal server error.");
+            ex.printStackTrace();
+            return null;
+        }
     }
 
     @Override
@@ -278,24 +299,118 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
     }
 
     @Override
-    public ReturnHelper addSCOlineItem(Long salesConfirmationOrderID, String itemName, String itemDescription, Integer itemQty, Double itemTotalPrice) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public ReturnHelper addSCOlineItem(Long salesConfirmationOrderID, String itemName, String itemDescription, Integer itemQty, Double itemTotalPrice, Boolean adminOverwrite) {
+        System.out.println("OrderManagementBean: addSCOlineItem() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        try {
+            ReturnHelper checkResult = checkIfSCOisEditable(salesConfirmationOrderID, adminOverwrite);
+            if (!checkResult.getResult()) {
+                result.setDescription(checkResult.getDescription());
+                return result;
+            }
+            LineItem lineItem = new LineItem();
+            lineItem.setItemName(itemName);
+            lineItem.setItemDescription(itemDescription);
+            lineItem.setItemQty(itemQty);
+            lineItem.setItemTotalPrice(itemTotalPrice);
+            em.persist(lineItem);
+            Query q = em.createQuery("SELECT s FROM SalesConfirmationOrder s WHERE s.id=:id");
+            q.setParameter("id", salesConfirmationOrderID);
+            SalesConfirmationOrder salesConfirmationOrder = (SalesConfirmationOrder) q.getResultList();
+            List<LineItem> lineItems = salesConfirmationOrder.getItems();
+            lineItems.add(lineItem);
+            salesConfirmationOrder.setItems(lineItems);
+            em.merge(salesConfirmationOrder);
+            result.setResult(true);
+            result.setDescription("Line item added.");
+        } catch (Exception ex) {
+            System.out.println("OrderManagementBean: addSCOlineItem() failed");
+            result.setDescription("Unable to add line item, internal server error.");
+            ex.printStackTrace();
+        }
+        return result;
     }
 
     @Override
-    public ReturnHelper updateSCOlineItem(Long lineItemID, String newItemName, String newItemDescription, Integer newItemQty, Double newItemTotalPrice) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public ReturnHelper updateSCOlineItem(Long salesConfirmationOrderID, Long lineItemID, String newItemName, String newItemDescription, Integer newItemQty, Double newItemTotalPrice, Boolean adminOverwrite) {
+        System.out.println("OrderManagementBean: updateSCOlineItem() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        try {
+            ReturnHelper checkResult = checkIfSCOisEditable(salesConfirmationOrderID, adminOverwrite);
+            if (!checkResult.getResult()) {
+                result.setDescription(checkResult.getDescription());
+                return result;
+            }
+            Query q = em.createQuery("SELECT l FROM LineItem l WHERE l.id=:id");
+            q.setParameter("id", lineItemID);
+            LineItem lineItem = (LineItem) q.getSingleResult();
+            lineItem.setItemName(newItemName);
+            lineItem.setItemDescription(newItemDescription);
+            lineItem.setItemQty(newItemQty);
+            lineItem.setItemTotalPrice(newItemTotalPrice);
+            em.merge(lineItem);
+            result.setResult(true);
+            result.setDescription("Line item updated.");
+        } catch (Exception ex) {
+            System.out.println("OrderManagementBean: updateSCOlineItem() failed");
+            result.setDescription("Unable to update line item, internal server error.");
+            ex.printStackTrace();
+            return null;
+        }
+        return result;
     }
 
     @Override
-    public ReturnHelper deleteSCOlineItem(Long lineItemID) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public ReturnHelper deleteSCOlineItem(Long salesConfirmationOrderID, Long lineItemID, Boolean adminOverwrite) {
+        System.out.println("OrderManagementBean: deleteSCOlineItem() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        try {
+            ReturnHelper checkResult = checkIfSCOisEditable(salesConfirmationOrderID, adminOverwrite);
+            if (!checkResult.getResult()) {
+                result.setDescription(checkResult.getDescription());
+                return result;
+            }
+            Query q = em.createQuery("SELECT l FROM LineItem l WHERE l.id=:id");
+            q.setParameter("id", lineItemID);
+            LineItem lineItem = (LineItem) q.getSingleResult();
+            q = em.createQuery("SELECT s FROM SalesConfirmationOrder s WHERE s.id=:id");
+            q.setParameter("id", salesConfirmationOrderID);
+            SalesConfirmationOrder salesConfirmationOrder = (SalesConfirmationOrder) q.getResultList();
+            List<LineItem> lineItems = salesConfirmationOrder.getItems();
+            lineItems.remove(lineItem);
+            salesConfirmationOrder.setItems(lineItems);
+            em.merge(salesConfirmationOrder);
+            em.remove(lineItem);
+            result.setResult(true);
+            result.setDescription("Line item deleted.");
+        } catch (Exception ex) {
+            System.out.println("OrderManagementBean: deleteSCOlineItem() failed");
+            result.setDescription("Unable to delete line item, internal server error.");
+            ex.printStackTrace();
+            return null;
+        }
+        return result;
     }
 
     @Override
     public List<LineItem> listSCOlineItems(Long salesConfirmationOrderID) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        System.out.println("OrderManagementBean: listSCOlineItems() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        try {
+            Query q = em.createQuery("SELECT s FROM SalesConfirmationOrder s WHERE s.id=:id");
+            q.setParameter("id", salesConfirmationOrderID);
+            SalesConfirmationOrder salesConfirmationOrder = (SalesConfirmationOrder) q.getResultList();
+            List<LineItem> lineItems = salesConfirmationOrder.getItems();
+            return lineItems;
+        } catch (Exception ex) {
+            System.out.println("OrderManagementBean: listSCOlineItems() failed");
+            ex.printStackTrace();
+            return null;
+        }
     }
-    
-    
+
 }
