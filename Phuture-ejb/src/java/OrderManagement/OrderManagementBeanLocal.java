@@ -11,16 +11,17 @@ public interface OrderManagementBeanLocal {
     //SCO
     public ReturnHelper createSalesConfirmationOrder(String salesConfirmationOrderNumber, Long customerID, Long salesStaffID, Integer terms, String remarks, String notes);
     public ReturnHelper updateSalesConfirmationOrder(Long salesConfirmationOrderID, String newSalesConfirmationOrderNumber, Long newCustomerID, Long newSalesStaffID, Integer newTerms, String newRemarks, String newNotes, Boolean adminOverwrite);
-    public ReturnHelper updateSalesConfirmationOrderContactDetails(Long salesConfirmationOrderID, String name, String email, String officeNo, String mobileNo, String faxNo, String address, boolean adminOverwrite);
+    public ReturnHelper updateSalesConfirmationOrderContactDetails(Long salesConfirmationOrderID, String name, String email, String officeNo, String mobileNo, String faxNo, String address, Boolean adminOverwrite);
     public ReturnHelper deleteSalesConfirmationOrder(Long salesConfirmationOrderID);
     public ReturnHelper checkIfSCOisEditable(Long salesConfirmationOrderID, Boolean adminOverwrite);
     
+    public SalesConfirmationOrder getSalesConfirmationOrder(Long salesConfirmationOrderID);
     public List<SalesConfirmationOrder> listAllSalesConfirmationOrder();
     public List<SalesConfirmationOrder> listCustomerSalesConfirmationOrder(Long customerID);
     
-    public ReturnHelper addSCOlineItem(Long salesConfirmationOrderID, String itemName, String itemDescription, Integer itemQty, Double itemTotalPrice);
-    public ReturnHelper updateSCOlineItem(Long lineItemID, String newItemName, String newItemDescription, Integer newItemQty, Double newItemTotalPrice);
-    public ReturnHelper deleteSCOlineItem(Long lineItemID);
+    public ReturnHelper addSCOlineItem(Long salesConfirmationOrderID, String itemName, String itemDescription, Integer itemQty, Double itemTotalPrice,Boolean adminOverwrite);
+    public ReturnHelper updateSCOlineItem(Long salesConfirmationOrderID, Long lineItemID, String newItemName, String newItemDescription, Integer newItemQty, Double newItemTotalPrice, Boolean adminOverwrite);
+    public ReturnHelper deleteSCOlineItem(Long salesConfirmationOrderID, Long lineItemID, Boolean adminOverwrite);
     public List<LineItem> listSCOlineItems(Long salesConfirmationOrderID);
             
     //DO
