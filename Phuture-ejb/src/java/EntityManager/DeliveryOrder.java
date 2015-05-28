@@ -110,6 +110,54 @@ public class DeliveryOrder implements Serializable {
         this.dateDelivered = dateDelivered;
     }
 
+    public String getShippingContactName() {
+        return shippingContactName;
+    }
+
+    public void setShippingContactName(String shippingContactName) {
+        this.shippingContactName = shippingContactName;
+    }
+
+    public String getShippingContactEmail() {
+        return shippingContactEmail;
+    }
+
+    public void setShippingContactEmail(String shippingContactEmail) {
+        this.shippingContactEmail = shippingContactEmail;
+    }
+
+    public String getShippingContactOfficeNo() {
+        return shippingContactOfficeNo;
+    }
+
+    public void setShippingContactOfficeNo(String shippingContactOfficeNo) {
+        this.shippingContactOfficeNo = shippingContactOfficeNo;
+    }
+
+    public String getShippingContactMobileNo() {
+        return shippingContactMobileNo;
+    }
+
+    public void setShippingContactMobileNo(String shippingContactMobileNo) {
+        this.shippingContactMobileNo = shippingContactMobileNo;
+    }
+
+    public String getShippingContactFaxNo() {
+        return shippingContactFaxNo;
+    }
+
+    public void setShippingContactFaxNo(String shippingContactFaxNo) {
+        this.shippingContactFaxNo = shippingContactFaxNo;
+    }
+
+    public String getShippingContactAddress() {
+        return shippingContactAddress;
+    }
+
+    public void setShippingContactAddress(String shippingContactAddress) {
+        this.shippingContactAddress = shippingContactAddress;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
