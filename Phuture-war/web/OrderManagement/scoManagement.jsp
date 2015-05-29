@@ -19,14 +19,11 @@
     <body onload="alertFunc()">
         <jsp:include page="../displayNotification.jsp" />
         <script>
-            $(document).ready(function () {
-                $("#btn1").click(function () {
-                    $("#lol").append(" <b>Appended text</b>.");
-                });
-            });
-
             function createSCO() {
                 window.location.href = "../OrderManagementController?target=ListAllCustomer";
+            }
+            function viewSCO(id) {
+                window.location.href = "../OrderManagementController?target=RetrieveSCO&id=" + id;
             }
         </script>
 
@@ -87,7 +84,9 @@
                                             <td><%=salesConfirmationOrders.get(i).getDateCreated()%></td>
                                             <td>$$</td>
                                             <td><%=salesConfirmationOrders.get(i).getStatus()%></td>
-                                            <td><input type="button" class="btn btn-default btn-block" value="View" onclick="javascript:viewSCO'<%=salesConfirmationOrders.get(i).getId()%>')"/></td>
+                                            <td>
+                                                <button class="btn btn-default btn-block"  onclick="javascript:viewSCO(<%=salesConfirmationOrders.get(i).getId()%>)">View</button>
+                                            </td>
                                         </tr>
                                         <%
                                                 }
@@ -95,8 +94,6 @@
                                         %>
                                     </tbody>
                                 </table>
-
-                                <input type="hidden" name="id" value="">
                                 <input type="hidden" name="target" value="">    
                             </form>
 
