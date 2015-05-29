@@ -263,6 +263,26 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             return null;
         }
     }
+    
+    @Override
+    public Double getSalesConfirmationOrderTotalPrice(Long salesConfirmationOrderID) {
+        System.out.println("OrderManagementBean: getSalesConfirmationOrder() called");
+        try {
+            Double totalPrice = 0.0;
+            Query q = em.createQuery("SELECT s FROM SalesConfirmationOrder s WHERE s.id=:id AND s.isDeleted=false");
+            q.setParameter("id", salesConfirmationOrderID);
+            SalesConfirmationOrder salesConfirmationOrder = (SalesConfirmationOrder) q.getSingleResult();
+            List<LineItem> lineItems = salesConfirmationOrder.getItems();
+            for (LineItem lineItem : lineItems) {
+                totalPrice = totalPrice + (lineItem.getItemUnitPrice()*lineItem.getItemQty());
+            }
+            return totalPrice;
+        } catch (Exception ex) {
+            System.out.println("OrderManagementBean: getSalesConfirmationOrderTotalPrice() failed");
+            ex.printStackTrace();
+            return null;
+        }
+    }
 
     @Override
     public List<SalesConfirmationOrder> listAllSalesConfirmationOrder() {
