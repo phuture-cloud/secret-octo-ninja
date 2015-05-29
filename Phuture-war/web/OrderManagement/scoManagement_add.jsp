@@ -1,3 +1,4 @@
+<%@page import="EntityManager.SalesConfirmationOrder"%>
 <%@page import="EntityManager.Contact"%>
 <%@page import="EntityManager.Customer"%>
 <%@page import="EntityManager.Staff"%>
@@ -7,6 +8,7 @@
     Staff staff = (Staff) (session.getAttribute("staff"));
     List<Customer> customers = (List<Customer>) (session.getAttribute("customers"));
     List<Contact> contacts = (List<Contact>) (session.getAttribute("contacts"));
+    SalesConfirmationOrder sco = (SalesConfirmationOrder) (session.getAttribute("sco"));
     Contact contact = null;
     if (session.isNew()) {
         response.sendRedirect("../index.jsp?errMsg=Invalid Request. Please login.");
@@ -21,12 +23,23 @@
     <head>
         <jsp:include page="../head.html" />
     </head>
-    <body>
+    <body onload="alertFunc()">
+        <jsp:include page="../displayNotification.jsp" />
         <section class="body">
             <script>
+                $(document).ready(function () {
+                    $('#input_itemQty').change(function () {
+                        var itemUnitPrice = parseFloat($('#input_itemUnitPrice').val());
+                        var itemQty = parseInt($('#input_itemQty').val());
+                        var itemAmount = itemUnitPrice * itemQty;
+                        $('#input_itemAmount').val(itemAmount);
+                    });
+                });
+
                 function back() {
                     window.location.href = "../OrderManagementController?target=ListAllSCO";
                 }
+
                 function getCustomerContacts() {
                     window.onbeforeunload = null;
                     var customerID = document.getElementById("customerList").value;
@@ -35,6 +48,7 @@
                         window.location.href = "../OrderManagementController?target=ListCustomerContacts&id=" + customerID + "&scoNumber=" + scoNumber;
                     }
                 }
+
                 function getCustomerContact() {
                     window.onbeforeunload = null;
                     var customerID = document.getElementById("customerList").value;
@@ -54,13 +68,14 @@
 
                 function addLineItemToExistingSCO() {
                     window.onbeforeunload = null;
+                }
 
+                function saveSCO() {
                 }
 
                 window.onbeforeunload = function () {
                     return 'There are unsaved changes to this page. If you continue, you will lose them';
                 };
-
             </script>
             <jsp:include page="../header.jsp" />
 
@@ -230,18 +245,18 @@
                                                             <span class="input-group-addon">
                                                                 <i class="fa fa-dollar"></i>
                                                             </span>
-                                                            <input type="number" class="form-control" name="itemUnitPrice" step="any" required/>
+                                                            <input type="number" class="form-control" id="input_itemUnitPrice" name="itemUnitPrice" step="any" required/>
                                                         </div>
                                                     </td>
                                                     <td class="text-center">
-                                                        <input type="number" class="form-control" name="itemQty" required/>
+                                                        <input type="number" class="form-control" id="input_itemQty" name="itemQty" required/>
                                                     </td>
                                                     <td class="text-center">
                                                         <div class="input-group">
                                                             <span class="input-group-addon">
                                                                 <i class="fa fa-dollar"></i>
                                                             </span>
-                                                            <input type="number" class="form-control" name="amount" step="any" required/>
+                                                            <input type="number" class="form-control" id="input_itemAmount" name="itemAmount" step="any" disabled/>
                                                         </div>
                                                     </td>
                                                     <td class="text-center">
@@ -249,7 +264,7 @@
                                                             if (scoID == null || scoID.isEmpty()) {
                                                                 out.print("<button class='btn btn-default btn-block' onclick='javascript:addLineItemToNewSCO()'>Add Item</button>");
                                                             } else {
-                                                                out.print("<button class='btn btn-default btn-block' onclick='addLineItemToExistingSCO'>Add Item</button>");
+                                                                out.print("<button class='btn btn-default btn-block' onclick='javascript:addLineItemToExistingSCO()'>Add Item</button>");
                                                             }%>
                                                     </td>
                                                 </tr>
@@ -293,13 +308,11 @@
                                 </div>
 
                                 <div class="text-right mr-lg">
-
                                     <a href="#" target="_blank" class="btn btn-default"><i class="fa fa-print"></i> Print PDF</a>
                                     <a href="#" class="btn btn-danger">Delete</a>
                                     <a href="#" class="btn btn-primary">Generate PO</a>
                                     <button class="btn btn-primary">Generate DO</button>
-                                    <button class="btn btn-success" onmousedown="changed_flag = 0">Save</button>
-
+                                    <button class="btn btn-success" onclick="javascript:saveSCO()">Save</button>
                                 </div>
                             </div>
 
@@ -309,14 +322,11 @@
                     </form>
                     <!-- end: page -->
 
-
-
                 </section>
             </div>
         </section>
-
-
         <jsp:include page="../foot.html" />
+
     </body>
 </html>
 <%

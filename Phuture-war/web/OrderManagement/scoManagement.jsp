@@ -19,14 +19,14 @@
     <body onload="alertFunc()">
         <jsp:include page="../displayNotification.jsp" />
         <script>
-            $(document).ready(function () {
-                $("#btn1").click(function () {
-                    $("#lol").append(" <b>Appended text</b>.");
-                });
-            });
-
             function createSCO() {
                 window.location.href = "../OrderManagementController?target=ListAllCustomer";
+            }
+            function viewSCO(id) {
+                scoManagement.id.value = id;
+                scoManagement.target.value = "RetrieveSCO";
+                document.scoManagement.action = "../OrderManagementController";
+                document.scoManagement.submit();
             }
         </script>
 
@@ -73,7 +73,7 @@
                                             <th>Date</th>
                                             <th>Total Amount</th>
                                             <th>Status</th>
-                                            <th style="width: 300px;">Action</th>
+                                            <th style="width: 300px; text-align: center">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -87,7 +87,9 @@
                                             <td><%=salesConfirmationOrders.get(i).getDateCreated()%></td>
                                             <td>$$</td>
                                             <td><%=salesConfirmationOrders.get(i).getStatus()%></td>
-                                            <td><input type="button" class="btn btn-default btn-block" value="View" onclick="javascript:viewSCO'<%=salesConfirmationOrders.get(i).getId()%>')"/></td>
+                                            <td>
+                                                <button class="btn btn-default btn-block" onclick="javascript:viewSCO(<%=salesConfirmationOrders.get(i).getId()%>)">View</button>
+                                            </td>
                                         </tr>
                                         <%
                                                 }
@@ -95,8 +97,7 @@
                                         %>
                                     </tbody>
                                 </table>
-
-                                <input type="hidden" name="id" value="">
+                                <input type="hidden" name="id" value="">    
                                 <input type="hidden" name="target" value="">    
                             </form>
 
