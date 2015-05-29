@@ -29,6 +29,7 @@ public class OrderManagementController extends HttpServlet {
     HttpSession session;
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        System.out.println("Welcome to OrderManagementController");
         String target = request.getParameter("target");
         String id = request.getParameter("id");
         String scoNumber = request.getParameter("scoNumber");
@@ -120,11 +121,13 @@ public class OrderManagementController extends HttpServlet {
 
                 case "RetrieveSCO":
                     if (checkLogin(response)) {
+                        System.out.println("in");
                         List<Customer> customers = customerManagementBean.listCustomers();
                         if (customers == null) {
                             nextPage = "error500.html";
                         } else {
                             session.setAttribute("customers", customers);
+                            System.out.println("id >>>>>>>>>>>>>>>>>>>>>" + id);
                             session.setAttribute("sco", orderManagementBean.getSalesConfirmationOrder(Long.parseLong(id)));
                             nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id;
                         }
