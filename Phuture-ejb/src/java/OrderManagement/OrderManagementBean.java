@@ -263,26 +263,6 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             return null;
         }
     }
-    
-    @Override
-    public Double getSalesConfirmationOrderTotalPrice(Long salesConfirmationOrderID) {
-        System.out.println("OrderManagementBean: getSalesConfirmationOrder() called");
-        try {
-            Double totalPrice = 0.0;
-            Query q = em.createQuery("SELECT s FROM SalesConfirmationOrder s WHERE s.id=:id AND s.isDeleted=false");
-            q.setParameter("id", salesConfirmationOrderID);
-            SalesConfirmationOrder salesConfirmationOrder = (SalesConfirmationOrder) q.getSingleResult();
-            List<LineItem> lineItems = salesConfirmationOrder.getItems();
-            for (LineItem lineItem : lineItems) {
-                totalPrice = totalPrice + (lineItem.getItemUnitPrice()*lineItem.getItemQty());
-            }
-            return totalPrice;
-        } catch (Exception ex) {
-            System.out.println("OrderManagementBean: getSalesConfirmationOrderTotalPrice() failed");
-            ex.printStackTrace();
-            return null;
-        }
-    }
 
     @Override
     public List<SalesConfirmationOrder> listAllSalesConfirmationOrder() {
@@ -342,6 +322,12 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             List<LineItem> lineItems = salesConfirmationOrder.getItems();
             lineItems.add(lineItem);
             salesConfirmationOrder.setItems(lineItems);
+            //Update SCO total price
+            Double totalPrice = 0.0;
+            for (LineItem curLineItem : lineItems) {
+                totalPrice = totalPrice + (curLineItem.getItemUnitPrice()*curLineItem.getItemQty());
+            }
+            salesConfirmationOrder.setTotalPrice(totalPrice);
             em.merge(salesConfirmationOrder);
             result.setResult(true);
             result.setDescription("Line item added.");
@@ -372,6 +358,17 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             lineItem.setItemQty(newItemQty);
             lineItem.setItemUnitPrice(newItemTotalPrice);
             em.merge(lineItem);
+            //Update SCO total price
+            Double totalPrice = 0.0;
+            q = em.createQuery("SELECT s FROM SalesConfirmationOrder s WHERE s.id=:id AND s.isDeleted=false");
+            q.setParameter("id", salesConfirmationOrderID);
+            SalesConfirmationOrder salesConfirmationOrder = (SalesConfirmationOrder) q.getSingleResult();
+            List<LineItem> lineItems = salesConfirmationOrder.getItems();
+            for (LineItem curLineItem : lineItems) {
+                totalPrice = totalPrice + (curLineItem.getItemUnitPrice()*curLineItem.getItemQty());
+            }
+            salesConfirmationOrder.setTotalPrice(totalPrice);
+            em.merge(salesConfirmationOrder);
             result.setResult(true);
             result.setDescription("Line item updated.");
         } catch (Exception ex) {
@@ -403,6 +400,12 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             List<LineItem> lineItems = salesConfirmationOrder.getItems();
             lineItems.remove(lineItem);
             salesConfirmationOrder.setItems(lineItems);
+            //Update SCO total price
+            Double totalPrice = 0.0;
+            for (LineItem curLineItem : lineItems) {
+                totalPrice = totalPrice + (curLineItem.getItemUnitPrice()*curLineItem.getItemQty());
+            }
+            salesConfirmationOrder.setTotalPrice(totalPrice);
             em.merge(salesConfirmationOrder);
             em.remove(lineItem);
             result.setResult(true);
@@ -436,6 +439,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
                 em.remove(lineItem);
             }
             salesConfirmationOrder.setItems(lineItems);
+            salesConfirmationOrder.setTotalPrice(0.0);
             em.merge(salesConfirmationOrder);
             result.setResult(true);
             result.setDescription("Line items deleted.");

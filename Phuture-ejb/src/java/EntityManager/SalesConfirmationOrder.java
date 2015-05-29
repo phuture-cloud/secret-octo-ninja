@@ -50,11 +50,13 @@ public class SalesConfirmationOrder implements Serializable {
     private List<Invoice> invoices;
     @OneToMany
     private List<LineItem> items;
+    private Double totalPrice;
     @Lob
     private String remarks;//Will appear on order
     @Lob
     private String notes;//For internal staff use on the CRM system only
     private boolean isDeleted;
+    
 
     public SalesConfirmationOrder() {
         this.status = "Created";
@@ -65,6 +67,7 @@ public class SalesConfirmationOrder implements Serializable {
         this.isDeleted = false;
         this.remarks = "";
         this.notes = "";
+        this.totalPrice = 0.0;
     }
 
     public SalesConfirmationOrder(String salesConfirmationOrderNumber, Date salesConfirmationOrderDate, String customerName, Staff salesPerson, Integer term, String remarks, String notes) {
@@ -81,6 +84,7 @@ public class SalesConfirmationOrder implements Serializable {
         this.isDeleted = false;
         this.remarks = remarks;
         this.notes = notes;
+        this.totalPrice = 0.0;
     }
 
     public Long getId() {
@@ -269,6 +273,14 @@ public class SalesConfirmationOrder implements Serializable {
 
     public void setCustomerLink(Customer customerLink) {
         this.customerLink = customerLink;
+    }
+
+    public Double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(Double totalPrice) {
+        this.totalPrice = totalPrice;
     }
 
     @Override

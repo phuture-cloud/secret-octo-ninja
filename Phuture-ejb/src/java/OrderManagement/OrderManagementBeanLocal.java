@@ -17,7 +17,6 @@ public interface OrderManagementBeanLocal {
     public ReturnHelper checkIfSCOisEditable(Long salesConfirmationOrderID, Boolean adminOverwrite);
     
     public SalesConfirmationOrder getSalesConfirmationOrder(Long salesConfirmationOrderID);
-    public Double getSalesConfirmationOrderTotalPrice(Long salesConfirmationOrderID);
     public List<SalesConfirmationOrder> listAllSalesConfirmationOrder();
     public List<SalesConfirmationOrder> listCustomerSalesConfirmationOrder(Long customerID);
     
