@@ -1,5 +1,6 @@
 package OrderManagement;
 
+import EntityManager.Contact;
 import EntityManager.Customer;
 import EntityManager.Invoice;
 import EntityManager.LineItem;
@@ -24,7 +25,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
     private EntityManager em;
 
     @Override
-    public ReturnHelper createSalesConfirmationOrder(String salesConfirmationOrderNumber, Date salesConfirmationOrderDate, Long customerID, Long salesStaffID, Integer terms, String remarks, String notes) {
+    public ReturnHelper createSalesConfirmationOrder(String salesConfirmationOrderNumber, Date salesConfirmationOrderDate, Long customerID, Long contactID, Long salesStaffID, Integer terms, String remarks, String notes) {
         System.out.println("OrderManagementBean: addSalesConfirmationOrder() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -36,8 +37,11 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             q = em.createQuery("SELECT s FROM Staff s WHERE s.id=:id");
             q.setParameter("id", salesStaffID);
             Staff staff = (Staff) q.getSingleResult();
-            if (customer.getIsDeleted()) {
-                result.setDescription("Failed to create a new SCO. The selected customer may have been deleted while the SCO is being created. Please try again.");
+            q = em.createQuery("SELECT c FROM Contact c WHERE c.id=:id");
+            q.setParameter("id", contactID);
+            Contact contact = (Contact) q.getSingleResult();
+            if (customer.getIsDeleted() || contact.getIsDeleted()) {
+                result.setDescription("Failed to create a new SCO. The selected customer or contact may have been deleted while the SCO is being created. Please try again.");
                 return result;
             }
             if (remarks == null) {
@@ -48,6 +52,12 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             }
             SalesConfirmationOrder sco = new SalesConfirmationOrder(salesConfirmationOrderNumber, salesConfirmationOrderDate, customerName, staff, terms, remarks, notes);
             sco.setCustomer(customer);
+            sco.setContactAddress(contact.getAddress());
+            sco.setContactEmail(contact.getEmail());
+            sco.setContactOfficeNo(contact.getOfficeNo());
+            sco.setContactFaxNo(contact.getFaxNo());
+            sco.setContactMobileNo(contact.getMobileNo());
+            sco.setContactName(contact.getName());
             em.persist(sco);
             //Add links to other
             List<SalesConfirmationOrder> customerSCOs = customer.getSCOs();
