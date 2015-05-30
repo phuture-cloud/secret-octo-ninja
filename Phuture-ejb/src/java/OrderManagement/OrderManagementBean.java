@@ -23,6 +23,8 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
 
     @PersistenceContext
     private EntityManager em;
+    
+    private Double gstRate = 1.07;//7%
 
     @Override
     public ReturnHelper createSalesConfirmationOrder(String salesConfirmationOrderNumber, Date salesConfirmationOrderDate, Long customerID, Long contactID, Long salesStaffID, Integer terms, String remarks, String notes) {
@@ -335,7 +337,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             //Update SCO total price
             Double totalPrice = 0.0;
             for (LineItem curLineItem : lineItems) {
-                totalPrice = totalPrice + (curLineItem.getItemUnitPrice()*curLineItem.getItemQty());
+                totalPrice = totalPrice + (curLineItem.getItemUnitPrice()*curLineItem.getItemQty()*gstRate);
             }
             salesConfirmationOrder.setTotalPrice(totalPrice);
             em.merge(salesConfirmationOrder);
@@ -375,7 +377,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             SalesConfirmationOrder salesConfirmationOrder = (SalesConfirmationOrder) q.getSingleResult();
             List<LineItem> lineItems = salesConfirmationOrder.getItems();
             for (LineItem curLineItem : lineItems) {
-                totalPrice = totalPrice + (curLineItem.getItemUnitPrice()*curLineItem.getItemQty());
+                totalPrice = totalPrice + (curLineItem.getItemUnitPrice()*curLineItem.getItemQty()*gstRate);
             }
             salesConfirmationOrder.setTotalPrice(totalPrice);
             em.merge(salesConfirmationOrder);
@@ -413,7 +415,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             //Update SCO total price
             Double totalPrice = 0.0;
             for (LineItem curLineItem : lineItems) {
-                totalPrice = totalPrice + (curLineItem.getItemUnitPrice()*curLineItem.getItemQty());
+                totalPrice = totalPrice + (curLineItem.getItemUnitPrice()*curLineItem.getItemQty()*gstRate);
             }
             salesConfirmationOrder.setTotalPrice(totalPrice);
             em.merge(salesConfirmationOrder);
