@@ -204,15 +204,13 @@
                                                     }
                                                 %>
                                             </td>
-
-                                            <%
-                                                        }
-                                                    }
-                                                } else {
-                                                    out.print("<td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>");
-                                                }
-                                            %>
                                         </tr>
+                                        <%
+                                                    }
+                                                }
+                                            }
+                                        %>
+
                                     </tbody>
                                 </table>
                                 <input type="hidden" name="contactID" value="">

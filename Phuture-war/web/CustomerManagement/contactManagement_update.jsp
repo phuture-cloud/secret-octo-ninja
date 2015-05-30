@@ -79,7 +79,7 @@
                                     <div class="panel-body">
 
                                         <div class="form-group">
-                                            <label class="col-md-3 control-label">Name</label>
+                                            <label class="col-md-3 control-label">Name <span class="required">*</span></label>
                                             <div class="col-md-6">
                                                 <input type="text" class="form-control" name="name" value="<%=contact.getName()%>" required>
                                             </div>
@@ -87,7 +87,7 @@
 
 
                                         <div class="form-group">
-                                            <label class="col-md-3 control-label">Email</label>
+                                            <label class="col-md-3 control-label">Email <span class="required">*</span></label>
                                             <div class="col-md-6">
                                                 <div class="input-group">
                                                     <span class="input-group-addon">
@@ -99,7 +99,7 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="col-md-3 control-label">Telephone</label>
+                                            <label class="col-md-3 control-label">Telephone <span class="required">*</span></label>
                                             <div class="col-md-6">
                                                 <div class="input-group">
                                                     <span class="input-group-addon">
@@ -136,7 +136,7 @@
 
 
                                         <div class="form-group">
-                                            <label class="col-md-3 control-label">Address</label>
+                                            <label class="col-md-3 control-label">Address <span class="required">*</span></label>
                                             <div class="col-md-6">
                                                 <input type="text" class="form-control" name="address" value="<%=contact.getAddress()%>" required>
                                             </div>
