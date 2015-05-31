@@ -60,6 +60,7 @@ public class OrderManagementController extends HttpServlet {
                             nextPage = "OrderManagement/scoManagement.jsp";
                         }
                         session.removeAttribute("contacts");
+                        session.removeAttribute("sco");
                     }
                     break;
 
@@ -103,7 +104,7 @@ public class OrderManagementController extends HttpServlet {
                                 returnHelper = orderManagementBean.addSCOlineItem(scoID, itemName, itemDescription, Integer.parseInt(itemQty), Double.parseDouble(itemUnitPrice), false);
                                 if (returnHelper.getResult()) {
                                     session.setAttribute("sco", orderManagementBean.getSalesConfirmationOrder(scoID));
-                                    nextPage = "OrderManagement/scoManagement_add.jsp?goodMsg=" + returnHelper.getDescription() + "=&selectedCustomerID=" + customerID + "&scoNumber=" + scoNumber + "&id=" + scoID;
+                                    nextPage = "OrderManagement/scoManagement_add.jsp?goodMsg=" + returnHelper.getDescription() + "&selectedCustomerID=" + customerID + "&scoNumber=" + scoNumber + "&id=" + scoID;
                                 }
                             }
                         }

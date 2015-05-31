@@ -1,3 +1,5 @@
+<%@page import="java.text.NumberFormat"%>
+<%@page import="java.text.SimpleDateFormat"%>
 <%@page import="EntityManager.SalesConfirmationOrder"%>
 <%@page import="EntityManager.Contact"%>
 <%@page import="EntityManager.Customer"%>
@@ -27,12 +29,31 @@
         <section class="body">
             <script>
                 $(document).ready(function () {
-                    $('#input_itemQty').change(function () {
+                    $('#input_itemQty, #input_itemUnitPrice').change(function () {
                         var itemUnitPrice = parseFloat($('#input_itemUnitPrice').val());
                         var itemQty = parseInt($('#input_itemQty').val());
                         var itemAmount = itemUnitPrice * itemQty;
-                        $('#input_itemAmount').val(itemAmount);
+
+                        if (!isNaN(itemAmount)) {
+                            var subtotal = parseFloat($('#subtotal').val());
+                            var gst = parseFloat($('#gst').val());
+                            var totalPrice = parseFloat($('#totalPrice').val());
+
+                            var newSubtotal = subtotal + itemAmount;
+                            var newGst = gst + itemAmount;
+                            var newTotalPrice = totalPrice + itemAmount;
+                            $('#input_itemAmount').val(itemAmount.toFixed(2));
+                            $('#output_subtotal').text("$" + newSubtotal.toFixed(2));
+                            $('#output_gst').text("$" + newGst.toFixed(2));
+                            $('#output_totalPrice').text("$" + newTotalPrice.toFixed(2));
+                        }
+
+                        if (isNaN(itemUnitPrice) || isNaN(itemQty)) {
+                            $('#input_itemAmount').val("");
+                        }
+
                     });
+
                 });
 
                 function back() {
@@ -93,12 +114,12 @@
                         <div class="right-wrapper pull-right">
                             <ol class="breadcrumbs">
                                 <li>
-                                    <a href="workspace.jsp">
+                                    <a href="../AccountManagement/workspace.jsp">
                                         <i class="fa fa-home"></i>
                                     </a>
                                 </li>
-                                <li><span><a href= "../OrderManagementController?target=ListAllSCO">Sales Confirmation Order</a></span></li>
-                                <li><span>New Sales Confirmation Order &nbsp;&nbsp</span></li>
+                                <li><span><a href= "../OrderManagementController?target=ListAllSCO">Sales Confirmation Order Management</a></span></li>
+                                <li><span>Create Sales Confirmation Order &nbsp;&nbsp</span></li>
                             </ol>
                         </div>
                     </header>
@@ -149,7 +170,7 @@
                                                         <div class="col-md-6">
                                                             <%
                                                                 if (sco != null && scoID != null && !scoID.isEmpty()) {
-                                                                    out.print(sco.getCustomerName());
+                                                                    out.print("<b>" + sco.getCustomerName() + "</b>");
                                                                     out.print("<br>" + sco.getContactName());
                                                                     out.print("<br>" + sco.getContactAddress());
                                                                     out.print("<br>" + sco.getContactOfficeNo());
@@ -227,7 +248,9 @@
                                                                 if (selectedDate != null && !selectedDate.isEmpty()) {
                                                                     out.print("<input name='date' type='text' data-plugin-datepicker class='form-control' value='" + selectedDate + "' required>");
                                                                 } else if (sco != null && scoID != null && !scoID.isEmpty()) {
-                                                                    out.print("<input name='date' type='text' data-plugin-datepicker class='form-control' value='" + sco.getSalesConfirmationOrderDate() + "' required>");
+                                                                    SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
+                                                                    String date = DATE_FORMAT.format(sco.getSalesConfirmationOrderDate());
+                                                                    out.print("<input name='date' type='text' data-plugin-datepicker class='form-control' value='" + date + "' required>");
                                                                 } else {
                                                                     out.print("<input name='date' type='text' data-plugin-datepicker class='form-control' required placeholder='dd/mm/yyyy'>");
                                                                 }
@@ -239,29 +262,41 @@
                                                         <span class="value" style="min-width: 100px">
                                                             <select name="terms" class="form-control input-sm mb-md" required>
                                                                 <%
+                                                                    out.print("<option value=''>Select</option>");
                                                                     String selectedTerms = request.getParameter("selectedTerms");
                                                                     if (selectedTerms != null && !selectedTerms.isEmpty()) {
                                                                         if (selectedTerms.equals("0")) {
                                                                             out.print("<option value='0' selected>COD</option>");
+                                                                            out.print("<option value='14'>14 Days</option>");
+                                                                            out.print("<option value='30'>30 Days</option>");
                                                                         } else if (selectedTerms.equals("14")) {
-                                                                            out.print("<option value='14' selected>14 Days</option>");
+                                                                            out.print("<option value='0'>COD</option>");
+                                                                            out.print("<option value='14' selected>14 Days</op  tion>");
+                                                                            out.print("<option value='30'>30 Days</option>");
                                                                         } else if (selectedTerms.equals("30")) {
+                                                                            out.print("<option value='0'>COD</option>");
+                                                                            out.print("<option value='14'>14 Days</option>");
                                                                             out.print("<option value='30' selected>30 Days</option>");
                                                                         }
                                                                     } else if (sco != null && scoID != null && !scoID.isEmpty()) {
                                                                         if (sco.getTerms() == 0) {
                                                                             out.print("<option value='0' selected>COD</option>");
+                                                                            out.print("<option value='14'>14 Days</option>");
+                                                                            out.print("<option value='30'>30 Days</option>");
                                                                         } else if (sco.getTerms() == 14) {
+                                                                            out.print("<option value='0'>COD</option>");
                                                                             out.print("<option value='14' selected>14 Days</option>");
+                                                                            out.print("<option value='30'>30 Days</option>");
                                                                         } else if (sco.getTerms() == 30) {
+                                                                            out.print("<option value='0'>COD</option>");
+                                                                            out.print("<option value='14'>14 Days</option>");
                                                                             out.print("<option value='30' selected>30 Days</option>");
                                                                         }
+                                                                    } else {
+                                                                        out.print("<option value='0'>COD</option>");
+                                                                        out.print("<option value='14'>14 Days</option>");
+                                                                        out.print("<option value='30'>30 Days</option>");
                                                                     }
-
-                                                                    out.print("<option value=''>Select</option>");
-                                                                    out.print("<option value='0'>COD</option>");
-                                                                    out.print("<option value='14'>14 Days</option>");
-                                                                    out.print("<option value='30'>30 Days</option>");
                                                                 %>
                                                             </select>
                                                         </span>
@@ -296,18 +331,18 @@
                                                             <span class="input-group-addon">
                                                                 <i class="fa fa-dollar"></i>
                                                             </span>
-                                                            <input type="number" class="form-control" id="input_itemUnitPrice" name="itemUnitPrice" step="any" required/>
+                                                            <input type="number" class="form-control" id="input_itemUnitPrice" name="itemUnitPrice" min="0" step="any" required/>
                                                         </div>
                                                     </td>
                                                     <td class="text-center">
-                                                        <input type="number" class="form-control" id="input_itemQty" name="itemQty" required/>
+                                                        <input type="number" class="form-control" id="input_itemQty" min="0" name="itemQty" required/>
                                                     </td>
                                                     <td class="text-center">
                                                         <div class="input-group">
                                                             <span class="input-group-addon">
                                                                 <i class="fa fa-dollar"></i>
                                                             </span>
-                                                            <input type="number" class="form-control" id="input_itemAmount" name="itemAmount" step="any" disabled/>
+                                                            <input type="text" class="form-control" id="input_itemAmount" name="itemAmount" step="any" disabled/>
                                                         </div>
                                                     </td>
                                                     <td class="text-center">
@@ -322,13 +357,17 @@
                                                 <!-- loop line item page -->
                                                 <%
                                                     if (sco != null && scoID != null && !scoID.isEmpty()) {
+                                                        NumberFormat formatter = NumberFormat.getCurrencyInstance();
                                                         for (int i = 0; i < sco.getItems().size(); i++) {
+                                                            double price = 0;
                                                             out.print("<tr>");
                                                             out.print("<td class='text-weight-semibold text-dark'>" + sco.getItems().get(i).getItemName() + "</td>");
                                                             out.print("<td>" + sco.getItems().get(i).getItemDescription() + "</td>");
-                                                            out.print("<td class='text-center'>" + sco.getItems().get(i).getItemUnitPrice() + "</td>");
+                                                            price = sco.getItems().get(i).getItemUnitPrice();
+                                                            out.print("<td class='text-center'>" + formatter.format(price) + "</td>");
                                                             out.print("<td class='text-center'>" + sco.getItems().get(i).getItemQty() + "</td>");
-                                                            out.print("<td class='text-center'>" + (sco.getItems().get(i).getItemUnitPrice() * sco.getItems().get(i).getItemQty()) + "</td>");
+                                                            price = sco.getItems().get(i).getItemUnitPrice() * sco.getItems().get(i).getItemQty();
+                                                            out.print("<td class='text-center'>" + formatter.format(price) + "</td>");
                                                             out.print("<td><div class='btn-group' role='group' aria-label='...'>");
                                                             out.print("<button class='btn btn-default' onclick=''>Edit</button>");
                                                             out.print("<button class='btn btn-default' onclick=''>Remove</button>");
@@ -357,15 +396,48 @@
                                                     <tbody>
                                                         <tr class="b-top-none">
                                                             <td colspan="2">Subtotal</td>
-                                                            <td class="text-left">$<%out.print((sco.getTotalPrice() / 107) * 100);%></td>
+                                                            <td class="text-left">
+
+                                                                <%
+                                                                    double formatedPrice = 0;
+                                                                    NumberFormat formatter = NumberFormat.getCurrencyInstance();
+                                                                    if (scoID == null || scoID.isEmpty()) {
+                                                                        out.print("$0.00");
+                                                                    } else {
+                                                                        formatedPrice = (sco.getTotalPrice() / 107) * 100;
+                                                                        out.print("<span id='output_subtotal'>" + formatter.format(formatedPrice) + "</span>");
+                                                                        out.print("<input type='hidden' value='" + (sco.getTotalPrice() / 107) * 100 + "' id='subtotal'>");
+                                                                    }
+                                                                %>
+                                                            </td>
                                                         </tr>
                                                         <tr>
                                                             <td colspan="2">7% GST</td>
-                                                            <td class="text-left">$<%out.print((sco.getTotalPrice() / 107) * 7);%></td>
+                                                            <td class="text-left">
+                                                                <%
+                                                                    if (scoID == null || scoID.isEmpty()) {
+                                                                        out.print("$0.00");
+                                                                    } else {
+                                                                        formatedPrice = (sco.getTotalPrice() / 107) * 7;
+                                                                        out.print("<span id='output_gst'>" + formatter.format(formatedPrice) + "</span>");
+                                                                        out.print("<input type='hidden' value='" + (sco.getTotalPrice() / 107) * 7 + "' id='gst'>");
+                                                                    }
+                                                                %>
+                                                            </td>
                                                         </tr>
                                                         <tr class="h4">
                                                             <td colspan="2">Total (SGD)</td>
-                                                            <td class="text-left">$<%=sco.getTotalPrice()%></td>
+                                                            <td class="text-left">
+                                                                <%
+                                                                    if (scoID == null || scoID.isEmpty()) {
+                                                                        out.print("$0.00");
+                                                                    } else {
+                                                                        formatedPrice = sco.getTotalPrice();
+                                                                        out.print("<span id='output_totalPrice'>" + formatter.format(formatedPrice) + "</span>");
+                                                                        out.print("<input type='hidden' value='" + sco.getTotalPrice() + "' id='totalPrice'>");
+                                                                    }
+                                                                %>
+                                                            </td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
