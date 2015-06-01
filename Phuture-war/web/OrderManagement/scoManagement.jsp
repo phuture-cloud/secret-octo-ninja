@@ -1,3 +1,4 @@
+<%@page import="java.text.SimpleDateFormat"%>
 <%@page import="EntityManager.SalesConfirmationOrder"%>
 <%@page import="java.util.List"%>
 <%@page import="EntityManager.Staff"%>
@@ -84,7 +85,13 @@
                                         <tr>
                                             <td><%=salesConfirmationOrders.get(i).getSalesConfirmationOrderNumber()%></td>
                                             <td><a href="../CustomerManagementController?target=ListCustomerContacts&id=<%=salesConfirmationOrders.get(i).getCustomer().getId()%>"><%=salesConfirmationOrders.get(i).getCustomerName()%></a></td>
-                                            <td><%=salesConfirmationOrders.get(i).getDateCreated()%></td>
+                                            <td>
+                                                <%
+                                                    SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("d MMM yyyy HH:mm:ss");
+                                                    String date = DATE_FORMAT.format(salesConfirmationOrders.get(i).getDateCreated());
+                                                    out.print(date);
+                                                %>
+                                            </td>
                                             <td><%=salesConfirmationOrders.get(i).getTotalPrice()%></td>
                                             <td><%=salesConfirmationOrders.get(i).getStatus()%></td>
                                             <td>

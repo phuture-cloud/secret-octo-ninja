@@ -51,9 +51,7 @@
                         if (isNaN(itemUnitPrice) || isNaN(itemQty)) {
                             $('#input_itemAmount').val("");
                         }
-
                     });
-
                 });
 
                 function back() {
@@ -81,7 +79,8 @@
 
                 function addLineItemToNewSCO() {
                     window.onbeforeunload = null;
-                    scoManagement.target.value = "AddLineItemToNewSCO";
+                    scoManagement.target.value = "SaveSCO";
+                    scoManagement.source.value = "AddLineItemToNewSCO";
                     document.scoManagement.action = "../OrderManagementController";
                     document.scoManagement.submit();
                 }
@@ -89,6 +88,17 @@
                 function addLineItemToExistingSCO() {
                     window.onbeforeunload = null;
                 }
+
+                function saveSCO() {
+                    window.onbeforeunload = null;
+                    scoManagement.target.value = "SaveSCO";
+                    document.scoManagement.action = "../OrderManagementController";
+                    document.scoManagement.submit();
+                }
+
+                function updateSCO() {
+                }
+
                 function deleteSCO(id) {
                     window.onbeforeunload = null;
                     scoManagement.id.value = id;
@@ -97,12 +107,15 @@
                     document.scoManagement.submit();
                 }
 
-                function saveSCO() {
-                }
-
                 window.onbeforeunload = function () {
                     return 'There are unsaved changes to this page. If you continue, you will lose them';
                 };
+
+                $(function () {
+                    $('button[type=submit]').click(function (e) {
+                        window.onbeforeunload = null;
+                    }); 
+                });
             </script>
             <jsp:include page="../header.jsp" />
 
@@ -125,7 +138,7 @@
                     </header>
 
                     <!-- start: page -->
-                    <form name="scoManagement">
+                    <form name="scoManagement" action="../OrderManagementController">
                         <section class="panel">
                             <div class="panel-body">
                                 <div class="invoice">
@@ -143,7 +156,6 @@
                                                         out.print("<input type='text' class='form-control' id='scoNumber' name='scoNumber' placeholder='Enter SCO number' style='max-width: 300px' required/>");
                                                     }
                                                 %>
-
                                             </div>
                                             <br/>
                                             <div class="col-sm-6 text-right mt-md mb-md">
@@ -235,8 +247,8 @@
                                             <div class="col-md-6">
                                                 <div class="bill-data text-right">
                                                     <p class="mb-none">
-                                                        <span class="text-dark">Salesperson </span>
-                                                        <span class="value" style="min-width: 100px; font-size: 13pt;">
+                                                        <span class="text-dark">Salesperson: </span>
+                                                        <span class="value" style="min-width: 100px; font-size: 11pt; text-align: left;">
                                                             <%=staff.getName()%>
                                                         </span>
                                                     </p>
@@ -321,36 +333,38 @@
                                             <tbody>
                                                 <tr>
                                                     <td>
-                                                        <input type="text" class="form-control" name="itemName" required/>
+                                                        <input type="text" class="form-control" name="itemName"/>
                                                     </td>
                                                     <td>
-                                                        <input type="text" class="form-control" name="itemDescription" required/>
+                                                        <input type="text" class="form-control" name="itemDescription"/>
                                                     </td>
                                                     <td class="text-center">
                                                         <div class="input-group">
                                                             <span class="input-group-addon">
                                                                 <i class="fa fa-dollar"></i>
                                                             </span>
-                                                            <input type="number" class="form-control" id="input_itemUnitPrice" name="itemUnitPrice" min="0" step="any" required/>
+                                                            <input type="number" class="form-control" id="input_itemUnitPrice" name="itemUnitPrice" min="0" step="any"/>
                                                         </div>
                                                     </td>
                                                     <td class="text-center">
-                                                        <input type="number" class="form-control" id="input_itemQty" min="0" name="itemQty" required/>
+                                                        <input type="number" class="form-control" id="input_itemQty" min="0" name="itemQty"/>
                                                     </td>
                                                     <td class="text-center">
                                                         <div class="input-group">
                                                             <span class="input-group-addon">
                                                                 <i class="fa fa-dollar"></i>
                                                             </span>
-                                                            <input type="text" class="form-control" id="input_itemAmount" name="itemAmount" step="any" disabled/>
+                                                            <input type="text" class="form-control" id="input_itemAmount" name="itemAmount" disabled=""/>
                                                         </div>
                                                     </td>
                                                     <td class="text-center">
-                                                        <%                                                            if (scoID == null || scoID.isEmpty()) {
+                                                        <%
+                                                            if (scoID == null || scoID.isEmpty() || sco == null) {
                                                                 out.print("<button class='btn btn-default btn-block' onclick='javascript:addLineItemToNewSCO()'>Add Item</button>");
                                                             } else {
                                                                 out.print("<button class='btn btn-default btn-block' onclick='javascript:addLineItemToExistingSCO()'>Add Item</button>");
-                                                            }%>
+                                                            }
+                                                        %>
                                                     </td>
                                                 </tr>
 
@@ -401,7 +415,7 @@
                                                                 <%
                                                                     double formatedPrice = 0;
                                                                     NumberFormat formatter = NumberFormat.getCurrencyInstance();
-                                                                    if (scoID == null || scoID.isEmpty()) {
+                                                                    if (scoID == null || scoID.isEmpty() || sco == null) {
                                                                         out.print("$0.00");
                                                                     } else {
                                                                         formatedPrice = (sco.getTotalPrice() / 107) * 100;
@@ -415,7 +429,7 @@
                                                             <td colspan="2">7% GST</td>
                                                             <td class="text-left">
                                                                 <%
-                                                                    if (scoID == null || scoID.isEmpty()) {
+                                                                    if (scoID == null || scoID.isEmpty() || sco == null) {
                                                                         out.print("$0.00");
                                                                     } else {
                                                                         formatedPrice = (sco.getTotalPrice() / 107) * 7;
@@ -429,7 +443,7 @@
                                                             <td colspan="2">Total (SGD)</td>
                                                             <td class="text-left">
                                                                 <%
-                                                                    if (scoID == null || scoID.isEmpty()) {
+                                                                    if (scoID == null || scoID.isEmpty() || sco == null) {
                                                                         out.print("$0.00");
                                                                     } else {
                                                                         formatedPrice = sco.getTotalPrice();
@@ -446,43 +460,57 @@
                                     </div>
                                 </div>
 
-                                <div class="text-right mr-lg">
-                                    <a href="#" target="_blank" class="btn btn-default"><i class="fa fa-print"></i> Print PDF</a>
-                                    <button type="button" class="modal-with-move-anim btn btn-danger"  href="#modalRemove">Delete</button>
-                                    <div id="modalRemove" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
-                                        <section class="panel">
-                                            <header class="panel-heading">
-                                                <h2 class="panel-title">Are you sure?</h2>
-                                            </header>
-                                            <div class="panel-body">
-                                                <div class="modal-wrapper">
-                                                    <div class="modal-icon">
-                                                        <i class="fa fa-question-circle"></i>
-                                                    </div>
-                                                    <div class="modal-text">
-                                                        <p>Are you sure that you want to delete this Sales Confirmation Order?</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <footer class="panel-footer">
-                                                <div class="row">
-                                                    <div class="col-md-12 text-right">
-                                                        <button class="btn btn-primary modal-confirm" onclick="deleteSCO(<%=scoID%>)">Confirm</button>
-                                                        <button class="btn btn-default modal-dismiss">Cancel</button>
-                                                    </div>
-                                                </div>
-                                            </footer>
-                                        </section>
+                                <div class="row">
+                                    <div class="col-sm-6 mt-md">
+                                        <% if (sco != null && scoID != null && !scoID.isEmpty()) {%>
+                                        <a href="#" target="_blank" class="btn btn-default"><i class="fa fa-print"></i> Print PDF</a>
+                                        <%}%> 
                                     </div>
-                                    <button class="btn btn-primary" onclick="javascript:generatePO()">Generate PO</button>
-                                    <button class="btn btn-primary" onclick="javascript:generateDO()">Generate DO</button>
-                                    <button class="btn btn-success" onclick="javascript:saveSCO()">Save</button>
+                                    <div class="col-sm-6 text-right mt-md mb-md">
+                                        <input type="button" class="btn btn-default" onclick="javascript:back()" value="Back"/>
+                                        <% if (sco != null && scoID != null && !scoID.isEmpty()) {%>
+                                        <button type="button" class="modal-with-move-anim btn btn-danger"  href="#modalRemove">Delete</button>
+                                        <div id="modalRemove" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+                                            <section class="panel">
+                                                <header class="panel-heading">
+                                                    <h2 class="panel-title">Are you sure?</h2>
+                                                </header>
+                                                <div class="panel-body">
+                                                    <div class="modal-wrapper">
+                                                        <div class="modal-icon">
+                                                            <i class="fa fa-question-circle"></i>
+                                                        </div>
+                                                        <div class="modal-text">
+                                                            <p>Are you sure that you want to delete this Sales Confirmation Order?</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <footer class="panel-footer">
+                                                    <div class="row">
+                                                        <div class="col-md-12 text-right">
+                                                            <button class="btn btn-primary modal-confirm" onclick="deleteSCO(<%=scoID%>)">Confirm</button>
+                                                            <button class="btn btn-default modal-dismiss">Cancel</button>
+                                                        </div>
+                                                    </div>
+                                                </footer>
+                                            </section>
+                                        </div>
+                                        <% if (sco.getItems().size() > 0) {%>
+                                        <button class="btn btn-primary" onclick="javascript:generatePO()">Generate PO</button>
+                                        <button class="btn btn-primary" onclick="javascript:generateDO()">Generate DO</button>
+                                        <%}%> 
+                                        <button class="btn btn-success" onclick="javascript:updateSCO()">Save</button>
+                                        <%} else {%> 
+                                        <button class="btn btn-success"  type="submit">Save</button>
+                                        <%}%> 
+                                    </div>
                                 </div>
                             </div>
 
                         </section>
                         <input type="hidden" name="salesStaffID" value="<%=staff.getId()%>">    
-                        <input type="hidden" name="target" value="">    
+                        <input type="hidden" name="target" value="SaveSCO">    
+                        <input type="hidden" name="source" value="">    
                         <input type="hidden" name="id" value="">    
                     </form>
                     <!-- end: page -->
