@@ -1,5 +1,4 @@
 <%@page import="EntityManager.Customer"%>
-<%@page import="EntityManager.Customer"%>
 <%@page import="EntityManager.Contact"%>
 <%@page import="java.util.List"%>
 <%@page import="EntityManager.Staff"%>
@@ -7,23 +6,22 @@
 <%
     Staff staff = (Staff) (session.getAttribute("staff"));
     List<Contact> contacts = (List<Contact>) (session.getAttribute("contacts"));
+    List<Customer> customers = (List<Customer>) session.getAttribute("customers");
     if (session.isNew()) {
         response.sendRedirect("../index.jsp?errMsg=Invalid Request. Please login.");
     } else if (staff == null) {
         response.sendRedirect("../index.jsp?errMsg=Session Expired.");
     } else {
         String customerID = request.getParameter("id");
-        if (customerID == null || customerID.isEmpty()) {
+        if (customerID == null || customerID.isEmpty() || customers == null) {
             response.sendRedirect("customerManagement.jsp?errMsg=An error has occured.");
         } else {
-            List<Customer> customers = (List<Customer>) session.getAttribute("customers");
             Customer customer = new Customer();
             for (int i = 0; i < customers.size(); i++) {
                 if (customers.get(i).getId() == Long.parseLong(customerID)) {
                     customer = customers.get(i);
                 }
             }
-
 %>
 <!doctype html>
 <html class="fixed">
@@ -216,9 +214,7 @@
                                 <input type="hidden" name="contactID" value="">
                                 <input type="hidden" name="id" value="">
                                 <input type="hidden" name="target" value="">    
-
                             </div>
-
                         </section>
                     </form>
                     <!-- end: page -->

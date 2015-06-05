@@ -85,11 +85,6 @@
                     document.scoManagement.submit();
                 }
 
-                function addLineItemToExistingSCO() {
-                    window.onbeforeunload = null;
-                    alert("??");
-                }
-
                 function saveSCO() {
                     window.onbeforeunload = null;
                     scoManagement.target.value = "SaveSCO";
@@ -97,7 +92,25 @@
                     document.scoManagement.submit();
                 }
 
+                function addLineItemToExistingSCO(id) {
+                    window.onbeforeunload = null;
+                    scoManagement.id.value = id;
+                    scoManagement.target.value = "UpdateSCO";
+                    scoManagement.source.value = "AddLineItemToExistingSCO";
+                    document.scoManagement.action = "../OrderManagementController";
+                    document.scoManagement.submit();
+                }
+
                 function updateSCO() {
+                }
+
+                function RemoveLineItem(id, lineItemID) {
+                    window.onbeforeunload = null;
+                    scoManagement.id.value = id;
+                    scoManagement.lineItemID.value = lineItemID;
+                    scoManagement.target.value = "RemoveLineItem";
+                    document.scoManagement.action = "../OrderManagementController";
+                    document.scoManagement.submit();
                 }
 
                 function deleteSCO(id) {
@@ -109,7 +122,7 @@
                 }
 
                 window.onbeforeunload = function () {
-                    return 'There are unsaved changes to this page. If you continue, you will lose them';
+                    return 'There may have unsaved changes to this page. If you continue, you will lose them';
                 };
 
                 $(function () {
@@ -124,7 +137,7 @@
                 <jsp:include page="../sidebar.jsp" />
                 <section role="main" class="content-body">
                     <header class="page-header">
-                        <h2>Create Sales Confirmation Order</h2>
+                        <h2>Sales Confirmation Order</h2>
                         <div class="right-wrapper pull-right">
                             <ol class="breadcrumbs">
                                 <li>
@@ -133,7 +146,7 @@
                                     </a>
                                 </li>
                                 <li><span><a href= "../OrderManagementController?target=ListAllSCO">Sales Confirmation Order Management</a></span></li>
-                                <li><span>Create Sales Confirmation Order &nbsp;&nbsp</span></li>
+                                <li><span>Sales Confirmation Order &nbsp;&nbsp</span></li>
                             </ol>
                         </div>
                     </header>
@@ -187,8 +200,13 @@
                                                                     out.print("<br>" + sco.getContactName());
                                                                     out.print("<br>" + sco.getContactAddress());
                                                                     out.print("<br>" + sco.getContactOfficeNo());
-                                                                    out.print("<br>" + sco.getContactFaxNo());
-                                                                    out.print("<br>" + sco.getContactMobileNo());
+                                                                    if (sco.getContactFaxNo() != null && !sco.getContactFaxNo().isEmpty()) {
+                                                                        out.print("<br>" + sco.getContactFaxNo());
+                                                                    }
+                                                                    if (sco.getContactMobileNo() != null && !sco.getContactMobileNo().isEmpty()) {
+                                                                        out.print("<br>" + sco.getContactMobileNo());
+                                                                    }
+                                                                    out.print("<br><div class='text-right'><a href='#'>edit</a></div><br><br>");
                                                                 } else {
                                                             %>
                                                             <select id="customerList" name="customerID" data-plugin-selectTwo class="form-control populate" onchange="javascript:getCustomerContacts()" equired>
@@ -363,7 +381,7 @@
                                                             if (scoID == null || scoID.isEmpty() || sco == null) {
                                                                 out.print("<button class='btn btn-default btn-block' onclick='javascript:addLineItemToNewSCO()'>Add Item</button>");
                                                             } else {
-                                                                out.print("<button class='btn btn-default btn-block' onclick='javascript:addLineItemToExistingSCO()'>Add Item 2</button>");
+                                                                out.print("<button class='btn btn-default btn-block' onclick='javascript:addLineItemToExistingSCO(" + scoID + ")'>Add Item</button>");
                                                             }
                                                         %>
                                                     </td>
@@ -383,7 +401,7 @@
                                                             out.print("<td class='text-center'>" + sco.getItems().get(i).getItemQty() + "</td>");
                                                             price = sco.getItems().get(i).getItemUnitPrice() * sco.getItems().get(i).getItemQty();
                                                             out.print("<td class='text-center'>" + formatter.format(price) + "</td>");
-                                                            out.print("<td><button class='btn btn-default btn-block' onclick=''>Remove</button></td>");
+                                                            out.print("<td><button class='btn btn-default btn-block' onclick='javascript:RemoveLineItem(" + sco.getId() + "," + sco.getItems().get(i).getId() + ")'>Remove</button></td>");
                                                             out.print("</div>");
                                                             out.print("</tr>");
                                                         }
@@ -490,16 +508,18 @@
                                         <button class="btn btn-primary" onclick="javascript:generatePO()">Generate PO</button>
                                         <button class="btn btn-primary" onclick="javascript:generateDO()">Generate DO</button>
                                         <%}%> 
-                                        <button class="btn btn-success" onclick="javascript:updateSCO()">Save</button>
+                                        <button class="btn btn-success" onclick="javascript:updateSCO()">Save 2</button>
                                         <%} else {%> 
                                         <button class="btn btn-success"  type="submit">Save</button>
                                         <%}%> 
                                     </div>
                                 </div>
                             </div>
-
                         </section>
+
                         <input type="hidden" name="salesStaffID" value="<%=staff.getId()%>">    
+                        <input type="hidden" name="customerID" value="<%=sco.getCustomer().getId()%>">    
+                        <input type="hidden" name="lineItemID" value="">   
                         <input type="hidden" name="target" value="SaveSCO">    
                         <input type="hidden" name="source" value="">    
                         <input type="hidden" name="id" value="">    
@@ -510,9 +530,7 @@
             </div>
         </section>
         <jsp:include page="../foot.html" />
-
     </body>
 </html>
-<%
-    }
-%>
+<%}%>
+

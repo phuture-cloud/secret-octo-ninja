@@ -103,10 +103,12 @@ public class CustomerManagementController extends HttpServlet {
                 case "ListCustomerContacts":
                     if (checkLogin(response)) {
                         List<Contact> contacts = customerManagementBean.listCustomerContacts(Long.parseLong(id));
-                        if (contacts == null) {
+                        List<Customer> customers = customerManagementBean.listCustomers();
+                        if (contacts == null || customers == null) {
                             nextPage = "error500.html";
                         } else {
                             session.setAttribute("contacts", contacts);
+                            session.setAttribute("customers", customers);
                             nextPage = "CustomerManagement/contactManagement.jsp?id=" + id;
                         }
                     }
