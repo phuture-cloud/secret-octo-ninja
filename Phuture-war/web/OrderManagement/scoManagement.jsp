@@ -1,3 +1,4 @@
+<%@page import="java.text.NumberFormat"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="EntityManager.SalesConfirmationOrder"%>
 <%@page import="java.util.List"%>
@@ -92,7 +93,12 @@
                                                     out.print(date);
                                                 %>
                                             </td>
-                                            <td><%=salesConfirmationOrders.get(i).getTotalPrice()%></td>
+                                            <td>
+                                                <%
+                                                    NumberFormat formatter = NumberFormat.getCurrencyInstance();
+                                                    out.print(formatter.format(salesConfirmationOrders.get(i).getTotalPrice()));
+                                                %>
+                                            </td>
                                             <td><%=salesConfirmationOrders.get(i).getStatus()%></td>
                                             <td>
                                                 <button class="btn btn-default btn-block" onclick="javascript:viewSCO(<%=salesConfirmationOrders.get(i).getId()%>)">View</button>

@@ -51,7 +51,9 @@ public class OrderManagementController extends HttpServlet {
         try {
             switch (target) {
                 case "ListAllSCO":
+                    System.out.println("in");
                     if (checkLogin(response)) {
+                        System.out.println("out");
                         List<SalesConfirmationOrder> salesConfirmationOrders = orderManagementBean.listAllSalesConfirmationOrder();
                         if (salesConfirmationOrders == null) {
                             nextPage = "error500.html";
@@ -119,6 +121,11 @@ public class OrderManagementController extends HttpServlet {
                                 }
                             }
                         }
+                    }
+                    break;
+
+                case "UpdateSCO":
+                    if (checkLogin(response)) {
 
                     }
                     break;
@@ -151,13 +158,15 @@ public class OrderManagementController extends HttpServlet {
 
             if (nextPage.equals("")) {
                 response.sendRedirect("index.jsp?errMsg=Session Expired.");
+                return;
             } else {
                 response.sendRedirect(nextPage);
+                return;
             }
         } catch (Exception ex) {
             response.sendRedirect("OrderManagement/scoManagement.jsp?errMsg=An error has occured");
             ex.printStackTrace();
-
+            return;
         }
     }
 
@@ -165,7 +174,6 @@ public class OrderManagementController extends HttpServlet {
         try {
             Staff staff = (Staff) (session.getAttribute("staff"));
             if (staff == null) {
-                response.sendRedirect("index.jsp?errMsg=Session Expired.");
                 return false;
             } else {
                 return true;

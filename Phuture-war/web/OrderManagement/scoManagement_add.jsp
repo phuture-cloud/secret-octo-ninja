@@ -87,6 +87,7 @@
 
                 function addLineItemToExistingSCO() {
                     window.onbeforeunload = null;
+                    alert("??");
                 }
 
                 function saveSCO() {
@@ -114,7 +115,7 @@
                 $(function () {
                     $('button[type=submit]').click(function (e) {
                         window.onbeforeunload = null;
-                    }); 
+                    });
                 });
             </script>
             <jsp:include page="../header.jsp" />
@@ -362,7 +363,7 @@
                                                             if (scoID == null || scoID.isEmpty() || sco == null) {
                                                                 out.print("<button class='btn btn-default btn-block' onclick='javascript:addLineItemToNewSCO()'>Add Item</button>");
                                                             } else {
-                                                                out.print("<button class='btn btn-default btn-block' onclick='javascript:addLineItemToExistingSCO()'>Add Item</button>");
+                                                                out.print("<button class='btn btn-default btn-block' onclick='javascript:addLineItemToExistingSCO()'>Add Item 2</button>");
                                                             }
                                                         %>
                                                     </td>
@@ -382,10 +383,8 @@
                                                             out.print("<td class='text-center'>" + sco.getItems().get(i).getItemQty() + "</td>");
                                                             price = sco.getItems().get(i).getItemUnitPrice() * sco.getItems().get(i).getItemQty();
                                                             out.print("<td class='text-center'>" + formatter.format(price) + "</td>");
-                                                            out.print("<td><div class='btn-group' role='group' aria-label='...'>");
-                                                            out.print("<button class='btn btn-default' onclick=''>Edit</button>");
-                                                            out.print("<button class='btn btn-default' onclick=''>Remove</button>");
-                                                            out.print("</div></td>");
+                                                            out.print("<td><button class='btn btn-default btn-block' onclick=''>Remove</button></td>");
+                                                            out.print("</div>");
                                                             out.print("</tr>");
                                                         }
                                                     }
@@ -398,20 +397,12 @@
 
                                     <div class="invoice-summary">
                                         <div class="row">
-                                            <div class="col-sm-8">
-                                                <p>Terms & Conditions</p>
-                                                <ul>
-                                                    <li>Acceptance of this Sales Order constitutes a contract between the buyer & Phuture International Pte Ltd <br>whereby buyer will adhere to conditions stated on this Sales Order</li>
-                                                    <li>Buyer shall be liable for at least 50% of total sales amount if buyer opt to cancel the order</li>
-                                                </ul>
-                                            </div>
-                                            <div class="col-sm-4">
+                                            <div class="col-sm-4 col-sm-offset-8">
                                                 <table class="table h5 text-dark">
                                                     <tbody>
                                                         <tr class="b-top-none">
                                                             <td colspan="2">Subtotal</td>
                                                             <td class="text-left">
-
                                                                 <%
                                                                     double formatedPrice = 0;
                                                                     NumberFormat formatter = NumberFormat.getCurrencyInstance();

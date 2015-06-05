@@ -173,8 +173,10 @@ public class CustomerManagementController extends HttpServlet {
 
             if (nextPage.equals("")) {
                 response.sendRedirect("index.jsp?errMsg=Session Expired.");
+                return;
             } else {
                 response.sendRedirect(nextPage);
+                return;
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -185,7 +187,6 @@ public class CustomerManagementController extends HttpServlet {
         try {
             Staff staff = (Staff) (session.getAttribute("staff"));
             if (staff == null) {
-                response.sendRedirect("index.jsp?errMsg=Session Expired.");
                 return false;
             } else {
                 return true;
