@@ -37,6 +37,12 @@
             window.onbeforeunload = function () {
                 return 'There are unsaved changes to this page. If you continue, you will lose them';
             };
+
+            $(function () {
+                $('button[type=submit]').click(function (e) {
+                    window.onbeforeunload = null;
+                });
+            });
         </script>
         <section class="body">
             <jsp:include page="../header.jsp" />
@@ -156,7 +162,7 @@
                                     <footer class="panel-footer">
                                         <div class="row">
                                             <div class="col-sm-9 col-sm-offset-3">
-                                                <button class="btn btn-primary">Submit</button>
+                                                <button class="btn btn-primary" type="submit">Submit</button>
                                                 <input type="button"  class="btn btn-primary" value="Back" onclick="javascript:back()"/>
                                             </div>
                                         </div>

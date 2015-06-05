@@ -517,8 +517,12 @@
                             </div>
                         </section>
 
+                        <%
+                            if (sco != null && scoID != null && !scoID.isEmpty()) {
+                                out.print("<input type='hidden' name='customerID' value='" + sco.getCustomer().getId() + "'>");
+                            }
+                        %>
                         <input type="hidden" name="salesStaffID" value="<%=staff.getId()%>">    
-                        <input type="hidden" name="customerID" value="<%=sco.getCustomer().getId()%>">    
                         <input type="hidden" name="lineItemID" value="">   
                         <input type="hidden" name="target" value="SaveSCO">    
                         <input type="hidden" name="source" value="">    
