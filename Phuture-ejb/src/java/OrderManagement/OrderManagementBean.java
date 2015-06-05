@@ -444,7 +444,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             }
             Query q = em.createQuery("SELECT s FROM SalesConfirmationOrder s WHERE s.id=:id");
             q.setParameter("id", salesConfirmationOrderID);
-            SalesConfirmationOrder salesConfirmationOrder = (SalesConfirmationOrder) q.getResultList();
+            SalesConfirmationOrder salesConfirmationOrder = (SalesConfirmationOrder) q.getSingleResult();
             List<LineItem> lineItems = salesConfirmationOrder.getItems();
             for (LineItem lineItem: lineItems) {
                 lineItems.remove(lineItem);
