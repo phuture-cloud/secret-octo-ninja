@@ -126,6 +126,7 @@ public class OrderManagementController extends HttpServlet {
                     break;
 
                 case "UpdateSCO":
+                    System.out.println("UpdateSCO");
                     if (checkLogin(response)) {
                         if (source.equals("AddLineItemToExistingSCO")) {
                             if (itemName == null || itemName.isEmpty() || itemDescription == null || itemDescription.isEmpty() || itemQty == null || itemQty.isEmpty() || itemUnitPrice == null || itemUnitPrice.isEmpty()) {
