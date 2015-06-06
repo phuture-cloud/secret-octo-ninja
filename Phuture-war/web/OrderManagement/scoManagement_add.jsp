@@ -33,15 +33,25 @@
                         var itemUnitPrice = parseFloat($('#input_itemUnitPrice').val());
                         var itemQty = parseInt($('#input_itemQty').val());
                         var itemAmount = itemUnitPrice * itemQty;
+                        var subtotal = parseFloat($('#subtotal').val());
+                        var gst = parseFloat($('#gst').val());
+                        var totalPrice = parseFloat($('#totalPrice').val());
 
                         if (!isNaN(itemAmount)) {
-                            var subtotal = parseFloat($('#subtotal').val());
-                            var gst = parseFloat($('#gst').val());
-                            var totalPrice = parseFloat($('#totalPrice').val());
+                            if (isNaN(subtotal)) {
+                                subtotal = 0;
+                            }
+                            if (isNaN(gst)) {
+                                gst = 0;
+                            }
+                            if (isNaN(totalPrice)) {
+                                totalPrice = 0;
+                            }
 
                             var newSubtotal = subtotal + itemAmount;
-                            var newGst = gst + itemAmount;
-                            var newTotalPrice = totalPrice + itemAmount;
+                            var newGst = newSubtotal * 0.07;
+                            var newTotalPrice = newSubtotal + newGst;
+
                             $('#input_itemAmount').val(itemAmount.toFixed(2));
                             $('#output_subtotal').text("$" + newSubtotal.toFixed(2));
                             $('#output_gst').text("$" + newGst.toFixed(2));
@@ -50,6 +60,9 @@
 
                         if (isNaN(itemUnitPrice) || isNaN(itemQty)) {
                             $('#input_itemAmount').val("");
+                            $('#output_subtotal').text("$" + subtotal.toFixed(2));
+                            $('#output_gst').text("$" + gst.toFixed(2));
+                            $('#output_totalPrice').text("$" + totalPrice.toFixed(2));
                         }
                     });
                 });
@@ -426,7 +439,7 @@
                                                                     double formatedPrice = 0;
                                                                     NumberFormat formatter = NumberFormat.getCurrencyInstance();
                                                                     if (scoID == null || scoID.isEmpty() || sco == null) {
-                                                                        out.print("$0.00");
+                                                                        out.print("<span id='output_subtotal'>$0.00</span>");
                                                                     } else {
                                                                         formatedPrice = (sco.getTotalPrice() / 107) * 100;
                                                                         out.print("<span id='output_subtotal'>" + formatter.format(formatedPrice) + "</span>");
@@ -440,7 +453,7 @@
                                                             <td class="text-left">
                                                                 <%
                                                                     if (scoID == null || scoID.isEmpty() || sco == null) {
-                                                                        out.print("$0.00");
+                                                                        out.print("<span id='output_gst'>$0.00</span>");
                                                                     } else {
                                                                         formatedPrice = (sco.getTotalPrice() / 107) * 7;
                                                                         out.print("<span id='output_gst'>" + formatter.format(formatedPrice) + "</span>");
@@ -454,7 +467,7 @@
                                                             <td class="text-left">
                                                                 <%
                                                                     if (scoID == null || scoID.isEmpty() || sco == null) {
-                                                                        out.print("$0.00");
+                                                                        out.print("<span id='output_totalPrice'>$0.00</span>");
                                                                     } else {
                                                                         formatedPrice = sco.getTotalPrice();
                                                                         out.print("<span id='output_totalPrice'>" + formatter.format(formatedPrice) + "</span>");
