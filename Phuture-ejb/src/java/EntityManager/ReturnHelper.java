@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class ReturnHelper implements Serializable {
 
-    private boolean result;
+    private Boolean result;
     private String resultDescription;
     private Long ID;
 

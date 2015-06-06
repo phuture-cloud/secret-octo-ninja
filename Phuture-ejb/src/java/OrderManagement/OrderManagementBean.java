@@ -146,7 +146,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             em.merge(sco);
             result.setID(sco.getId());
             result.setResult(true);
-            result.setDescription("SCO edited successfully.");
+            result.setDescription("SCO saved successfully.");
             return result;
         } catch (NoResultException ex) {
             System.out.println("OrderManagementBean: updateSalesConfirmationOrder() could not find one or more ID(s).");
@@ -342,7 +342,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             salesConfirmationOrder.setTotalPrice(totalPrice);
             em.merge(salesConfirmationOrder);
             result.setResult(true);
-            result.setDescription("Line item added.");
+            result.setDescription("Item added.");
         } catch (Exception ex) {
             System.out.println("OrderManagementBean: addSCOlineItem() failed");
             result.setDescription("Unable to add line item, internal server error.");
@@ -421,7 +421,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             em.merge(salesConfirmationOrder);
             em.remove(lineItem);
             result.setResult(true);
-            result.setDescription("Line item deleted.");
+            result.setDescription("Item deleted.");
         } catch (Exception ex) {
             System.out.println("OrderManagementBean: deleteSCOlineItem() failed");
             result.setDescription("Unable to delete line item, internal server error.");

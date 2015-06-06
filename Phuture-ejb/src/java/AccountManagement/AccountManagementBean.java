@@ -84,7 +84,7 @@ public class AccountManagementBean implements AccountManagementBeanLocal {
     public ReturnHelper enableAccount(Long accountID) {
         System.out.println("AccountManagementBean: enableAccount() called");
         ReturnHelper result = new ReturnHelper();
-        Query q = em.createQuery("SELECT s FROM Staff s where s.id:id");
+        Query q = em.createQuery("SELECT s FROM Staff s where s.id=:id");
         q.setParameter("id", accountID);
         try {
             Staff staff = (Staff) q.getSingleResult();
