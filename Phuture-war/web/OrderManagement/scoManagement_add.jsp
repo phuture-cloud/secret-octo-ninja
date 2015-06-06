@@ -526,7 +526,7 @@
                                         <button class="btn btn-primary" onclick="javascript:generatePO()">Generate PO</button>
                                         <button class="btn btn-primary" onclick="javascript:generateDO()">Generate DO</button>
                                         <%}%> 
-                                        <button class="btn btn-success" onclick="javascript:updateSCO(<%=scoID%>)">Save 2</button>
+                                        <button class="btn btn-success" onclick="javascript:updateSCO(<%=scoID%>)">Save</button>
                                         <%} else {%> 
                                         <button class="btn btn-success"  type="submit">Save</button>
                                         <%}%> 

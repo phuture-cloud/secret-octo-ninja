@@ -112,6 +112,9 @@ public class OrderManagementController extends HttpServlet {
 
                                 if (itemName != null && !itemName.isEmpty() && itemDescription != null && !itemDescription.isEmpty() && itemQty != null && !itemQty.isEmpty() && itemUnitPrice != null && !itemUnitPrice.isEmpty()) {
                                     returnHelper = orderManagementBean.addSCOlineItem(scoID, itemName, itemDescription, Integer.parseInt(itemQty), Double.parseDouble(itemUnitPrice), false);
+                                } else {
+                                    nextPage = "OrderManagement/scoManagement_add.jsp?selectedCustomerID=" + customerID + "&scoNumber=" + scoNumber + "&selectedContactID=" + contactID + "&selectedTerms=" + terms + "&selectedDate=" + date + "&errMsg=Please ensure all the fields in the Line Items are populated.";
+                                    break;
                                 }
 
                                 if (returnHelper.getResult()) {
@@ -126,7 +129,6 @@ public class OrderManagementController extends HttpServlet {
                     break;
 
                 case "UpdateSCO":
-                    System.out.println("UpdateSCO");
                     if (checkLogin(response)) {
                         if (source.equals("AddLineItemToExistingSCO")) {
                             if (itemName == null || itemName.isEmpty() || itemDescription == null || itemDescription.isEmpty() || itemQty == null || itemQty.isEmpty() || itemUnitPrice == null || itemUnitPrice.isEmpty()) {
@@ -147,6 +149,9 @@ public class OrderManagementController extends HttpServlet {
 
                                 if (itemName != null && !itemName.isEmpty() && itemDescription != null && !itemDescription.isEmpty() && itemQty != null && !itemQty.isEmpty() && itemUnitPrice != null && !itemUnitPrice.isEmpty()) {
                                     returnHelper = orderManagementBean.addSCOlineItem(scoID, itemName, itemDescription, Integer.parseInt(itemQty), Double.parseDouble(itemUnitPrice), false);
+                                } else {
+                                    nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&scoNumber=" + scoNumber + "&selectedTerms=" + terms + "&selectedDate=" + date + "&errMsg=Please ensure all the fields in the Line Items are populated.";
+                                    break;
                                 }
 
                                 if (returnHelper.getResult()) {
