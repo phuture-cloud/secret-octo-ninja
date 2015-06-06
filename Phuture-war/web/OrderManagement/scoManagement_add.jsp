@@ -54,6 +54,7 @@
                     });
                 });
 
+
                 function back() {
                     window.location.href = "../OrderManagementController?target=ListAllSCO";
                 }
@@ -277,13 +278,13 @@
                                                             <%
                                                                 String selectedDate = request.getParameter("selectedDate");
                                                                 if (selectedDate != null && !selectedDate.isEmpty()) {
-                                                                    out.print("<input name='date' type='text' data-plugin-datepicker class='form-control' value='" + selectedDate + "' required>");
+                                                                    out.print("<input name='date' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + selectedDate + "' required>");
                                                                 } else if (sco != null && scoID != null && !scoID.isEmpty()) {
                                                                     SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
                                                                     String date = DATE_FORMAT.format(sco.getSalesConfirmationOrderDate());
-                                                                    out.print("<input name='date' type='text' data-plugin-datepicker class='form-control' value='" + date + "' required>");
+                                                                    out.print("<input name='date' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "' required>");
                                                                 } else {
-                                                                    out.print("<input name='date' type='text' data-plugin-datepicker class='form-control' required placeholder='dd/mm/yyyy'>");
+                                                                    out.print("<input name='date' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' required placeholder='dd/mm/yyyy'>");
                                                                 }
                                                             %>
                                                         </span>

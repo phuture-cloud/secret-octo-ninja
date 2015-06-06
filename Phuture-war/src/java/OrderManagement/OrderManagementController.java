@@ -6,7 +6,9 @@ import EntityManager.Customer;
 import EntityManager.ReturnHelper;
 import EntityManager.SalesConfirmationOrder;
 import EntityManager.Staff;
+import static com.sun.xml.bind.util.CalendarConv.formatter;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -100,8 +102,8 @@ public class OrderManagementController extends HttpServlet {
                         if (scoNumber == null || scoNumber.isEmpty() || date == null || date.isEmpty() || customerID == null || customerID.isEmpty() || contactID == null || contactID.isEmpty() || salesStaffID == null || salesStaffID.isEmpty() || terms == null || terms.isEmpty()) {
                             nextPage = "OrderManagement/scoManagement_add.jsp?selectedCustomerID=" + customerID + "&scoNumber=" + scoNumber + "&selectedContactID=" + contactID + "&selectedTerms=" + terms + "&selectedDate=" + date + "&errMsg=Please ensure all the fields are populated.";
                         } else {
-                            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-                            Date scoDate = formatter.parse(date);
+                            DateFormat sourceFormat = new SimpleDateFormat("dd/MM/yyyy");
+                            Date scoDate = sourceFormat.parse(date);
 
                             returnHelper = orderManagementBean.createSalesConfirmationOrder(scoNumber, scoDate, Long.parseLong(customerID), Long.parseLong(contactID), Long.parseLong(salesStaffID), Integer.parseInt(terms), remarks, notes);
 
