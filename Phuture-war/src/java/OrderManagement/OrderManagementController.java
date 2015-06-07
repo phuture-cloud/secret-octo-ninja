@@ -39,9 +39,13 @@ public class OrderManagementController extends HttpServlet {
         String salesStaffID = request.getParameter("salesStaffID");
         String lineItemID = request.getParameter("lineItemID");
         String scoDate = request.getParameter("scoDate");
-        if (scoDate == null) scoDate="";
+        if (scoDate == null) {
+            scoDate = "";
+        }
         String terms = request.getParameter("terms");
-        if (terms == null) terms="";
+        if (terms == null) {
+            terms = "";
+        }
         String remarks = request.getParameter("remarks");
         String notes = request.getParameter("notes");
         String itemName = request.getParameter("itemName");
@@ -184,8 +188,6 @@ public class OrderManagementController extends HttpServlet {
 
                 case "RemoveLineItem":
                     if (checkLogin(response)) {
-                        System.out.println("id " + id);//TODO remove?
-                        System.out.println("lineItemID " + lineItemID);//TODO remove?
                         returnHelper = orderManagementBean.deleteSCOlineItem(Long.parseLong(id), Long.parseLong(lineItemID), false);
                         if (returnHelper.getResult()) {
                             session.setAttribute("sco", orderManagementBean.getSalesConfirmationOrder(Long.parseLong(id)));

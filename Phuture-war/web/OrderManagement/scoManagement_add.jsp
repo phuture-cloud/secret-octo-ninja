@@ -80,7 +80,7 @@
                     var scoDate = document.getElementById("scoDate").value;
                     var terms = document.getElementById("terms").value;
                     if (customerID !== "") {
-                        window.location.href = "../OrderManagementController?target=ListCustomerContacts&id=" + customerID + "&scoNumber=" + scoNumber + "&selectedDate=" + scoDate + "&selectedTerms=" + terms;
+                        window.location.href = "../OrderManagementController?target=ListCustomerContacts&id=" + customerID + "&scoNumber=" + scoNumber + "&scoDate=" + scoDate + "&terms=" + terms;
                     }
                 }
 
@@ -128,7 +128,7 @@
                     document.scoManagement.submit();
                 }
 
-                function RemoveLineItem(id, lineItemID) {
+                function removeLineItem(id, lineItemID) {
                     window.onbeforeunload = null;
                     scoManagement.id.value = id;
                     scoManagement.lineItemID.value = lineItemID;
@@ -233,7 +233,7 @@
                                                                     out.print("<br><div class='text-right'><a href='#'>edit</a></div><br><br>");
                                                                 } else {
                                                             %>
-                                                            <select id="customerList" name="customerID" data-plugin-selectTwo class="form-control populate" onchange="javascript:getCustomerContacts()" equired>
+                                                            <select id="customerList" name="customerID" data-plugin-selectTwo class="form-control populate" onchange="javascript:getCustomerContacts()" required>
                                                                 <option value="">Select a customer</option>
                                                                 <%
                                                                     if (customers != null && customers.size() > 0) {
@@ -374,7 +374,7 @@
                                             <tbody>
                                                 <tr>
                                                     <td>
-                                                        <%if (scoID==null && (customers == null || selectedContactID == null || selectedContactID.equals(""))) {
+                                                        <%if (scoID == null && (customers == null || selectedContactID == null || selectedContactID.equals(""))) {
                                                                 out.println("<input type='text' class='form-control' name='itemName' disabled/>");
                                                             } else {
                                                                 out.println("<input type='text' class='form-control' name='itemName'/>");
@@ -382,7 +382,7 @@
                                                         %>
                                                     </td>
                                                     <td>
-                                                        <%if (scoID==null && (customers == null || selectedContactID == null || selectedContactID.equals(""))) {
+                                                        <%if (scoID == null && (customers == null || selectedContactID == null || selectedContactID.equals(""))) {
                                                                 out.println("<input type='text' class='form-control' name='itemDescription' disabled/>");
                                                             } else {
                                                                 out.println("<input type='text' class='form-control' name='itemDescription'/>");
@@ -395,7 +395,7 @@
                                                             <span class="input-group-addon">
                                                                 <i class="fa fa-dollar"></i>
                                                             </span>
-                                                            <%if (scoID==null && (customers == null || selectedContactID == null || selectedContactID.equals(""))) {
+                                                            <%if (scoID == null && (customers == null || selectedContactID == null || selectedContactID.equals(""))) {
                                                                     out.println("<input type='number' class='form-control' id='input_itemUnitPrice' name='itemUnitPrice' min='0' step='any' disabled/>");
                                                                 } else {
                                                                     out.println("<input type='number' class='form-control' id='input_itemUnitPrice' name='itemUnitPrice' min='0' step='any'/>");
@@ -404,7 +404,7 @@
                                                         </div>
                                                     </td>
                                                     <td class="text-center">
-                                                        <%if (scoID==null && (customers == null || selectedContactID == null || selectedContactID.equals(""))) {
+                                                        <%if (scoID == null && (customers == null || selectedContactID == null || selectedContactID.equals(""))) {
                                                                 out.println("<input type='number' class='form-control' id='input_itemQty' min='0' name='itemQty' disabled/>");
                                                             } else {
                                                                 out.println("<input type='number' class='form-control' id='input_itemQty' min='0' name='itemQty'/>");
@@ -421,7 +421,7 @@
                                                     </td>
                                                     <td class="text-center">
                                                         <%
-                                                            if (scoID==null && (customers == null || selectedContactID == null || selectedContactID.equals(""))) {
+                                                            if (scoID == null && (customers == null || selectedContactID == null || selectedContactID.equals(""))) {
                                                                 out.print("<button class='btn btn-default btn-block' onclick='javascript:addLineItemToNewSCO()' disabled>Add Item</button>");
                                                             } else if (scoID == null || scoID.isEmpty() || sco == null) {
                                                                 out.print("<button class='btn btn-default btn-block' onclick='javascript:addLineItemToNewSCO()'>Add Item</button>");
@@ -446,7 +446,7 @@
                                                             out.print("<td class='text-center'>" + sco.getItems().get(i).getItemQty() + "</td>");
                                                             price = sco.getItems().get(i).getItemUnitPrice() * sco.getItems().get(i).getItemQty();
                                                             out.print("<td class='text-center'>" + formatter.format(price) + "</td>");
-                                                            out.print("<td><button class='btn btn-default btn-block' onclick='javascript:RemoveLineItem(" + sco.getId() + "," + sco.getItems().get(i).getId() + ")'>Remove</button></td>");
+                                                            out.print("<td><button class='btn btn-default btn-block' onclick='javascript:removeLineItem(" + sco.getId() + "," + sco.getItems().get(i).getId() + ")'>Remove</button></td>");
                                                             out.print("</div>");
                                                             out.print("</tr>");
                                                         }
@@ -549,7 +549,7 @@
                                                 </footer>
                                             </section>
                                         </div>
-                                        <% if (sco.getId()!= null) {%>
+                                        <% if (sco.getId() != null) {%>
                                         <button class="btn btn-primary" onclick="javascript:generatePO()">Generate PO</button>
                                         <button class="btn btn-primary" onclick="javascript:generateDO()">Generate DO</button>
                                         <%}%> 
