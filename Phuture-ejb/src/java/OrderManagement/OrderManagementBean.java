@@ -23,7 +23,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
 
     @PersistenceContext
     private EntityManager em;
-    
+
     private Double gstRate = 1.07;//7%
 
     @Override
@@ -100,22 +100,16 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
                 result.setDescription(checkResult.getDescription());
                 return result;
             }
+            q = em.createQuery("SELECT s FROM Staff s WHERE s.id=:id");
+            q.setParameter("id", newSalesStaffID);
+            Staff staff = (Staff) q.getSingleResult();
             q = em.createQuery("SELECT c FROM Customer c WHERE c.id=:id");
             q.setParameter("id", newCustomerID);
             Customer newCustomer = (Customer) q.getSingleResult();
             String newCustomerName = newCustomer.getCustomerName();
-            q = em.createQuery("SELECT s FROM Staff s WHERE s.id=:id");
-            q.setParameter("id", newSalesStaffID);
-            Staff staff = (Staff) q.getSingleResult();
             if (newCustomer.getIsDeleted()) {
                 result.setDescription("Failed to edit the SCO. The selected customer may have been deleted while the SCO is being updated. Please try again.");
                 return result;
-            }
-            if (newRemarks == null) {
-                newRemarks = "";
-            }
-            if (newNotes == null) {
-                newNotes = "";
             }
             //Remove away the old links
             Customer oldCustomer = sco.getCustomer();
@@ -135,7 +129,13 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             staffSCOs.add(sco);
             staff.setSales(staffSCOs);
             em.merge(staff);
-            //Update fields
+            //Update fields 
+            if (newRemarks == null) {
+                newRemarks = "";
+            }
+            if (newNotes == null) {
+                newNotes = "";
+            }
             sco.setCustomerName(newCustomerName);
             sco.setCustomer(newCustomer);
             sco.setSalesConfirmationOrderNumber(newSalesConfirmationOrderNumber);
@@ -160,7 +160,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
     }
 
     @Override
-    public ReturnHelper updateSalesConfirmationOrderContactDetails(Long salesConfirmationOrderID, String name, String email, String officeNo, String mobileNo, String faxNo, String address, Boolean adminOverwrite) {
+    public ReturnHelper updateSalesConfirmationOrderCustomerContactDetails(Long salesConfirmationOrderID, Long customerID, String name, String email, String officeNo, String mobileNo, String faxNo, String address, Boolean adminOverwrite) {
         System.out.println("OrderManagementBean: updateSalesConfirmationOrderContactDetails() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -173,6 +173,30 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             if (!checkResult.getResult()) {
                 result.setDescription(checkResult.getDescription());
                 return result;
+            }
+            q = em.createQuery("SELECT c FROM Customer c WHERE c.id=:id");
+            q.setParameter("id", customerID);
+            Customer newCustomer = (Customer) q.getSingleResult();
+            String newCustomerName = newCustomer.getCustomerName();
+            if (newCustomer.getIsDeleted()) {
+                result.setDescription("Failed to edit the SCO. The selected customer may have been deleted while the SCO is being updated. Please try again.");
+                return result;
+            }
+            // Update customer link if it's different
+            if (newCustomer.getId() != sco.getCustomer().getId()) {
+                //Remove away the old links
+                Customer oldCustomer = sco.getCustomer();
+                List<SalesConfirmationOrder> oldCustomerSCOs = oldCustomer.getSCOs();
+                oldCustomerSCOs.remove(sco);
+                em.merge(oldCustomer);
+                //Add links to other
+                List<SalesConfirmationOrder> customerSCOs = newCustomer.getSCOs();
+                customerSCOs.add(sco);
+                newCustomer.setSCOs(customerSCOs);
+                em.merge(newCustomer);
+                //Update fields
+                sco.setCustomerName(newCustomerName);
+                sco.setCustomer(newCustomer);
             }
             sco.setContactAddress(address);
             sco.setContactEmail(email);
@@ -337,7 +361,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             //Update SCO total price
             Double totalPrice = 0.0;
             for (LineItem curLineItem : lineItems) {
-                totalPrice = totalPrice + (curLineItem.getItemUnitPrice()*curLineItem.getItemQty()*gstRate);
+                totalPrice = totalPrice + (curLineItem.getItemUnitPrice() * curLineItem.getItemQty() * gstRate);
             }
             salesConfirmationOrder.setTotalPrice(totalPrice);
             em.merge(salesConfirmationOrder);
@@ -377,7 +401,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             SalesConfirmationOrder salesConfirmationOrder = (SalesConfirmationOrder) q.getSingleResult();
             List<LineItem> lineItems = salesConfirmationOrder.getItems();
             for (LineItem curLineItem : lineItems) {
-                totalPrice = totalPrice + (curLineItem.getItemUnitPrice()*curLineItem.getItemQty()*gstRate);
+                totalPrice = totalPrice + (curLineItem.getItemUnitPrice() * curLineItem.getItemQty() * gstRate);
             }
             salesConfirmationOrder.setTotalPrice(totalPrice);
             em.merge(salesConfirmationOrder);
@@ -415,7 +439,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             //Update SCO total price
             Double totalPrice = 0.0;
             for (LineItem curLineItem : lineItems) {
-                totalPrice = totalPrice + (curLineItem.getItemUnitPrice()*curLineItem.getItemQty()*gstRate);
+                totalPrice = totalPrice + (curLineItem.getItemUnitPrice() * curLineItem.getItemQty() * gstRate);
             }
             salesConfirmationOrder.setTotalPrice(totalPrice);
             em.merge(salesConfirmationOrder);
@@ -430,8 +454,8 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
         }
         return result;
     }
-    
-     @Override
+
+    @Override
     public ReturnHelper deleteSCOallLineItem(Long salesConfirmationOrderID, Boolean adminOverwrite) {
         System.out.println("OrderManagementBean: deleteSCOallLineItem() called");
         ReturnHelper result = new ReturnHelper();
@@ -446,7 +470,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             q.setParameter("id", salesConfirmationOrderID);
             SalesConfirmationOrder salesConfirmationOrder = (SalesConfirmationOrder) q.getSingleResult();
             List<LineItem> lineItems = salesConfirmationOrder.getItems();
-            for (LineItem lineItem: lineItems) {
+            for (LineItem lineItem : lineItems) {
                 lineItems.remove(lineItem);
                 em.remove(lineItem);
             }
