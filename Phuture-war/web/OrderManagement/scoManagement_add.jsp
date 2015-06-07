@@ -80,7 +80,7 @@
                     var scoDate = document.getElementById("scoDate").value;
                     var terms = document.getElementById("terms").value;
                     if (customerID !== "") {
-                        window.location.href = "../OrderManagementController?target=ListCustomerContacts&id=" + customerID + "&scoNumber=" + scoNumber + "&scoDate=" + scoDate + "&terms=" + terms;
+                        window.location.href = "../OrderManagementController?target=ListCustomerContacts&customerID=" + customerID + "&scoNumber=" + scoNumber + "&scoDate=" + scoDate + "&terms=" + terms;
                     }
                 }
 
@@ -92,7 +92,7 @@
                     var terms = document.getElementById("terms").value;
                     if (customerID !== "") {
                         var contactID = document.getElementById("customerContactid").value;
-                        window.location.href = "scoManagement_add.jsp?selectedCustomerID=" + customerID + "&selectedContactID=" + contactID + "&scoNumber=" + scoNumber + "&selectedDate=" + scoDate + "&selectedTerms=" + terms;
+                        window.location.href = "scoManagement_add.jsp?selectedCustomerID=" + customerID + "&selectedContactID=" + contactID + "&scoNumber=" + scoNumber + "&scoDate=" + scoDate + "&terms=" + terms;
                     }
                 }
 
@@ -143,6 +143,13 @@
                     scoManagement.target.value = "DeleteSCO";
                     document.scoManagement.action = "../OrderManagementController";
                     document.scoManagement.submit();
+                }
+
+                function addressBook() {
+                    window.onbeforeunload = null;
+                    editContactForm.target.value = "ListAllCustomer";
+                    document.editContactForm.action = "../OrderManagementController";
+                    document.editContactForm.submit();
                 }
 
                 window.onbeforeunload = function () {
@@ -230,7 +237,7 @@
                                                                     if (sco.getContactMobileNo() != null && !sco.getContactMobileNo().isEmpty()) {
                                                                         out.print("<br>" + sco.getContactMobileNo());
                                                                     }
-                                                                    out.print("<br><div class='text-right'><a href='#'>edit</a></div><br><br>");
+                                                                    out.print("<br><div class='text-right'><a href='#modalEditForm' class='modal-with-form'>edit</a></div><br><br>");
                                                                 } else {
                                                             %>
                                                             <select id="customerList" name="customerID" data-plugin-selectTwo class="form-control populate" onchange="javascript:getCustomerContacts()" required>
@@ -289,13 +296,13 @@
                                                 <div class="bill-data text-right">
                                                     <p class="mb-none">
                                                         <span class="text-dark">Salesperson: </span>
-                                                        <span class="value" style="min-width: 100px; font-size: 11pt; text-align: left;">
+                                                        <span class="value" style="min-width: 110px; font-size: 11pt; text-align: left;">
                                                             <%=staff.getName()%>
                                                         </span>
                                                     </p>
                                                     <p class="mb-none">
                                                         <span class="text-dark">Date:</span>
-                                                        <span class="value" style="min-width: 100px">
+                                                        <span class="value" style="min-width: 110px">
                                                             <%
                                                                 String selectedDate = request.getParameter("selectedDate");
                                                                 if (selectedDate != null && !selectedDate.isEmpty()) {
@@ -312,7 +319,7 @@
                                                     </p>
                                                     <p class="mb-none">
                                                         <span class="text-dark">Terms:</span>
-                                                        <span class="value" style="min-width: 100px">
+                                                        <span class="value" style="min-width: 110px">
                                                             <select id="terms" name="terms" class="form-control input-sm mb-md" required>
                                                                 <%
                                                                     out.print("<option value=''>Select</option>");
@@ -555,7 +562,7 @@
                                         <%}%> 
                                         <button class="btn btn-success" onclick="javascript:updateSCO(<%=scoID%>)">Save</button>
                                         <%} else {%> 
-                                        <button class="btn btn-success"  type="submit">Save</button>
+                                        <button class="btn btn-success" type="submit">Save</button>
                                         <%}%> 
                                     </div>
                                 </div>
@@ -575,10 +582,81 @@
                     </form>
                     <!-- end: page -->
 
+                    <%if (sco != null && scoID != null && !scoID.isEmpty()) {%>
+                    <div id="modalEditForm" class="modal-block modal-block-primary mfp-hide">
+                        <section class="panel">
+                            <form name="editContactForm" action="../OrderManagementController" class="form-horizontal mb-lg">
+                                <header class="panel-heading">
+                                    <h2 class="panel-title">Edit Contact</h2>
+                                </header>
+                                <div class="panel-body">
+                                    <div class="form-group mt-lg">
+                                        <label class="col-sm-3 control-label">Company <span class="required">*</span></label>
+                                        <div class="col-sm-9">
+                                            <input type="text" name="company" class="form-control" value="<%=sco.getCustomerName()%>" required/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group mt-lg">
+                                        <label class="col-sm-3 control-label">Name <span class="required">*</span></label>
+                                        <div class="col-sm-9">
+                                            <input type="text" name="name" class="form-control" value="<%=sco.getContactName()%>" required/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">Address <span class="required">*</span></label>
+                                        <div class="col-md-9">
+                                            <input type="text" class="form-control" name="address" value="<%=sco.getContactAddress()%>" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Telephone <span class="required">*</span></label>
+                                        <div class="col-sm-9">
+                                            <input type="text" name="officeNo" class="form-control" value="<%=sco.getContactOfficeNo()%>" required/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Mobile</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" name="mobileNo" class="form-control" value="<%=sco.getContactMobileNo()%>"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Fasimile</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" name="faxNo" class="form-control" value="<%=sco.getContactFaxNo()%>"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Email <span class="required">*</span></label>
+                                        <div class="col-sm-9">
+                                            <input type="email" name="email" class="form-control" value="<%=sco.getContactEmail()%>" required/>
+                                        </div>
+                                    </div>
+
+                                    <input type="hidden" name="target" value="UpdateSCOContact">    
+                                    <input type="hidden" name="id" value="<%=scoID%>">  
+                                    <input type="hidden" name="source" value="addressBook"> 
+                                </div>
+                                <footer class="panel-footer">
+                                    <div class="row">
+                                        <div class="col-md-12 text-right">
+                                            <button class="btn btn-success" type="submit">Save</button>
+                                            <button class="btn btn-primary" onclick="javascript:addressBook(<%=scoID%>)">Address Book</button>
+                                            <button class="btn btn-default modal-dismiss">Cancel</button>
+                                        </div>
+                                    </div>
+                                </footer>
+                            </form>
+                        </section>
+                    </div>
+                    <%}%>
+
+
                 </section>
             </div>
         </section>
         <jsp:include page="../foot.html" />
+        <script src="assets/javascripts/ui-elements/examples.modals.js"></script>
     </body>
 </html>
 <%}%>

@@ -54,6 +54,14 @@ public class OrderManagementController extends HttpServlet {
         String itemUnitPrice = request.getParameter("itemUnitPrice");
         String source = request.getParameter("source");
 
+        String company = request.getParameter("company");
+        String name = request.getParameter("name");
+        String email = request.getParameter("email");
+        String officeNo = request.getParameter("officeNo");
+        String mobileNo = request.getParameter("mobileNo");
+        String faxNo = request.getParameter("faxNo");
+        String address = request.getParameter("address");
+
         session = request.getSession();
         ReturnHelper returnHelper;
 
@@ -80,19 +88,28 @@ public class OrderManagementController extends HttpServlet {
                             nextPage = "error500.html";
                         } else {
                             session.setAttribute("customers", customers);
-                            nextPage = "OrderManagement/scoManagement_add.jsp";
+                            if (source != null && source.equals("addressBook")) {
+                                nextPage = "OrderManagement/updateContact.jsp?id=" + id;
+                            } else {
+                                nextPage = "OrderManagement/scoManagement_add.jsp";
+                            }
                         }
                     }
                     break;
 
                 case "ListCustomerContacts":
                     if (checkLogin(response)) {
-                        List<Contact> contacts = customerManagementBean.listCustomerContacts(Long.parseLong(id));
+                        List<Contact> contacts = customerManagementBean.listCustomerContacts(Long.parseLong(customerID));
                         if (contacts == null) {
                             nextPage = "error500.html";
                         } else {
                             session.setAttribute("contacts", contacts);
-                            nextPage = "OrderManagement/scoManagement_add.jsp?selectedCustomerID=" + id + "&scoNumber=" + scoNumber + "&selectedTerms=" + terms + "&selectedDate=" + scoDate;
+                            System.out.println("source " + source);
+                            if (source != null && source.equals("addressBook")) {
+                                nextPage = "OrderManagement/updateContact.jsp?id=" + id + "&selectedCustomerID=" + customerID;
+                            } else {
+                                nextPage = "OrderManagement/scoManagement_add.jsp?selectedCustomerID=" + customerID + "&scoNumber=" + scoNumber + "&selectedTerms=" + terms + "&selectedDate=" + scoDate;
+                            }
                         }
                     }
                     break;
@@ -105,9 +122,6 @@ public class OrderManagementController extends HttpServlet {
                                 break;
                             }
                         }
-                        // if (scoNumber == null || scoNumber.isEmpty() || scoDate == null || scoDate.isEmpty() || customerID == null || customerID.isEmpty() || contactID == null || contactID.isEmpty() || salesStaffID == null || salesStaffID.isEmpty() || terms == null || terms.isEmpty()) {
-                        //    nextPage = "OrderManagement/scoManagement_add.jsp?selectedCustomerID=" + customerID + "&scoNumber=" + scoNumber + "&selectedContactID=" + contactID + "&selectedTerms=" + terms + "&selectedDate=" + scoDate + "&errMsg=Please fill in all the fields for the item.";
-                        //} else 
                         DateFormat sourceFormat = new SimpleDateFormat("dd/MM/yyyy");
                         Date scoDateDate = sourceFormat.parse(scoDate);
 
@@ -125,7 +139,6 @@ public class OrderManagementController extends HttpServlet {
                                     nextPage = "OrderManagement/scoManagement_add.jsp?errMsg=" + returnHelper.getDescription() + "&selectedCustomerID=" + customerID + "&scoNumber=" + scoNumber + "&id=" + scoID;
                                 }
                             } else {
-                                //nextPage = "OrderManagement/scoManagement_add.jsp?selectedCustomerID=" + customerID + "&scoNumber=" + scoNumber + "&selectedContactID=" + contactID + "&selectedTerms=" + terms + "&selectedDate=" + scoDate + "&errMsg=Please fill in all the fields for the item.";
                                 nextPage = "OrderManagement/scoManagement_add.jsp?goodMsg=" + returnHelper.getDescription() + "&selectedCustomerID=" + customerID + "&scoNumber=" + scoNumber + "&id=" + scoID;
                                 break;
                             }
@@ -169,6 +182,20 @@ public class OrderManagementController extends HttpServlet {
                                     break;
                                 }
                             }
+                        }
+                    }
+                    break;
+
+                case "UpdateSCOContact":
+                    if (checkLogin(response)) {
+                        if (company != null && !company.isEmpty() && name != null && !name.isEmpty() && address != null && !address.isEmpty() && officeNo != null && !officeNo.isEmpty() && email != null && !email.isEmpty()) {
+                            returnHelper = orderManagementBean.updateSalesConfirmationOrderCustomerContactDetails(Long.parseLong(id), company, name, email, officeNo, mobileNo, faxNo, address, false);
+                            if (returnHelper.getResult()) {
+                                session.setAttribute("sco", orderManagementBean.getSalesConfirmationOrder(Long.parseLong(id)));
+                                nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&goodMsg=" + returnHelper.getDescription();
+                            }
+                        } else {
+                            nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&errMsg=Please fill in all the required fields for edit contact";
                         }
                     }
                     break;
