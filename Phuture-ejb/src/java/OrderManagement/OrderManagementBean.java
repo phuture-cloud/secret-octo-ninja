@@ -160,7 +160,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
     }
 
     @Override
-    public ReturnHelper updateSalesConfirmationOrderCustomerContactDetails(Long salesConfirmationOrderID, Long customerID, String name, String email, String officeNo, String mobileNo, String faxNo, String address, Boolean adminOverwrite) {
+    public ReturnHelper updateSalesConfirmationOrderCustomerContactDetails(Long salesConfirmationOrderID, String customerName, String contactName, String email, String officeNo, String mobileNo, String faxNo, String address, Boolean adminOverwrite) {
         System.out.println("OrderManagementBean: updateSalesConfirmationOrderContactDetails() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -174,6 +174,45 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
                 result.setDescription(checkResult.getDescription());
                 return result;
             }
+            sco.setCustomerName(customerName);
+            sco.setContactAddress(address);
+            sco.setContactEmail(email);
+            sco.setContactOfficeNo(officeNo);
+            sco.setContactFaxNo(faxNo);
+            sco.setContactMobileNo(mobileNo);
+            sco.setContactName(contactName);
+            em.merge(sco);
+            result.setResult(true);
+            result.setDescription("SCO edited successfully.");
+        } catch (NoResultException ex) {
+            System.out.println("OrderManagementBean: updateSalesConfirmationOrder() could not find one or more ID(s).");
+            result.setDescription("Failed to edit a SCO. The SCO selected no longer exist in the system.");
+        } catch (Exception ex) {
+            System.out.println("OrderManagementBean: updateSalesConfirmationOrder() failed");
+            ex.printStackTrace();
+            result.setDescription("Failed to edit a new SCO due to internal server error.");
+        }
+        return result;
+    }
+    
+    @Override
+    public ReturnHelper updateSalesConfirmationOrderCustomerContactDetails(Long salesConfirmationOrderID, Long customerID, Long contactID, Boolean adminOverwrite){
+        System.out.println("OrderManagementBean: updateSalesConfirmationOrderContactDetails() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        try {
+            Query q = em.createQuery("SELECT s FROM SalesConfirmationOrder s WHERE s.id=:id");
+            q.setParameter("id", salesConfirmationOrderID);
+            SalesConfirmationOrder sco = (SalesConfirmationOrder) q.getSingleResult();
+
+            ReturnHelper checkResult = checkIfSCOisEditable(salesConfirmationOrderID, adminOverwrite);
+            if (!checkResult.getResult()) {
+                result.setDescription(checkResult.getDescription());
+                return result;
+            }
+            q = em.createQuery("SELECT c FROM Contact c WHERE c.id=:id");
+            q.setParameter("id", customerID);
+            Contact contact = (Contact) q.getSingleResult();
             q = em.createQuery("SELECT c FROM Customer c WHERE c.id=:id");
             q.setParameter("id", customerID);
             Customer newCustomer = (Customer) q.getSingleResult();
@@ -198,12 +237,12 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
                 sco.setCustomerName(newCustomerName);
                 sco.setCustomer(newCustomer);
             }
-            sco.setContactAddress(address);
-            sco.setContactEmail(email);
-            sco.setContactOfficeNo(officeNo);
-            sco.setContactFaxNo(faxNo);
-            sco.setContactMobileNo(mobileNo);
-            sco.setContactName(name);
+            sco.setContactAddress(contact.getAddress());
+            sco.setContactEmail(contact.getEmail());
+            sco.setContactOfficeNo(contact.getOfficeNo());
+            sco.setContactFaxNo(contact.getFaxNo());
+            sco.setContactMobileNo(contact.getMobileNo());
+            sco.setContactName(contact.getName());
             em.merge(sco);
             result.setResult(true);
             result.setDescription("SCO edited successfully.");
