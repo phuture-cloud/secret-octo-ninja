@@ -237,6 +237,9 @@
                                                                     if (sco.getContactMobileNo() != null && !sco.getContactMobileNo().isEmpty()) {
                                                                         out.print("<br>" + sco.getContactMobileNo());
                                                                     }
+                                                                    if (sco.getContactEmail()!= null && !sco.getContactEmail().isEmpty()) {
+                                                                        out.print("<br>" + sco.getContactEmail());
+                                                                    }
                                                                     out.print("<br><div class='text-right'><a href='#modalEditForm' class='modal-with-form'>edit</a></div><br><br>");
                                                                 } else {
                                                             %>

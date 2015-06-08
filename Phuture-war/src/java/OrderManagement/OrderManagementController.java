@@ -63,7 +63,7 @@ public class OrderManagementController extends HttpServlet {
         String address = request.getParameter("address");
 
         session = request.getSession();
-        ReturnHelper returnHelper;
+        ReturnHelper returnHelper = null;
 
         try {
             switch (target) {
@@ -104,8 +104,8 @@ public class OrderManagementController extends HttpServlet {
                             nextPage = "error500.html";
                         } else {
                             session.setAttribute("contacts", contacts);
-                            System.out.println("source " + source);
                             if (source != null && source.equals("addressBook")) {
+                                session.setAttribute("sco", orderManagementBean.getSalesConfirmationOrder(Long.parseLong(id)));
                                 nextPage = "OrderManagement/updateContact.jsp?id=" + id + "&selectedCustomerID=" + customerID;
                             } else {
                                 nextPage = "OrderManagement/scoManagement_add.jsp?selectedCustomerID=" + customerID + "&scoNumber=" + scoNumber + "&selectedTerms=" + terms + "&selectedDate=" + scoDate;
@@ -188,14 +188,23 @@ public class OrderManagementController extends HttpServlet {
 
                 case "UpdateSCOContact":
                     if (checkLogin(response)) {
-                        if (company != null && !company.isEmpty() && name != null && !name.isEmpty() && address != null && !address.isEmpty() && officeNo != null && !officeNo.isEmpty() && email != null && !email.isEmpty()) {
+                        if (source != null && source.equals("UpdateContact")) {
+                            returnHelper = orderManagementBean.updateSalesConfirmationOrderCustomerContactDetails(Long.parseLong(id), Long.parseLong(customerID), Long.parseLong(contactID), false);
+                            if (returnHelper.getResult()) {
+                                session.setAttribute("sco", orderManagementBean.getSalesConfirmationOrder(Long.parseLong(id)));
+                                nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&goodMsg=" + returnHelper.getDescription();
+                            } else {
+                                nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&errMsg=" + returnHelper.getDescription();
+                            }
+
+                        } else if (company != null && !company.isEmpty() && name != null && !name.isEmpty() && address != null && !address.isEmpty() && officeNo != null && !officeNo.isEmpty() && email != null && !email.isEmpty()) {
                             returnHelper = orderManagementBean.updateSalesConfirmationOrderCustomerContactDetails(Long.parseLong(id), company, name, email, officeNo, mobileNo, faxNo, address, false);
                             if (returnHelper.getResult()) {
                                 session.setAttribute("sco", orderManagementBean.getSalesConfirmationOrder(Long.parseLong(id)));
                                 nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&goodMsg=" + returnHelper.getDescription();
+                            } else {
+                                nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&errMsg=Please fill in all the required fields for edit contact";
                             }
-                        } else {
-                            nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&errMsg=Please fill in all the required fields for edit contact";
                         }
                     }
                     break;

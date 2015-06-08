@@ -11,11 +11,12 @@
         response.sendRedirect("../index.jsp?errMsg=Session Expired.");
     } else {
         String scoID = request.getParameter("id");
-        List<Contact> contacts = (List<Contact>) (session.getAttribute("contacts"));
-        List<Customer> customers = (List<Customer>) session.getAttribute("customers");
-        String selectedCustomerID = request.getParameter("selectedCustomerID");
-        String selectedContactID = request.getParameter("selectedContactID");
-        Contact contact = null;
+        if (scoID == null) {
+            response.sendRedirect("../scoManagement.jsp?errMsg=An Error has occured");
+        } else {
+            List<Contact> contacts = (List<Contact>) (session.getAttribute("contacts"));
+            List<Customer> customers = (List<Customer>) session.getAttribute("customers");
+            String selectedCustomerID = request.getParameter("selectedCustomerID");
 %>
 <!doctype html>
 <html class="fixed">
@@ -36,9 +37,10 @@
 
             function getCustomerContacts() {
                 window.onbeforeunload = null;
+                var scoID = document.getElementById("scoID").value;
                 var customerID = document.getElementById("customerList").value;
                 if (customerID !== "") {
-                    window.location.href = "../OrderManagementController?target=ListCustomerContacts&customerID=" + customerID + "&source=addressBook";
+                    window.location.href = "../OrderManagementController?target=ListCustomerContacts&customerID=" + customerID + "&source=addressBook&id=" + scoID;
                 }
             }
         </script>
@@ -68,14 +70,12 @@
                     <!-- start: page -->
                     <div class="row">
                         <div class="col-lg-12">
-                            <form class="form-horizontal form-bordered" action="../CustomerManagementController">
+                            <form class="form-horizontal form-bordered" action="../OrderManagementController">
                                 <section class="panel">
                                     <header class="panel-heading">
                                         <h2 class="panel-title">Update Sales Confirmation Order Contact Details</h2>
                                     </header>
                                     <div class="panel-body">
-
-
                                         <div class="form-group">
                                             <label class="col-md-3 control-label">Company</label>
                                             <div class="col-md-6">
@@ -104,12 +104,7 @@
                                                     <%
                                                         if (contacts != null && contacts.size() > 0) {
                                                             for (int i = 0; i < contacts.size(); i++) {
-                                                                if (selectedContactID != null && selectedContactID.equals(contacts.get(i).getId().toString())) {
-                                                                    contact = contacts.get(i);
-                                                                    out.print("<option value='" + contacts.get(i).getId() + "' selected>" + contacts.get(i).getName() + "</option>");
-                                                                } else {
-                                                                    out.print("<option value='" + contacts.get(i).getId() + "'>" + contacts.get(i).getName() + "</option>");
-                                                                }
+                                                                out.print("<option value='" + contacts.get(i).getId() + "'>" + contacts.get(i).getName() + "</option>");
                                                             }
                                                         }
                                                     %>
@@ -128,9 +123,9 @@
                                         </div>
                                     </footer>
                                 </section>
-
-
-                                <input type="hidden" name="target" value="UpdateContact">   
+                                <input type="hidden" name="id" id="scoID" value="<%=scoID%>">   
+                                <input type="hidden" name="source" value="UpdateContact">   
+                                <input type="hidden" name="target" value="UpdateSCOContact">   
                             </form>
                         </div>
                     </div>
@@ -141,5 +136,7 @@
         <jsp:include page="../foot.html" />
     </body>
 </html>
-<%    }
+<%
+        }
+    }
 %>
