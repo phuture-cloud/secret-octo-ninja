@@ -158,9 +158,7 @@ public class OrderManagementController extends HttpServlet {
                             }
                         }
                         if (scoNumber == null || scoNumber.isEmpty() || scoDate == null || scoDate.isEmpty() || terms == null || terms.isEmpty()) {
-                            SalesConfirmationOrder sco = (SalesConfirmationOrder) session.getAttribute("sco");
-                            Long scoID = sco.getId();
-                            nextPage = "OrderManagement/scoManagement_add.jsp?selectedCustomerID=" + customerID + "&scoNumber=" + scoNumber + "&selectedContactID=" + contactID + "&selectedTerms=" + terms + "&selectedDate=" + scoDate + "&id=" + scoID + "&errMsg=Please fill in all the fields for the SCO.";
+                            nextPage = "OrderManagement/scoManagement_add.jsp?selectedCustomerID=" + customerID + "&scoNumber=" + scoNumber + "&selectedContactID=" + contactID + "&selectedTerms=" + terms + "&selectedDate=" + scoDate + "&id=" + id + "&errMsg=Please fill in all the fields for the SCO.";
                         } else {
                             SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
                             Date scoDateDate = formatter.parse(scoDate);

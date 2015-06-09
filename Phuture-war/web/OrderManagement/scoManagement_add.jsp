@@ -475,7 +475,8 @@
                                                 <%
                                                     if (sco != null && scoID != null && !scoID.isEmpty() && !sco.getRemarks().isEmpty()) {
                                                         out.print("Remarks:");
-                                                        out.print("<br>" + sco.getRemarks());
+                                                        String repl = sco.getRemarks().replaceAll("(\\r|\\n|\\r\\n)+", "<br>");
+                                                        out.print("<br>" + repl);
                                                     }
                                                 %>
                                             </div>
