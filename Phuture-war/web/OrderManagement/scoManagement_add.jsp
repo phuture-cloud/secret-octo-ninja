@@ -706,9 +706,7 @@
                             </form>
                         </section>
                     </div>      
-
-                    <%}%>
-
+                                
                     <div id="modalRemove" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
                         <section class="panel">
                             <header class="panel-heading">
@@ -734,7 +732,7 @@
                             </footer>
                         </section>
                     </div>
-
+                    <%}%>
                 </section>
             </div>
         </section>
