@@ -211,7 +211,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
                 return result;
             }
             q = em.createQuery("SELECT c FROM Contact c WHERE c.id=:id");
-            q.setParameter("id", customerID);
+            q.setParameter("id", contactID);
             Contact contact = (Contact) q.getSingleResult();
             q = em.createQuery("SELECT c FROM Customer c WHERE c.id=:id");
             q.setParameter("id", customerID);
@@ -248,13 +248,23 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             result.setDescription("SCO edited successfully.");
         } catch (NoResultException ex) {
             System.out.println("OrderManagementBean: updateSalesConfirmationOrder() could not find one or more ID(s).");
-            result.setDescription("Failed to edit a SCO. The SCO selected no longer exist in the system.");
+            result.setDescription("Failed to edit a SCO. The SCO or customer or contact selected no longer exist in the system.");
         } catch (Exception ex) {
             System.out.println("OrderManagementBean: updateSalesConfirmationOrder() failed");
             ex.printStackTrace();
             result.setDescription("Failed to edit a new SCO due to internal server error.");
         }
         return result;
+    }
+
+    @Override
+    public ReturnHelper updateSalesConfirmationOrderRemarks(Long salesConfirmationOrderID, String remarks) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public ReturnHelper updateSalesConfirmationOrderNotes(Long salesConfirmationOrderID, String notes) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
