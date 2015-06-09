@@ -211,19 +211,29 @@ public class OrderManagementController extends HttpServlet {
 
                 case "UpdateSCONotes":
                     if (checkLogin(response)) {
-//                        returnHelper = orderManagementBean.updateSalesConfirmationOrderCustomerContactDetails(Long.parseLong(id), company, name, email, officeNo, mobileNo, faxNo, address, false);
-//                        if (returnHelper.getResult()) {
-//                            session.setAttribute("sco", orderManagementBean.getSalesConfirmationOrder(Long.parseLong(id)));
-//                            nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&goodMsg=" + returnHelper.getDescription();
-//                        } else {
-//                            nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&errMsg=" + returnHelper.getDescription();
-//                        }
+                        System.out.println("id " + id);
+                        System.out.println("notes " + notes);
+                        returnHelper = orderManagementBean.updateSalesConfirmationOrderNotes(Long.parseLong(id), notes, false);
+                        if (returnHelper.getResult()) {
+                            session.setAttribute("sco", orderManagementBean.getSalesConfirmationOrder(Long.parseLong(id)));
+                            nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&goodMsg=" + returnHelper.getDescription();
+                        } else {
+                            nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&errMsg=" + returnHelper.getDescription();
+                        }
                     }
                     break;
 
                 case "UpdateSCORemarks":
                     if (checkLogin(response)) {
-
+                        System.out.println("id " + id);
+                        System.out.println("Remarks " + notes);
+                        returnHelper = orderManagementBean.updateSalesConfirmationOrderRemarks(Long.parseLong(id), remarks, false);
+                        if (returnHelper.getResult()) {
+                            session.setAttribute("sco", orderManagementBean.getSalesConfirmationOrder(Long.parseLong(id)));
+                            nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&goodMsg=" + returnHelper.getDescription();
+                        } else {
+                            nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&errMsg=" + returnHelper.getDescription();
+                        }
                     }
                     break;
 

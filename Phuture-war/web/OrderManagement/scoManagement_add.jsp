@@ -224,16 +224,17 @@
                                                 <div class="bill-to">
                                                     <p class="h5 mb-xs text-dark text-weight-semibold">To:</p>
                                                     <address>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6" style="padding-left: 0px;">
                                                             <%
                                                                 if (sco != null && scoID != null && !scoID.isEmpty()) {
                                                                     out.print("<b>" + sco.getCustomerName() + "</b>");
-                                                                    out.print("<br>" + sco.getContactName());
                                                                     out.print("<br>" + sco.getContactAddress());
                                                                     out.print("<br>" + sco.getContactOfficeNo());
                                                                     if (sco.getContactFaxNo() != null && !sco.getContactFaxNo().isEmpty()) {
                                                                         out.print("<br>" + sco.getContactFaxNo());
                                                                     }
+                                                                    out.print("<p class='h5 mb-xs text-dark text-weight-semibold'>Attention:</p>");
+                                                                    out.print(sco.getContactName() + " " );
                                                                     if (sco.getContactMobileNo() != null && !sco.getContactMobileNo().isEmpty()) {
                                                                         out.print("<br>" + sco.getContactMobileNo());
                                                                     }
@@ -264,7 +265,7 @@
                                                             if (sco == null || scoID == null || scoID.isEmpty()) {
                                                         %>
                                                         <br/><br/>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-6" style="padding-left: 0px;">
                                                             <select id="customerContactid" name="contactID" data-plugin-selectTwo class="form-control populate"  onchange="javascript:selectCustomerContact()" required>
                                                                 <option value="">Select a contact</option>
                                                                 <%
@@ -299,7 +300,7 @@
                                                 <div class="bill-data text-right">
                                                     <p class="mb-none">
                                                         <span class="text-dark">Salesperson: </span>
-                                                        <span class="value" style="min-width: 110px; font-size: 11pt; text-align: left;">
+                                                        <span class="value" style="min-width: 110px; font-size: 10.5pt; text-align: left;">
                                                             <%=staff.getName()%>
                                                         </span>
                                                     </p>
@@ -473,8 +474,8 @@
                                             <div class="col-sm-8">
                                                 <%
                                                     if (sco != null && scoID != null && !scoID.isEmpty() && !sco.getRemarks().isEmpty()) {
-                                                        out.print("<p>Remarks:</p>");
-                                                        out.print("<p>" + sco.getRemarks() + "</p>");
+                                                        out.print("Remarks:");
+                                                        out.print("<br>" + sco.getRemarks());
                                                     }
                                                 %>
                                             </div>
@@ -534,27 +535,29 @@
 
                                 <div class="row">
                                     <div class="col-sm-6 mt-md">
-                                        <%
-                                            if (sco != null && scoID != null && !scoID.isEmpty()) {
-                                                out.print("<a href='#' target='_blank' class='btn btn-default'><i class='fa fa-print'></i> Print PDF</a>");
-                                                if (sco.getNotes() != null) {
-                                                    out.print("<a class='btn btn-default modal-with-form' href='#modalNotes'><i class='fa fa-exclamation'></i> Notes</a>");
-                                                } else {
-                                                    out.print("<a class='btn btn-default modal-with-form' href='#modalNotes'>Notes</a>");
+                                        <div class="btn-group">
+                                            <%
+                                                if (sco != null && scoID != null && !scoID.isEmpty()) {
+                                                    out.print("<button type='button' href='#' target='_blank' class='btn btn-default'><i class='fa fa-print'></i> Print PDF</button>");
+                                                    if (sco.getNotes() != null && !sco.getNotes().isEmpty()) {
+                                                        out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalNotes'><i class='fa fa-exclamation'></i> Notes</button>");
+                                                    } else {
+                                                        out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalNotes'>Notes</button>");
+                                                    }
+                                                    out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalRemarks' data-toggle='tooltip' data-placement='top' title='Remarks will be reflected in the SCO'>Remarks</button>");
                                                 }
-                                                out.print("<a class='btn btn-default modal-with-form' href='#modalRemarks' data-toggle='tooltip' data-placement='top' title='Remarks will be reflected in the SCO'>Remarks</a>");
-                                            }
-                                        %> 
+                                            %> 
+                                        </div>
                                     </div>
                                     <div class="col-sm-6 text-right mt-md mb-md">
-                                        <input type="button" class="btn btn-default" onclick="javascript:back()" value="Back"/>
+                                        <button type="button" class="btn btn-default" onclick="javascript:back()" style="margin-right: 3px;">Back</button>
                                         <% if (sco != null && scoID != null && !scoID.isEmpty()) {
-                                                out.print("<button type='button' class='modal-with-move-anim btn btn-danger'  href='#modalRemove'>Delete</button>");
+                                                out.print("<button type='button' class='modal-with-move-anim btn btn-danger' href='#modalRemove' style='margin-right: 3px;'>Delete</button>");
                                                 if (sco.getItems().size() > 0) {
-                                                    out.print("<button class='btn btn-primary' onclick='javascript:generatePO()'>Generate PO</button>");
-                                                    out.print("<button class='btn btn-primary' onclick='javascript:generateDO()'>Generate DO</button>");
+                                                    out.print("<button class='btn btn-primary' onclick='javascript:generatePO()' style='margin-right: 3px;'>Generate PO</button>");
+                                                    out.print("<button class='btn btn-primary' onclick='javascript:generateDO()' style='margin-right: 3px;'>Generate DO</button>");
                                                 }
-                                                out.print("<button class='btn btn-success' onclick='javascript:updateSCO(" + scoID + ")'>Save</button>");
+                                                out.print("<button class='btn btn-success' onclick='javascript:updateSCO(" + scoID + ")' style='margin-right: 3px;'>Save</button>");
                                             } else {
                                                 out.print("<button class='btn btn-success' type='submit'>Save</button>");
                                             }
@@ -684,7 +687,7 @@
                                     <div class="form-group mt-lg">
                                         <label class="col-sm-3 control-label">Remarks</label>
                                         <div class="col-sm-9">
-                                            <textarea class="form-control" rows="5" name="remarks"></textarea>
+                                            <textarea class="form-control" rows="5" name="remarks"><%=sco.getRemarks()%></textarea>
                                         </div>
                                     </div>
                                     <input type="hidden" name="target" value="UpdateSCORemarks">    
@@ -735,7 +738,6 @@
             </div>
         </section>
         <jsp:include page="../foot.html" />
-        <script src="assets/javascripts/ui-elements/examples.modals.js"></script>
     </body>
 </html>
 <%}%>
