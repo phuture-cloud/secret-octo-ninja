@@ -128,7 +128,7 @@
                                         <div class="form-group">
                                             <label class="col-md-3 control-label">Address <span class="required">*</span></label>
                                             <div class="col-md-6">
-                                                <input type="text" class="form-control" name="address" required>
+                                                <textarea class="form-control" rows="3" name="address" required></textarea>
                                             </div>
                                         </div>
 

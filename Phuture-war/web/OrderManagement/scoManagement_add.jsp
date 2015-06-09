@@ -228,7 +228,8 @@
                                                             <%
                                                                 if (sco != null && scoID != null && !scoID.isEmpty()) {
                                                                     out.print("<b>" + sco.getCustomerName() + "</b>");
-                                                                    out.print("<br>" + sco.getContactAddress());
+                                                                    String repl = sco.getContactAddress().replaceAll("(\\r|\\n|\\r\\n)+", "<br>");
+                                                                    out.print("<br>" + repl);
                                                                     out.print("<br>" + sco.getContactOfficeNo());
                                                                     if (sco.getContactFaxNo() != null && !sco.getContactFaxNo().isEmpty()) {
                                                                         out.print("<br>" + sco.getContactFaxNo());
@@ -706,7 +707,7 @@
                             </form>
                         </section>
                     </div>      
-                                
+
                     <div id="modalRemove" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
                         <section class="panel">
                             <header class="panel-heading">
