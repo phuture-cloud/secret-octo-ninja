@@ -80,7 +80,7 @@
                     var scoDate = document.getElementById("scoDate").value;
                     var terms = document.getElementById("terms").value;
                     if (customerID !== "") {
-                        window.location.href = "../OrderManagementController?target=ListCustomerContacts&id=" + customerID + "&scoNumber=" + scoNumber + "&scoDate=" + scoDate + "&terms=" + terms;
+                        window.location.href = "../OrderManagementController?target=ListCustomerContacts&customerID=" + customerID + "&scoNumber=" + scoNumber + "&scoDate=" + scoDate + "&terms=" + terms;
                     }
                 }
 
@@ -92,7 +92,7 @@
                     var terms = document.getElementById("terms").value;
                     if (customerID !== "") {
                         var contactID = document.getElementById("customerContactid").value;
-                        window.location.href = "scoManagement_add.jsp?selectedCustomerID=" + customerID + "&selectedContactID=" + contactID + "&scoNumber=" + scoNumber + "&selectedDate=" + scoDate + "&selectedTerms=" + terms;
+                        window.location.href = "scoManagement_add.jsp?selectedCustomerID=" + customerID + "&selectedContactID=" + contactID + "&scoNumber=" + scoNumber + "&scoDate=" + scoDate + "&terms=" + terms;
                     }
                 }
 
@@ -143,6 +143,13 @@
                     scoManagement.target.value = "DeleteSCO";
                     document.scoManagement.action = "../OrderManagementController";
                     document.scoManagement.submit();
+                }
+
+                function addressBook() {
+                    window.onbeforeunload = null;
+                    editContactForm.target.value = "ListAllCustomer";
+                    document.editContactForm.action = "../OrderManagementController";
+                    document.editContactForm.submit();
                 }
 
                 window.onbeforeunload = function () {
@@ -230,7 +237,10 @@
                                                                     if (sco.getContactMobileNo() != null && !sco.getContactMobileNo().isEmpty()) {
                                                                         out.print("<br>" + sco.getContactMobileNo());
                                                                     }
-                                                                    out.print("<br><div class='text-right'><a href='#'>edit</a></div><br><br>");
+                                                                    if (sco.getContactEmail() != null && !sco.getContactEmail().isEmpty()) {
+                                                                        out.print("<br>" + sco.getContactEmail());
+                                                                    }
+                                                                    out.print("<br><div class='text-right'><a href='#modalEditForm' class='modal-with-form'>edit</a></div><br><br>");
                                                                 } else {
                                                             %>
                                                             <select id="customerList" name="customerID" data-plugin-selectTwo class="form-control populate" onchange="javascript:getCustomerContacts()" required>
@@ -289,13 +299,13 @@
                                                 <div class="bill-data text-right">
                                                     <p class="mb-none">
                                                         <span class="text-dark">Salesperson: </span>
-                                                        <span class="value" style="min-width: 100px; font-size: 11pt; text-align: left;">
+                                                        <span class="value" style="min-width: 110px; font-size: 11pt; text-align: left;">
                                                             <%=staff.getName()%>
                                                         </span>
                                                     </p>
                                                     <p class="mb-none">
                                                         <span class="text-dark">Date:</span>
-                                                        <span class="value" style="min-width: 100px">
+                                                        <span class="value" style="min-width: 110px">
                                                             <%
                                                                 String selectedDate = request.getParameter("selectedDate");
                                                                 if (selectedDate != null && !selectedDate.isEmpty()) {
@@ -312,7 +322,7 @@
                                                     </p>
                                                     <p class="mb-none">
                                                         <span class="text-dark">Terms:</span>
-                                                        <span class="value" style="min-width: 100px">
+                                                        <span class="value" style="min-width: 110px">
                                                             <select id="terms" name="terms" class="form-control input-sm mb-md" required>
                                                                 <%
                                                                     out.print("<option value=''>Select</option>");
@@ -458,9 +468,17 @@
                                         </table>
                                     </div>
 
-                                    <div class="invoice-summary">
+                                    <div class="invoice-summary" style="margin-top: 10px;">
                                         <div class="row">
-                                            <div class="col-sm-4 col-sm-offset-8">
+                                            <div class="col-sm-8">
+                                                <%
+                                                    if (sco != null && scoID != null && !scoID.isEmpty() && !sco.getRemarks().isEmpty()) {
+                                                        out.print("<p>Remarks:</p>");
+                                                        out.print("<p>" + sco.getRemarks() + "</p>");
+                                                    }
+                                                %>
+                                            </div>
+                                            <div class="col-sm-4">
                                                 <table class="table h5 text-dark">
                                                     <tbody>
                                                         <tr class="b-top-none">
@@ -516,47 +534,31 @@
 
                                 <div class="row">
                                     <div class="col-sm-6 mt-md">
-                                        <% if (sco != null && scoID != null && !scoID.isEmpty()) {%>
-                                        <a href="#" target="_blank" class="btn btn-default"><i class="fa fa-print"></i> Print PDF</a>
-                                        <%}%> 
+                                        <%
+                                            if (sco != null && scoID != null && !scoID.isEmpty()) {
+                                                out.print("<a href='#' target='_blank' class='btn btn-default'><i class='fa fa-print'></i> Print PDF</a>");
+                                                if (sco.getNotes() != null) {
+                                                    out.print("<a class='btn btn-default modal-with-form' href='#modalNotes'><i class='fa fa-exclamation'></i> Notes</a>");
+                                                } else {
+                                                    out.print("<a class='btn btn-default modal-with-form' href='#modalNotes'>Notes</a>");
+                                                }
+                                                out.print("<a class='btn btn-default modal-with-form' href='#modalRemarks' data-toggle='tooltip' data-placement='top' title='Remarks will be reflected in the SCO'>Remarks</a>");
+                                            }
+                                        %> 
                                     </div>
                                     <div class="col-sm-6 text-right mt-md mb-md">
                                         <input type="button" class="btn btn-default" onclick="javascript:back()" value="Back"/>
-                                        <% if (sco != null && scoID != null && !scoID.isEmpty()) {%>
-                                        <button type="button" class="modal-with-move-anim btn btn-danger"  href="#modalRemove">Delete</button>
-                                        <div id="modalRemove" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
-                                            <section class="panel">
-                                                <header class="panel-heading">
-                                                    <h2 class="panel-title">Are you sure?</h2>
-                                                </header>
-                                                <div class="panel-body">
-                                                    <div class="modal-wrapper">
-                                                        <div class="modal-icon">
-                                                            <i class="fa fa-question-circle"></i>
-                                                        </div>
-                                                        <div class="modal-text">
-                                                            <p>Are you sure that you want to delete this Sales Confirmation Order?</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <footer class="panel-footer">
-                                                    <div class="row">
-                                                        <div class="col-md-12 text-right">
-                                                            <button class="btn btn-primary modal-confirm" onclick="deleteSCO(<%=scoID%>)">Confirm</button>
-                                                            <button class="btn btn-default modal-dismiss">Cancel</button>
-                                                        </div>
-                                                    </div>
-                                                </footer>
-                                            </section>
-                                        </div>
-                                        <% if (sco.getId() != null) {%>
-                                        <button class="btn btn-primary" onclick="javascript:generatePO()">Generate PO</button>
-                                        <button class="btn btn-primary" onclick="javascript:generateDO()">Generate DO</button>
-                                        <%}%> 
-                                        <button class="btn btn-success" onclick="javascript:updateSCO(<%=scoID%>)">Save</button>
-                                        <%} else {%> 
-                                        <button class="btn btn-success"  type="submit">Save</button>
-                                        <%}%> 
+                                        <% if (sco != null && scoID != null && !scoID.isEmpty()) {
+                                                out.print("<button type='button' class='modal-with-move-anim btn btn-danger'  href='#modalRemove'>Delete</button>");
+                                                if (sco.getItems().size() > 0) {
+                                                    out.print("<button class='btn btn-primary' onclick='javascript:generatePO()'>Generate PO</button>");
+                                                    out.print("<button class='btn btn-primary' onclick='javascript:generateDO()'>Generate DO</button>");
+                                                }
+                                                out.print("<button class='btn btn-success' onclick='javascript:updateSCO(" + scoID + ")'>Save</button>");
+                                            } else {
+                                                out.print("<button class='btn btn-success' type='submit'>Save</button>");
+                                            }
+                                        %>
                                     </div>
                                 </div>
                             </div>
@@ -575,10 +577,165 @@
                     </form>
                     <!-- end: page -->
 
+                    <%if (sco != null && scoID != null && !scoID.isEmpty()) {%>
+                    <div id="modalEditForm" class="modal-block modal-block-primary mfp-hide">
+                        <section class="panel">
+                            <form name="editContactForm" action="../OrderManagementController" class="form-horizontal mb-lg">
+                                <header class="panel-heading">
+                                    <h2 class="panel-title">Edit Contact</h2>
+                                </header>
+                                <div class="panel-body">
+                                    <div class="form-group mt-lg">
+                                        <label class="col-sm-3 control-label">Company <span class="required">*</span></label>
+                                        <div class="col-sm-9">
+                                            <input type="text" name="company" class="form-control" value="<%=sco.getCustomerName()%>" required/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group mt-lg">
+                                        <label class="col-sm-3 control-label">Name <span class="required">*</span></label>
+                                        <div class="col-sm-9">
+                                            <input type="text" name="name" class="form-control" value="<%=sco.getContactName()%>" required/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">Address <span class="required">*</span></label>
+                                        <div class="col-md-9">
+                                            <input type="text" class="form-control" name="address" value="<%=sco.getContactAddress()%>" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Telephone <span class="required">*</span></label>
+                                        <div class="col-sm-9">
+                                            <input type="text" name="officeNo" class="form-control" value="<%=sco.getContactOfficeNo()%>" required/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Mobile</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" name="mobileNo" class="form-control" value="<%=sco.getContactMobileNo()%>"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Fasimile</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" name="faxNo" class="form-control" value="<%=sco.getContactFaxNo()%>"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Email <span class="required">*</span></label>
+                                        <div class="col-sm-9">
+                                            <input type="email" name="email" class="form-control" value="<%=sco.getContactEmail()%>" required/>
+                                        </div>
+                                    </div>
+
+                                    <input type="hidden" name="target" value="UpdateSCOContact">    
+                                    <input type="hidden" name="id" value="<%=scoID%>">  
+                                    <input type="hidden" name="source" value="addressBook"> 
+                                </div>
+                                <footer class="panel-footer">
+                                    <div class="row">
+                                        <div class="col-md-12 text-right">
+                                            <button class="btn btn-success" type="submit">Save</button>
+                                            <button class="btn btn-primary" onclick="javascript:addressBook(<%=scoID%>)">Address Book</button>
+                                            <button class="btn btn-default modal-dismiss">Cancel</button>
+                                        </div>
+                                    </div>
+                                </footer>
+                            </form>
+                        </section>
+                    </div>
+
+                    <div id="modalNotes" class="modal-block modal-block-primary mfp-hide">
+                        <section class="panel">
+                            <form name="editNotesForm" action="../OrderManagementController" class="form-horizontal mb-lg">
+                                <header class="panel-heading">
+                                    <h2 class="panel-title">Notes</h2>
+                                </header>
+                                <div class="panel-body">
+                                    <div class="form-group mt-lg">
+                                        <label class="col-sm-3 control-label">Notes</label>
+                                        <div class="col-sm-9">
+                                            <textarea class="form-control" rows="5" name="notes"></textarea>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="target" value="UpdateSCONotes">    
+                                    <input type="hidden" name="id" value="<%=scoID%>">  
+                                </div>
+                                <footer class="panel-footer">
+                                    <div class="row">
+                                        <div class="col-md-12 text-right">
+                                            <button class="btn btn-success" type="submit">Save</button>
+                                            <button class="btn btn-default" type="reset">Clear</button>
+                                            <button class="btn btn-default modal-dismiss">Cancel</button>
+                                        </div>
+                                    </div>
+                                </footer>
+                            </form>
+                        </section>
+                    </div>
+
+                    <div id="modalRemarks" class="modal-block modal-block-primary mfp-hide">
+                        <section class="panel">
+                            <form name="editRemarksForm" action="../OrderManagementController" class="form-horizontal mb-lg">
+                                <header class="panel-heading">
+                                    <h2 class="panel-title">Remarks</h2>
+                                </header>
+                                <div class="panel-body">
+                                    <div class="form-group mt-lg">
+                                        <label class="col-sm-3 control-label">Remarks</label>
+                                        <div class="col-sm-9">
+                                            <textarea class="form-control" rows="5" name="remarks"></textarea>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="target" value="UpdateSCORemarks">    
+                                    <input type="hidden" name="id" value="<%=scoID%>">  
+                                </div>
+                                <footer class="panel-footer">
+                                    <div class="row">
+                                        <div class="col-md-12 text-right">
+                                            <button class="btn btn-success" type="submit">Save</button>
+                                            <button class="btn btn-default" type="reset">Clear</button>
+                                            <button class="btn btn-default modal-dismiss">Cancel</button>
+                                        </div>
+                                    </div>
+                                </footer>
+                            </form>
+                        </section>
+                    </div>      
+
+                    <%}%>
+
+                    <div id="modalRemove" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+                        <section class="panel">
+                            <header class="panel-heading">
+                                <h2 class="panel-title">Are you sure?</h2>
+                            </header>
+                            <div class="panel-body">
+                                <div class="modal-wrapper">
+                                    <div class="modal-icon">
+                                        <i class="fa fa-question-circle"></i>
+                                    </div>
+                                    <div class="modal-text">
+                                        <p>Are you sure that you want to delete this Sales Confirmation Order?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <footer class="panel-footer">
+                                <div class="row">
+                                    <div class="col-md-12 text-right">
+                                        <button class="btn btn-primary modal-confirm" onclick="deleteSCO(<%=scoID%>)">Confirm</button>
+                                        <button class="btn btn-default modal-dismiss">Cancel</button>
+                                    </div>
+                                </div>
+                            </footer>
+                        </section>
+                    </div>
+
                 </section>
             </div>
         </section>
         <jsp:include page="../foot.html" />
+        <script src="assets/javascripts/ui-elements/examples.modals.js"></script>
     </body>
 </html>
 <%}%>
