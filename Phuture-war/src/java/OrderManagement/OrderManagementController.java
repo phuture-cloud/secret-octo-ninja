@@ -6,7 +6,6 @@ import EntityManager.Customer;
 import EntityManager.ReturnHelper;
 import EntityManager.SalesConfirmationOrder;
 import EntityManager.Staff;
-import static com.sun.xml.bind.util.CalendarConv.formatter;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -189,6 +188,7 @@ public class OrderManagementController extends HttpServlet {
                 case "UpdateSCOContact":
                     if (checkLogin(response)) {
                         if (source != null && source.equals("UpdateContact")) {
+                            System.out.println("sco id " + id);
                             returnHelper = orderManagementBean.updateSalesConfirmationOrderCustomerContactDetails(Long.parseLong(id), Long.parseLong(customerID), Long.parseLong(contactID), false);
                             if (returnHelper.getResult()) {
                                 session.setAttribute("sco", orderManagementBean.getSalesConfirmationOrder(Long.parseLong(id)));
@@ -206,6 +206,24 @@ public class OrderManagementController extends HttpServlet {
                                 nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&errMsg=Please fill in all the required fields for edit contact";
                             }
                         }
+                    }
+                    break;
+
+                case "UpdateSCONotes":
+                    if (checkLogin(response)) {
+//                        returnHelper = orderManagementBean.updateSalesConfirmationOrderCustomerContactDetails(Long.parseLong(id), company, name, email, officeNo, mobileNo, faxNo, address, false);
+//                        if (returnHelper.getResult()) {
+//                            session.setAttribute("sco", orderManagementBean.getSalesConfirmationOrder(Long.parseLong(id)));
+//                            nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&goodMsg=" + returnHelper.getDescription();
+//                        } else {
+//                            nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&errMsg=" + returnHelper.getDescription();
+//                        }
+                    }
+                    break;
+
+                case "UpdateSCORemarks":
+                    if (checkLogin(response)) {
+
                     }
                     break;
 
