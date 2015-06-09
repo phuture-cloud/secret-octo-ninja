@@ -234,7 +234,7 @@
                                                                         out.print("<br>" + sco.getContactFaxNo());
                                                                     }
                                                                     out.print("<p class='h5 mb-xs text-dark text-weight-semibold'>Attention:</p>");
-                                                                    out.print(sco.getContactName() + " " );
+                                                                    out.print(sco.getContactName() + " ");
                                                                     if (sco.getContactMobileNo() != null && !sco.getContactMobileNo().isEmpty()) {
                                                                         out.print("<br>" + sco.getContactMobileNo());
                                                                     }
@@ -538,7 +538,7 @@
                                         <div class="btn-group">
                                             <%
                                                 if (sco != null && scoID != null && !scoID.isEmpty()) {
-                                                    out.print("<button type='button' href='#' target='_blank' class='btn btn-default'><i class='fa fa-print'></i> Print PDF</button>");
+                                                    out.print("<a href='../OrderManagementController?target=PrintPDF&id=" + scoID + "' target='_blank' class='btn btn-default'><i class='fa fa-print'></i> Print PDF</a>");
                                                     if (sco.getNotes() != null && !sco.getNotes().isEmpty()) {
                                                         out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalNotes'><i class='fa fa-exclamation'></i> Notes</button>");
                                                     } else {
