@@ -258,12 +258,41 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
     }
 
     @Override
-    public ReturnHelper updateSalesConfirmationOrderRemarks(Long salesConfirmationOrderID, String remarks) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public ReturnHelper updateSalesConfirmationOrderRemarks(Long salesConfirmationOrderID, String remarks, Boolean adminOverwrite) {
+        System.out.println("OrderManagementBean: updateSalesConfirmationOrderRemarks() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        try {
+            Query q = em.createQuery("SELECT s FROM SalesConfirmationOrder s WHERE s.id=:id");
+            q.setParameter("id", salesConfirmationOrderID);
+            SalesConfirmationOrder sco = (SalesConfirmationOrder) q.getSingleResult();
+
+            ReturnHelper checkResult = checkIfSCOisEditable(salesConfirmationOrderID, adminOverwrite);
+            if (!checkResult.getResult()) {
+                result.setDescription(checkResult.getDescription());
+                return result;
+            }
+            if (sco.getIsDeleted()) {
+                result.setDescription("Failed to edit the SCO as it has been deleted.");
+                return result;
+            }
+            sco.setRemarks(remarks);
+            em.merge(sco);
+            result.setResult(true);
+            result.setDescription("SCO edited successfully.");
+        } catch (NoResultException ex) {
+            System.out.println("OrderManagementBean: updateSalesConfirmationOrder() could not find one or more ID(s).");
+            result.setDescription("Failed to edit a SCO. The SCO or customer or contact selected no longer exist in the system.");
+        } catch (Exception ex) {
+            System.out.println("OrderManagementBean: updateSalesConfirmationOrder() failed");
+            ex.printStackTrace();
+            result.setDescription("Failed to edit a new SCO due to internal server error.");
+        }
+        return result;
     }
 
     @Override
-    public ReturnHelper updateSalesConfirmationOrderNotes(Long salesConfirmationOrderID, String notes) {
+    public ReturnHelper updateSalesConfirmationOrderNotes(Long salesConfirmationOrderID, String notes, Boolean adminOverwrite) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
