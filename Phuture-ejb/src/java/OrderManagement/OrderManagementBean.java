@@ -479,7 +479,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             //Update SCO total price
             Double totalPrice = 0.0;
             for (LineItem curLineItem : lineItems) {
-                totalPrice = totalPrice + (curLineItem.getItemUnitPrice() * curLineItem.getItemQty() * (gstRate / 100) + 1);
+                totalPrice = totalPrice + (curLineItem.getItemUnitPrice() * curLineItem.getItemQty() * ((gstRate / 100) + 1));
             }
             sco.setTotalPrice(totalPrice);
             em.merge(sco);
@@ -527,7 +527,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
 
             List<LineItem> lineItems = sco.getItems();
             for (LineItem curLineItem : lineItems) {
-                totalPrice = totalPrice + (curLineItem.getItemUnitPrice() * curLineItem.getItemQty() * (gstRate / 100) + 1);
+                totalPrice = totalPrice + (curLineItem.getItemUnitPrice() * curLineItem.getItemQty() * ((gstRate / 100) + 1));
             }
             sco.setTotalPrice(totalPrice);
             em.merge(sco);
@@ -572,7 +572,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             //Update SCO total price
             Double totalPrice = 0.0;
             for (LineItem curLineItem : lineItems) {
-                totalPrice = totalPrice + (curLineItem.getItemUnitPrice() * curLineItem.getItemQty() * (gstRate / 100) + 1);
+                totalPrice = totalPrice + (curLineItem.getItemUnitPrice() * curLineItem.getItemQty() * ((gstRate / 100) + 1));
             }
             sco.setTotalPrice(totalPrice);
             em.merge(sco);
