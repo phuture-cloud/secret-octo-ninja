@@ -61,8 +61,13 @@ public class CustomerManagementController extends HttpServlet {
                                 Long contactID = returnHelper.getID();
                                 returnHelper = customerManagementBean.setPrimaryContact(custID, contactID);
                                 if (returnHelper.getResult()) {
-                                    session.setAttribute("customers", customerManagementBean.listCustomers());
-                                    nextPage = "CustomerManagement/customerManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                                    List<Customer> customers = customerManagementBean.listCustomers();
+                                    if (customers == null) {
+                                        nextPage = "error500.html";
+                                    } else {
+                                        session.setAttribute("customers", customers);
+                                        nextPage = "CustomerManagement/customerManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                                    }
                                 } else {
                                     nextPage = "CustomerManagement/customerManagement.jsp?errMsg=" + returnHelper.getDescription();
                                 }
@@ -78,10 +83,14 @@ public class CustomerManagementController extends HttpServlet {
                 case "UpdateCustomer":
                     if (checkLogin(response)) {
                         returnHelper = customerManagementBean.updateCustomer(Long.parseLong(id), name);
-
                         if (returnHelper.getResult()) {
-                            session.setAttribute("customers", customerManagementBean.listCustomers());
-                            nextPage = "CustomerManagement/customerManagement_update.jsp?id=" + id + "&name=" + name + "&goodMsg=" + returnHelper.getDescription();
+                            List<Customer> customers = customerManagementBean.listCustomers();
+                            if (customers == null) {
+                                nextPage = "error500.html";
+                            } else {
+                                session.setAttribute("customers", customers);
+                                nextPage = "CustomerManagement/customerManagement_update.jsp?id=" + id + "&name=" + name + "&goodMsg=" + returnHelper.getDescription();
+                            }
                         } else {
                             nextPage = "CustomerManagement/customerManagement_update.jsp?id=" + id + "&name=" + name + "&errMsg=" + returnHelper.getDescription();
                         }
@@ -92,8 +101,13 @@ public class CustomerManagementController extends HttpServlet {
                     if (checkLogin(response)) {
                         returnHelper = customerManagementBean.deleteCustomer(Long.parseLong(id));
                         if (returnHelper.getResult()) {
-                            session.setAttribute("customers", customerManagementBean.listCustomers());
-                            nextPage = "CustomerManagement/customerManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                            List<Customer> customers = customerManagementBean.listCustomers();
+                            if (customers == null) {
+                                nextPage = "error500.html";
+                            } else {
+                                session.setAttribute("customers", customers);
+                                nextPage = "CustomerManagement/customerManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                            }
                         } else {
                             nextPage = "CustomerManagement/customerManagement.jsp?errMsg=" + returnHelper.getDescription();
                         }
@@ -118,8 +132,13 @@ public class CustomerManagementController extends HttpServlet {
                     if (checkLogin(response)) {
                         returnHelper = customerManagementBean.setPrimaryContact(Long.parseLong(id), Long.parseLong(id2));
                         if (returnHelper.getResult()) {
-                            session.setAttribute("contacts", customerManagementBean.listCustomerContacts(Long.parseLong(id)));
-                            nextPage = "CustomerManagement/contactManagement.jsp?id=" + id + "&goodMsg=" + returnHelper.getDescription();
+                            List<Contact> contacts = customerManagementBean.listCustomerContacts(Long.parseLong(id));
+                            if (contacts == null) {
+                                nextPage = "error500.html";
+                            } else {
+                                session.setAttribute("contacts", contacts);
+                                nextPage = "CustomerManagement/contactManagement.jsp?id=" + id + "&goodMsg=" + returnHelper.getDescription();
+                            }
                         } else {
                             nextPage = "CustomerManagement/contactManagement.jsp?id=" + id + "&errMsg=" + returnHelper.getDescription();
                         }
@@ -130,8 +149,13 @@ public class CustomerManagementController extends HttpServlet {
                     if (checkLogin(response)) {
                         returnHelper = customerManagementBean.addContact(Long.parseLong(id), name, email, officeNo, mobileNo, faxNo, address, notes);
                         if (returnHelper.getResult()) {
-                            session.setAttribute("contacts", customerManagementBean.listCustomerContacts(Long.parseLong(id)));
-                            nextPage = "CustomerManagement/contactManagement.jsp?id=" + id + "&goodMsg=" + returnHelper.getDescription();
+                            List<Contact> contacts = customerManagementBean.listCustomerContacts(Long.parseLong(id));
+                            if (contacts == null) {
+                                nextPage = "error500.html";
+                            } else {
+                                session.setAttribute("contacts", contacts);
+                                nextPage = "CustomerManagement/contactManagement.jsp?id=" + id + "&goodMsg=" + returnHelper.getDescription();
+                            }
                         } else {
                             nextPage = "CustomerManagement/contactManagement.jsp?id=" + id + "&errMsg=" + returnHelper.getDescription();
                         }
@@ -143,8 +167,13 @@ public class CustomerManagementController extends HttpServlet {
                         returnHelper = customerManagementBean.updateContact(Long.parseLong(id2), name, email, officeNo, mobileNo, faxNo, address, notes);
 
                         if (returnHelper.getResult()) {
-                            session.setAttribute("contacts", customerManagementBean.listCustomerContacts(Long.parseLong(id)));
-                            nextPage = "CustomerManagement/contactManagement.jsp?id=" + id + "&goodMsg=" + returnHelper.getDescription();
+                            List<Contact> contacts = customerManagementBean.listCustomerContacts(Long.parseLong(id));
+                            if (contacts == null) {
+                                nextPage = "error500.html";
+                            } else {
+                                session.setAttribute("contacts", contacts);
+                                nextPage = "CustomerManagement/contactManagement.jsp?id=" + id + "&goodMsg=" + returnHelper.getDescription();
+                            }
                         } else {
                             nextPage = "CustomerManagement/contactManagement.jsp?id=" + id + "&errMsg=" + returnHelper.getDescription();
                         }
@@ -161,8 +190,13 @@ public class CustomerManagementController extends HttpServlet {
                             }
 
                             if (returnHelper.getResult()) {
-                                session.setAttribute("contacts", customerManagementBean.listCustomerContacts(Long.parseLong(id)));
-                                nextPage = "CustomerManagement/contactManagement.jsp?id=" + id + "&goodMsg=" + returnHelper.getDescription();
+                                List<Contact> contacts = customerManagementBean.listCustomerContacts(Long.parseLong(id));
+                                if (contacts == null) {
+                                    nextPage = "error500.html";
+                                } else {
+                                    session.setAttribute("contacts", contacts);
+                                    nextPage = "CustomerManagement/contactManagement.jsp?id=" + id + "&goodMsg=" + returnHelper.getDescription();
+                                }
                             } else {
                                 nextPage = "CustomerManagement/contactManagement.jsp?id=" + id + "&errMsg=" + returnHelper.getDescription();
                             }

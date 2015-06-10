@@ -72,7 +72,7 @@
                                         <tr> 
                                             <th>SCO Order #</th>
                                             <th>Customer</th>
-                                            <th>Date</th>
+                                            <th>SCO Date</th>
                                             <th>Total Amount</th>
                                             <th>Status</th>
                                             <th style="width: 300px; text-align: center">Action</th>
@@ -88,7 +88,7 @@
                                             <td><a href="../CustomerManagementController?target=ListCustomerContacts&id=<%=salesConfirmationOrders.get(i).getCustomer().getId()%>"><%=salesConfirmationOrders.get(i).getCustomerName()%></a></td>
                                             <td>
                                                 <%
-                                                    SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("d MMM yyyy HH:mm:ss");
+                                                    SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("d MMM yyyy");
                                                     String date = DATE_FORMAT.format(salesConfirmationOrders.get(i).getDateCreated());
                                                     out.print(date);
                                                 %>

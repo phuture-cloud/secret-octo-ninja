@@ -120,14 +120,14 @@
                                         <div class="form-group">
                                             <label class="col-md-3 control-label">Address <span class="required">*</span></label>
                                             <div class="col-md-6">
-                                                <input type="text" class="form-control" name="address" required>
+                                                <textarea class="form-control" rows="3" name="address" required></textarea>
                                             </div>
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="col-md-3 control-label" for="textareaDefault">Notes</label>
+                                            <label class="col-md-3 control-label" for="notes">Notes</label>
                                             <div class="col-md-6">
-                                                <textarea class="form-control" rows="3" name="notes"></textarea>
+                                                <textarea class="form-control" rows="3" name="notes" id="notes"></textarea>
                                             </div>
                                         </div>
                                         <input type="hidden" name="id" value="<%=customerID%>">   
@@ -138,7 +138,7 @@
                                         <div class="row">
                                             <div class="col-sm-9 col-sm-offset-3">
                                                 <button class="btn btn-primary">Submit</button>
-                                                <input type="button"  class="btn btn-primary" value="Back" onclick="javascript:back()"/>
+                                                <input type="button"  class="btn btn-default" value="Back" onclick="javascript:back()"/>
                                                 <button type="reset" class="btn btn-default">Reset</button>
                                             </div>
                                         </div>

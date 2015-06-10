@@ -104,7 +104,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <input class="btn btn-primary" name="btnAdd" type="submit" value="Add Contact" onclick="addContact(<%=customerID%>)"  />
-                                        <a class="modal-with-move-anim btn btn-primary" href="#modalRemove">Remove Contact</a>
+                                        <a class="modal-with-move-anim btn btn-danger" href="#modalRemove">Remove Contact</a>
                                         <div id="modalRemove" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
                                             <section class="panel">
                                                 <header class="panel-heading">
@@ -130,7 +130,7 @@
                                                 </footer>
                                             </section>
                                         </div>
-                                        <input class="btn btn-primary" name="btnBack" type="submit" value="Back" onclick="back()"  />
+                                        <input class="btn btn-default" name="btnBack" type="submit" value="Back" onclick="back()"  />
                                     </div>
                                 </div>
                                 <br/>

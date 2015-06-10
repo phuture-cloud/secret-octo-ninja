@@ -35,8 +35,13 @@ public class AccountManagementController extends HttpServlet {
                 case "StaffLogin":
                     returnHelper = accountManagementBean.loginStaff(username, password);
                     if (returnHelper.getResult()) {
-                        session.setAttribute("staff", accountManagementBean.getStaff(username));
-                        nextPage = "AccountManagement/workspace.jsp";
+                        Staff staff = accountManagementBean.getStaff(username);
+                        if (staff == null) {
+                            nextPage = "error500.html";
+                        } else {
+                            session.setAttribute("staff", staff);
+                            nextPage = "AccountManagement/workspace.jsp";
+                        }
                     } else {
                         nextPage = "index.jsp?errMsg=" + returnHelper.getDescription();
                     }
@@ -51,8 +56,13 @@ public class AccountManagementController extends HttpServlet {
                     if (checkLogin(response)) {
                         returnHelper = accountManagementBean.registerStaffAccount(name, prefix, username, password, false);
                         if (returnHelper.getResult()) {
-                            session.setAttribute("staffs", accountManagementBean.listAllStaffAccount());
-                            nextPage = "AccountManagement/staffManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                            List<Staff> staffs = accountManagementBean.listAllStaffAccount();
+                            if (staffs == null) {
+                                nextPage = "error500.html";
+                            } else {
+                                session.setAttribute("staffs", staffs);
+                                nextPage = "AccountManagement/staffManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                            }
                         } else {
                             nextPage = "AccountManagement/staffManagement.jsp?errMsg=" + returnHelper.getDescription();
                         }
@@ -70,8 +80,13 @@ public class AccountManagementController extends HttpServlet {
                         returnHelper = accountManagementBean.updateStaff(Long.parseLong(staffID), name, prefix);
 
                         if (returnHelper.getResult()) {
-                            session.setAttribute("staffs", accountManagementBean.listAllStaffAccount());
-                            nextPage = "AccountManagement/staffManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                            List<Staff> staffs = accountManagementBean.listAllStaffAccount();
+                            if (staffs == null) {
+                                nextPage = "error500.html";
+                            } else {
+                                session.setAttribute("staffs", staffs);
+                                nextPage = "AccountManagement/staffManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                            }
                         } else {
                             nextPage = "AccountManagement/staffManagement.jsp?errMsg=" + returnHelper.getDescription();
                         }
@@ -83,8 +98,13 @@ public class AccountManagementController extends HttpServlet {
                     if (checkLogin(response)) {
                         returnHelper = accountManagementBean.disableAccount(Long.parseLong(staffID));
                         if (returnHelper.getResult()) {
-                            session.setAttribute("staffs", accountManagementBean.listAllStaffAccount());
-                            nextPage = "AccountManagement/staffManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                            List<Staff> staffs = accountManagementBean.listAllStaffAccount();
+                            if (staffs == null) {
+                                nextPage = "error500.html";
+                            } else {
+                                session.setAttribute("staffs", staffs);
+                                nextPage = "AccountManagement/staffManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                            }
                         } else {
                             nextPage = "AccountManagement/staffManagement.jsp?errMsg=" + returnHelper.getDescription();
                         }
