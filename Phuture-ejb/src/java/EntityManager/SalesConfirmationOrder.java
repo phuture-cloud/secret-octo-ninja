@@ -22,8 +22,10 @@ public class SalesConfirmationOrder implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String salesConfirmationOrderNumber;
+    //Automatic
     @Temporal(TemporalType.DATE)
     private Date dateCreated;
+    //User specified
     @Temporal(TemporalType.DATE)
     private Date salesConfirmationOrderDate;
     
