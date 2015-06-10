@@ -99,13 +99,11 @@ public class OrderManagementController extends HttpServlet {
                 case "ListCustomerContacts":
                     if (checkLogin(response)) {
                         List<Contact> contacts = customerManagementBean.listCustomerContacts(Long.parseLong(customerID));
-                        SalesConfirmationOrder sco = orderManagementBean.getSalesConfirmationOrder(Long.parseLong(id));
-                        if (contacts == null || sco == null) {
+                        if (contacts == null) {
                             nextPage = "error500.html";
                         } else {
                             session.setAttribute("contacts", contacts);
                             if (source != null && source.equals("addressBook")) {
-                                session.setAttribute("sco", sco);
                                 nextPage = "OrderManagement/updateContact.jsp?id=" + id + "&selectedCustomerID=" + customerID;
                             } else {
                                 nextPage = "OrderManagement/scoManagement_add.jsp?selectedCustomerID=" + customerID + "&scoNumber=" + scoNumber + "&selectedTerms=" + terms + "&selectedDate=" + scoDate;
