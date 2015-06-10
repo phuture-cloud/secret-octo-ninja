@@ -266,7 +266,7 @@ public class CustomerManagementBean implements CustomerManagementBeanLocal {
                     em.merge(contact);
                     result.setResult(true);
                     if (customer.getCustomerContacts().size() == 1) {
-                        result.setDescription("Primary contact added & marked successfully.");
+                        result.setDescription("Customer and primary contact added successfully.");
                     } else {
                         result.setDescription("Contact marked as primary contact.");
                     }

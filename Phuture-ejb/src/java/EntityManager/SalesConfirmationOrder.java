@@ -50,7 +50,8 @@ public class SalesConfirmationOrder implements Serializable {
     private List<Invoice> invoices;
     @OneToMany
     private List<LineItem> items;
-    private Double totalPrice;
+    private Double tax;//gst
+    private Double totalPrice;//after gst
     @Lob
     private String remarks;//Will appear on order
     @Lob
@@ -70,7 +71,7 @@ public class SalesConfirmationOrder implements Serializable {
         this.totalPrice = 0.0;
     }
 
-    public SalesConfirmationOrder(String salesConfirmationOrderNumber, Date salesConfirmationOrderDate, String customerName, Staff salesPerson, Integer term, String remarks, String notes) {
+    public SalesConfirmationOrder(String salesConfirmationOrderNumber, Date salesConfirmationOrderDate, String customerName, Staff salesPerson, Integer term, Double tax, String remarks, String notes) {
         this.status = "Created";
         this.salesConfirmationOrderNumber = salesConfirmationOrderNumber;
         this.salesConfirmationOrderDate = salesConfirmationOrderDate;
@@ -81,6 +82,7 @@ public class SalesConfirmationOrder implements Serializable {
         this.invoices = new ArrayList();
         this.dateCreated = new Date();
         this.terms = term;
+        this.tax = tax;
         this.isDeleted = false;
         this.remarks = remarks;
         this.notes = notes;
@@ -281,6 +283,14 @@ public class SalesConfirmationOrder implements Serializable {
 
     public void setTotalPrice(Double totalPrice) {
         this.totalPrice = totalPrice;
+    }
+
+    public Double getTax() {
+        return tax;
+    }
+
+    public void setTax(Double tax) {
+        this.tax = tax;
     }
 
     @Override
