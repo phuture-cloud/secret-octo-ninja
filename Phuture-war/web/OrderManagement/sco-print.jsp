@@ -69,6 +69,7 @@
                                             out.print("<br>" + sco.getContactEmail());
                                         }
                                     %>
+                                    <br><br>
                                 </div>
                             </address>
                         </div>
@@ -177,7 +178,7 @@
         </div>
         <jsp:include page="../foot.html" />
         <script>
-            window.print();
+            //window.print();
         </script>
     </body>
 </html>

@@ -45,6 +45,10 @@ public class OrderManagementController extends HttpServlet {
         if (terms == null) {
             terms = "";
         }
+        String status = request.getParameter("status");
+        if (status == null) {
+            status = "";
+        }
         String remarks = request.getParameter("remarks");
         String notes = request.getParameter("notes");
         String itemName = request.getParameter("itemName");
@@ -132,6 +136,7 @@ public class OrderManagementController extends HttpServlet {
                             if (itemName != null && !itemName.isEmpty() && itemDescription != null && !itemDescription.isEmpty() && itemQty != null && !itemQty.isEmpty() && itemUnitPrice != null && !itemUnitPrice.isEmpty()) {
                                 returnHelper = orderManagementBean.addSCOlineItem(scoID, itemName, itemDescription, Integer.parseInt(itemQty), Double.parseDouble(itemUnitPrice), false);
                                 if (returnHelper.getResult()) {
+                                    session.setAttribute("sco", orderManagementBean.getSalesConfirmationOrder(scoID));
                                     nextPage = "OrderManagement/scoManagement_add.jsp?goodMsg=" + returnHelper.getDescription() + "&selectedCustomerID=" + customerID + "&scoNumber=" + scoNumber + "&id=" + scoID;
                                 } else {
                                     nextPage = "OrderManagement/scoManagement_add.jsp?errMsg=" + returnHelper.getDescription() + "&selectedCustomerID=" + customerID + "&scoNumber=" + scoNumber + "&id=" + scoID;

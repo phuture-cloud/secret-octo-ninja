@@ -325,7 +325,7 @@
                                                     <p class="mb-none">
                                                         <span class="text-dark">Terms:</span>
                                                         <span class="value" style="min-width: 110px">
-                                                            <select id="terms" name="terms" class="form-control input-sm mb-md" required>
+                                                            <select id="terms" name="terms" class="form-control input-sm" required>
                                                                 <%
                                                                     out.print("<option value=''>Select</option>");
                                                                     String selectedTerms = request.getParameter("selectedTerms");
@@ -366,6 +366,46 @@
                                                             </select>
                                                         </span>
                                                     </p>
+                                                    <% if (sco != null && scoID != null && !scoID.isEmpty()) {%>
+                                                    <p class="mb-none">
+                                                        <span class="text-dark">Status: </span>
+                                                        <span class="value" style="min-width: 110px">
+                                                            <select id="status" name="status" class="form-control input-sm" required>
+                                                                <%
+                                                                    out.print("<option value=''>Created</option>");
+                                                                    if (sco.getStatus() != null && !sco.getStatus().isEmpty()) {
+                                                                        if (sco.getStatus().equals("Unfulfilled")) {
+                                                                            out.print("<option value='Unfulfilled' selected>Unfulfilled</option>");
+                                                                            out.print("<option value='Fulfilled'>Fulfilled</option>");
+                                                                            out.print("<option value='Completed'>Completed</option>");
+                                                                            out.print("<option value='Write-Off'>Write-Off</option>");
+                                                                        } else if (sco.getStatus().equals("Fulfilled")) {
+                                                                            out.print("<option value='Unfulfilled'>Unfulfilled</option>");
+                                                                            out.print("<option value='Fulfilled' selected>Fulfilled</option>");
+                                                                            out.print("<option value='Completed'>Completed</option>");
+                                                                            out.print("<option value='Write-Off'>Write-Off</option>");
+                                                                        } else if (sco.getStatus().equals("Completed")) {
+                                                                            out.print("<option value='Unfulfilled'>Unfulfilled</option>");
+                                                                            out.print("<option value='Fulfilled'>Fulfilled</option>");
+                                                                            out.print("<option value='Completed' selected>Completed</option>");
+                                                                            out.print("<option value='Write-Off'>Write-Off</option>");
+                                                                        } else if (sco.getStatus().equals("Write-Off")) {
+                                                                            out.print("<option value='Unfulfilled'>Unfulfilled</option>");
+                                                                            out.print("<option value='Fulfilled'>Fulfilled</option>");
+                                                                            out.print("<option value='Completed'>Completed</option>");
+                                                                            out.print("<option value='Write-Off' selected>Write-Off</option>");
+                                                                        } else {
+                                                                            out.print("<option value='Unfulfilled'>Unfulfilled</option>");
+                                                                            out.print("<option value='Fulfilled'>Fulfilled</option>");
+                                                                            out.print("<option value='Completed'>Completed</option>");
+                                                                            out.print("<option value='Write-Off'>Write-Off</option>");
+                                                                        }
+                                                                    }
+                                                                %>
+                                                            </select>
+                                                        </span>
+                                                    </p>
+                                                    <%}%>
                                                 </div>
                                             </div>
                                         </div>
