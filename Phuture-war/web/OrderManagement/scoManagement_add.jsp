@@ -507,9 +507,9 @@
                                                                     if (scoID == null || scoID.isEmpty() || sco == null) {
                                                                         out.print("<span id='output_gst'>$0.00</span>");
                                                                     } else {
-                                                                        formatedPrice = (sco.getTotalPrice() / 107) * 7;
+                                                                        formatedPrice = sco.getTax();
                                                                         out.print("<span id='output_gst'>" + formatter.format(formatedPrice) + "</span>");
-                                                                        out.print("<input type='hidden' value='" + (sco.getTotalPrice() / 107) * 7 + "' id='gst'>");
+                                                                        out.print("<input type='hidden' value='" + sco.getTax() + "' id='gst'>");
                                                                     }
                                                                 %>
                                                             </td>
@@ -596,16 +596,10 @@
                                             <input type="text" name="company" class="form-control" value="<%=sco.getCustomerName()%>" required/>
                                         </div>
                                     </div>
-                                    <div class="form-group mt-lg">
-                                        <label class="col-sm-3 control-label">Name <span class="required">*</span></label>
-                                        <div class="col-sm-9">
-                                            <input type="text" name="name" class="form-control" value="<%=sco.getContactName()%>" required/>
-                                        </div>
-                                    </div>
                                     <div class="form-group">
                                         <label class="col-md-3 control-label">Address <span class="required">*</span></label>
                                         <div class="col-md-9">
-                                            <input type="text" class="form-control" name="address" value="<%=sco.getContactAddress()%>" required>
+                                            <textarea class="form-control" rows="3" name="address" required><%=sco.getContactAddress()%></textarea>
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -615,24 +609,32 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-sm-3 control-label">Mobile</label>
-                                        <div class="col-sm-9">
-                                            <input type="text" name="mobileNo" class="form-control" value="<%=sco.getContactMobileNo()%>"/>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
                                         <label class="col-sm-3 control-label">Fasimile</label>
                                         <div class="col-sm-9">
                                             <input type="text" name="faxNo" class="form-control" value="<%=sco.getContactFaxNo()%>"/>
                                         </div>
                                     </div>
+                                    <hr>
+                                    <div class="form-group mt-lg">
+                                        <label class="col-sm-3 control-label">Name <span class="required">*</span></label>
+                                        <div class="col-sm-9">
+                                            <input type="text" name="name" class="form-control" value="<%=sco.getContactName()%>" required/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Mobile</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" name="mobileNo" class="form-control" value="<%=sco.getContactMobileNo()%>"/>
+                                        </div>
+                                    </div>
+
                                     <div class="form-group">
                                         <label class="col-sm-3 control-label">Email <span class="required">*</span></label>
                                         <div class="col-sm-9">
                                             <input type="email" name="email" class="form-control" value="<%=sco.getContactEmail()%>" required/>
                                         </div>
                                     </div>
-
+                                    <br>
                                     <input type="hidden" name="target" value="UpdateSCOContact">    
                                     <input type="hidden" name="id" value="<%=scoID%>">  
                                     <input type="hidden" name="source" value="addressBook"> 
