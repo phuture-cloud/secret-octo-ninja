@@ -26,16 +26,21 @@ public class DeliveryOrder implements Serializable {
     @OneToMany
     private List<LineItem> items;
     private String status;
+    //Automatic
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateCreated;
     @Temporal(TemporalType.TIMESTAMP)
-    private Date dateDelivered;
+    private Date dateMarkedAsDelivered;
+    //User specified
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date deliveryOrderDate;
 
     private String shippingContactName;
     private String shippingContactEmail;
     private String shippingContactOfficeNo;
     private String shippingContactMobileNo;
     private String shippingContactFaxNo;
+    
     @Lob
     private String shippingContactAddress;
 
@@ -102,12 +107,12 @@ public class DeliveryOrder implements Serializable {
         this.dateCreated = dateCreated;
     }
 
-    public Date getDateDelivered() {
-        return dateDelivered;
+    public Date getDateMarkedAsDelivered() {
+        return dateMarkedAsDelivered;
     }
 
-    public void setDateDelivered(Date dateDelivered) {
-        this.dateDelivered = dateDelivered;
+    public void setDateMarkedAsDelivered(Date dateMarkedAsDelivered) {
+        this.dateMarkedAsDelivered = dateMarkedAsDelivered;
     }
 
     public String getShippingContactName() {
@@ -156,6 +161,14 @@ public class DeliveryOrder implements Serializable {
 
     public void setShippingContactAddress(String shippingContactAddress) {
         this.shippingContactAddress = shippingContactAddress;
+    }
+
+    public Date getDeliveryOrderDate() {
+        return deliveryOrderDate;
+    }
+
+    public void setDeliveryOrderDate(Date deliveryOrderDate) {
+        this.deliveryOrderDate = deliveryOrderDate;
     }
 
     @Override

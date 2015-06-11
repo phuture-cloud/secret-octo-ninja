@@ -22,8 +22,10 @@ public class SalesConfirmationOrder implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String salesConfirmationOrderNumber;
+    //Automatic
     @Temporal(TemporalType.DATE)
     private Date dateCreated;
+    //User specified
     @Temporal(TemporalType.DATE)
     private Date salesConfirmationOrderDate;
     
@@ -115,6 +117,9 @@ public class SalesConfirmationOrder implements Serializable {
 
     public void setStatusAsCompleted() {
         this.status = "Completed";
+    }
+    public void setStatusAsWritenOff() {
+        this.status = "Write-Off";
     }
 
     public String getSalesConfirmationOrderNumber() {
