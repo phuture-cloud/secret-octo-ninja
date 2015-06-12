@@ -25,7 +25,8 @@ public class DeliveryOrder implements Serializable {
     private SalesConfirmationOrder salesConfirmationOrder;
     @OneToMany
     private List<LineItem> items;
-    private Double tax;//gst
+    private Double taxRate;//in %
+    private Double totalTax;//total totalTax amount
     private Double totalPrice;//after gst
     private String status;
     
@@ -180,12 +181,12 @@ public class DeliveryOrder implements Serializable {
         this.deliveryOrderDate = deliveryOrderDate;
     }
 
-    public Double getTax() {
-        return tax;
+    public Double getTotalTax() {
+        return totalTax;
     }
 
-    public void setTax(Double tax) {
-        this.tax = tax;
+    public void setTotalTax(Double totalTax) {
+        this.totalTax = totalTax;
     }
 
     public Double getTotalPrice() {
@@ -220,6 +221,14 @@ public class DeliveryOrder implements Serializable {
         this.isDeleted = isDeleted;
     }
 
+    public Double getTaxRate() {
+        return taxRate;
+    }
+
+    public void setTaxRate(Double taxRate) {
+        this.taxRate = taxRate;
+    }
+    
     @Override
     public int hashCode() {
         int hash = 0;

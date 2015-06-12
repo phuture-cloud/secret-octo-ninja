@@ -110,7 +110,7 @@ public class OrderManagementController extends HttpServlet {
                             if (source != null && source.equals("addressBook")) {
                                 nextPage = "OrderManagement/updateContact.jsp?id=" + id + "&selectedCustomerID=" + customerID;
                             } else {
-                                nextPage = "OrderManagement/scoManagement_add.jsp?selectedCustomerID=" + customerID + "&scoNumber=" + scoNumber + "&selectedTerms=" + terms + "&selectedDate=" + scoDate;
+                                nextPage = "OrderManagement/scoManagement_add.jsp?selectedCustomerID=" + customerID + "&scoNumber=" + scoNumber + "&terms=" + terms + "&scoDate=" + scoDate;
                             }
                         }
                     }
@@ -120,7 +120,7 @@ public class OrderManagementController extends HttpServlet {
                     if (checkLogin(response)) {
                         if (source.equals("AddLineItemToNewSCO")) {
                             if (itemName == null || itemName.isEmpty() || itemDescription == null || itemDescription.isEmpty() || itemQty == null || itemQty.isEmpty() || itemUnitPrice == null || itemUnitPrice.isEmpty()) {
-                                nextPage = "OrderManagement/scoManagement_add.jsp?selectedCustomerID=" + customerID + "&scoNumber=" + scoNumber + "&selectedContactID=" + contactID + "&selectedTerms=" + terms + "&selectedDate=" + scoDate + "&errMsg=Please fill in all the fields for the item.";
+                                nextPage = "OrderManagement/scoManagement_add.jsp?selectedCustomerID=" + customerID + "&scoNumber=" + scoNumber + "&selectedContactID=" + contactID + "&terms=" + terms + "&scoDate=" + scoDate + "&errMsg=Please fill in all the fields for the item.";
                                 break;
                             }
                         }
@@ -146,7 +146,7 @@ public class OrderManagementController extends HttpServlet {
                                 break;
                             }
                         } else { // Error in creating SCO
-                            nextPage = "OrderManagement/scoManagement_add.jsp?errMsg=" + returnHelper.getDescription() + "&selectedCustomerID=" + customerID + "&scoNumber=" + scoNumber + "&selectedDate=" + scoDate + "&selectedTerms=" + terms;
+                            nextPage = "OrderManagement/scoManagement_add.jsp?errMsg=" + returnHelper.getDescription() + "&selectedCustomerID=" + customerID + "&scoNumber=" + scoNumber + "&scoDate=" + scoDate + "&terms=" + terms;
                         }
                     }
                     break;
@@ -155,12 +155,12 @@ public class OrderManagementController extends HttpServlet {
                     if (checkLogin(response)) {
                         if (source.equals("AddLineItemToExistingSCO")) {
                             if (itemName == null || itemName.isEmpty() || itemDescription == null || itemDescription.isEmpty() || itemQty == null || itemQty.isEmpty() || itemUnitPrice == null || itemUnitPrice.isEmpty()) {
-                                nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&scoNumber=" + scoNumber + "&selectedTerms=" + terms + "&selectedDate=" + scoDate + "&errMsg=Please fill in all the fields for the item.";
+                                nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&scoNumber=" + scoNumber + "&terms=" + terms + "&scoDate=" + scoDate + "&errMsg=Please fill in all the fields for the item.";
                                 break;
                             }
                         }
                         if (scoNumber == null || scoNumber.isEmpty() || scoDate == null || scoDate.isEmpty() || terms == null || terms.isEmpty()) {
-                            nextPage = "OrderManagement/scoManagement_add.jsp?selectedCustomerID=" + customerID + "&scoNumber=" + scoNumber + "&selectedContactID=" + contactID + "&selectedTerms=" + terms + "&selectedDate=" + scoDate + "&id=" + id + "&errMsg=Please fill in all the fields for the SCO.";
+                            nextPage = "OrderManagement/scoManagement_add.jsp?selectedCustomerID=" + customerID + "&scoNumber=" + scoNumber + "&selectedContactID=" + contactID + "&terms=" + terms + "&scoDate=" + scoDate + "&id=" + id + "&errMsg=Please fill in all the fields for the SCO.";
                         } else {
                             SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
                             Date scoDateDate = formatter.parse(scoDate);
@@ -180,7 +180,7 @@ public class OrderManagementController extends HttpServlet {
                                     }
                                 } else {
                                     session.setAttribute("sco", orderManagementBean.getSalesConfirmationOrder(scoID));
-                                    nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&scoNumber=" + scoNumber + "&selectedTerms=" + terms + "&selectedDate=" + scoDate + "&goodMsg=" + returnHelper.getDescription();
+                                    nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&scoNumber=" + scoNumber + "&terms=" + terms + "&scoDate=" + scoDate + "&goodMsg=" + returnHelper.getDescription();
                                     break;
                                 }
                             }
@@ -274,9 +274,9 @@ public class OrderManagementController extends HttpServlet {
                         SalesConfirmationOrder sco = orderManagementBean.getSalesConfirmationOrder(Long.parseLong(id));
                         if (returnHelper.getResult() && sco != null) {
                             session.setAttribute("sco", sco);
-                            nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&scoNumber=" + scoNumber + "&selectedTerms=" + terms + "&selectedDate=" + scoDate + "&goodMsg=" + returnHelper.getDescription();
+                            nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&scoNumber=" + scoNumber + "&terms=" + terms + "&scoDate=" + scoDate + "&goodMsg=" + returnHelper.getDescription();
                         } else {
-                            nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&selectedTerms=" + terms + "&selectedDate=" + scoDate + "&errMsg=" + returnHelper.getDescription();
+                            nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&terms=" + terms + "&scoDate=" + scoDate + "&errMsg=" + returnHelper.getDescription();
                         }
                     }
                     break;

@@ -309,9 +309,9 @@
                                                         <span class="text-dark">Date:</span>
                                                         <span class="value" style="min-width: 110px">
                                                             <%
-                                                                String selectedDate = request.getParameter("selectedDate");
-                                                                if (selectedDate != null && !selectedDate.isEmpty()) {
-                                                                    out.print("<input id='scoDate' name='scoDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + selectedDate + "' required>");
+                                                                String scoDate = request.getParameter("scoDate");
+                                                                if (scoDate != null && !scoDate.isEmpty()) {
+                                                                    out.print("<input id='scoDate' name='scoDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + scoDate + "' required>");
                                                                 } else if (sco != null && scoID != null && !scoID.isEmpty()) {
                                                                     SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
                                                                     String date = DATE_FORMAT.format(sco.getSalesConfirmationOrderDate());
@@ -328,17 +328,17 @@
                                                             <select id="terms" name="terms" class="form-control input-sm" required>
                                                                 <%
                                                                     out.print("<option value=''>Select</option>");
-                                                                    String selectedTerms = request.getParameter("selectedTerms");
-                                                                    if (selectedTerms != null && !selectedTerms.isEmpty()) {
-                                                                        if (selectedTerms.equals("0")) {
+                                                                    String terms = request.getParameter("terms");
+                                                                    if (terms != null && !terms.isEmpty()) {
+                                                                        if (terms.equals("0")) {
                                                                             out.print("<option value='0' selected>COD</option>");
                                                                             out.print("<option value='14'>14 Days</option>");
                                                                             out.print("<option value='30'>30 Days</option>");
-                                                                        } else if (selectedTerms.equals("14")) {
+                                                                        } else if (terms.equals("14")) {
                                                                             out.print("<option value='0'>COD</option>");
                                                                             out.print("<option value='14' selected>14 Days</op  tion>");
                                                                             out.print("<option value='30'>30 Days</option>");
-                                                                        } else if (selectedTerms.equals("30")) {
+                                                                        } else if (terms.equals("30")) {
                                                                             out.print("<option value='0'>COD</option>");
                                                                             out.print("<option value='14'>14 Days</option>");
                                                                             out.print("<option value='30' selected>30 Days</option>");
@@ -541,15 +541,23 @@
                                                             </td>
                                                         </tr>
                                                         <tr>
-                                                            <td colspan="2">7% GST</td>
+                                                            <td colspan="2">
+                                                                <%
+                                                                    if (scoID == null || scoID.isEmpty() || sco == null) {
+                                                                        out.print("7.0% GST");
+                                                                    } else {
+                                                                        out.print("" + sco.getTaxRate() + "% GST");
+                                                                    }
+                                                                %>
+                                                            </td>
                                                             <td class="text-left">
                                                                 <%
                                                                     if (scoID == null || scoID.isEmpty() || sco == null) {
                                                                         out.print("<span id='output_gst'>$0.00</span>");
                                                                     } else {
-                                                                        formatedPrice = sco.getTax();
+                                                                        formatedPrice = sco.getTotalTax();
                                                                         out.print("<span id='output_gst'>" + formatter.format(formatedPrice) + "</span>");
-                                                                        out.print("<input type='hidden' value='" + sco.getTax() + "' id='gst'>");
+                                                                        out.print("<input type='hidden' value='" + sco.getTotalTax()+ "' id='gst'>");
                                                                     }
                                                                 %>
                                                             </td>

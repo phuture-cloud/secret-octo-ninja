@@ -52,7 +52,8 @@ public class SalesConfirmationOrder implements Serializable {
     private List<Invoice> invoices;
     @OneToMany
     private List<LineItem> items;
-    private Double tax;//gst
+    private Double taxRate;//in %
+    private Double totalTax;//total totalTax amount
     private Double totalPrice;//after gst
     @Lob
     private String remarks;//Will appear on order
@@ -73,7 +74,7 @@ public class SalesConfirmationOrder implements Serializable {
         this.totalPrice = 0.0;
     }
 
-    public SalesConfirmationOrder(String salesConfirmationOrderNumber, Date salesConfirmationOrderDate, String customerName, Staff salesPerson, Integer term, Double tax, String remarks, String notes) {
+    public SalesConfirmationOrder(String salesConfirmationOrderNumber, Date salesConfirmationOrderDate, String customerName, Staff salesPerson, Integer term, Double taxRate, String remarks, String notes) {
         this.status = "Created";
         this.salesConfirmationOrderNumber = salesConfirmationOrderNumber;
         this.salesConfirmationOrderDate = salesConfirmationOrderDate;
@@ -84,7 +85,7 @@ public class SalesConfirmationOrder implements Serializable {
         this.invoices = new ArrayList();
         this.dateCreated = new Date();
         this.terms = term;
-        this.tax = tax;
+        this.taxRate = taxRate;
         this.isDeleted = false;
         this.remarks = remarks;
         this.notes = notes;
@@ -109,6 +110,10 @@ public class SalesConfirmationOrder implements Serializable {
 
     public String getStatus() {
         return status;
+    }
+
+    public void setStatusAsUnfulfilled() {
+        this.status = "Unfulfilled";
     }
 
     public void setStatusAsFulfilled() {
@@ -290,12 +295,20 @@ public class SalesConfirmationOrder implements Serializable {
         this.totalPrice = totalPrice;
     }
 
-    public Double getTax() {
-        return tax;
+    public Double getTotalTax() {
+        return totalTax;
     }
 
-    public void setTax(Double tax) {
-        this.tax = tax;
+    public void setTotalTax(Double totalTax) {
+        this.totalTax = totalTax;
+    }
+
+    public Double getTaxRate() {
+        return taxRate;
+    }
+
+    public void setTaxRate(Double taxRate) {
+        this.taxRate = taxRate;
     }
 
     @Override

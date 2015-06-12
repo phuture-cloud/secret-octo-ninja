@@ -352,8 +352,8 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
                 return result;
             }
             switch (status) {
-                case "Write-Off":
-                    sco.setStatusAsWritenOff();
+                case "Unfulfilled":
+                    sco.setStatusAsUnfulfilled();
                     break;
                 case "Fulfilled":
                     sco.setStatusAsFulfilled();
@@ -361,6 +361,9 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
                 case "Completed":
                     //TODO: Check if all payment is received first before allow marking as completed
                     sco.setStatusAsCompleted();
+                    break;
+                case "Write-Off":
+                    sco.setStatusAsWritenOff();
                     break;
                 default:
                     result.setDescription("Failed to update the SCO to the status specified.");
@@ -525,12 +528,16 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             List<LineItem> lineItems = sco.getItems();
             lineItems.add(lineItem);
             sco.setItems(lineItems);
-            //Update SCO total price
+            //Update SCO total price & tax
             Double totalPrice = 0.0;
+            Double totalTax = 0.0;
             for (LineItem curLineItem : lineItems) {
-                totalPrice = totalPrice + (curLineItem.getItemUnitPrice() * curLineItem.getItemQty() * ((gstRate / 100) + 1));
+                Double currLineItemTotalPriceBeforeTax = curLineItem.getItemUnitPrice() * curLineItem.getItemQty();
+                totalPrice = totalPrice + (currLineItemTotalPriceBeforeTax * ((gstRate / 100) + 1));
+                totalTax = totalTax + (currLineItemTotalPriceBeforeTax * gstRate/100);
             }
             sco.setTotalPrice(totalPrice);
+            sco.setTotalTax(totalTax);
             em.merge(sco);
             result.setResult(true);
             result.setDescription("Item added.");
@@ -571,14 +578,17 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             lineItem.setItemQty(newItemQty);
             lineItem.setItemUnitPrice(newItemUnitPrice);
             em.merge(lineItem);
-            //Update SCO total price
+            //Update SCO total price & tax
             Double totalPrice = 0.0;
-
+            Double totalTax = 0.0;
             List<LineItem> lineItems = sco.getItems();
             for (LineItem curLineItem : lineItems) {
-                totalPrice = totalPrice + (curLineItem.getItemUnitPrice() * curLineItem.getItemQty() * ((gstRate / 100) + 1));
+                Double currLineItemTotalPriceBeforeTax = curLineItem.getItemUnitPrice() * curLineItem.getItemQty();
+                totalPrice = totalPrice + (currLineItemTotalPriceBeforeTax * ((gstRate / 100) + 1));
+                totalTax = totalTax + (currLineItemTotalPriceBeforeTax * gstRate/100);
             }
             sco.setTotalPrice(totalPrice);
+            sco.setTotalTax(totalTax);
             em.merge(sco);
             result.setResult(true);
             result.setDescription("Line item updated.");
@@ -618,12 +628,16 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             List<LineItem> lineItems = sco.getItems();
             lineItems.remove(lineItem);
             sco.setItems(lineItems);
-            //Update SCO total price
+            //Update SCO total price & tax
             Double totalPrice = 0.0;
+            Double totalTax = 0.0;
             for (LineItem curLineItem : lineItems) {
-                totalPrice = totalPrice + (curLineItem.getItemUnitPrice() * curLineItem.getItemQty() * ((gstRate / 100) + 1));
+                Double currLineItemTotalPriceBeforeTax = curLineItem.getItemUnitPrice() * curLineItem.getItemQty();
+                totalPrice = totalPrice + (currLineItemTotalPriceBeforeTax * ((gstRate / 100) + 1));
+                totalTax = totalTax + (currLineItemTotalPriceBeforeTax * gstRate/100);
             }
             sco.setTotalPrice(totalPrice);
+            sco.setTotalTax(totalTax);
             em.merge(sco);
             em.remove(lineItem);
             result.setResult(true);
@@ -665,6 +679,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             }
             sco.setItems(lineItems);
             sco.setTotalPrice(0.0);
+            sco.setTotalTax(0.0);
             em.merge(sco);
             result.setResult(true);
             result.setDescription("Line items deleted.");

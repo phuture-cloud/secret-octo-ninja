@@ -25,7 +25,8 @@ public class Invoice implements Serializable {
     private SalesConfirmationOrder salesConfirmationOrder;
     @OneToMany
     private List<LineItem> items;
-    private Double tax;//gst
+    private Double taxRate;//in %
+    private Double totalTax;//total totalTax amount
     private Double totalPrice;//after gst
     @Lob
     private String remarks;//Will appear on order
@@ -121,12 +122,12 @@ public class Invoice implements Serializable {
         this.datePaid = datePaid;
     }
 
-    public Double getTax() {
-        return tax;
+    public Double getTotalTax() {
+        return totalTax;
     }
 
-    public void setTax(Double tax) {
-        this.tax = tax;
+    public void setTotalTax(Double totalTax) {
+        this.totalTax = totalTax;
     }
 
     public Double getTotalPrice() {
@@ -207,6 +208,14 @@ public class Invoice implements Serializable {
 
     public void setIsDeleted(boolean isDeleted) {
         this.isDeleted = isDeleted;
+    }
+
+    public Double getTaxRate() {
+        return taxRate;
+    }
+
+    public void setTaxRate(Double taxRate) {
+        this.taxRate = taxRate;
     }
 
     @Override
