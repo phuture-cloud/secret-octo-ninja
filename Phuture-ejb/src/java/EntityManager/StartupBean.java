@@ -16,6 +16,8 @@ public class StartupBean {
 
     @EJB
     private AccountManagement.AccountManagementBeanLocal ambl;
+    @EJB
+    private CustomerManagement.CustomerManagementBeanLocal cmbl;
 
     @PersistenceContext
     private EntityManager em;
@@ -33,6 +35,12 @@ public class StartupBean {
             }
             ambl.registerStaffAccount("Admin", "--", "admin", "admin", true);
             ambl.registerStaffAccount("Test Staff", "--", "test", "test", false);
+            ReturnHelper result;
+            result = cmbl.addCustomer("Test Customer 1");
+            cmbl.addContact(result.getID(), "Alpha", "alpha@test.com", "61111111", "61111111", "61111111", "Block 111 Alpha Avenue 1 #01-01 Singapore 111111", "Customer notes can be writen here");
+            cmbl.addContact(result.getID(), "Bravo", "bravo@test.com", "62222222", "62222222", "62222222", "Block 222 Bravo Road 2 #02-02 Singapore 222222", "Customer notes can be writen here");
+            result = cmbl.addCustomer("Test Customer 2");
+            cmbl.addContact(result.getID(), "Charlie", "charlie@test.com", "63333333", "63333333", "63333333", "Block 333 Charlie Road 3 #03-03 Singapore 333333", "Customer notes can be writen here");
         } catch (Exception ex) {
             System.out.println("Error initating database");
             ex.printStackTrace();
