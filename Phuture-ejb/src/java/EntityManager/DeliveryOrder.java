@@ -25,7 +25,15 @@ public class DeliveryOrder implements Serializable {
     private SalesConfirmationOrder salesConfirmationOrder;
     @OneToMany
     private List<LineItem> items;
+    private Double tax;//gst
+    private Double totalPrice;//after gst
     private String status;
+    
+    @Lob
+    private String remarks;//Will appear on order
+    @Lob
+    private String notes;//For internal staff use on the CRM system only
+    
     //Automatic
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateCreated;
@@ -40,9 +48,10 @@ public class DeliveryOrder implements Serializable {
     private String shippingContactOfficeNo;
     private String shippingContactMobileNo;
     private String shippingContactFaxNo;
-    
     @Lob
     private String shippingContactAddress;
+    private boolean isDeleted;
+    
 
     public DeliveryOrder() {
         this.dateCreated = new Date();
@@ -169,6 +178,46 @@ public class DeliveryOrder implements Serializable {
 
     public void setDeliveryOrderDate(Date deliveryOrderDate) {
         this.deliveryOrderDate = deliveryOrderDate;
+    }
+
+    public Double getTax() {
+        return tax;
+    }
+
+    public void setTax(Double tax) {
+        this.tax = tax;
+    }
+
+    public Double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(Double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public boolean isIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
     }
 
     @Override

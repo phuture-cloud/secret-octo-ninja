@@ -25,6 +25,13 @@ public class Invoice implements Serializable {
     private SalesConfirmationOrder salesConfirmationOrder;
     @OneToMany
     private List<LineItem> items;
+    private Double tax;//gst
+    private Double totalPrice;//after gst
+    @Lob
+    private String remarks;//Will appear on order
+    @Lob
+    private String notes;//For internal staff use on the CRM system only  
+
     private String status;
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateSent;
@@ -38,6 +45,8 @@ public class Invoice implements Serializable {
     private String billingContactFaxNo;
     @Lob
     private String billingContactAddress;
+
+    private boolean isDeleted;
 
     public Invoice() {
         setStatusAsCreated();
@@ -110,6 +119,94 @@ public class Invoice implements Serializable {
 
     public void setDatePaid(Date datePaid) {
         this.datePaid = datePaid;
+    }
+
+    public Double getTax() {
+        return tax;
+    }
+
+    public void setTax(Double tax) {
+        this.tax = tax;
+    }
+
+    public Double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(Double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public String getBillingContactName() {
+        return billingContactName;
+    }
+
+    public void setBillingContactName(String billingContactName) {
+        this.billingContactName = billingContactName;
+    }
+
+    public String getBillingContactEmail() {
+        return billingContactEmail;
+    }
+
+    public void setBillingContactEmail(String billingContactEmail) {
+        this.billingContactEmail = billingContactEmail;
+    }
+
+    public String getBillingContactOfficeNo() {
+        return billingContactOfficeNo;
+    }
+
+    public void setBillingContactOfficeNo(String billingContactOfficeNo) {
+        this.billingContactOfficeNo = billingContactOfficeNo;
+    }
+
+    public String getBillingContactMobileNo() {
+        return billingContactMobileNo;
+    }
+
+    public void setBillingContactMobileNo(String billingContactMobileNo) {
+        this.billingContactMobileNo = billingContactMobileNo;
+    }
+
+    public String getBillingContactFaxNo() {
+        return billingContactFaxNo;
+    }
+
+    public void setBillingContactFaxNo(String billingContactFaxNo) {
+        this.billingContactFaxNo = billingContactFaxNo;
+    }
+
+    public String getBillingContactAddress() {
+        return billingContactAddress;
+    }
+
+    public void setBillingContactAddress(String billingContactAddress) {
+        this.billingContactAddress = billingContactAddress;
+    }
+
+    public boolean isIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
     }
 
     @Override
