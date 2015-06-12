@@ -63,7 +63,7 @@ public class SalesConfirmationOrder implements Serializable {
     
 
     public SalesConfirmationOrder() {
-        this.status = "Created";
+        this.status = "Unfulfilled";
         this.deliveryOrders = new ArrayList();
         this.purchaseOrders = new ArrayList();
         this.invoices = new ArrayList();
@@ -72,10 +72,11 @@ public class SalesConfirmationOrder implements Serializable {
         this.remarks = "";
         this.notes = "";
         this.totalPrice = 0.0;
+        this.totalTax = 0.0;
     }
 
     public SalesConfirmationOrder(String salesConfirmationOrderNumber, Date salesConfirmationOrderDate, String customerName, Staff salesPerson, Integer term, Double taxRate, String remarks, String notes) {
-        this.status = "Created";
+        this.status = "Unfulfilled";
         this.salesConfirmationOrderNumber = salesConfirmationOrderNumber;
         this.salesConfirmationOrderDate = salesConfirmationOrderDate;
         this.customerName = customerName;
@@ -90,6 +91,7 @@ public class SalesConfirmationOrder implements Serializable {
         this.remarks = remarks;
         this.notes = notes;
         this.totalPrice = 0.0;
+        this.totalTax = 0.0;
     }
 
     public Long getId() {
