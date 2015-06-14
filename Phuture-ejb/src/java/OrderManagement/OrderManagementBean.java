@@ -24,11 +24,11 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
     @PersistenceContext
     private EntityManager em;
 
-    private final Double gstRate = 7.0;//7%
+    private static final Double gstRate = 7.0;//7%
 
     @Override
     public ReturnHelper createSalesConfirmationOrder(String salesConfirmationOrderNumber, Date salesConfirmationOrderDate, Long customerID, Long contactID, Long salesStaffID, Integer terms, String remarks, String notes) {
-        System.out.println("OrderManagementBean: addSalesConfirmationOrder() called");
+        System.out.println("OrderManagementBean: createSalesConfirmationOrder() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
         try {
@@ -75,10 +75,10 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             result.setDescription("SCO created successfully.");
             return result;
         } catch (NoResultException ex) {
-            System.out.println("OrderManagementBean: addSalesConfirmationOrder() could not find one or more ID(s).");
-            result.setDescription("Failed to edit a SCO. The customer or staff selected no longer exist in the system.");
+            System.out.println("OrderManagementBean: createSalesConfirmationOrder() could not find one or more ID(s).");
+            result.setDescription("Failed to create a SCO. The customer or staff selected no longer exist in the system.");
         } catch (Exception ex) {
-            System.out.println("OrderManagementBean: addSalesConfirmationOrder() failed");
+            System.out.println("OrderManagementBean: createSalesConfirmationOrder() failed");
             ex.printStackTrace();
             result.setDescription("Failed to create a new SCO due to internal server error.");
         }
@@ -163,7 +163,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
         } catch (Exception ex) {
             System.out.println("OrderManagementBean: updateSalesConfirmationOrder() failed");
             ex.printStackTrace();
-            result.setDescription("Failed to edit a new SCO due to internal server error.");
+            result.setDescription("Failed to edit a SCO due to internal server error.");
         }
         return result;
     }
@@ -202,7 +202,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
         } catch (Exception ex) {
             System.out.println("OrderManagementBean: updateSalesConfirmationOrder() failed");
             ex.printStackTrace();
-            result.setDescription("Failed to edit a new SCO due to internal server error.");
+            result.setDescription("Failed to edit a SCO due to internal server error.");
         }
         return result;
     }
@@ -267,7 +267,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
         } catch (Exception ex) {
             System.out.println("OrderManagementBean: updateSalesConfirmationOrder() failed");
             ex.printStackTrace();
-            result.setDescription("Failed to edit a new SCO due to internal server error.");
+            result.setDescription("Failed to edit a SCO due to internal server error.");
         }
         return result;
     }
@@ -300,7 +300,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
         } catch (Exception ex) {
             System.out.println("OrderManagementBean: updateSalesConfirmationOrderRemarks() failed");
             ex.printStackTrace();
-            result.setDescription("Failed to edit a new SCO due to internal server error.");
+            result.setDescription("Failed to edit a SCO due to internal server error.");
         }
         return result;
     }
@@ -333,7 +333,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
         } catch (Exception ex) {
             System.out.println("OrderManagementBean: updateSalesConfirmationOrderNotes() failed");
             ex.printStackTrace();
-            result.setDescription("Failed to edit a new SCO due to internal server error.");
+            result.setDescription("Failed to edit a SCO due to internal server error.");
         }
         return result;
     }
@@ -379,7 +379,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
         } catch (Exception ex) {
             System.out.println("OrderManagementBean: updateSalesConfirmationOrderStatus() failed");
             ex.printStackTrace();
-            result.setDescription("Failed to edit a new SCO due to internal server error.");
+            result.setDescription("Failed to edit a SCO due to internal server error.");
         }
         return result;
     }

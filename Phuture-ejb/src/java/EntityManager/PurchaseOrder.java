@@ -1,6 +1,7 @@
 package EntityManager;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Entity;
@@ -28,16 +29,17 @@ public class PurchaseOrder implements Serializable {
     private Date dateCreated;
     @Temporal(TemporalType.DATE)
     private Date purchaseOrderDate;
-    
+
     //Unused
     private String supplierName;
     private String supplierEmail;
     private String supplierOfficeNo;
     private String supplierMobileNo;
     private String supplierFaxNo;
-    private Double tax;
+    private Double taxRate;
+    private Double totalTax;
     //Unused end
-    
+
     private String status;
     @OneToMany
     private List<LineItem> items;
@@ -47,6 +49,19 @@ public class PurchaseOrder implements Serializable {
     private boolean isDeleted;
 
     public PurchaseOrder() {
+        this.status = "Unfulfilled";
+        this.dateCreated = new Date();
+        this.notes = "";
+        this.items = new ArrayList<>();
+        this.totalPrice = 0.0;
+        this.isDeleted = false;
+        
+        this.supplierName = "";
+        this.supplierEmail = "";
+        this.supplierOfficeNo = "";
+        this.supplierMobileNo = "";
+        this.supplierFaxNo = "";
+        this.taxRate = 0.0;
     }
 
     public Long getId() {
@@ -97,12 +112,12 @@ public class PurchaseOrder implements Serializable {
         this.items = items;
     }
 
-    public Double getTax() {
-        return tax;
+    public Double getTaxRate() {
+        return taxRate;
     }
 
-    public void setTax(Double tax) {
-        this.tax = tax;
+    public void setTaxRate(Double taxRate) {
+        this.taxRate = taxRate;
     }
 
     public Double getTotalPrice() {
@@ -113,7 +128,7 @@ public class PurchaseOrder implements Serializable {
         this.totalPrice = totalPrice;
     }
 
-    public boolean isIsDeleted() {
+    public boolean getIsDeleted() {
         return isDeleted;
     }
 
@@ -136,7 +151,7 @@ public class PurchaseOrder implements Serializable {
     public void setPurchaseOrderDate(Date purchaseOrderDate) {
         this.purchaseOrderDate = purchaseOrderDate;
     }
-    
+
     public String getSupplierName() {
         return supplierName;
     }
@@ -176,8 +191,14 @@ public class PurchaseOrder implements Serializable {
     public void setSupplierFaxNo(String supplierFaxNo) {
         this.supplierFaxNo = supplierFaxNo;
     }
-    
-    
+
+    public Double getTotalTax() {
+        return totalTax;
+    }
+
+    public void setTotalTax(Double totalTax) {
+        this.totalTax = totalTax;
+    }
 
     @Override
     public int hashCode() {

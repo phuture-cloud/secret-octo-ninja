@@ -686,9 +686,9 @@
                                                     out.print("<button " + formDisablerFlag + " class='btn btn-primary' onclick='javascript:generatePO()' style='margin-right: 3px;'>Generate PO</button>");
                                                     out.print("<button " + formDisablerFlag + " class='btn btn-primary' onclick='javascript:generateDO()' style='margin-right: 3px;'>Generate DO</button>");
                                                 }
-                                                out.print("<button class='btn btn-success' onclick='javascript:updateSCO(" + scoID + ")' style='margin-right: 3px;'>Save</button>");
+                                                out.print("<button " + formDisablerFlag + " class='btn btn-success' onclick='javascript:updateSCO(" + scoID + ")' style='margin-right: 3px;'>Save</button>");
                                             } else {
-                                                out.print("<button class='btn btn-success' type='submit'>Save</button>");
+                                                out.print("<button " + formDisablerFlag + " class='btn btn-success' type='submit'>Save</button>");
                                             }
                                         %>
                                     </div>

@@ -24,7 +24,7 @@ public interface OrderManagementBeanLocal {
     public List<SalesConfirmationOrder> listAllSalesConfirmationOrder();
     public List<SalesConfirmationOrder> listCustomerSalesConfirmationOrder(Long customerID);
     
-    public ReturnHelper addSCOlineItem(Long salesConfirmationOrderID, String itemName, String itemDescription, Integer itemQty, Double itemTotalPrice,Boolean adminOverwrite);
+    public ReturnHelper addSCOlineItem(Long salesConfirmationOrderID, String itemName, String itemDescription, Integer itemQty, Double itemUnitPrice,Boolean adminOverwrite);
     public ReturnHelper updateSCOlineItem(Long salesConfirmationOrderID, Long lineItemID, String newItemName, String newItemDescription, Integer newItemQty, Double newItemUnitPrice, Boolean adminOverwrite);
     public ReturnHelper deleteSCOlineItem(Long salesConfirmationOrderID, Long lineItemID, Boolean adminOverwrite);
     public ReturnHelper deleteSCOallLineItem(Long salesConfirmationOrderID, Boolean adminOverwrite);

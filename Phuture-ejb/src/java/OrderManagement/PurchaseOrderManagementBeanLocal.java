@@ -10,20 +10,20 @@ import javax.ejb.Local;
 @Local
 public interface PurchaseOrderManagementBeanLocal {
     public ReturnHelper createPurchaseOrder(Long salesConfirmationOrderID, String purchaseOrderNumber, Date purchaseOrderDate);
-    public ReturnHelper updatePurchaseOrder(Long purchaseOrderID, String status, String notes, Boolean adminOverwrite);
-    public ReturnHelper updateSalesConfirmationOrderStatus(Long purchaseOrderID, String status);
-    public ReturnHelper updateSalesConfirmationOrderStatus(Long purchaseOrderID, String notes, Boolean adminOverwrite);
-    public ReturnHelper updateSalesConfirmationOrderNotes(Long salesConfirmationOrderID, String notes, Boolean adminOverwrite);
+    public ReturnHelper updatePurchaseOrder(Long purchaseOrderID, String status, String notes);
+    public ReturnHelper updatePurchaseOrderStatus(Long purchaseOrderID, String status);
+    public ReturnHelper updatePurchaseOrderNotes(Long salesConfirmationOrderID, String notes);
     public ReturnHelper deletePurchaseOrder(Long purchaseOrderID);  
     
     public PurchaseOrder getPurchaseOrder(Long purchaseOrderID);
     public List<PurchaseOrder> listAllPurchaseOrder();
     public List<PurchaseOrder> listPurchaseOrderTiedToSCO(Long salesConfirmationOrderID);
     
-    public ReturnHelper addPOlineItem(Long purchaseOrderID, String itemName, String itemDescription, Integer itemQty, Double itemTotalPrice,Boolean adminOverwrite);
-    public ReturnHelper updatePOlineItem(Long purchaseOrderID, Long lineItemID, String newItemName, String newItemDescription, Integer newItemQty, Double newItemUnitPrice, Boolean adminOverwrite);
-    public ReturnHelper deletePOlineItem(Long purchaseOrderID, Long lineItemID, Boolean adminOverwrite);
-    public ReturnHelper deletePOallLineItem(Long purchaseOrderID, Boolean adminOverwrite);
+    public ReturnHelper replacePOlineItemWithSCOitems(Long salesConfirmationOrderID, Long purchaseOrderID);
+    public ReturnHelper addPOlineItem(Long purchaseOrderID, String itemName, String itemDescription, Integer itemQty, Double itemUnitPrice);
+    public ReturnHelper updatePOlineItem(Long purchaseOrderID, Long lineItemID, String newItemName, String newItemDescription, Integer newItemQty, Double newItemUnitPrice);
+    public ReturnHelper deletePOlineItem(Long purchaseOrderID, Long lineItemID);
+    public ReturnHelper deleteallPOlineItem(Long purchaseOrderID);
     public List<LineItem> listPOlineItems(Long purchaseOrderID);
     
 }
