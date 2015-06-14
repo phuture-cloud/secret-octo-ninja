@@ -18,8 +18,19 @@
         response.sendRedirect("../index.jsp?errMsg=Session Expired.");
     } else {
         String scoID = request.getParameter("id");
+        String scoNumber = request.getParameter("scoNumber");
+        String scoDate = request.getParameter("scoDate");
+        String terms = request.getParameter("terms");
+        String status = request.getParameter("status");
         String selectedCustomerID = request.getParameter("selectedCustomerID");
         String selectedContactID = request.getParameter("selectedContactID");
+        String editingLineItem = request.getParameter("editingLineItem");
+        String formDisablerFlag = "";
+        if (editingLineItem == null) {
+            editingLineItem = "";
+        } else {//Disable unneccessary fields when editing line item
+            formDisablerFlag = "disabled";
+        }
 %>
 <!doctype html>
 <html class="fixed">
@@ -128,6 +139,26 @@
                     document.scoManagement.submit();
                 }
 
+                function editLineItem(id, lineItemID) {
+                    window.onbeforeunload = null;
+                    scoManagement.target.value = "EditLineItem";
+                    scoManagement.id.value = id;
+                    scoManagement.lineItemID.value = lineItemID;
+                    var scoNumber = document.getElementById("scoNumber").value;
+                    var scoDate = document.getElementById("scoDate").value;
+                    var terms = document.getElementById("terms").value;
+                    window.location.href = "scoManagementasd_add.jsp?scoNumber=" + scoNumber + "&scoDate=" + scoDate + "&terms=" + terms;
+                }
+
+                function removeLineItemSubmit(id, lineItemID) {
+                    window.onbeforeunload = null;
+                    scoManagement.id.value = id;
+                    scoManagement.lineItemID.value = lineItemID;
+                    scoManagement.target.value = "RemoveLineItem";
+                    document.scoManagement.action = "../OrderManagementController";
+                    document.scoManagement.submit();
+                }
+
                 function removeLineItem(id, lineItemID) {
                     window.onbeforeunload = null;
                     scoManagement.id.value = id;
@@ -192,13 +223,12 @@
                                             <div class="col-sm-6 mt-md">
                                                 <h2 class="h2 mt-none mb-sm text-dark text-weight-bold">Sales Confirmation Order</h2>
                                                 <%
-                                                    String scoNumber = request.getParameter("scoNumber");
                                                     if (scoNumber != null && !scoNumber.isEmpty()) {
-                                                        out.print("<input type='text' class='form-control' id='scoNumber' name='scoNumber' value='" + scoNumber + "' style='max-width: 300px' required/>");
+                                                        out.print("<input " + formDisablerFlag + " type='text' class='form-control' id='scoNumber' name='scoNumber' value='" + scoNumber + "' style='max-width: 300px' required/>");
                                                     } else if (sco != null && scoID != null && !scoID.isEmpty()) {
-                                                        out.print("<input type='text' class='form-control' id='scoNumber' name='scoNumber' value='" + sco.getSalesConfirmationOrderNumber() + "' style='max-width: 300px' required/>");
+                                                        out.print("<input " + formDisablerFlag + " type='text' class='form-control' id='scoNumber' name='scoNumber' value='" + sco.getSalesConfirmationOrderNumber() + "' style='max-width: 300px' required/>");
                                                     } else {
-                                                        out.print("<input type='text' class='form-control' id='scoNumber' name='scoNumber' placeholder='Enter SCO number' style='max-width: 300px' required/>");
+                                                        out.print("<input " + formDisablerFlag + " type='text' class='form-control' id='scoNumber' name='scoNumber' placeholder='Enter SCO number' style='max-width: 300px' required/>");
                                                     }
                                                 %>
                                             </div>
@@ -240,9 +270,12 @@
                                                                         out.print("<br>" + sco.getContactMobileNo());
                                                                     }
                                                                     if (sco.getContactEmail() != null && !sco.getContactEmail().isEmpty()) {
-                                                                        out.print("<br>" + sco.getContactEmail());
+                                                                        out.print("<br>" + sco.getContactEmail() + "<br>");
                                                                     }
-                                                                    out.print("<br><div class='text-right'><a href='#modalEditForm' class='modal-with-form'>edit</a></div><br><br>");
+                                                                    if (formDisablerFlag != "disabled") {
+                                                                        out.print("<div class='text-right'><a href='#modalEditForm' class='modal-with-form'>edit</a></div>");
+                                                                    }
+                                                                    out.print("<br><br>");
                                                                 } else {
                                                             %>
                                                             <select id="customerList" name="customerID" data-plugin-selectTwo class="form-control populate" onchange="javascript:getCustomerContacts()" required>
@@ -309,15 +342,15 @@
                                                         <span class="text-dark">Date:</span>
                                                         <span class="value" style="min-width: 110px">
                                                             <%
-                                                                String scoDate = request.getParameter("scoDate");
+
                                                                 if (scoDate != null && !scoDate.isEmpty()) {
-                                                                    out.print("<input id='scoDate' name='scoDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + scoDate + "' required>");
+                                                                    out.print("<input " + formDisablerFlag + " id='scoDate' name='scoDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + scoDate + "' required>");
                                                                 } else if (sco != null && scoID != null && !scoID.isEmpty()) {
                                                                     SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
                                                                     String date = DATE_FORMAT.format(sco.getSalesConfirmationOrderDate());
-                                                                    out.print("<input id='scoDate' name='scoDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "' required>");
+                                                                    out.print("<input " + formDisablerFlag + " id='scoDate' name='scoDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "' required>");
                                                                 } else {
-                                                                    out.print("<input id='scoDate' name='scoDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' required placeholder='dd/mm/yyyy'>");
+                                                                    out.print("<input " + formDisablerFlag + " id='scoDate' name='scoDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' required placeholder='dd/mm/yyyy'>");
                                                                 }
                                                             %>
                                                         </span>
@@ -325,10 +358,9 @@
                                                     <p class="mb-none">
                                                         <span class="text-dark">Terms:</span>
                                                         <span class="value" style="min-width: 110px">
-                                                            <select id="terms" name="terms" class="form-control input-sm" required>
+                                                            <select <%=formDisablerFlag%> id="terms" name="terms" class="form-control input-sm" required>
                                                                 <%
                                                                     out.print("<option value=''>Select</option>");
-                                                                    String terms = request.getParameter("terms");
                                                                     if (terms != null && !terms.isEmpty()) {
                                                                         if (terms.equals("0")) {
                                                                             out.print("<option value='0' selected>COD</option>");
@@ -370,26 +402,33 @@
                                                     <p class="mb-none">
                                                         <span class="text-dark">Status: </span>
                                                         <span class="value" style="min-width: 110px">
-                                                            <select id="status" name="status" class="form-control input-sm" required>
+                                                            <select <%=formDisablerFlag%> id="status" name="status" class="form-control input-sm" required>
                                                                 <%
-                                                                    out.print("<option value=''>Created</option>");
-                                                                    if (sco.getStatus() != null && !sco.getStatus().isEmpty()) {
-                                                                        if (sco.getStatus().equals("Unfulfilled")) {
+                                                                    if ((sco.getStatus() != null && !sco.getStatus().isEmpty()) || status != null && status != "") {
+                                                                        String selectedStatus;
+                                                                        if (status != null && status != "") {
+                                                                            //Get from request (haven't saved to SCO)
+                                                                            selectedStatus = status;                                                                            
+                                                                        } else {
+                                                                            //Get from SCO
+                                                                            selectedStatus = sco.getStatus();                                                                            
+                                                                        }
+                                                                        if (selectedStatus.equals("Unfulfilled")) {
                                                                             out.print("<option value='Unfulfilled' selected>Unfulfilled</option>");
                                                                             out.print("<option value='Fulfilled'>Fulfilled</option>");
                                                                             out.print("<option value='Completed'>Completed</option>");
                                                                             out.print("<option value='Write-Off'>Write-Off</option>");
-                                                                        } else if (sco.getStatus().equals("Fulfilled")) {
+                                                                        } else if (selectedStatus.equals("Fulfilled")) {
                                                                             out.print("<option value='Unfulfilled'>Unfulfilled</option>");
                                                                             out.print("<option value='Fulfilled' selected>Fulfilled</option>");
                                                                             out.print("<option value='Completed'>Completed</option>");
                                                                             out.print("<option value='Write-Off'>Write-Off</option>");
-                                                                        } else if (sco.getStatus().equals("Completed")) {
+                                                                        } else if (selectedStatus.equals("Completed")) {
                                                                             out.print("<option value='Unfulfilled'>Unfulfilled</option>");
                                                                             out.print("<option value='Fulfilled'>Fulfilled</option>");
                                                                             out.print("<option value='Completed' selected>Completed</option>");
                                                                             out.print("<option value='Write-Off'>Write-Off</option>");
-                                                                        } else if (sco.getStatus().equals("Write-Off")) {
+                                                                        } else if (selectedStatus.equals("Write-Off")) {
                                                                             out.print("<option value='Unfulfilled'>Unfulfilled</option>");
                                                                             out.print("<option value='Fulfilled'>Fulfilled</option>");
                                                                             out.print("<option value='Completed'>Completed</option>");
@@ -426,7 +465,7 @@
                                             <tbody>
                                                 <tr>
                                                     <td>
-                                                        <%if (scoID == null && (customers == null || selectedContactID == null || selectedContactID.equals(""))) {
+                                                        <%if (scoID == null && (customers == null || selectedContactID == null || selectedContactID.equals("")) || !editingLineItem.equals("")) {
                                                                 out.println("<input type='text' class='form-control' name='itemName' disabled/>");
                                                             } else {
                                                                 out.println("<input type='text' class='form-control' name='itemName'/>");
@@ -434,7 +473,7 @@
                                                         %>
                                                     </td>
                                                     <td>
-                                                        <%if (scoID == null && (customers == null || selectedContactID == null || selectedContactID.equals(""))) {
+                                                        <%if (scoID == null && (customers == null || selectedContactID == null || selectedContactID.equals("")) || !editingLineItem.equals("")) {
                                                                 out.println("<input type='text' class='form-control' name='itemDescription' disabled/>");
                                                             } else {
                                                                 out.println("<input type='text' class='form-control' name='itemDescription'/>");
@@ -447,7 +486,7 @@
                                                             <span class="input-group-addon">
                                                                 <i class="fa fa-dollar"></i>
                                                             </span>
-                                                            <%if (scoID == null && (customers == null || selectedContactID == null || selectedContactID.equals(""))) {
+                                                            <%if (scoID == null && (customers == null || selectedContactID == null || selectedContactID.equals("")) || !editingLineItem.equals("")) {
                                                                     out.println("<input type='number' class='form-control' id='input_itemUnitPrice' name='itemUnitPrice' min='0' step='any' disabled/>");
                                                                 } else {
                                                                     out.println("<input type='number' class='form-control' id='input_itemUnitPrice' name='itemUnitPrice' min='0' step='any'/>");
@@ -456,7 +495,7 @@
                                                         </div>
                                                     </td>
                                                     <td class="text-center">
-                                                        <%if (scoID == null && (customers == null || selectedContactID == null || selectedContactID.equals(""))) {
+                                                        <%if (scoID == null && (customers == null || selectedContactID == null || selectedContactID.equals("")) || !editingLineItem.equals("")) {
                                                                 out.println("<input type='number' class='form-control' id='input_itemQty' min='0' name='itemQty' disabled/>");
                                                             } else {
                                                                 out.println("<input type='number' class='form-control' id='input_itemQty' min='0' name='itemQty'/>");
@@ -473,7 +512,7 @@
                                                     </td>
                                                     <td class="text-center">
                                                         <%
-                                                            if (scoID == null && (customers == null || selectedContactID == null || selectedContactID.equals(""))) {
+                                                            if (scoID == null && (customers == null || selectedContactID == null || selectedContactID.equals("")) || !editingLineItem.equals("")) {
                                                                 out.print("<button class='btn btn-default btn-block' onclick='javascript:addLineItemToNewSCO()' disabled>Add Item</button>");
                                                             } else if (scoID == null || scoID.isEmpty() || sco == null) {
                                                                 out.print("<button class='btn btn-default btn-block' onclick='javascript:addLineItemToNewSCO()'>Add Item</button>");
@@ -489,18 +528,58 @@
                                                     if (sco != null && scoID != null && !scoID.isEmpty()) {
                                                         NumberFormat formatter = NumberFormat.getCurrencyInstance();
                                                         for (int i = 0; i < sco.getItems().size(); i++) {
-                                                            double price = 0;
-                                                            out.print("<tr>");
-                                                            out.print("<td class='text-weight-semibold text-dark'>" + sco.getItems().get(i).getItemName() + "</td>");
-                                                            out.print("<td>" + sco.getItems().get(i).getItemDescription() + "</td>");
-                                                            price = sco.getItems().get(i).getItemUnitPrice();
-                                                            out.print("<td class='text-center'>" + formatter.format(price) + "</td>");
-                                                            out.print("<td class='text-center'>" + sco.getItems().get(i).getItemQty() + "</td>");
-                                                            price = sco.getItems().get(i).getItemUnitPrice() * sco.getItems().get(i).getItemQty();
-                                                            out.print("<td class='text-center'>" + formatter.format(price) + "</td>");
-                                                            out.print("<td><button class='btn btn-default btn-block' onclick='javascript:removeLineItem(" + sco.getId() + "," + sco.getItems().get(i).getId() + ")'>Remove</button></td>");
-                                                            out.print("</div>");
-                                                            out.print("</tr>");
+                                                            if (!editingLineItem.equals("") && editingLineItem.equals(sco.getItems().get(i).getId() + "")) {
+                                                                //Print editable fields
+                                                                double price = sco.getItems().get(i).getItemUnitPrice();
+
+                                                %>
+                                                <tr>
+                                                    <td>
+                                                        <input type='text' class='form-control' name='itemName' value='<%=sco.getItems().get(i).getItemName()%>'/>
+                                                    </td>
+                                                    <td>
+                                                        <input type='text' class='form-control' name='itemDescription' value='<%=sco.getItems().get(i).getItemDescription()%>'/>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon">
+                                                                <i class="fa fa-dollar"></i>
+                                                            </span>
+                                                            <input type='number' class='form-control' id='input_itemUnitPrice' name='itemUnitPrice' min='0' step='any' value='<%=formatter.format(price)%>'/>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <input type='number' class='form-control' id='input_itemQty' min='0' name='itemQty' value='<%=sco.getItems().get(i).getItemQty()%>'/>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon">
+                                                                <i class="fa fa-dollar"></i>
+                                                            </span>
+                                                            <input type="text" class="form-control" id="input_itemAmount" name="itemAmount" disabled=""/>
+                                                        </div>
+                                                    </td>
+                                                    <% //Print buttons for current editing line item
+                                                        out.print("<td class='text-center'><button class='btn btn-default' onclick='javascript:editLineItem(" + sco.getId() + "," + sco.getItems().get(i).getId() + ")'>Save</button>&nbsp;");
+                                                        out.print("<button class='btn btn-default'>Back</button></td>");//TODO back to previous page display SCO details. Need to pass back the dates/terms/sco number etc in case the user never press save prior to editing
+                                                    %>
+                                                </tr>
+                                                <%                                                            } else {
+                                                                //Print normal text
+                                                                double price = 0;
+                                                                out.print("<tr>");
+                                                                out.print("<td class='text-weight-semibold text-dark'>" + sco.getItems().get(i).getItemName() + "</td>");
+                                                                out.print("<td>" + sco.getItems().get(i).getItemDescription() + "</td>");
+                                                                price = sco.getItems().get(i).getItemUnitPrice();
+                                                                out.print("<td class='text-center'>" + formatter.format(price) + "</td>");
+                                                                out.print("<td class='text-center'>" + sco.getItems().get(i).getItemQty() + "</td>");
+                                                                price = sco.getItems().get(i).getItemUnitPrice() * sco.getItems().get(i).getItemQty();
+                                                                out.print("<td class='text-center'>" + formatter.format(price) + "</td>");
+                                                                out.print("<td class='text-center'><button " + formDisablerFlag + " class='btn btn-default' onclick='javascript:editLineItem(" + sco.getId() + "," + sco.getItems().get(i).getId() + ")'>Edit</button>&nbsp;");
+                                                                out.print("<button " + formDisablerFlag + " class='btn btn-default' onclick='javascript:removeLineItem(" + sco.getId() + "," + sco.getItems().get(i).getId() + ")'>Del</button></td>");
+                                                                out.print("</div>");
+                                                                out.print("</tr>");
+                                                            }
                                                         }
                                                     }
                                                 %>
@@ -557,7 +636,7 @@
                                                                     } else {
                                                                         formatedPrice = sco.getTotalTax();
                                                                         out.print("<span id='output_gst'>" + formatter.format(formatedPrice) + "</span>");
-                                                                        out.print("<input type='hidden' value='" + sco.getTotalTax()+ "' id='gst'>");
+                                                                        out.print("<input type='hidden' value='" + sco.getTotalTax() + "' id='gst'>");
                                                                     }
                                                                 %>
                                                             </td>
@@ -604,8 +683,8 @@
                                         <% if (sco != null && scoID != null && !scoID.isEmpty()) {
                                                 out.print("<button type='button' class='modal-with-move-anim btn btn-danger' href='#modalRemove' style='margin-right: 3px;'>Delete</button>");
                                                 if (sco.getItems().size() > 0) {
-                                                    out.print("<button class='btn btn-primary' onclick='javascript:generatePO()' style='margin-right: 3px;'>Generate PO</button>");
-                                                    out.print("<button class='btn btn-primary' onclick='javascript:generateDO()' style='margin-right: 3px;'>Generate DO</button>");
+                                                    out.print("<button " + formDisablerFlag + " class='btn btn-primary' onclick='javascript:generatePO()' style='margin-right: 3px;'>Generate PO</button>");
+                                                    out.print("<button " + formDisablerFlag + " class='btn btn-primary' onclick='javascript:generateDO()' style='margin-right: 3px;'>Generate DO</button>");
                                                 }
                                                 out.print("<button class='btn btn-success' onclick='javascript:updateSCO(" + scoID + ")' style='margin-right: 3px;'>Save</button>");
                                             } else {

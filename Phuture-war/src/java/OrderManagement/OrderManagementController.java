@@ -268,6 +268,18 @@ public class OrderManagementController extends HttpServlet {
                     }
                     break;
 
+                case "EditLineItem":
+                    if (checkLogin(response)) {
+                        //returnHelper = orderManagementBean.deleteSCOlineItem(Long.parseLong(id), Long.parseLong(lineItemID), false);
+                        SalesConfirmationOrder sco = orderManagementBean.getSalesConfirmationOrder(Long.parseLong(id));
+                        //if (returnHelper.getResult() && sco != null) {
+                            session.setAttribute("sco", sco);
+                            nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&scoNumber=" + scoNumber + "&terms=" + terms + "&scoDate=" + scoDate + "&status=" + status + "&editingLineItem=" + lineItemID;
+                        //} else {
+                        //    nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&terms=" + terms + "&scoDate=" + scoDate + "&errMsg=" + returnHelper.getDescription();
+                        //}
+                    }
+                    break;
                 case "RemoveLineItem":
                     if (checkLogin(response)) {
                         returnHelper = orderManagementBean.deleteSCOlineItem(Long.parseLong(id), Long.parseLong(lineItemID), false);
@@ -292,6 +304,9 @@ public class OrderManagementController extends HttpServlet {
                             nextPage = "OrderManagement/scoManagement.jsp?errMsg=" + returnHelper.getDescription();
                         }
                     }
+                    break;
+                default:
+                    System.out.println("OrderManagementController: Unknown target value.");
                     break;
             }
 
