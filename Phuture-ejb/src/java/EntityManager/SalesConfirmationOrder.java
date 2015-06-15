@@ -75,7 +75,7 @@ public class SalesConfirmationOrder implements Serializable {
         this.totalTax = 0.0;
     }
 
-    public SalesConfirmationOrder(String salesConfirmationOrderNumber, Date salesConfirmationOrderDate, String customerName, Staff salesPerson, Integer term, Double taxRate, String remarks, String notes) {
+    public SalesConfirmationOrder(String salesConfirmationOrderNumber, Date salesConfirmationOrderDate, String customerName, Staff salesPerson, Integer term, Double taxRate) {
         this.status = "Unfulfilled";
         this.salesConfirmationOrderNumber = salesConfirmationOrderNumber;
         this.salesConfirmationOrderDate = salesConfirmationOrderDate;
@@ -88,8 +88,6 @@ public class SalesConfirmationOrder implements Serializable {
         this.terms = term;
         this.taxRate = taxRate;
         this.isDeleted = false;
-        this.remarks = remarks;
-        this.notes = notes;
         this.totalPrice = 0.0;
         this.totalTax = 0.0;
     }

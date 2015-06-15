@@ -20,7 +20,7 @@ public class DeliveryOrder implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private Double deliveryOrderNumber;
+    private String deliveryOrderNumber;
     @ManyToOne
     private SalesConfirmationOrder salesConfirmationOrder;
     @OneToMany
@@ -44,24 +44,36 @@ public class DeliveryOrder implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date deliveryOrderDate;
 
-    private String shippingContactName;
-    private String shippingContactEmail;
-    private String shippingContactOfficeNo;
-    private String shippingContactMobileNo;
-    private String shippingContactFaxNo;
+    private String customerName;
+    //Shipping contact
+    private String contactName;
+    private String contactEmail;
+    private String contactOfficeNo;
+    private String contactMobileNo;
+    private String contactFaxNo;
     @Lob
-    private String shippingContactAddress;
+    private String contactAddress;
     private boolean isDeleted;
     
 
     public DeliveryOrder() {
         this.dateCreated = new Date();
+        this.isDeleted = false;
+        this.remarks = "";
+        this.notes = "";
+        this.totalPrice = 0.0;
+        this.totalTax = 0.0;
         setStatusAsCreated();
     }
 
-    public DeliveryOrder(Double deliveryOrderNumber) {
+    public DeliveryOrder(String deliveryOrderNumber) {
         this.dateCreated = new Date();
         this.deliveryOrderNumber = deliveryOrderNumber;
+        this.isDeleted = false;
+        this.remarks = "";
+        this.notes = "";
+        this.totalPrice = 0.0;
+        this.totalTax = 0.0;
         setStatusAsCreated();
     }
 
@@ -73,11 +85,11 @@ public class DeliveryOrder implements Serializable {
         this.id = id;
     }
 
-    public Double getDeliveryOrderNumber() {
+    public String getDeliveryOrderNumber() {
         return deliveryOrderNumber;
     }
 
-    public void setDeliveryOrderNumber(Double deliveryOrderNumber) {
+    public void setDeliveryOrderNumber(String deliveryOrderNumber) {
         this.deliveryOrderNumber = deliveryOrderNumber;
     }
 
@@ -125,52 +137,52 @@ public class DeliveryOrder implements Serializable {
         this.dateMarkedAsDelivered = dateMarkedAsDelivered;
     }
 
-    public String getShippingContactName() {
-        return shippingContactName;
+    public String getContactName() {
+        return contactName;
     }
 
-    public void setShippingContactName(String shippingContactName) {
-        this.shippingContactName = shippingContactName;
+    public void setContactName(String contactName) {
+        this.contactName = contactName;
     }
 
-    public String getShippingContactEmail() {
-        return shippingContactEmail;
+    public String getContactEmail() {
+        return contactEmail;
     }
 
-    public void setShippingContactEmail(String shippingContactEmail) {
-        this.shippingContactEmail = shippingContactEmail;
+    public void setContactEmail(String contactEmail) {
+        this.contactEmail = contactEmail;
     }
 
-    public String getShippingContactOfficeNo() {
-        return shippingContactOfficeNo;
+    public String getContactOfficeNo() {
+        return contactOfficeNo;
     }
 
-    public void setShippingContactOfficeNo(String shippingContactOfficeNo) {
-        this.shippingContactOfficeNo = shippingContactOfficeNo;
+    public void setContactOfficeNo(String ontactOfficeNo) {
+        this.contactOfficeNo = ontactOfficeNo;
     }
 
-    public String getShippingContactMobileNo() {
-        return shippingContactMobileNo;
+    public String getContactMobileNo() {
+        return contactMobileNo;
     }
 
-    public void setShippingContactMobileNo(String shippingContactMobileNo) {
-        this.shippingContactMobileNo = shippingContactMobileNo;
+    public void setContactMobileNo(String contactMobileNo) {
+        this.contactMobileNo = contactMobileNo;
     }
 
-    public String getShippingContactFaxNo() {
-        return shippingContactFaxNo;
+    public String getContactFaxNo() {
+        return contactFaxNo;
     }
 
-    public void setShippingContactFaxNo(String shippingContactFaxNo) {
-        this.shippingContactFaxNo = shippingContactFaxNo;
+    public void setContactFaxNo(String contactFaxNo) {
+        this.contactFaxNo = contactFaxNo;
     }
 
-    public String getShippingContactAddress() {
-        return shippingContactAddress;
+    public String getContactAddress() {
+        return contactAddress;
     }
 
-    public void setShippingContactAddress(String shippingContactAddress) {
-        this.shippingContactAddress = shippingContactAddress;
+    public void setContactAddress(String contactAddress) {
+        this.contactAddress = contactAddress;
     }
 
     public Date getDeliveryOrderDate() {
@@ -213,7 +225,7 @@ public class DeliveryOrder implements Serializable {
         this.notes = notes;
     }
 
-    public boolean isIsDeleted() {
+    public boolean getIsDeleted() {
         return isDeleted;
     }
 
@@ -227,6 +239,14 @@ public class DeliveryOrder implements Serializable {
 
     public void setTaxRate(Double taxRate) {
         this.taxRate = taxRate;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
     }
     
     @Override

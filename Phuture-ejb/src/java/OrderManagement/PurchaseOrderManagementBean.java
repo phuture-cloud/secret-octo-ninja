@@ -36,7 +36,7 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
             q.setParameter("id", salesConfirmationOrderID);
             SalesConfirmationOrder sco = (SalesConfirmationOrder) q.getSingleResult();
             if (sco.getIsDeleted()) {
-                result.setDescription("Failed to create a new PO. The selected SCO may have been deleted while the SCO is being created. Please try again.");
+                result.setDescription("Failed to create a new PO. The selected SCO may have been deleted while the PO is being created. Please try again.");
                 return result;
             }
             //Create new PO
@@ -257,7 +257,7 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
             q.setParameter("id", purchaseOrderID);
             PurchaseOrder po = (PurchaseOrder) q.getSingleResult();
             if (sco.getIsDeleted() || po.getIsDeleted()) {
-                result.setDescription("Failed to edit a new PO. The selected SCO or PO may have been deleted while the SCO is being created. Please try again.");
+                result.setDescription("Failed to edit a new PO. The selected SCO or PO may have been deleted while the PO is being created. Please try again.");
                 return result;
             }
             //Delete all the line items first

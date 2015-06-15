@@ -137,7 +137,7 @@ public class OrderManagementController extends HttpServlet {
                             Date scoDateDate = sourceFormat.parse(scoDate);
 
                             //Create SCO
-                            returnHelper = orderManagementBean.createSalesConfirmationOrder(scoNumber, scoDateDate, Long.parseLong(customerID), Long.parseLong(contactID), Long.parseLong(salesStaffID), Integer.parseInt(terms), remarks, notes);
+                            returnHelper = orderManagementBean.createSalesConfirmationOrder(scoNumber, scoDateDate, Long.parseLong(customerID), Long.parseLong(contactID), Long.parseLong(salesStaffID), Integer.parseInt(terms));
                             if (returnHelper.getResult()) {
                                 Long scoID = returnHelper.getID();
                                 session.setAttribute("sco", orderManagementBean.getSalesConfirmationOrder(scoID));
@@ -174,7 +174,7 @@ public class OrderManagementController extends HttpServlet {
                                 SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
                                 Date scoDateDate = formatter.parse(scoDate);
                                 //Update SCO
-                                returnHelper = orderManagementBean.updateSalesConfirmationOrder(Long.parseLong(id), scoNumber, scoDateDate, Long.parseLong(customerID), Long.parseLong(salesStaffID), status, Integer.parseInt(terms), remarks, notes, isAdmin);
+                                returnHelper = orderManagementBean.updateSalesConfirmationOrder(Long.parseLong(id), scoNumber, scoDateDate, Long.parseLong(customerID), Long.parseLong(salesStaffID), status, Integer.parseInt(terms), isAdmin);
                                 if (returnHelper.getResult()) {
                                     Long scoID = returnHelper.getID();
                                     //Update line item if there is any

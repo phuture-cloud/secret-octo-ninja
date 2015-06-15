@@ -789,7 +789,7 @@
                                     <div class="form-group mt-lg">
                                         <label class="col-sm-3 control-label">Notes</label>
                                         <div class="col-sm-9">
-                                            <textarea class="form-control" rows="5" name="notes"></textarea>
+                                            <textarea class="form-control" rows="5" name="notes"><%=sco.getNotes()%></textarea>
                                         </div>
                                     </div>
                                     <input type="hidden" name="target" value="UpdateSCONotes">    

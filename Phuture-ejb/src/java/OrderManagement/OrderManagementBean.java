@@ -27,7 +27,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
     private static final Double gstRate = 7.0;//7%
 
     @Override
-    public ReturnHelper createSalesConfirmationOrder(String salesConfirmationOrderNumber, Date salesConfirmationOrderDate, Long customerID, Long contactID, Long salesStaffID, Integer terms, String remarks, String notes) {
+    public ReturnHelper createSalesConfirmationOrder(String salesConfirmationOrderNumber, Date salesConfirmationOrderDate, Long customerID, Long contactID, Long salesStaffID, Integer terms) {
         System.out.println("OrderManagementBean: createSalesConfirmationOrder() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -46,13 +46,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
                 result.setDescription("Failed to create a new SCO. The selected customer or contact may have been deleted while the SCO is being created. Please try again.");
                 return result;
             }
-            if (remarks == null) {
-                remarks = "";
-            }
-            if (notes == null) {
-                notes = "";
-            }
-            SalesConfirmationOrder sco = new SalesConfirmationOrder(salesConfirmationOrderNumber, salesConfirmationOrderDate, customerName, staff, terms, gstRate, remarks, notes);
+            SalesConfirmationOrder sco = new SalesConfirmationOrder(salesConfirmationOrderNumber, salesConfirmationOrderDate, customerName, staff, terms, gstRate);
             sco.setCustomer(customer);
             sco.setContactAddress(contact.getAddress());
             sco.setContactEmail(contact.getEmail());
@@ -86,7 +80,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
     }
 
     @Override
-    public ReturnHelper updateSalesConfirmationOrder(Long salesConfirmationOrderID, String newSalesConfirmationOrderNumber, Date newSalesConfirmationOrderDate, Long newCustomerID, Long newSalesStaffID, String status, Integer newTerms, String newRemarks, String newNotes, Boolean adminOverwrite) {
+    public ReturnHelper updateSalesConfirmationOrder(Long salesConfirmationOrderID, String newSalesConfirmationOrderNumber, Date newSalesConfirmationOrderDate, Long newCustomerID, Long newSalesStaffID, String status, Integer newTerms, Boolean adminOverwrite) {
         System.out.println("OrderManagementBean: updateSalesConfirmationOrder() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -138,20 +132,11 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             staff.setSales(staffSCOs);
             em.merge(staff);
             //Update fields 
-            if (newRemarks == null) {
-                newRemarks = "";
-            }
-            if (newNotes == null) {
-                newNotes = "";
-            }
-
             sco.setCustomerName(newCustomerName);
             sco.setCustomer(newCustomer);
             sco.setSalesConfirmationOrderNumber(newSalesConfirmationOrderNumber);
             sco.setSalesConfirmationOrderDate(newSalesConfirmationOrderDate);
             sco.setTerms(newTerms);
-            sco.setRemarks(newRemarks);
-            sco.setNotes(newNotes);
             em.merge(sco);
             result.setID(sco.getId());
             result.setResult(true);
@@ -385,7 +370,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
     }
 
     @Override
-    public ReturnHelper deleteSalesConfirmationOrder(Long salesConfirmationOrderID) {
+    public ReturnHelper deleteSalesConfirmationOrder(Long salesConfirmationOrderID, Boolean adminOverwrite) {
         System.out.println("OrderManagementBean: deleteSalesConfirmationOrder() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -393,7 +378,6 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             Query q = em.createQuery("SELECT s FROM SalesConfirmationOrder s WHERE s.id=:id");
             q.setParameter("id", salesConfirmationOrderID);
             SalesConfirmationOrder sco = (SalesConfirmationOrder) q.getSingleResult();
-            Boolean adminOverwrite = false; //Admin also has to stick by the cannot delete SCO rule
             ReturnHelper checkResult = checkIfSCOisEditable(salesConfirmationOrderID, adminOverwrite);
             if (!checkResult.getResult()) {
                 result.setDescription(checkResult.getDescription());
@@ -401,6 +385,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             }
             sco.setIsDeleted(true);
             em.merge(sco);
+            //TODO need to mark as deleted for all the associated PO, DO and invoices too?
             result.setResult(true);
             result.setDescription("SCO deleted successfully.");
         } catch (Exception ex) {
@@ -454,7 +439,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
         try {
-            Query q = em.createQuery("SELECT s FROM SalesConfirmationOrder s WHERE s.id=:id AND s.isDeleted=false");
+            Query q = em.createQuery("SELECT s FROM SalesConfirmationOrder s WHERE s.id=:id");
             q.setParameter("id", salesConfirmationOrderID);
             SalesConfirmationOrder salesConfirmationOrder = (SalesConfirmationOrder) q.getSingleResult();
             return salesConfirmationOrder;
@@ -709,5 +694,4 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             return null;
         }
     }
-
 }
