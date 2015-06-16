@@ -10,7 +10,7 @@ import javax.ejb.Local;
 @Local
 public interface DeliveryOrderManagementBeanLocal {
     public ReturnHelper createDeliveryOrder(Long salesConfirmationOrderID, String deliveryOrderNumber, Date deliveryOrderDate);
-    public ReturnHelper updateDeliveryOrder(Long deliveryOrderID, String newDeliveryOrderNumber, Date newDelvieryOrderDate, String status, Boolean adminOverwrite);
+    public ReturnHelper updateDeliveryOrder(Long deliveryOrderID, String newDeliveryOrderNumber, Date newDeliveryOrderDate, String status, Boolean adminOverwrite);
     public ReturnHelper updateDeliveryOrderCustomerContactDetails(Long deliveryOrderID, String customerName, String contactName, String email, String officeNo, String mobileNo, String faxNo, String address, Boolean adminOverwrite);
     public ReturnHelper updateDeliveryOrderCustomerContactDetails(Long deliveryOrderID, Long customerID, Long contactID, Boolean adminOverwrite);
     public ReturnHelper updateDeliveryOrderRemarks(Long deliveryOrderID, String remarks, Boolean adminOverwrite);
@@ -21,7 +21,7 @@ public interface DeliveryOrderManagementBeanLocal {
     
     public DeliveryOrder getDeliveryOrder(Long deliveryOrderID);
     public List<DeliveryOrder> listAllDeliveryOrder();
-    public List<DeliveryOrder> listDeliveryOrderTiedToSCO(Long salesConfirmationOrderID);
+    public List<DeliveryOrder> listDeliveryOrdersTiedToSCO(Long salesConfirmationOrderID);
     
     public ReturnHelper replaceDOlineItemWithSCOitems(Long salesConfirmationOrderID, Long deliveryOrderID, Boolean adminOverwrite);
     public ReturnHelper addDOlineItem(Long deliveryOrderID, String itemName, String itemDescription, Integer itemQty, Double itemUnitPrice, Boolean adminOverwrite);

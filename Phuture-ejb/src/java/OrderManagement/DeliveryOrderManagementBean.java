@@ -3,12 +3,9 @@ package OrderManagement;
 import EntityManager.Contact;
 import EntityManager.Customer;
 import EntityManager.DeliveryOrder;
-import EntityManager.Invoice;
 import EntityManager.LineItem;
-import EntityManager.PurchaseOrder;
 import EntityManager.ReturnHelper;
 import EntityManager.SalesConfirmationOrder;
-import EntityManager.Staff;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -78,7 +75,7 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
     }
 
     @Override
-    public ReturnHelper updateDeliveryOrder(Long deliveryOrderID, String newDeliveryOrderNumber, Date newDelvieryOrderDate, String status, Boolean adminOverwrite) {
+    public ReturnHelper updateDeliveryOrder(Long deliveryOrderID, String newDeliveryOrderNumber, Date newDeliveryOrderDate, String status, Boolean adminOverwrite) {
         System.out.println("DeliveryOrderManagementBean: updateDeliveryOrder() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -101,7 +98,7 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
                 return result;
             }
             //Update fields 
-            deliveryOrder.setDeliveryOrderDate(newDelvieryOrderDate);
+            deliveryOrder.setDeliveryOrderDate(newDeliveryOrderDate);
             deliveryOrder.setDeliveryOrderNumber(newDeliveryOrderNumber);
             em.merge(deliveryOrder);
             result.setID(deliveryOrder.getId());
@@ -403,7 +400,7 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
     }
 
     @Override
-    public List<DeliveryOrder> listDeliveryOrderTiedToSCO(Long salesConfirmationOrderID) {
+    public List<DeliveryOrder> listDeliveryOrdersTiedToSCO(Long salesConfirmationOrderID) {
         System.out.println("DeliveryOrderManagementBean: listDeliveryOrderTiedToSCO() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
