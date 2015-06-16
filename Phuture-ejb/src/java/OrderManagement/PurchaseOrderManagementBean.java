@@ -1,11 +1,9 @@
 package OrderManagement;
 
-import EntityManager.Customer;
 import EntityManager.LineItem;
 import EntityManager.PurchaseOrder;
 import EntityManager.ReturnHelper;
 import EntityManager.SalesConfirmationOrder;
-import EntityManager.Staff;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -227,7 +225,7 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
     }
 
     @Override
-    public List<PurchaseOrder> listPurchaseOrderTiedToSCO(Long salesConfirmationOrderID) {
+    public List<PurchaseOrder> listPurchaseOrdersTiedToSCO(Long salesConfirmationOrderID) {
         System.out.println("PurchaseOrderManagementBean: listPurchaseOrderTiedToSCO() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
