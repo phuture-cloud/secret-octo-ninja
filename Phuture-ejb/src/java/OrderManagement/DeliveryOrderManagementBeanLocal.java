@@ -23,10 +23,10 @@ public interface DeliveryOrderManagementBeanLocal {
     public List<DeliveryOrder> listAllDeliveryOrder();
     public List<DeliveryOrder> listDeliveryOrderTiedToSCO(Long salesConfirmationOrderID);
     
-    public ReturnHelper replacePOlineItemWithSCOitems(Long salesConfirmationOrderID, Long deliveryOrderID, Boolean adminOverwrite);
-    public ReturnHelper addPOlineItem(Long deliveryOrderID, String itemName, String itemDescription, Integer itemQty, Double itemUnitPrice, Boolean adminOverwrite);
-    public ReturnHelper updatePOlineItem(Long deliveryOrderID, Long lineItemID, String newItemName, String newItemDescription, Integer newItemQty, Double newItemUnitPrice, Boolean adminOverwrite);
-    public ReturnHelper deletePOlineItem(Long deliveryOrderID, Long lineItemID, Boolean adminOverwrite);
-    public ReturnHelper deleteallPOlineItem(Long deliveryOrderID, Boolean adminOverwrite);
-    public List<LineItem> listPOlineItems(Long deliveryOrderID);
+    public ReturnHelper replaceDOlineItemWithSCOitems(Long salesConfirmationOrderID, Long deliveryOrderID, Boolean adminOverwrite);
+    public ReturnHelper addDOlineItem(Long deliveryOrderID, String itemName, String itemDescription, Integer itemQty, Double itemUnitPrice, Boolean adminOverwrite);
+    public ReturnHelper updateDOlineItem(Long deliveryOrderID, Long lineItemID, String newItemName, String newItemDescription, Integer newItemQty, Double newItemUnitPrice, Boolean adminOverwrite);
+    public ReturnHelper deleteDOlineItem(Long deliveryOrderID, Long lineItemID, Boolean adminOverwrite);
+    public ReturnHelper deleteallDOlineItem(Long deliveryOrderID, Boolean adminOverwrite);
+    public List<LineItem> listDOlineItems(Long deliveryOrderID);
 }

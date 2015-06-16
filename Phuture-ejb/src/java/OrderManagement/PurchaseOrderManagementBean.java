@@ -314,7 +314,7 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
             q.setParameter("id", purchaseOrderID);
             PurchaseOrder po = (PurchaseOrder) q.getSingleResult();
             if (po.getIsDeleted()) {
-                result.setDescription("Failed to edit the SCO as it has been deleted.");
+                result.setDescription("Failed to edit the PO as it has been deleted.");
                 return result;
             }
             LineItem lineItem = new LineItem();
@@ -326,7 +326,7 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
             List<LineItem> lineItems = po.getItems();
             lineItems.add(lineItem);
             po.setItems(lineItems);
-            //Update SCO total price & tax
+            //Update PO total price & tax
             Double totalPrice = 0.0;
             Double totalTax = 0.0;
             for (LineItem curLineItem : lineItems) {

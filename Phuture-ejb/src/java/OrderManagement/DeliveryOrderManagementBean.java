@@ -3,11 +3,13 @@ package OrderManagement;
 import EntityManager.Contact;
 import EntityManager.Customer;
 import EntityManager.DeliveryOrder;
+import EntityManager.Invoice;
 import EntityManager.LineItem;
 import EntityManager.PurchaseOrder;
 import EntityManager.ReturnHelper;
 import EntityManager.SalesConfirmationOrder;
 import EntityManager.Staff;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -62,15 +64,15 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             em.merge(sco);
             result.setID(deliveryOrder.getId());
             result.setResult(true);
-            result.setDescription("PO created successfully.");
+            result.setDescription("DO created successfully.");
             return result;
         } catch (NoResultException ex) {
             System.out.println("DeliveryOrderManagementBean: createDeliveryOrder() could not find one or more ID(s).");
-            result.setDescription("Failed to create a PO. The SCO selected no longer exist in the system.");
+            result.setDescription("Failed to create a DO. The SCO selected no longer exist in the system.");
         } catch (Exception ex) {
             System.out.println("DeliveryOrderManagementBean: createDeliveryOrder() failed");
             ex.printStackTrace();
-            result.setDescription("Failed to create a new PO due to internal server error.");
+            result.setDescription("Failed to create a new DO due to internal server error.");
         }
         return result;
     }
@@ -127,7 +129,7 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             q.setParameter("id", deliveryOrderID);
             DeliveryOrder deliveryOrder = (DeliveryOrder) q.getSingleResult();
             if (deliveryOrder.getIsDeleted()) {
-                result.setDescription("Failed to edit the SCO as it has been deleted.");
+                result.setDescription("Failed to edit the DO as it has been deleted.");
                 return result;
             }
             ReturnHelper checkResult = checkIfDOisEditable(deliveryOrderID, adminOverwrite);
@@ -166,7 +168,7 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             q.setParameter("id", deliveryOrderID);
             DeliveryOrder deliveryOrder = (DeliveryOrder) q.getSingleResult();
             if (deliveryOrder.getIsDeleted()) {
-                result.setDescription("Failed to edit the SCO as it has been deleted.");
+                result.setDescription("Failed to edit the DO as it has been deleted.");
                 return result;
             }
             ReturnHelper checkResult = checkIfDOisEditable(deliveryOrderID, adminOverwrite);
@@ -334,52 +336,343 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
 
     @Override
     public ReturnHelper checkIfDOisEditable(Long deliveryOrderID, Boolean adminOverwrite) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        System.out.println("DeliveryOrderManagementBean: checkIfDOisEditable() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        try {
+            Query q = em.createQuery("SELECT s FROM DeliveryOrder s WHERE s.id=:id");
+            q.setParameter("id", deliveryOrderID);
+            DeliveryOrder deliveryOrder = (DeliveryOrder) q.getSingleResult();
+            if (!adminOverwrite) {//If not admin account
+                //Check if DO status is shipped. Prevent editing if it is already shipped.
+                if (deliveryOrder.getStatus().equals("Shipped")) {
+                    result.setDescription("DO can not be edited/deleted as the first invoice has already been issued.");
+                    return result;
+                }
+            }
+            if (deliveryOrder.getIsDeleted()) {
+                result.setDescription("DO can not be edited/deleted as it has already been deleted.");
+                return result;
+            }
+            result.setResult(true);
+            result.setDescription("Editable DO.");
+        } catch (NoResultException ex) {
+            System.out.println("DeliveryOrderManagementBean: checkIfDOisEditable() can not find DO");
+            result.setDescription("Unable to complete request, DO not found.");
+        } catch (Exception ex) {
+            System.out.println("DeliveryOrderManagementBean: checkIfDOisEditable() failed");
+            result.setDescription("Internal server error.");
+            ex.printStackTrace();
+        }
+        return result;
     }
 
     @Override
     public DeliveryOrder getDeliveryOrder(Long deliveryOrderID) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        System.out.println("DeliveryOrderManagementBean: getDeliveryOrder() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        try {
+            Query q = em.createQuery("SELECT s FROM DeliveryOrder s WHERE s.id=:id");
+            q.setParameter("id", deliveryOrderID);
+            DeliveryOrder deliveryOrder = (DeliveryOrder) q.getSingleResult();
+            return deliveryOrder;
+        } catch (Exception ex) {
+            System.out.println("DeliveryOrderManagementBean: getDeliveryOrder() failed");
+            result.setDescription("Internal server error.");
+            ex.printStackTrace();
+            return null;
+        }
     }
 
     @Override
     public List<DeliveryOrder> listAllDeliveryOrder() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        System.out.println("DeliveryOrderManagementBean: listAllDeliveryOrder() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        try {
+            Query q = em.createQuery("SELECT s FROM DeliveryOrder s WHERE s.isDeleted=false");
+            List<DeliveryOrder> deliveryOrders = q.getResultList();
+            return deliveryOrders;
+        } catch (Exception ex) {
+            System.out.println("DeliveryOrderManagementBean: listAllDeliveryOrder() failed");
+            result.setDescription("Internal server error.");
+            ex.printStackTrace();
+            return null;
+        }
     }
 
     @Override
     public List<DeliveryOrder> listDeliveryOrderTiedToSCO(Long salesConfirmationOrderID) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        System.out.println("DeliveryOrderManagementBean: listDeliveryOrderTiedToSCO() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        try {
+            Query q = em.createQuery("SELECT s FROM DeliveryOrder s WHERE s.isDeleted=false AND s.salesConfirmationOrder.id=:id");
+            q.setParameter("id", salesConfirmationOrderID);
+            List<DeliveryOrder> deliveryOrders = q.getResultList();
+            return deliveryOrders;
+        } catch (Exception ex) {
+            System.out.println("DeliveryOrderManagementBean: listDeliveryOrderTiedToSCO() failed");
+            result.setDescription("Internal server error.");
+            ex.printStackTrace();
+            return null;
+        }
     }
 
     @Override
-    public ReturnHelper replacePOlineItemWithSCOitems(Long salesConfirmationOrderID, Long deliveryOrderID, Boolean adminOverwrite) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public ReturnHelper replaceDOlineItemWithSCOitems(Long salesConfirmationOrderID, Long deliveryOrderID, Boolean adminOverwrite) {
+        System.out.println("DeliveryOrderManagementBean: replaceDOlineItemWithSCOitems() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        try {
+            Query q = em.createQuery("SELECT s FROM SalesConfirmationOrder s WHERE s.id=:id");
+            q.setParameter("id", salesConfirmationOrderID);
+            SalesConfirmationOrder sco = (SalesConfirmationOrder) q.getSingleResult();
+            q = em.createQuery("SELECT s FROM DeliveryOrder s WHERE s.id=:id");
+            q.setParameter("id", deliveryOrderID);
+            DeliveryOrder deliveryOrder = (DeliveryOrder) q.getSingleResult();
+            if (sco.getIsDeleted() || deliveryOrder.getIsDeleted()) {
+                result.setDescription("Failed to edit a new DO. The selected SCO or DO may have been deleted while the DO is being edited..");
+                return result;
+            }
+            //Delete all the line items in the DO
+            ReturnHelper deleteResult = new ReturnHelper();
+            deleteResult = deleteallDOlineItem(deliveryOrderID, adminOverwrite);
+            if (!deleteResult.getResult()) {
+                return deleteResult;
+            }
+            //Copy line items from SCO
+            List<LineItem> scoLineItems = sco.getItems();
+            List<LineItem> doLineItems = new ArrayList<>();
+            for (LineItem scoLineItem : scoLineItems) {
+                //Create the new line item for DO
+                LineItem item = new LineItem();
+                item.setItemName(scoLineItem.getItemName());
+                item.setItemDescription(scoLineItem.getItemDescription());
+                item.setItemQty(scoLineItem.getItemQty());
+                item.setItemUnitPrice(scoLineItem.getItemUnitPrice());
+                em.persist(item);
+                //Add the line item to the DO
+                doLineItems.add(item);
+            }
+            deliveryOrder.setItems(doLineItems);
+            //Update DO total price & tax
+            Double totalPrice = 0.0;
+            Double totalTax = 0.0;
+            for (LineItem curLineItem : doLineItems) {
+                Double currLineItemTotalPriceBeforeTax = curLineItem.getItemUnitPrice() * curLineItem.getItemQty();
+                totalPrice = totalPrice + (currLineItemTotalPriceBeforeTax * ((gstRate / 100) + 1));
+                totalTax = totalTax + (currLineItemTotalPriceBeforeTax * gstRate / 100);
+            }
+            deliveryOrder.setTotalPrice(totalPrice);
+            deliveryOrder.setTotalTax(totalTax);
+            em.merge(deliveryOrder);
+            result.setResult(true);
+            result.setDescription("Items copied from SCO.");
+        } catch (NoResultException ex) {
+            System.out.println("DeliveryOrderManagementBean: replaceDOlineItemWithSCOitems() could not find one or more ID(s).");
+            result.setDescription("Failed to edit a DO. The SCO selected no longer exist in the system.");
+        } catch (Exception ex) {
+            System.out.println("DeliveryOrderManagementBean: replaceDOlineItemWithSCOitems() failed");
+            ex.printStackTrace();
+            result.setDescription("Failed to edit a DO due to internal server error.");
+        }
+        return result;
     }
 
     @Override
-    public ReturnHelper addPOlineItem(Long deliveryOrderID, String itemName, String itemDescription, Integer itemQty, Double itemUnitPrice, Boolean adminOverwrite) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public ReturnHelper addDOlineItem(Long deliveryOrderID, String itemName, String itemDescription, Integer itemQty, Double itemUnitPrice, Boolean adminOverwrite) {
+        System.out.println("DeliveryOrderManagementBean: addDOlineItem() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        try {
+            Query q = em.createQuery("SELECT s FROM DeliveryOrder s WHERE s.id=:id");
+            q.setParameter("id", deliveryOrderID);
+            DeliveryOrder deliveryOrder = (DeliveryOrder) q.getSingleResult();
+            if (deliveryOrder.getIsDeleted()) {
+                result.setDescription("Failed to edit the DO as it has been deleted.");
+                return result;
+            }
+            LineItem lineItem = new LineItem();
+            lineItem.setItemName(itemName);
+            lineItem.setItemDescription(itemDescription);
+            lineItem.setItemQty(itemQty);
+            lineItem.setItemUnitPrice(itemUnitPrice);
+            em.persist(lineItem);
+            List<LineItem> lineItems = deliveryOrder.getItems();
+            lineItems.add(lineItem);
+            deliveryOrder.setItems(lineItems);
+            //Update DO total price & tax
+            Double totalPrice = 0.0;
+            Double totalTax = 0.0;
+            for (LineItem curLineItem : lineItems) {
+                Double currLineItemTotalPriceBeforeTax = curLineItem.getItemUnitPrice() * curLineItem.getItemQty();
+                totalPrice = totalPrice + (currLineItemTotalPriceBeforeTax * ((gstRate / 100) + 1));
+                totalTax = totalTax + (currLineItemTotalPriceBeforeTax * gstRate / 100);
+            }
+            deliveryOrder.setTotalPrice(totalPrice);
+            deliveryOrder.setTotalTax(totalTax);
+            em.merge(deliveryOrder);
+            result.setResult(true);
+            result.setDescription("Item added.");
+        } catch (NoResultException ex) {
+            System.out.println("DeliveryOrderManagementBean: addDOlineItem() could not find one or more ID(s).");
+            result.setDescription("Failed to edit a DO. The DO selected no longer exist in the system.");
+        } catch (Exception ex) {
+            System.out.println("DeliveryOrderManagementBean: addDOlineItem() failed");
+            result.setDescription("Unable to add line item, internal server error.");
+            ex.printStackTrace();
+        }
+        return result;
     }
 
     @Override
-    public ReturnHelper updatePOlineItem(Long deliveryOrderID, Long lineItemID, String newItemName, String newItemDescription, Integer newItemQty, Double newItemUnitPrice, Boolean adminOverwrite) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public ReturnHelper updateDOlineItem(Long deliveryOrderID, Long lineItemID, String newItemName, String newItemDescription, Integer newItemQty, Double newItemUnitPrice, Boolean adminOverwrite) {
+        System.out.println("DeliveryOrderManagementBean: updateDOlineItem() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        try {
+            Query q = em.createQuery("SELECT s FROM DeliveryOrder s WHERE s.id=:id");
+            q.setParameter("id", deliveryOrderID);
+            DeliveryOrder deliveryOrder = (DeliveryOrder) q.getSingleResult();
+            if (deliveryOrder.getIsDeleted()) {
+                result.setDescription("Failed to edit the DO as it has been deleted.");
+                return result;
+            }
+            q = em.createQuery("SELECT l FROM LineItem l WHERE l.id=:id");
+            q.setParameter("id", lineItemID);
+            LineItem lineItem = (LineItem) q.getSingleResult();
+            lineItem.setItemName(newItemName);
+            lineItem.setItemDescription(newItemDescription);
+            lineItem.setItemQty(newItemQty);
+            lineItem.setItemUnitPrice(newItemUnitPrice);
+            em.merge(lineItem);
+            //Update DO total price & tax
+            Double totalPrice = 0.0;
+            Double totalTax = 0.0;
+            List<LineItem> lineItems = deliveryOrder.getItems();
+            for (LineItem curLineItem : lineItems) {
+                Double currLineItemTotalPriceBeforeTax = curLineItem.getItemUnitPrice() * curLineItem.getItemQty();
+                totalPrice = totalPrice + (currLineItemTotalPriceBeforeTax * ((gstRate / 100) + 1));
+                totalTax = totalTax + (currLineItemTotalPriceBeforeTax * gstRate / 100);
+            }
+            deliveryOrder.setTotalPrice(totalPrice);
+            deliveryOrder.setTotalTax(totalTax);
+            em.merge(deliveryOrder);
+            result.setResult(true);
+            result.setDescription("Line item updated.");
+        } catch (NoResultException ex) {
+            System.out.println("DeliveryOrderManagementBean: updateDOlineItem() could not find one or more ID(s).");
+            result.setDescription("Failed to edit the DO. The DO or item selected no longer exist in the system.");
+        } catch (Exception ex) {
+            System.out.println("DeliveryOrderManagementBean: updateDOlineItem() failed");
+            result.setDescription("Unable to update line item, internal server error.");
+            ex.printStackTrace();
+            return null;
+        }
+        return result;
     }
 
     @Override
-    public ReturnHelper deletePOlineItem(Long deliveryOrderID, Long lineItemID, Boolean adminOverwrite) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public ReturnHelper deleteDOlineItem(Long deliveryOrderID, Long lineItemID, Boolean adminOverwrite) {
+        System.out.println("DeliveryOrderManagementBean: deleteDOlineItem() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        try {
+            Query q = em.createQuery("SELECT s FROM DeliveryOrder s WHERE s.id=:id");
+            q.setParameter("id", deliveryOrderID);
+            DeliveryOrder deliveryOrder = (DeliveryOrder) q.getSingleResult();
+            if (deliveryOrder.getIsDeleted()) {
+                result.setDescription("Failed to delete the item as the DO has been deleted.");
+                return result;
+            }
+            q = em.createQuery("SELECT l FROM LineItem l WHERE l.id=:id");
+            q.setParameter("id", lineItemID);
+            LineItem lineItem = (LineItem) q.getSingleResult();
+            List<LineItem> lineItems = deliveryOrder.getItems();
+            lineItems.remove(lineItem);
+            deliveryOrder.setItems(lineItems);
+            //Update DO total price & tax
+            Double totalPrice = 0.0;
+            Double totalTax = 0.0;
+            for (LineItem curLineItem : lineItems) {
+                Double currLineItemTotalPriceBeforeTax = curLineItem.getItemUnitPrice() * curLineItem.getItemQty();
+                totalPrice = totalPrice + (currLineItemTotalPriceBeforeTax * ((gstRate / 100) + 1));
+                totalTax = totalTax + (currLineItemTotalPriceBeforeTax * gstRate / 100);
+            }
+            deliveryOrder.setTotalPrice(totalPrice);
+            deliveryOrder.setTotalTax(totalTax);
+            em.merge(deliveryOrder);
+            em.remove(lineItem);
+            result.setResult(true);
+            result.setDescription("Item deleted.");
+        } catch (NoResultException ex) {
+            System.out.println("DeliveryOrderManagementBean: deleteDOlineItem() could not find one or more ID(s).");
+            result.setDescription("Failed to edit the DO. The DO or item selected no longer exist in the system.");
+        } catch (Exception ex) {
+            System.out.println("DeliveryOrderManagementBean: deleteDOlineItem() failed");
+            result.setDescription("Unable to delete line item, internal server error.");
+            ex.printStackTrace();
+            return null;
+        }
+        return result;
     }
 
     @Override
-    public ReturnHelper deleteallPOlineItem(Long deliveryOrderID, Boolean adminOverwrite) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public ReturnHelper deleteallDOlineItem(Long deliveryOrderID, Boolean adminOverwrite) {
+        System.out.println("DeliveryOrderManagementBean: deleteallDOlineItem() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        try {
+            Query q = em.createQuery("SELECT s FROM DeliveryOrder s WHERE s.id=:id");
+            q.setParameter("id", deliveryOrderID);
+            DeliveryOrder deliveryOrder = (DeliveryOrder) q.getSingleResult();
+            if (deliveryOrder.getIsDeleted()) {
+                result.setDescription("Failed to edit the DO as it has been deleted.");
+                return result;
+            }
+            ReturnHelper checkResult = checkIfDOisEditable(deliveryOrderID, adminOverwrite);
+            if (!checkResult.getResult()) {
+                result.setDescription(checkResult.getDescription());
+                return result;
+            }
+            List<LineItem> lineItems = deliveryOrder.getItems();
+            for (LineItem lineItem : lineItems) {
+                lineItems.remove(lineItem);
+                em.remove(lineItem);
+            }
+            deliveryOrder.setItems(lineItems);
+            deliveryOrder.setTotalPrice(0.0);
+            deliveryOrder.setTotalTax(0.0);
+            em.merge(deliveryOrder);
+            result.setResult(true);
+            result.setDescription("Line items deleted.");
+        } catch (Exception ex) {
+            System.out.println("DeliveryOrderManagementBean: deleteallDOlineItem() failed");
+            result.setDescription("Unable to delete line items, internal server error.");
+            ex.printStackTrace();
+            return null;
+        }
+        return result;
     }
 
     @Override
-    public List<LineItem> listPOlineItems(Long deliveryOrderID) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<LineItem> listDOlineItems(Long deliveryOrderID) {
+        System.out.println("DeliveryOrderManagementBean: listDOlineItems() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        try {
+            Query q = em.createQuery("SELECT s FROM DeliveryOrder s WHERE s.id=:id");
+            q.setParameter("id", deliveryOrderID);
+            DeliveryOrder deliveryOrder = (DeliveryOrder) q.getSingleResult();
+            List<LineItem> lineItems = deliveryOrder.getItems();
+            return lineItems;
+        } catch (Exception ex) {
+            System.out.println("DeliveryOrderManagementBean: listDOlineItems() failed");
+            ex.printStackTrace();
+            return null;
+        }
     }
 
 }

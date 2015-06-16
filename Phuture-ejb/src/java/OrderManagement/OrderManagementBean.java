@@ -407,7 +407,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             SalesConfirmationOrder sco = (SalesConfirmationOrder) q.getSingleResult();
             if (!adminOverwrite) {//If not admin account
                 //Check if any invoices has been sent to customer
-                //Prevent editing of SCO it it has been sent
+                //Prevent editing of SCO if any invoice has been sent
                 List<Invoice> invoices = sco.getInvoices();
                 for (Invoice invoice : invoices) {
                     if (invoice.getStatus().equals("Sent")) {
