@@ -88,6 +88,8 @@ public class SalesConfirmationOrder implements Serializable {
         this.terms = term;
         this.taxRate = taxRate;
         this.isDeleted = false;
+        this.remarks = "";
+        this.notes = "";
         this.totalPrice = 0.0;
         this.totalTax = 0.0;
     }
