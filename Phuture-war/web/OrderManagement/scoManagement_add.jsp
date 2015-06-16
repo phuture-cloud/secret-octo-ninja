@@ -342,7 +342,6 @@
                                                         <span class="text-dark">Date:</span>
                                                         <span class="value" style="min-width: 110px">
                                                             <%
-
                                                                 if (scoDate != null && !scoDate.isEmpty()) {
                                                                     out.print("<input " + formDisablerFlag + " id='scoDate' name='scoDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + scoDate + "' required>");
                                                                 } else if (sco != null && scoID != null && !scoID.isEmpty()) {
@@ -406,13 +405,14 @@
                                                                 <%
                                                                     if ((sco.getStatus() != null && !sco.getStatus().isEmpty()) || status != null && status != "") {
                                                                         String selectedStatus;
-                                                                        if (status != null && status != "") {
+                                                                        if (status != null && !status.isEmpty()) {
                                                                             //Get from request (haven't saved to SCO)
-                                                                            selectedStatus = status;                                                                            
+                                                                            selectedStatus = status;
                                                                         } else {
                                                                             //Get from SCO
-                                                                            selectedStatus = sco.getStatus();                                                                            
+                                                                            selectedStatus = sco.getStatus();
                                                                         }
+
                                                                         if (selectedStatus.equals("Unfulfilled")) {
                                                                             out.print("<option value='Unfulfilled' selected>Unfulfilled</option>");
                                                                             out.print("<option value='Fulfilled'>Fulfilled</option>");
@@ -479,7 +479,6 @@
                                                                 out.println("<input type='text' class='form-control' name='itemDescription'/>");
                                                             }
                                                         %>
-
                                                     </td>
                                                     <td class="text-center">
                                                         <div class="input-group">
@@ -525,10 +524,13 @@
 
                                                 <!-- loop line item page -->
                                                 <%
-                                                    if (sco != null && scoID != null && !scoID.isEmpty()) {
+                                                    if (sco != null && scoID != null && sco.getItems() != null && !scoID.isEmpty()) {
                                                         NumberFormat formatter = NumberFormat.getCurrencyInstance();
+                                                        System.out.println(">>>>>>>>>>>>1>>>>>>>>>>>>");
                                                         for (int i = 0; i < sco.getItems().size(); i++) {
-                                                            if (!editingLineItem.equals("") && editingLineItem.equals(sco.getItems().get(i).getId() + "")) {
+                                                            System.out.println(">>>>>>>>>>>2>>>>>>>>>>>>>");
+                                                            System.out.println(">>>>>>>>>>>2.1>>>>>>>>>>>>>" + editingLineItem);
+                                                            if (!editingLineItem.isEmpty() && editingLineItem.equals(sco.getItems().get(i).getId() + "")) {
                                                                 //Print editable fields
                                                                 double price = sco.getItems().get(i).getItemUnitPrice();
 
@@ -564,7 +566,8 @@
                                                         out.print("<button class='btn btn-default'>Back</button></td>");//TODO back to previous page display SCO details. Need to pass back the dates/terms/sco number etc in case the user never press save prior to editing
                                                     %>
                                                 </tr>
-                                                <%                                                            } else {
+                                                <%
+                                                            } else {
                                                                 //Print normal text
                                                                 double price = 0;
                                                                 out.print("<tr>");
@@ -581,6 +584,7 @@
                                                                 out.print("</tr>");
                                                             }
                                                         }
+                                                        System.out.println(">>>>>>>>>>>>>4>>>>>>>>>>>");
                                                     }
                                                 %>
                                                 <!-- end loop line item page -->
@@ -593,7 +597,7 @@
                                         <div class="row">
                                             <div class="col-sm-8">
                                                 <%
-                                                    if (sco != null && scoID != null && !scoID.isEmpty() && !sco.getRemarks().isEmpty()) {
+                                                    if (sco != null && scoID != null && !scoID.isEmpty() && sco.getRemarks() != null && !sco.getRemarks().isEmpty()) {
                                                         out.print("Remarks:");
                                                         String repl = sco.getRemarks().replaceAll("(\\r|\\n|\\r\\n)+", "<br>");
                                                         out.print("<br>" + repl);
@@ -789,7 +793,7 @@
                                     <div class="form-group mt-lg">
                                         <label class="col-sm-3 control-label">Notes</label>
                                         <div class="col-sm-9">
-                                            <textarea class="form-control" rows="5" name="notes"><%=sco.getNotes()%></textarea>
+                                            <textarea class="form-control" rows="5" name="notes"><%if (sco.getNotes()!=null){out.print(sco.getNotes());}%></textarea>
                                         </div>
                                     </div>
                                     <input type="hidden" name="target" value="UpdateSCONotes">    
@@ -818,7 +822,7 @@
                                     <div class="form-group mt-lg">
                                         <label class="col-sm-3 control-label">Remarks</label>
                                         <div class="col-sm-9">
-                                            <textarea class="form-control" rows="5" name="remarks"><%=sco.getRemarks()%></textarea>
+                                            <textarea class="form-control" rows="5" name="remarks"><%if (sco.getRemarks()!=null){out.print(sco.getRemarks());}%></textarea>
                                         </div>
                                     </div>
                                     <input type="hidden" name="target" value="UpdateSCORemarks">    
