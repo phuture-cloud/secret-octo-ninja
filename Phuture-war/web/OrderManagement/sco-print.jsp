@@ -136,7 +136,7 @@
                 <div class="row">
                     <div class="col-sm-8">
                         <%
-                            if (sco.getRemarks().isEmpty()) {
+                            if (sco.getRemarks() != null && !sco.getRemarks().isEmpty()) {
                                 out.print("Remarks:");
                                 out.print("<br>" + sco.getRemarks());
                             }
@@ -159,7 +159,7 @@
                                     <td colspan="2">7% GST</td>
                                     <td class="text-left">
                                         <%
-                                            formatedPrice = (sco.getTotalPrice() / 107) * 7;
+                                            formatedPrice = sco.getTotalTax();
                                             out.print(formatter.format(formatedPrice));
                                         %>
                                     </td>

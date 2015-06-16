@@ -140,7 +140,10 @@ public class OrderManagementController extends HttpServlet {
                             returnHelper = orderManagementBean.createSalesConfirmationOrder(scoNumber, scoDateDate, Long.parseLong(customerID), Long.parseLong(contactID), Long.parseLong(salesStaffID), Integer.parseInt(terms));
                             if (returnHelper.getResult()) {
                                 Long scoID = returnHelper.getID();
-                                session.setAttribute("sco", orderManagementBean.getSalesConfirmationOrder(scoID));
+                                System.out.println(">>>>>>>>scoID " + scoID);
+                                SalesConfirmationOrder sco = orderManagementBean.getSalesConfirmationOrder(scoID);
+                                System.out.println("sco " + sco);
+                                session.setAttribute("sco", sco);
                                 //Add line item if already filled in
                                 if (itemName != null && !itemName.isEmpty() && itemDescription != null && !itemDescription.isEmpty() && itemQty != null && !itemQty.isEmpty() && itemUnitPrice != null && !itemUnitPrice.isEmpty()) {
                                     returnHelper = orderManagementBean.addSCOlineItem(scoID, itemName, itemDescription, Integer.parseInt(itemQty), Double.parseDouble(itemUnitPrice), isAdmin);
@@ -258,6 +261,8 @@ public class OrderManagementController extends HttpServlet {
                             } else {
                                 session.setAttribute("customers", customers);
                                 session.setAttribute("sco", sco);
+                                System.out.println(sco);
+                                System.out.println(">>>>>>> " + sco.getItems().size());
                                 nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id;
                             }
                         }
