@@ -45,7 +45,7 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             deliveryOrder.setDeliveryOrderNumber(deliveryOrderNumber);
             deliveryOrder.setDeliveryOrderDate(deliveryOrderDate);
             deliveryOrder.setTaxRate(gstRate);
-            //Copy shipping contacts from SCO contact as default
+            //Copy contacts detail from SCO contact as default shipping contact
             deliveryOrder.setCustomerName(sco.getCustomerName());
             deliveryOrder.setContactName(sco.getContactName());
             deliveryOrder.setContactEmail(sco.getContactName());
@@ -65,7 +65,7 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             return result;
         } catch (NoResultException ex) {
             System.out.println("DeliveryOrderManagementBean: createDeliveryOrder() could not find one or more ID(s).");
-            result.setDescription("Failed to create a DO. The SCO selected no longer exist in the system.");
+            result.setDescription("Failed to create the DO. The SCO selected no longer exist in the system.");
         } catch (Exception ex) {
             System.out.println("DeliveryOrderManagementBean: createDeliveryOrder() failed");
             ex.printStackTrace();
@@ -107,11 +107,11 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             return result;
         } catch (NoResultException ex) {
             System.out.println("DeliveryOrderManagementBean: updateDeliveryOrder() could not find one or more ID(s).");
-            result.setDescription("Failed to edit a DO. The delivery selected no longer exist in the system.");
+            result.setDescription("Failed to edit the DO. The DO selected no longer exist in the system.");
         } catch (Exception ex) {
             System.out.println("DeliveryOrderManagementBean: updateDeliveryOrder() failed");
             ex.printStackTrace();
-            result.setDescription("Failed to edit a DO due to internal server error.");
+            result.setDescription("Failed to edit the DO due to internal server error.");
         }
         return result;
     }
@@ -146,11 +146,11 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             result.setDescription("DO edited successfully.");
         } catch (NoResultException ex) {
             System.out.println("DeliveryOrderManagementBean: updateDeliveryOrderCustomerContactDetails() could not find one or more ID(s).");
-            result.setDescription("Failed to edit a DO. The DO selected no longer exist in the system.");
+            result.setDescription("Failed to edit the DO. The DO selected no longer exist in the system.");
         } catch (Exception ex) {
             System.out.println("DeliveryOrderManagementBean: updateDeliveryOrderCustomerContactDetails() failed");
             ex.printStackTrace();
-            result.setDescription("Failed to edit a DO due to internal server error.");
+            result.setDescription("Failed to edit the DO due to internal server error.");
         }
         return result;
     }
@@ -191,11 +191,11 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             result.setDescription("DO edited successfully.");
         } catch (NoResultException ex) {
             System.out.println("DeliveryOrderManagementBean: updateDeliveryOrderCustomerContactDetails() could not find one or more ID(s).");
-            result.setDescription("Failed to edit a DO. The DO or customer or contact selected no longer exist in the system.");
+            result.setDescription("Failed to edit the DO. The DO or customer or contact selected no longer exist in the system.");
         } catch (Exception ex) {
             System.out.println("DeliveryOrderManagementBean: updateDeliveryOrderCustomerContactDetails() failed");
             ex.printStackTrace();
-            result.setDescription("Failed to edit a DO due to internal server error.");
+            result.setDescription("Failed to edit the DO due to internal server error.");
         }
         return result;
     }
@@ -224,11 +224,11 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             result.setDescription("DO edited successfully.");
         } catch (NoResultException ex) {
             System.out.println("DeliveryOrderManagementBean: updateDeliveryOrderRemarks() could not find one or more ID(s).");
-            result.setDescription("Failed to edit a DO. The DO selected no longer exist in the system.");
+            result.setDescription("Failed to edit the DO. The DO selected no longer exist in the system.");
         } catch (Exception ex) {
             System.out.println("DeliveryOrderManagementBean: updateDeliveryOrderRemarks() failed");
             ex.printStackTrace();
-            result.setDescription("Failed to edit a DO due to internal server error.");
+            result.setDescription("Failed to edit the DO due to internal server error.");
         }
         return result;
     }
@@ -257,11 +257,11 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             result.setDescription("DO edited successfully.");
         } catch (NoResultException ex) {
             System.out.println("DeliveryOrderManagementBean: updateDeliveryOrderNotes() could not find one or more ID(s).");
-            result.setDescription("Failed to edit a DO. The DO selected no longer exist in the system.");
+            result.setDescription("Failed to edit the DO. The DO selected no longer exist in the system.");
         } catch (Exception ex) {
             System.out.println("DeliveryOrderManagementBean: updateDeliveryOrderNotes() failed");
             ex.printStackTrace();
-            result.setDescription("Failed to edit a DO due to internal server error.");
+            result.setDescription("Failed to edit the DO due to internal server error.");
         }
         return result;
     }
@@ -296,11 +296,11 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             result.setDescription("DO edited successfully.");
         } catch (NoResultException ex) {
             System.out.println("DeliveryOrderManagementBean: updateDeliveryOrderStatus() could not find one or more ID(s).");
-            result.setDescription("Failed to edit a DO. The DO selected no longer exist in the system.");
+            result.setDescription("Failed to edit the DO. The DO selected no longer exist in the system.");
         } catch (Exception ex) {
             System.out.println("DeliveryOrderManagementBean: updateDeliveryOrderStatus() failed");
             ex.printStackTrace();
-            result.setDescription("Failed to edit a DO due to internal server error.");
+            result.setDescription("Failed to edit the DO due to internal server error.");
         }
         return result;
     }
@@ -325,7 +325,7 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             result.setDescription("DO deleted successfully.");
         } catch (Exception ex) {
             System.out.println("DeliveryOrderManagementBean: deleteDeliveryOrder() failed");
-            result.setDescription("Internal server error.");
+            result.setDescription("Failed to delete an DO due to internal server error.");
             ex.printStackTrace();
         }
         return result;
@@ -430,7 +430,12 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             q.setParameter("id", deliveryOrderID);
             DeliveryOrder deliveryOrder = (DeliveryOrder) q.getSingleResult();
             if (sco.getIsDeleted() || deliveryOrder.getIsDeleted()) {
-                result.setDescription("Failed to edit a new DO. The selected SCO or DO may have been deleted while the DO is being edited..");
+                result.setDescription("Failed to edit the DO. The selected SCO or DO may have been deleted while the DO is being edited..");
+                return result;
+            }
+            ReturnHelper checkResult = checkIfDOisEditable(deliveryOrderID, adminOverwrite);
+            if (!checkResult.getResult()) {
+                result.setDescription(checkResult.getDescription());
                 return result;
             }
             //Delete all the line items in the DO
@@ -469,11 +474,11 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             result.setDescription("Items copied from SCO.");
         } catch (NoResultException ex) {
             System.out.println("DeliveryOrderManagementBean: replaceDOlineItemWithSCOitems() could not find one or more ID(s).");
-            result.setDescription("Failed to edit a DO. The SCO selected no longer exist in the system.");
+            result.setDescription("Failed to edit the DO. The SCO selected no longer exist in the system.");
         } catch (Exception ex) {
             System.out.println("DeliveryOrderManagementBean: replaceDOlineItemWithSCOitems() failed");
             ex.printStackTrace();
-            result.setDescription("Failed to edit a DO due to internal server error.");
+            result.setDescription("Failed to edit the DO due to internal server error.");
         }
         return result;
     }
@@ -515,7 +520,7 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             result.setDescription("Item added.");
         } catch (NoResultException ex) {
             System.out.println("DeliveryOrderManagementBean: addDOlineItem() could not find one or more ID(s).");
-            result.setDescription("Failed to edit a DO. The DO selected no longer exist in the system.");
+            result.setDescription("Failed to edit the DO. The DO selected no longer exist in the system.");
         } catch (Exception ex) {
             System.out.println("DeliveryOrderManagementBean: addDOlineItem() failed");
             result.setDescription("Unable to add line item, internal server error.");

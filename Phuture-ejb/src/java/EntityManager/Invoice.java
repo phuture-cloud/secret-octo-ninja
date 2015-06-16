@@ -20,7 +20,7 @@ public class Invoice implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private Long invoiceNumber;
+    private String invoiceNumber;
     @ManyToOne
     private SalesConfirmationOrder salesConfirmationOrder;
     @OneToMany
@@ -34,27 +34,44 @@ public class Invoice implements Serializable {
     private String notes;//For internal staff use on the CRM system only  
 
     private String status;
+    //Automatic
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dateCreated;
+    //Manual
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateSent;
     @Temporal(TemporalType.TIMESTAMP)
     private Date datePaid;
 
-    private String billingContactName;
-    private String billingContactEmail;
-    private String billingContactOfficeNo;
-    private String billingContactMobileNo;
-    private String billingContactFaxNo;
+    private String customerName;
+    //Billing contact
+    private String contactName;
+    private String contactEmail;
+    private String contactOfficeNo;
+    private String contactMobileNo;
+    private String contactFaxNo;
     @Lob
-    private String billingContactAddress;
-
+    private String contactAddress;
     private boolean isDeleted;
 
     public Invoice() {
+        this.dateCreated = new Date();
+        this.isDeleted = false;
+        this.remarks = "";
+        this.notes = "";
+        this.totalPrice = 0.0;
+        this.totalTax = 0.0;
         setStatusAsCreated();
     }
 
-    public Invoice(Long invoiceNumber) {
+    public Invoice(String invoiceNumber) {
         this.invoiceNumber = invoiceNumber;
+        this.dateCreated = new Date();
+        this.isDeleted = false;
+        this.remarks = "";
+        this.notes = "";
+        this.totalPrice = 0.0;
+        this.totalTax = 0.0;
         setStatusAsCreated();
     }
 
@@ -66,11 +83,11 @@ public class Invoice implements Serializable {
         this.id = id;
     }
 
-    public Long getInvoiceNumber() {
+    public String getInvoiceNumber() {
         return invoiceNumber;
     }
 
-    public void setInvoiceNumber(Long invoiceNumber) {
+    public void setInvoiceNumber(String invoiceNumber) {
         this.invoiceNumber = invoiceNumber;
     }
 
@@ -154,55 +171,55 @@ public class Invoice implements Serializable {
         this.notes = notes;
     }
 
-    public String getBillingContactName() {
-        return billingContactName;
+    public String getContactName() {
+        return contactName;
     }
 
-    public void setBillingContactName(String billingContactName) {
-        this.billingContactName = billingContactName;
+    public void setContactName(String contactName) {
+        this.contactName = contactName;
     }
 
-    public String getBillingContactEmail() {
-        return billingContactEmail;
+    public String getContactEmail() {
+        return contactEmail;
     }
 
-    public void setBillingContactEmail(String billingContactEmail) {
-        this.billingContactEmail = billingContactEmail;
+    public void setContactEmail(String contactEmail) {
+        this.contactEmail = contactEmail;
     }
 
-    public String getBillingContactOfficeNo() {
-        return billingContactOfficeNo;
+    public String getContactOfficeNo() {
+        return contactOfficeNo;
     }
 
-    public void setBillingContactOfficeNo(String billingContactOfficeNo) {
-        this.billingContactOfficeNo = billingContactOfficeNo;
+    public void setContactOfficeNo(String contactOfficeNo) {
+        this.contactOfficeNo = contactOfficeNo;
     }
 
-    public String getBillingContactMobileNo() {
-        return billingContactMobileNo;
+    public String getContactMobileNo() {
+        return contactMobileNo;
     }
 
-    public void setBillingContactMobileNo(String billingContactMobileNo) {
-        this.billingContactMobileNo = billingContactMobileNo;
+    public void setContactMobileNo(String contactMobileNo) {
+        this.contactMobileNo = contactMobileNo;
     }
 
-    public String getBillingContactFaxNo() {
-        return billingContactFaxNo;
+    public String getContactFaxNo() {
+        return contactFaxNo;
     }
 
-    public void setBillingContactFaxNo(String billingContactFaxNo) {
-        this.billingContactFaxNo = billingContactFaxNo;
+    public void setContactFaxNo(String contactFaxNo) {
+        this.contactFaxNo = contactFaxNo;
     }
 
-    public String getBillingContactAddress() {
-        return billingContactAddress;
+    public String getContactAddress() {
+        return contactAddress;
     }
 
-    public void setBillingContactAddress(String billingContactAddress) {
-        this.billingContactAddress = billingContactAddress;
+    public void setContactAddress(String contactAddress) {
+        this.contactAddress = contactAddress;
     }
 
-    public boolean isIsDeleted() {
+    public boolean getIsDeleted() {
         return isDeleted;
     }
 
@@ -216,6 +233,22 @@ public class Invoice implements Serializable {
 
     public void setTaxRate(Double taxRate) {
         this.taxRate = taxRate;
+    }
+
+    public Date getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
     }
 
     @Override

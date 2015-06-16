@@ -55,7 +55,7 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
             return result;
         } catch (NoResultException ex) {
             System.out.println("PurchaseOrderManagementBean: createPurchaseOrder() could not find one or more ID(s).");
-            result.setDescription("Failed to create a PO. The SCO selected no longer exist in the system.");
+            result.setDescription("Failed to create the PO. The SCO selected no longer exist in the system.");
         } catch (Exception ex) {
             System.out.println("PurchaseOrderManagementBean: createPurchaseOrder() failed");
             ex.printStackTrace();
@@ -92,11 +92,11 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
             return result;
         } catch (NoResultException ex) {
             System.out.println("PurchaseOrderManagementBean: updatePurchaseOrder() could not find one or more ID(s).");
-            result.setDescription("Failed to edit a PO. The PO selected no longer exist in the system.");
+            result.setDescription("Failed to edit the PO. The PO selected no longer exist in the system.");
         } catch (Exception ex) {
             System.out.println("PurchaseOrderManagementBean: updatePurchaseOrder() failed");
             ex.printStackTrace();
-            result.setDescription("Failed to edit a new PO due to internal server error.");
+            result.setDescription("Failed to edit the PO due to internal server error.");
         }
         return result;
     }
@@ -131,11 +131,11 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
             result.setDescription("PO edited successfully.");
         } catch (NoResultException ex) {
             System.out.println("PurchaseOrderManagementBean: updatePurchaseOrderStatus() could not find one or more ID(s).");
-            result.setDescription("Failed to edit a PO. The PO selected no longer exist in the system.");
+            result.setDescription("Failed to edit the PO. The PO selected no longer exist in the system.");
         } catch (Exception ex) {
             System.out.println("PurchaseOrderManagementBean: updatePurchaseOrderStatus() failed");
             ex.printStackTrace();
-            result.setDescription("Failed to edit a PO due to internal server error.");
+            result.setDescription("Failed to edit the PO due to internal server error.");
         }
         return result;
     }
@@ -159,11 +159,11 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
             result.setDescription("PO edited successfully.");
         } catch (NoResultException ex) {
             System.out.println("PurchaseOrderManagementBean: updatePurchaseOrderNotes() could not find one or more ID(s).");
-            result.setDescription("Failed to edit a PO. The PO selected no longer exist in the system.");
+            result.setDescription("Failed to edit the PO. The PO selected no longer exist in the system.");
         } catch (Exception ex) {
             System.out.println("PurchaseOrderManagementBean: updatePurchaseOrderNotes() failed");
             ex.printStackTrace();
-            result.setDescription("Failed to edit a PO due to internal server error.");
+            result.setDescription("Failed to edit the PO due to internal server error.");
         }
         return result;
     }
@@ -255,7 +255,7 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
             q.setParameter("id", purchaseOrderID);
             PurchaseOrder po = (PurchaseOrder) q.getSingleResult();
             if (sco.getIsDeleted() || po.getIsDeleted()) {
-                result.setDescription("Failed to edit a new PO. The selected SCO or PO may have been deleted while the PO is being created. Please try again.");
+                result.setDescription("Failed to edit the PO. The selected SCO or PO may have been deleted while the PO is being created. Please try again.");
                 return result;
             }
             //Delete all the line items first
@@ -293,11 +293,11 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
             return result;
         } catch (NoResultException ex) {
             System.out.println("PurchaseOrderManagementBean: replacePOlineItemWithSCOitems() could not find one or more ID(s).");
-            result.setDescription("Failed to edit a PO. The PO or SCO selected no longer exist in the system.");
+            result.setDescription("Failed to edit the PO. The PO or SCO selected no longer exist in the system.");
         } catch (Exception ex) {
             System.out.println("PurchaseOrderManagementBean: replacePOlineItemWithSCOitems() failed");
             ex.printStackTrace();
-            result.setDescription("Failed to edit a PO due to internal server error.");
+            result.setDescription("Failed to edit the PO due to internal server error.");
         }
         return result;
     }
@@ -339,7 +339,7 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
             result.setDescription("Item added.");
         } catch (NoResultException ex) {
             System.out.println("PurchaseOrderManagementBean: addPOlineItem() could not find one or more ID(s).");
-            result.setDescription("Failed to edit a PO. The PO selected no longer exist in the system.");
+            result.setDescription("Failed to edit the PO. The PO selected no longer exist in the system.");
         } catch (Exception ex) {
             System.out.println("PurchaseOrderManagementBean: addPOlineItem() failed");
             result.setDescription("Unable to add line item, internal server error.");

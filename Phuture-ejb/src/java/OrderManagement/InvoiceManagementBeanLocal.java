@@ -9,13 +9,12 @@ import javax.ejb.Local;
 
 @Local
 public interface InvoiceManagementBeanLocal {
-    public ReturnHelper createInvoice(Long salesConfirmationOrderID, String invoiceNumber, Date invoiceDate);
-    public ReturnHelper updateInvoice(Long invoiceID, String newInvoiceNumber, Date newDelvieryOrderDate, String status, Boolean adminOverwrite);
+    public ReturnHelper createInvoice(Long salesConfirmationOrderID, String invoiceNumber);
+    public ReturnHelper updateInvoice(Long invoiceID, String newInvoiceNumber, Date invoiceSent, Date invoicePaid, Boolean adminOverwrite);
     public ReturnHelper updateInvoiceCustomerContactDetails(Long invoiceID, String customerName, String contactName, String email, String officeNo, String mobileNo, String faxNo, String address, Boolean adminOverwrite);
     public ReturnHelper updateInvoiceCustomerContactDetails(Long invoiceID, Long customerID, Long contactID, Boolean adminOverwrite);
     public ReturnHelper updateInvoiceRemarks(Long invoiceID, String remarks, Boolean adminOverwrite);
     public ReturnHelper updateInvoiceNotes(Long invoiceID, String notes, Boolean adminOverwrite);
-    public ReturnHelper updateInvoiceStatus(Long invoiceID, String status, Boolean adminOverwrite);
     public ReturnHelper deleteInvoice(Long invoiceID, Boolean adminOverwrite);  
     public ReturnHelper checkIfInvoiceisEditable(Long invoiceID, Boolean adminOverwrite);
     
