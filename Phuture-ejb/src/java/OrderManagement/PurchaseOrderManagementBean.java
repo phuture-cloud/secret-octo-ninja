@@ -1,11 +1,9 @@
 package OrderManagement;
 
-import EntityManager.Customer;
 import EntityManager.LineItem;
 import EntityManager.PurchaseOrder;
 import EntityManager.ReturnHelper;
 import EntityManager.SalesConfirmationOrder;
-import EntityManager.Staff;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -227,7 +225,7 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
     }
 
     @Override
-    public List<PurchaseOrder> listPurchaseOrderTiedToSCO(Long salesConfirmationOrderID) {
+    public List<PurchaseOrder> listPurchaseOrdersTiedToSCO(Long salesConfirmationOrderID) {
         System.out.println("PurchaseOrderManagementBean: listPurchaseOrderTiedToSCO() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -314,7 +312,7 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
             q.setParameter("id", purchaseOrderID);
             PurchaseOrder po = (PurchaseOrder) q.getSingleResult();
             if (po.getIsDeleted()) {
-                result.setDescription("Failed to edit the SCO as it has been deleted.");
+                result.setDescription("Failed to edit the PO as it has been deleted.");
                 return result;
             }
             LineItem lineItem = new LineItem();
@@ -326,7 +324,7 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
             List<LineItem> lineItems = po.getItems();
             lineItems.add(lineItem);
             po.setItems(lineItems);
-            //Update SCO total price & tax
+            //Update PO total price & tax
             Double totalPrice = 0.0;
             Double totalTax = 0.0;
             for (LineItem curLineItem : lineItems) {

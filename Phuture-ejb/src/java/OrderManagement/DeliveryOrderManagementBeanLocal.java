@@ -10,7 +10,7 @@ import javax.ejb.Local;
 @Local
 public interface DeliveryOrderManagementBeanLocal {
     public ReturnHelper createDeliveryOrder(Long salesConfirmationOrderID, String deliveryOrderNumber, Date deliveryOrderDate);
-    public ReturnHelper updateDeliveryOrder(Long deliveryOrderID, String newDeliveryOrderNumber, Date newDelvieryOrderDate, String status, Boolean adminOverwrite);
+    public ReturnHelper updateDeliveryOrder(Long deliveryOrderID, String newDeliveryOrderNumber, Date newDeliveryOrderDate, String status, Boolean adminOverwrite);
     public ReturnHelper updateDeliveryOrderCustomerContactDetails(Long deliveryOrderID, String customerName, String contactName, String email, String officeNo, String mobileNo, String faxNo, String address, Boolean adminOverwrite);
     public ReturnHelper updateDeliveryOrderCustomerContactDetails(Long deliveryOrderID, Long customerID, Long contactID, Boolean adminOverwrite);
     public ReturnHelper updateDeliveryOrderRemarks(Long deliveryOrderID, String remarks, Boolean adminOverwrite);
@@ -21,12 +21,12 @@ public interface DeliveryOrderManagementBeanLocal {
     
     public DeliveryOrder getDeliveryOrder(Long deliveryOrderID);
     public List<DeliveryOrder> listAllDeliveryOrder();
-    public List<DeliveryOrder> listDeliveryOrderTiedToSCO(Long salesConfirmationOrderID);
+    public List<DeliveryOrder> listDeliveryOrdersTiedToSCO(Long salesConfirmationOrderID);
     
-    public ReturnHelper replacePOlineItemWithSCOitems(Long salesConfirmationOrderID, Long deliveryOrderID, Boolean adminOverwrite);
-    public ReturnHelper addPOlineItem(Long deliveryOrderID, String itemName, String itemDescription, Integer itemQty, Double itemUnitPrice, Boolean adminOverwrite);
-    public ReturnHelper updatePOlineItem(Long deliveryOrderID, Long lineItemID, String newItemName, String newItemDescription, Integer newItemQty, Double newItemUnitPrice, Boolean adminOverwrite);
-    public ReturnHelper deletePOlineItem(Long deliveryOrderID, Long lineItemID, Boolean adminOverwrite);
-    public ReturnHelper deleteallPOlineItem(Long deliveryOrderID, Boolean adminOverwrite);
-    public List<LineItem> listPOlineItems(Long deliveryOrderID);
+    public ReturnHelper replaceDOlineItemWithSCOitems(Long salesConfirmationOrderID, Long deliveryOrderID, Boolean adminOverwrite);
+    public ReturnHelper addDOlineItem(Long deliveryOrderID, String itemName, String itemDescription, Integer itemQty, Double itemUnitPrice, Boolean adminOverwrite);
+    public ReturnHelper updateDOlineItem(Long deliveryOrderID, Long lineItemID, String newItemName, String newItemDescription, Integer newItemQty, Double newItemUnitPrice, Boolean adminOverwrite);
+    public ReturnHelper deleteDOlineItem(Long deliveryOrderID, Long lineItemID, Boolean adminOverwrite);
+    public ReturnHelper deleteallDOlineItem(Long deliveryOrderID, Boolean adminOverwrite);
+    public List<LineItem> listDOlineItems(Long deliveryOrderID);
 }

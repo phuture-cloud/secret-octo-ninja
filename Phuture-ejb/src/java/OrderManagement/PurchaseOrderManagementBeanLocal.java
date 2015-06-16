@@ -17,7 +17,7 @@ public interface PurchaseOrderManagementBeanLocal {
     
     public PurchaseOrder getPurchaseOrder(Long purchaseOrderID);
     public List<PurchaseOrder> listAllPurchaseOrder();
-    public List<PurchaseOrder> listPurchaseOrderTiedToSCO(Long salesConfirmationOrderID);
+    public List<PurchaseOrder> listPurchaseOrdersTiedToSCO(Long salesConfirmationOrderID);
     
     public ReturnHelper replacePOlineItemWithSCOitems(Long salesConfirmationOrderID, Long purchaseOrderID);
     public ReturnHelper addPOlineItem(Long purchaseOrderID, String itemName, String itemDescription, Integer itemQty, Double itemUnitPrice);
