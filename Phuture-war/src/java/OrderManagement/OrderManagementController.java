@@ -33,6 +33,7 @@ public class OrderManagementController extends HttpServlet {
         String target = request.getParameter("target");
         String id = request.getParameter("id");
         String scoNumber = request.getParameter("scoNumber");
+        System.out.println(">>>1>" + scoNumber);
         String customerID = request.getParameter("customerID");
         String contactID = request.getParameter("contactID");
         String lineItemID = request.getParameter("lineItemID");
@@ -152,9 +153,9 @@ public class OrderManagementController extends HttpServlet {
                                         returnHelper = orderManagementBean.addSCOlineItem(scoID, itemName, itemDescription, Integer.parseInt(itemQty), Double.parseDouble(itemUnitPrice), isAdmin);
                                         if (returnHelper.getResult()) {
                                             session.setAttribute("sco", orderManagementBean.getSalesConfirmationOrder(scoID));
-                                            nextPage = "OrderManagement/scoManagement_add.jsp?goodMsg=" + returnHelper.getDescription() + "&selectedCustomerID=" + customerID + "&selectedContactID=" + contactID+ "&scoNumber=" + scoNumber + "&id=" + scoID;
+                                            nextPage = "OrderManagement/scoManagement_add.jsp?goodMsg=" + returnHelper.getDescription() + "&selectedCustomerID=" + customerID + "&selectedContactID=" + contactID + "&scoNumber=" + scoNumber + "&id=" + scoID;
                                         } else {
-                                            nextPage = "OrderManagement/scoManagement_add.jsp?errMsg=" + returnHelper.getDescription() + "&selectedCustomerID=" + customerID + "&selectedContactID=" + contactID+ "&selectedContactID=" + contactID + "&scoNumber=" + scoNumber + "&id=" + scoID;
+                                            nextPage = "OrderManagement/scoManagement_add.jsp?errMsg=" + returnHelper.getDescription() + "&selectedCustomerID=" + customerID + "&selectedContactID=" + contactID + "&selectedContactID=" + contactID + "&scoNumber=" + scoNumber + "&id=" + scoID;
                                         }
                                     } else {
                                         nextPage = "OrderManagement/scoManagement_add.jsp?goodMsg=" + returnHelper.getDescription() + "&selectedCustomerID=" + customerID + "&selectedContactID=" + contactID + "&scoNumber=" + scoNumber + "&id=" + scoID;
@@ -285,9 +286,10 @@ public class OrderManagementController extends HttpServlet {
 
                     case "EditLineItem":
                         if (true) {
+                            System.out.println(itemName + itemDescription + itemQty + itemUnitPrice);
                             //Check for empty fields
                             if (itemName == null || itemName.isEmpty() || itemDescription == null || itemDescription.isEmpty() || itemQty == null || itemQty.isEmpty() || itemUnitPrice == null || itemUnitPrice.isEmpty()) {
-                                nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&selectedCustomerID=" + customerID + "&scoNumber=" + scoNumber + "&selectedContactID=" + contactID + "&terms=" + terms + "&editingLineItem=" + lineItemID + "&scoDate=" + scoDate + "&errMsg=Please fill in all the fields for the item.";
+                                nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&selectedCustomerID=" + customerID + "&scoNumber=" + scoNumber + "&terms=" + terms + "&editingLineItem=" + lineItemID + "&scoDate=" + scoDate + "&errMsg=Please fill in all the fields for the item.";
                                 break;
                             }
 
@@ -295,26 +297,8 @@ public class OrderManagementController extends HttpServlet {
                             returnHelper = orderManagementBean.updateSCOlineItem(Long.parseLong(id), Long.parseLong(lineItemID), itemName, itemDescription, Integer.parseInt(itemQty), Double.parseDouble(itemUnitPrice), isAdmin);
                             SalesConfirmationOrder sco = orderManagementBean.getSalesConfirmationOrder(Long.parseLong(id));
                             if (returnHelper.getResult() && sco != null) {
-
-                                //Update SCO
-                                if (scoNumber == null || scoNumber.isEmpty() || scoDate == null || scoDate.isEmpty() || terms == null || terms.isEmpty()) {
-                                    System.out.println(scoNumber);
-                                    nextPage = "OrderManagement/scoManagement_add.jsp?selectedCustomerID=" + customerID + "&scoNumber=" + scoNumber + "&selectedContactID=" + contactID + "&terms=" + terms + "&scoDate=" + scoDate + "&id=" + id + "&errMsg=Please fill in all the fields for the SCO.";
-                                } else {
-                                    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-                                    Date scoDateDate = formatter.parse(scoDate);
-                                    returnHelper = orderManagementBean.updateSalesConfirmationOrder(Long.parseLong(id), scoNumber, scoDateDate, Long.parseLong(customerID), status, Integer.parseInt(terms), isAdmin);
-
-                                    System.out.println("1");
-                                    if (returnHelper.getResult()) {
-                                        Long scoID = returnHelper.getID();
-                                        session.setAttribute("sco", orderManagementBean.getSalesConfirmationOrder(scoID));
-                                        nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&scoNumber=" + scoNumber + "&terms=" + terms + "&scoDate=" + scoDate + "&goodMsg=" + returnHelper.getDescription();
-                                    } else {
-                                        nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&scoNumber=" + scoNumber + "&terms=" + terms + "&scoDate=" + scoDate + "&errMsg=" + returnHelper.getDescription();
-                                        break;
-                                    }
-                                }
+                                session.setAttribute("sco", orderManagementBean.getSalesConfirmationOrder(sco.getId()));
+                                nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&scoNumber=" + scoNumber + "&terms=" + terms + "&scoDate=" + scoDate + "&goodMsg=" + returnHelper.getDescription();
 
                             } else {
                                 nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&terms=" + terms + "&scoDate=" + scoDate + "&status=" + status + "&editingLineItem=" + lineItemID + "&errMsg=" + returnHelper.getDescription();
