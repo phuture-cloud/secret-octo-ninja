@@ -102,8 +102,8 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
                 result.setDescription(checkResult.getDescription());
                 return result;
             }
-            ReturnHelper uniqueResult = checkIfSCOnumberIsUnique(salesConfirmationOrderNumber);
-            if(!uniqueResult.getResult() && salesConfirmationOrderNumber != sco.getSalesConfirmationOrderNumber()) {
+            ReturnHelper uniqueResult = checkIfSCOnumberIsUnique(newSalesConfirmationOrderNumber);
+            if(!uniqueResult.getResult() && !newSalesConfirmationOrderNumber.equals(sco.getSalesConfirmationOrderNumber())) {
                 uniqueResult.setDescription("Failed to save the SCO as the SCO number is already in use.");
                 return uniqueResult;
             }
