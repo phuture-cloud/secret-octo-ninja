@@ -178,7 +178,7 @@
         </div>
         <jsp:include page="../foot.html" />
         <script>
-            //window.print();
+            window.print();
         </script>
     </body>
 </html>
