@@ -49,7 +49,7 @@
                         var subtotal = parseFloat($('#subtotal').val());
                         var gst = parseFloat($('#gst').val());
                         var totalPrice = parseFloat($('#totalPrice').val());
-                        
+
                         if (!isNaN(itemAmount)) {
                             if (isNaN(subtotal)) {
                                 subtotal = 0;
@@ -60,17 +60,17 @@
                             if (isNaN(totalPrice)) {
                                 totalPrice = 0;
                             }
-                            
+
                             var newSubtotal = subtotal + itemAmount;
                             var newGst = newSubtotal * 0.07;
                             var newTotalPrice = newSubtotal + newGst;
-                            
+
                             $('#input_itemAmount').val(itemAmount.toFixed(2));
                             $('#output_subtotal').text("$" + newSubtotal.toFixed(2));
                             $('#output_gst').text("$" + newGst.toFixed(2));
                             $('#output_totalPrice').text("$" + newTotalPrice.toFixed(2));
                         }
-                        
+
                         if (isNaN(itemUnitPrice) || isNaN(itemQty)) {
                             $('#input_itemAmount').val("");
                             $('#output_subtotal').text("$" + subtotal.toFixed(2));
@@ -79,11 +79,11 @@
                         }
                     });
                 });
-                
+
                 function back() {
                     window.location.href = "../OrderManagementController?target=ListAllSCO";
                 }
-                
+
                 function getCustomerContacts() {
                     window.onbeforeunload = null;
                     var customerID = document.getElementById("customerList").value;
@@ -94,7 +94,7 @@
                         window.location.href = "../OrderManagementController?target=ListCustomerContacts&customerID=" + customerID + "&scoNumber=" + scoNumber + "&scoDate=" + scoDate + "&terms=" + terms;
                     }
                 }
-                
+
                 function selectCustomerContact() {
                     window.onbeforeunload = null;
                     var customerID = document.getElementById("customerList").value;
@@ -106,7 +106,7 @@
                         window.location.href = "scoManagement_add.jsp?selectedCustomerID=" + customerID + "&selectedContactID=" + contactID + "&scoNumber=" + scoNumber + "&scoDate=" + scoDate + "&terms=" + terms;
                     }
                 }
-                
+
                 function back2(id) {
                     window.onbeforeunload = null;
                     var scoNumber = document.getElementById("scoNumber").value;
@@ -115,7 +115,7 @@
                     var status = document.getElementById("status").value;
                     window.location.href = "scoManagement_add.jsp?id=" + id + "&status=" + status + "&scoNumber=" + scoNumber + "&scoDate=" + scoDate + "&terms=" + terms;
                 }
-                
+
                 function addLineItemToNewSCO() {
                     window.onbeforeunload = null;
                     scoManagement.target.value = "SaveSCO";
@@ -123,14 +123,14 @@
                     document.scoManagement.action = "../OrderManagementController";
                     document.scoManagement.submit();
                 }
-                
+
                 function saveSCO() {
                     window.onbeforeunload = null;
                     scoManagement.target.value = "SaveSCO";
                     document.scoManagement.action = "../OrderManagementController";
                     document.scoManagement.submit();
                 }
-                
+
                 function addLineItemToExistingSCO(id) {
                     window.onbeforeunload = null;
                     scoManagement.id.value = id;
@@ -139,7 +139,7 @@
                     document.scoManagement.action = "../OrderManagementController";
                     document.scoManagement.submit();
                 }
-                
+
                 function updateSCO(id) {
                     window.onbeforeunload = null;
                     scoManagement.id.value = id;
@@ -147,7 +147,7 @@
                     document.scoManagement.action = "../OrderManagementController";
                     document.scoManagement.submit();
                 }
-                
+
                 function editLineItem(id, lineItemID) {
                     window.onbeforeunload = null;
                     scoManagement.target.value = "EditLineItem";
@@ -159,7 +159,7 @@
                     var status = document.getElementById("status").value;
                     window.location.href = "scoManagement_add.jsp?id=" + id + "&scoNumber=" + scoNumber + "&scoDate=" + scoDate + "&terms=" + terms + "&status=" + status + "&editingLineItem=" + lineItemID;
                 }
-                
+
                 function removeLineItemSubmit(id, lineItemID) {
                     window.onbeforeunload = null;
                     scoManagement.id.value = id;
@@ -168,7 +168,7 @@
                     document.scoManagement.action = "../OrderManagementController";
                     document.scoManagement.submit();
                 }
-                
+
                 function removeLineItem(id, lineItemID) {
                     window.onbeforeunload = null;
                     scoManagement.id.value = id;
@@ -177,7 +177,7 @@
                     document.scoManagement.action = "../OrderManagementController";
                     document.scoManagement.submit();
                 }
-                
+
                 function deleteSCO(id) {
                     window.onbeforeunload = null;
                     scoManagement.id.value = id;
@@ -185,18 +185,18 @@
                     document.scoManagement.action = "../OrderManagementController";
                     document.scoManagement.submit();
                 }
-                
+
                 function addressBook() {
                     window.onbeforeunload = null;
                     editContactForm.target.value = "ListAllCustomer";
                     document.editContactForm.action = "../OrderManagementController";
                     document.editContactForm.submit();
                 }
-                
+
                 window.onbeforeunload = function () {
                     return 'There may have unsaved changes to this page. If you continue, you will lose them';
                 };
-                
+
                 $(function () {
                     $('button[type=submit]').click(function (e) {
                         window.onbeforeunload = null;
@@ -232,7 +232,7 @@
                                         <div class="row">
                                             <div class="col-sm-6 mt-md">
                                                 <h2 class="h2 mt-none mb-sm text-dark text-weight-bold">Sales Confirmation Order</h2>
-                                                <%                                                    
+                                                <%
                                                     if (scoNumber != null && !scoNumber.isEmpty()) {
                                                         out.print("<input " + formDisablerFlag + " type='text' class='form-control' id='scoNumber' name='scoNumber' value='" + scoNumber + "' style='max-width: 300px' required/>");
                                                     } else if (sco != null && scoID != null && !scoID.isEmpty()) {
@@ -265,7 +265,7 @@
                                                     <p class="h5 mb-xs text-dark text-weight-semibold">To:</p>
                                                     <address>
                                                         <div class="col-md-6" style="padding-left: 0px;">
-                                                            <%                
+                                                            <%
                                                                 if (sco != null && scoID != null && !scoID.isEmpty()) {
                                                                     out.print("<b>" + sco.getCustomerName() + "</b>");
                                                                     String repl = sco.getContactAddress().replaceAll("(\\r|\\n|\\r\\n)+", "<br>");
@@ -290,7 +290,7 @@
                                                             %>
                                                             <select id="customerList" name="customerID" data-plugin-selectTwo class="form-control populate" onchange="javascript:getCustomerContacts()" required>
                                                                 <option value="">Select a customer</option>
-                                                                <%        
+                                                                <%
                                                                     if (customers != null && customers.size() > 0) {
                                                                         for (int i = 0; i < customers.size(); i++) {
                                                                             if (selectedCustomerID != null && selectedCustomerID.equals(customers.get(i).getId().toString())) {
@@ -312,7 +312,7 @@
                                                         <div class="col-md-6" style="padding-left: 0px;">
                                                             <select id="customerContactid" name="contactID" data-plugin-selectTwo class="form-control populate"  onchange="javascript:selectCustomerContact()" required>
                                                                 <option value="">Select a contact</option>
-                                                                <%            
+                                                                <%
                                                                     if (contacts != null && contacts.size() > 0) {
                                                                         for (int i = 0; i < contacts.size(); i++) {
                                                                             if (selectedContactID != null && selectedContactID.equals(contacts.get(i).getId().toString())) {
@@ -357,7 +357,7 @@
                                                     <p class="mb-none">
                                                         <span class="text-dark">Date:</span>
                                                         <span class="value" style="min-width: 110px">
-                                                            <%    
+                                                            <%
                                                                 if (scoDate != null && !scoDate.isEmpty()) {
                                                                     out.print("<input " + formDisablerFlag + " id='scoDate' name='scoDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + scoDate + "' required>");
                                                                 } else if (sco != null && scoID != null && !scoID.isEmpty()) {
@@ -428,7 +428,7 @@
                                                                             //Get from SCO
                                                                             selectedStatus = sco.getStatus();
                                                                         }
-                                                                        
+
                                                                         if (selectedStatus.equals("Unfulfilled")) {
                                                                             out.print("<option value='Unfulfilled' selected>Unfulfilled</option>");
                                                                             out.print("<option value='Fulfilled'>Fulfilled</option>");
@@ -526,7 +526,7 @@
                                                         </div>
                                                     </td>
                                                     <td class="text-center">
-                                                        <%    
+                                                        <%
                                                             if (scoID == null && (customers == null || selectedContactID == null || selectedContactID.equals("")) || !editingLineItem.equals("")) {
                                                                 out.print("<button class='btn btn-default btn-block' onclick='javascript:addLineItemToNewSCO()' disabled>Add Item</button>");
                                                             } else if (scoID == null || scoID.isEmpty() || sco == null) {
@@ -579,7 +579,7 @@
                                                         out.print("<button class='btn btn-default' type='button' onclick='javascript:back2(" + sco.getId() + ")' >Back</button></div></td>");
                                                     %>
                                                 </tr> 
-                                                <%            
+                                                <%
                                                             } else {
                                                                 //Print normal text
                                                                 double price = 0;
@@ -608,7 +608,7 @@
                                     <div class="invoice-summary" style="margin-top: 10px;">
                                         <div class="row">
                                             <div class="col-sm-8">
-                                                <%    
+                                                <%
                                                     if (sco != null && scoID != null && !scoID.isEmpty() && sco.getRemarks() != null && !sco.getRemarks().isEmpty()) {
                                                         out.print("Remarks:");
                                                         String repl = sco.getRemarks().replaceAll("(\\r|\\n|\\r\\n)+", "<br>");
@@ -622,7 +622,7 @@
                                                         <tr class="b-top-none">
                                                             <td colspan="2">Subtotal</td>
                                                             <td class="text-left">
-                                                                <%                    
+                                                                <%
                                                                     double formatedPrice = 0;
                                                                     NumberFormat formatter = NumberFormat.getCurrencyInstance();
                                                                     if (scoID == null || scoID.isEmpty() || sco == null) {
@@ -637,7 +637,7 @@
                                                         </tr>
                                                         <tr>
                                                             <td colspan="2">
-                                                                <%    
+                                                                <%
                                                                     if (scoID == null || scoID.isEmpty() || sco == null) {
                                                                         out.print("7.0% GST");
                                                                     } else {
@@ -646,7 +646,7 @@
                                                                 %>
                                                             </td>
                                                             <td class="text-left">
-                                                                <%    
+                                                                <%
                                                                     if (scoID == null || scoID.isEmpty() || sco == null) {
                                                                         out.print("<span id='output_gst'>$0.00</span>");
                                                                     } else {
@@ -660,7 +660,7 @@
                                                         <tr class="h4">
                                                             <td colspan="2">Total (SGD)</td>
                                                             <td class="text-left">
-                                                                <%    
+                                                                <%
                                                                     if (scoID == null || scoID.isEmpty() || sco == null) {
                                                                         out.print("<span id='output_totalPrice'>$0.00</span>");
                                                                     } else {
@@ -691,24 +691,35 @@
                                                     } else {
                                                         out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalNotes'>Notes</button>");
                                                     }
-                                                    out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalRemarks' data-toggle='tooltip' data-placement='top' title='Remarks will be reflected in the SCO'>Remarks</button>");
+                                                    out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalRemarks' data-toggle='tooltip' data-placement='top' title='*Remarks will be reflected in the SCO'>Remarks</button>");
                                                 }
                                             %> 
                                         </div>
+                                        &nbsp;
+                                        <div class="btn-group">
+                                            <%
+                                                out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalNotes'>Purchase Orders</button>");
+                                                out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalNotes'>Delivery Orders <span class='badge' style='background-color:#D2322D'>3</span></button>");
+                                                out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalNotes'>Invoices</button>");
+                                            %>         
+                                        </div>
                                     </div>
+
                                     <div class="col-sm-6 text-right mt-md mb-md">
-                                        <button type="button" class="btn btn-default" onclick="javascript:back()" style="margin-right: 3px;">Back</button>
-                                        <% if (sco != null && scoID != null && !scoID.isEmpty()) {
-                                                out.print("<button type='button' class='modal-with-move-anim btn btn-danger' href='#modalRemove' style='margin-right: 3px;'>Delete</button>");
-                                                if (sco.getItems().size() > 0) {
-                                                    out.print("<button " + formDisablerFlag + " class='btn btn-primary' onclick='javascript:generatePO()' style='margin-right: 3px;'>Generate PO</button>");
-                                                    out.print("<button " + formDisablerFlag + " class='btn btn-primary' onclick='javascript:generateDO()' style='margin-right: 3px;'>Generate DO</button>");
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-default" onclick="javascript:back()" style="margin-right: 3px;">Back</button>
+                                            <% if (sco != null && scoID != null && !scoID.isEmpty()) {
+                                                    out.print("<button type='button' class='modal-with-move-anim btn btn-danger' href='#modalRemove'>Delete</button>");
+                                                    if (sco.getItems().size() > 0) {
+                                                        out.print("<button " + formDisablerFlag + " class='btn btn-primary' onclick='javascript:generatePO()'>Generate PO</button>");
+                                                        out.print("<button " + formDisablerFlag + " class='btn btn-primary' onclick='javascript:generateDO()'>Generate DO</button>");
+                                                    }
+                                                    out.print("<button " + formDisablerFlag + " class='btn btn-success' onclick='javascript:updateSCO(" + scoID + ")'>Save</button>");
+                                                } else {
+                                                    out.print("<button " + formDisablerFlag + " class='btn btn-success' type='submit'>Save</button>");
                                                 }
-                                                out.print("<button " + formDisablerFlag + " class='btn btn-success' onclick='javascript:updateSCO(" + scoID + ")' style='margin-right: 3px;'>Save</button>");
-                                            } else {
-                                                out.print("<button " + formDisablerFlag + " class='btn btn-success' type='submit'>Save</button>");
-                                            }
-                                        %>
+                                            %>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
