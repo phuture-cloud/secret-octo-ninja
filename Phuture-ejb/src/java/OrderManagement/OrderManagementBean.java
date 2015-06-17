@@ -46,6 +46,11 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
                 result.setDescription("Failed to create a new SCO. The selected customer or contact may have been deleted while the SCO is being created. Please try again.");
                 return result;
             }
+            ReturnHelper uniqueResult = checkIfSCOnumberIsUnique(salesConfirmationOrderNumber);
+            if(!uniqueResult.getResult()) {
+                uniqueResult.setDescription("Failed to create a new SCO. The SCO number is already in use.");
+                return uniqueResult;
+            }
             SalesConfirmationOrder sco = new SalesConfirmationOrder(salesConfirmationOrderNumber, salesConfirmationOrderDate, customerName, staff, terms, gstRate);
             sco.setCustomer(customer);
             sco.setContactAddress(contact.getAddress());
@@ -96,6 +101,11 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             if (!checkResult.getResult()) {
                 result.setDescription(checkResult.getDescription());
                 return result;
+            }
+            ReturnHelper uniqueResult = checkIfSCOnumberIsUnique(salesConfirmationOrderNumber);
+            if(!uniqueResult.getResult() && salesConfirmationOrderNumber != sco.getSalesConfirmationOrderNumber()) {
+                uniqueResult.setDescription("Failed to save the SCO as the SCO number is already in use.");
+                return uniqueResult;
             }
             ReturnHelper updateStatusResult = updateSalesConfirmationOrderStatus(salesConfirmationOrderID, status);
             if (updateStatusResult.getResult() == false) {
