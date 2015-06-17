@@ -70,7 +70,7 @@
                                 <table class="table table-bordered table-striped mb-none" id="datatable-default">
                                     <thead>
                                         <tr> 
-                                            <th>SCO Order #</th>
+                                            <th>SCO No.</th>
                                             <th>Customer</th>
                                             <th>SCO Date</th>
                                             <th>SCO Creation Date</th>

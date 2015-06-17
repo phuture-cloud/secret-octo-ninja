@@ -64,7 +64,7 @@
                                 <table class="table table-bordered table-striped mb-none" id="datatable-default">
                                     <thead>
                                         <tr>
-                                            <th>Delivery #</th>
+                                            <th>Delivery No.</th>
                                             <th>Delivery Date</th>
                                             <th>Delivery Status</th>
                                             <th style="width: 400px;">Action</th>
