@@ -31,6 +31,7 @@ public class OrderManagementController extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String target = request.getParameter("target");
+        System.out.println("target " + target);
         String id = request.getParameter("id");
         String scoNumber = request.getParameter("scoNumber");
         String customerID = request.getParameter("customerID");
@@ -145,7 +146,7 @@ public class OrderManagementController extends HttpServlet {
                                 if (returnHelper.getResult()) {
                                     Long scoID = returnHelper.getID();
                                     SalesConfirmationOrder sco = orderManagementBean.getSalesConfirmationOrder(scoID);
-                                    System.out.println("sco " + sco);
+
                                     session.setAttribute("sco", sco);
                                     //Add line item if already filled in
                                     if (itemName != null && !itemName.isEmpty() && itemDescription != null && !itemDescription.isEmpty() && itemQty != null && !itemQty.isEmpty() && itemUnitPrice != null && !itemUnitPrice.isEmpty()) {
@@ -211,7 +212,7 @@ public class OrderManagementController extends HttpServlet {
                     case "UpdateSCOContact":
                         if (true) {
                             if (source != null && source.equals("UpdateContact")) {
-                                System.out.println("sco id " + id);
+
                                 returnHelper = orderManagementBean.updateSalesConfirmationOrderCustomerContactDetails(Long.parseLong(id), Long.parseLong(customerID), Long.parseLong(contactID), isAdmin);
                                 SalesConfirmationOrder sco = orderManagementBean.getSalesConfirmationOrder(Long.parseLong(id));
                                 if (returnHelper.getResult() && sco != null) {
@@ -269,7 +270,15 @@ public class OrderManagementController extends HttpServlet {
                             } else {
                                 session.setAttribute("customers", customers);
                                 session.setAttribute("sco", sco);
-                                nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id;
+                                if (source != null && source.equals("listAllInvoices")) {
+                                    nextPage = "OrderManagement/scoManagement_invoice.jsp";
+                                } else if (source != null && source.equals("listAllDO")) {
+                                    nextPage = "OrderManagement/scoManagement_DO.jsp";
+                                } else if (source != null && source.equals("listAllPO")) {
+                                    nextPage = "OrderManagement/scoManagement_PO.jsp";
+                                } else {
+                                    nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id;
+                                }
                             }
                         }
                         break;
@@ -301,14 +310,12 @@ public class OrderManagementController extends HttpServlet {
 
                                 //Update SCO
                                 if (scoNumber == null || scoNumber.isEmpty() || scoDate == null || scoDate.isEmpty() || terms == null || terms.isEmpty()) {
-                                    System.out.println(scoNumber);
                                     nextPage = "OrderManagement/scoManagement_add.jsp?selectedCustomerID=" + customerID + "&scoNumber=" + scoNumber + "&selectedContactID=" + contactID + "&terms=" + terms + "&scoDate=" + scoDate + "&id=" + id + "&errMsg=Please fill in all the fields for the SCO.";
                                 } else {
                                     SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
                                     Date scoDateDate = formatter.parse(scoDate);
                                     returnHelper = orderManagementBean.updateSalesConfirmationOrder(Long.parseLong(id), scoNumber, scoDateDate, Long.parseLong(customerID), status, Integer.parseInt(terms), isAdmin);
 
-                                    System.out.println("1");
                                     if (returnHelper.getResult()) {
                                         Long scoID = returnHelper.getID();
                                         session.setAttribute("sco", orderManagementBean.getSalesConfirmationOrder(scoID));

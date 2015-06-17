@@ -84,6 +84,15 @@
                     window.location.href = "../OrderManagementController?target=ListAllSCO";
                 }
 
+                function back2(id) {
+                    window.onbeforeunload = null;
+                    var scoNumber = document.getElementById("scoNumber").value;
+                    var scoDate = document.getElementById("scoDate").value;
+                    var terms = document.getElementById("terms").value;
+                    var status = document.getElementById("status").value;
+                    window.location.href = "scoManagement_add.jsp?id=" + id + "&status=" + status + "&scoNumber=" + scoNumber + "&scoDate=" + scoDate + "&terms=" + terms;
+                }
+
                 function getCustomerContacts() {
                     window.onbeforeunload = null;
                     var customerID = document.getElementById("customerList").value;
@@ -105,15 +114,6 @@
                         var contactID = document.getElementById("customerContactid").value;
                         window.location.href = "scoManagement_add.jsp?selectedCustomerID=" + customerID + "&selectedContactID=" + contactID + "&scoNumber=" + scoNumber + "&scoDate=" + scoDate + "&terms=" + terms;
                     }
-                }
-
-                function back2(id) {
-                    window.onbeforeunload = null;
-                    var scoNumber = document.getElementById("scoNumber").value;
-                    var scoDate = document.getElementById("scoDate").value;
-                    var terms = document.getElementById("terms").value;
-                    var status = document.getElementById("status").value;
-                    window.location.href = "scoManagement_add.jsp?id=" + id + "&status=" + status + "&scoNumber=" + scoNumber + "&scoDate=" + scoDate + "&terms=" + terms;
                 }
 
                 function addLineItemToNewSCO() {
@@ -191,6 +191,21 @@
                     editContactForm.target.value = "ListAllCustomer";
                     document.editContactForm.action = "../OrderManagementController";
                     document.editContactForm.submit();
+                }
+
+                function listAllInvoices(id) {
+                    window.onbeforeunload = null;
+                    window.location.href = "../OrderManagementController?target=RetrieveSCO&source=listAllInvoices&id=" + id;
+                }
+
+                function listAllPO(id) {
+                    window.onbeforeunload = null;
+                    window.location.href = "../OrderManagementController?target=RetrieveSCO&source=listAllPO&id=" + id;
+                }
+
+                function listAllDO(id) {
+                    window.onbeforeunload = null;
+                    window.location.href = "../OrderManagementController?target=RetrieveSCO&source=listAllDO&id=" + id;
                 }
 
                 window.onbeforeunload = function () {
@@ -698,16 +713,26 @@
                                         &nbsp;
                                         <div class="btn-group">
                                             <%
-                                                out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalNotes'>Purchase Orders</button>");
-                                                out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalNotes'>Delivery Orders <span class='badge' style='background-color:#D2322D'>3</span></button>");
-                                                out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalNotes'>Invoices</button>");
+                                                if (sco != null && scoID != null && !scoID.isEmpty()) {
+                                                    if (sco.getItems().size() > 0) {
+                                                        if (sco.getPurchaseOrders().size() > 0) {
+                                                            out.print("<button type='button' class='btn btn-default' onclick='javascript:listAllPO(" + sco.getId() + ")'>Purchase Orders <span class='badge' style='background-color:#0088CC'>" + sco.getPurchaseOrders().size() + "</span></button>");
+                                                        }
+                                                        if (sco.getDeliveryOrders().size() > 0) {
+                                                            out.print("<button type='button' class='btn btn-default' onclick='javascript:listAllDO(" + sco.getId() + ")'>Delivery Orders <span class='badge' style='background-color:#0088CC'>" + sco.getDeliveryOrders().size() + "</span></button>");
+                                                        }
+                                                        if (sco.getInvoices().size() > 0) {
+                                                            out.print("<button type='button' class='btn btn-default' onclick='javascript:listAllInvoices(" + sco.getId() + ")'>Invoices <span class='badge' style='background-color:#0088CC'>" + sco.getInvoices().size() + "</span></button>");
+                                                        }
+                                                    }
+                                                }
                                             %>         
                                         </div>
                                     </div>
 
                                     <div class="col-sm-6 text-right mt-md mb-md">
                                         <div class="btn-group">
-                                            <button type="button" class="btn btn-default" onclick="javascript:back()" style="margin-right: 3px;">Back</button>
+                                            <button type="button" class="btn btn-default" onclick="javascript:back()">Back</button>
                                             <% if (sco != null && scoID != null && !scoID.isEmpty()) {
                                                     out.print("<button type='button' class='modal-with-move-anim btn btn-danger' href='#modalRemove'>Delete</button>");
                                                     if (sco.getItems().size() > 0) {
