@@ -20,7 +20,7 @@ public interface DeliveryOrderManagementBeanLocal {
     public ReturnHelper checkIfDOisEditable(Long deliveryOrderID, Boolean adminOverwrite);
     
     public DeliveryOrder getDeliveryOrder(Long deliveryOrderID);
-    public List<DeliveryOrder> listAllDeliveryOrder();
+    public List<DeliveryOrder> listAllDeliveryOrder(Long staffID);
     public List<DeliveryOrder> listDeliveryOrdersTiedToSCO(Long salesConfirmationOrderID);
     
     public ReturnHelper replaceDOlineItemWithSCOitems(Long salesConfirmationOrderID, Long deliveryOrderID, Boolean adminOverwrite);

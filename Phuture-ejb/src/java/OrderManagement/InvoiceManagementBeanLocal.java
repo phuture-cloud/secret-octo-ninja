@@ -19,7 +19,7 @@ public interface InvoiceManagementBeanLocal {
     public ReturnHelper checkIfInvoiceisEditable(Long invoiceID, Boolean adminOverwrite);
     
     public Invoice getInvoice(Long invoiceID);
-    public List<Invoice> listAllInvoice();
+    public List<Invoice> listAllInvoice(Long staffID);
     public List<Invoice> listInvoicesTiedToSCO(Long salesConfirmationOrderID);
     
     public ReturnHelper replaceInvoiceLineItemWithSCOitems(Long salesConfirmationOrderID, Long invoiceID, Boolean adminOverwrite);

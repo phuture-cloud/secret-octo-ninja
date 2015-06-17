@@ -1,9 +1,11 @@
 package OrderManagement;
 
+import EntityManager.Invoice;
 import EntityManager.LineItem;
 import EntityManager.PurchaseOrder;
 import EntityManager.ReturnHelper;
 import EntityManager.SalesConfirmationOrder;
+import EntityManager.Staff;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -208,14 +210,24 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
     }
 
     @Override
-    public List<PurchaseOrder> listAllPurchaseOrder() {
+    public List<PurchaseOrder> listAllPurchaseOrder(Long staffID) {
         System.out.println("PurchaseOrderManagementBean: listAllPurchaseOrder() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
         try {
-            Query q = em.createQuery("SELECT s FROM PurchaseOrder s WHERE s.isDeleted=false");
-            List<PurchaseOrder> purchaseOrders = q.getResultList();
-            return purchaseOrders;
+            Query q = em.createQuery("SELECT s FROM Staff s WHERE s.id=:staffID");
+            q.setParameter("staffID", staffID);
+            Staff staff = (Staff) q.getSingleResult();
+            if (staff.getIsAdmin()) {
+                //List all for admin
+                q = em.createQuery("SELECT s FROM PurchaseOrder s WHERE s.isDeleted=false");
+            } else {
+                //List only those that they create for normal staff
+                q = em.createQuery("SELECT s FROM PurchaseOrder s WHERE s.isDeleted=false and s.salesConfirmationOrder.salesPerson.id=:staffID");
+                q.setParameter("staffID", staffID);
+            }
+            List<PurchaseOrder> purchases = q.getResultList();
+            return purchases;
         } catch (Exception ex) {
             System.out.println("PurchaseOrderManagementBean: listAllPurchaseOrder() failed");
             result.setDescription("Internal server error.");

@@ -7,6 +7,7 @@ import EntityManager.Invoice;
 import EntityManager.LineItem;
 import EntityManager.ReturnHelper;
 import EntityManager.SalesConfirmationOrder;
+import EntityManager.Staff;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -346,12 +347,22 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
     }
 
     @Override
-    public List<Invoice> listAllInvoice() {
+    public List<Invoice> listAllInvoice(Long staffID) {
         System.out.println("InvoiceManagementBean: listAllInvoice() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
         try {
-            Query q = em.createQuery("SELECT s FROM Invoice s WHERE s.isDeleted=false");
+            Query q = em.createQuery("SELECT s FROM Staff s WHERE s.id=:staffID");
+            q.setParameter("staffID", staffID);
+            Staff staff = (Staff) q.getSingleResult();
+            if (staff.getIsAdmin()) {
+                //List all for admin
+                q = em.createQuery("SELECT s FROM Invoice s WHERE s.isDeleted=false");
+            } else {
+                //List only those that they create for normal staff
+                q = em.createQuery("SELECT s FROM Invoice s WHERE s.isDeleted=false and s.salesConfirmationOrder.salesPerson.id=:staffID");
+                q.setParameter("staffID", staffID);
+            }
             List<Invoice> invoices = q.getResultList();
             return invoices;
         } catch (Exception ex) {

@@ -3,9 +3,11 @@ package OrderManagement;
 import EntityManager.Contact;
 import EntityManager.Customer;
 import EntityManager.DeliveryOrder;
+import EntityManager.Invoice;
 import EntityManager.LineItem;
 import EntityManager.ReturnHelper;
 import EntityManager.SalesConfirmationOrder;
+import EntityManager.Staff;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -383,12 +385,22 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
     }
 
     @Override
-    public List<DeliveryOrder> listAllDeliveryOrder() {
+    public List<DeliveryOrder> listAllDeliveryOrder(Long staffID) {
         System.out.println("DeliveryOrderManagementBean: listAllDeliveryOrder() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
         try {
-            Query q = em.createQuery("SELECT s FROM DeliveryOrder s WHERE s.isDeleted=false");
+            Query q = em.createQuery("SELECT s FROM Staff s WHERE s.id=:staffID");
+            q.setParameter("staffID", staffID);
+            Staff staff = (Staff) q.getSingleResult();
+            if (staff.getIsAdmin()) {
+                //List all for admin
+                q = em.createQuery("SELECT s FROM DeliveryOrder s WHERE s.isDeleted=false");
+            } else {
+                //List only those that they create for normal staff
+                q = em.createQuery("SELECT s FROM DeliveryOrder s WHERE s.isDeleted=false and s.salesConfirmationOrder.salesPerson.id=:staffID");
+                q.setParameter("staffID", staffID);
+            }
             List<DeliveryOrder> deliveryOrders = q.getResultList();
             return deliveryOrders;
         } catch (Exception ex) {
