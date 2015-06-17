@@ -482,7 +482,16 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
         try {
-            Query q = em.createQuery("SELECT s FROM SalesConfirmationOrder s WHERE s.isDeleted=false and s.salesPerson.id=:staffID");
+            Query q = em.createQuery("SELECT s FROM Staff s WHERE s.id=:staffID");
+            q.setParameter("staffID", staffID);
+            Staff staff = (Staff) q.getSingleResult();
+            if (staff.getIsAdmin()) {
+                //List all for admin
+                q = em.createQuery("SELECT s FROM SalesConfirmationOrder s WHERE s.isDeleted=false");
+            } else {
+                //List only those that they create for normal staff
+                q = em.createQuery("SELECT s FROM SalesConfirmationOrder s WHERE s.isDeleted=false and s.salesPerson.id=:staffID");
+            }
             q.setParameter("staffID", staffID);
             List<SalesConfirmationOrder> salesConfirmationOrders = q.getResultList();
             return salesConfirmationOrders;
