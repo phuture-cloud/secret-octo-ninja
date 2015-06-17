@@ -70,9 +70,10 @@
                                 <table class="table table-bordered table-striped mb-none" id="datatable-default">
                                     <thead>
                                         <tr> 
-                                            <th>SCO Order #</th>
+                                            <th>SCO No.</th>
                                             <th>Customer</th>
                                             <th>SCO Date</th>
+                                            <th>SCO Creation Date</th>
                                             <th>Total Amount</th>
                                             <th>Status</th>
                                             <th style="width: 300px; text-align: center">Action</th>
@@ -89,7 +90,14 @@
                                             <td>
                                                 <%
                                                     SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("d MMM yyyy");
-                                                    String date = DATE_FORMAT.format(salesConfirmationOrders.get(i).getDateCreated());
+                                                    String date = DATE_FORMAT.format(salesConfirmationOrders.get(i).getSalesConfirmationOrderDate());
+                                                    out.print(date);
+                                                %>
+                                            </td>
+                                            <td>
+                                                <%
+                                                    DATE_FORMAT = new SimpleDateFormat("d MMM yyyy hh:mm:ss");
+                                                    date = DATE_FORMAT.format(salesConfirmationOrders.get(i).getDateCreated());
                                                     out.print(date);
                                                 %>
                                             </td>
