@@ -41,6 +41,11 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
                 result.setDescription("Failed to create a new DO. The selected SCO may have been deleted while the DO is being created. Please try again.");
                 return result;
             }
+            ReturnHelper uniqueResult = checkIfDOnumberIsUnique(deliveryOrderNumber);
+            if (!uniqueResult.getResult()) {
+                uniqueResult.setDescription("Failed to save the DO as the DO number is already in use.");
+                return uniqueResult;
+            }
             //Create new DO
             DeliveryOrder deliveryOrder = new DeliveryOrder(deliveryOrderNumber);
             deliveryOrder.setSalesConfirmationOrder(sco);
@@ -93,6 +98,11 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             if (!checkResult.getResult()) {
                 result.setDescription(checkResult.getDescription());
                 return result;
+            }
+            ReturnHelper uniqueResult = checkIfDOnumberIsUnique(newDeliveryOrderNumber);
+            if (!uniqueResult.getResult() && !newDeliveryOrderNumber.equals(deliveryOrder.getDeliveryOrderNumber())) {
+                uniqueResult.setDescription("Failed to save the DO as the DO number is already in use.");
+                return uniqueResult;
             }
             ReturnHelper updateStatusResult = updateDeliveryOrderStatus(deliveryOrderID, status, adminOverwrite);
             if (updateStatusResult.getResult() == false) {
@@ -360,6 +370,31 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             result.setDescription("Unable to complete request, DO not found.");
         } catch (Exception ex) {
             System.out.println("DeliveryOrderManagementBean: checkIfDOisEditable() failed");
+            result.setDescription("Internal server error.");
+            ex.printStackTrace();
+        }
+        return result;
+    }
+
+    @Override
+    public ReturnHelper checkIfDOnumberIsUnique(String deliveryOrderNumber) {
+        System.out.println("DeliveryOrderManagementBean: checkIfDOnumberIsUnique() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        try {
+            Query q = em.createQuery("SELECT s FROM DeliveryOrder s WHERE s.deliveryOrderNumber=:number");
+            q.setParameter("number", deliveryOrderNumber);
+            List<DeliveryOrder> deliveryOrders = q.getResultList();
+            if (deliveryOrders.size() == 0) {
+                result.setResult(true);
+                result.setDescription("DO number is unique");
+                return result;
+            } else {
+                result.setDescription("DO number is already in use.");
+                return result;
+            }
+        } catch (Exception ex) {
+            System.out.println("DeliveryOrderManagementBean: checkIfDOnumberIsUnique() failed");
             result.setDescription("Internal server error.");
             ex.printStackTrace();
         }

@@ -1,5 +1,6 @@
 package OrderManagement;
 
+import EntityManager.DeliveryOrder;
 import EntityManager.Invoice;
 import EntityManager.LineItem;
 import EntityManager.PurchaseOrder;
@@ -39,6 +40,11 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
                 result.setDescription("Failed to create a new PO. The selected SCO may have been deleted while the PO is being created. Please try again.");
                 return result;
             }
+            ReturnHelper uniqueResult = checkIfPOnumberIsUnique(purchaseOrderNumber);
+            if(!uniqueResult.getResult()) {
+                uniqueResult.setDescription("Failed to save the PO as the PO number is already in use.");
+                return uniqueResult;
+            }
             //Create new PO
             PurchaseOrder po = new PurchaseOrder();
             po.setSalesConfirmationOrder(sco);
@@ -67,7 +73,7 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
     }
 
     @Override
-    public ReturnHelper updatePurchaseOrder(Long purchaseOrderID, String status, String notes) {
+    public ReturnHelper updatePurchaseOrder(Long purchaseOrderID, String purchaseOrderNumber, String status) {
         System.out.println("PurchaseOrderManagementBean: updatePurchaseOrder() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -79,14 +85,16 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
                 result.setDescription("Failed to edit the PO as it has been deleted.");
                 return result;
             }
+            ReturnHelper uniqueResult = checkIfPOnumberIsUnique(purchaseOrderNumber);
+            if(!uniqueResult.getResult() && !purchaseOrderNumber.equals(po.getPurchaseOrderNumber())) {
+                uniqueResult.setDescription("Failed to save the PO as the PO number is already in use.");
+                return uniqueResult;
+            }
             ReturnHelper updateStatusResult = updatePurchaseOrderStatus(purchaseOrderID, status);
             if (updateStatusResult.getResult() == false) {
                 return updateStatusResult;
             }
-            if (notes == null) {
-                notes = "";
-            }
-            po.setNotes(notes);
+            po.setPurchaseOrderNumber(purchaseOrderNumber);
             em.merge(po);
             result.setID(po.getId());
             result.setResult(true);
@@ -185,6 +193,31 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
             result.setDescription("PO deleted successfully.");
         } catch (Exception ex) {
             System.out.println("PurchaseOrderManagementBean: deletePurchaseOrder() failed");
+            result.setDescription("Internal server error.");
+            ex.printStackTrace();
+        }
+        return result;
+    }
+    
+     @Override
+    public ReturnHelper checkIfPOnumberIsUnique(String purchaseOrderNumber) {
+        System.out.println("PurchaseOrderManagementBean: checkIfPOnumberIsUnique() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        try {
+            Query q = em.createQuery("SELECT s FROM PurchaseOrder s WHERE s.purchaseOrderNumber=:number");
+            q.setParameter("number", purchaseOrderNumber);
+            List<PurchaseOrder> purchaseOrders = q.getResultList();
+            if (purchaseOrders.size() == 0) {
+                result.setResult(true);
+                result.setDescription("PO number is unique");
+                return result;
+            } else {
+                result.setDescription("PO number is already in use.");
+                return result;
+            }
+        } catch (Exception ex) {
+            System.out.println("PurchaseOrderManagementBean: checkIfPOnumberIsUnique() failed");
             result.setDescription("Internal server error.");
             ex.printStackTrace();
         }

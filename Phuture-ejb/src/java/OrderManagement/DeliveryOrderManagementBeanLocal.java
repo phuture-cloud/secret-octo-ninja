@@ -18,6 +18,7 @@ public interface DeliveryOrderManagementBeanLocal {
     public ReturnHelper updateDeliveryOrderStatus(Long deliveryOrderID, String status, Boolean adminOverwrite);
     public ReturnHelper deleteDeliveryOrder(Long deliveryOrderID, Boolean adminOverwrite);  
     public ReturnHelper checkIfDOisEditable(Long deliveryOrderID, Boolean adminOverwrite);
+    public ReturnHelper checkIfDOnumberIsUnique(String deliveryOrderNumber);
     
     public DeliveryOrder getDeliveryOrder(Long deliveryOrderID);
     public List<DeliveryOrder> listAllDeliveryOrder(Long staffID);

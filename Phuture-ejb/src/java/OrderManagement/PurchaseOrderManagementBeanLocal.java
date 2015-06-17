@@ -10,10 +10,11 @@ import javax.ejb.Local;
 @Local
 public interface PurchaseOrderManagementBeanLocal {
     public ReturnHelper createPurchaseOrder(Long salesConfirmationOrderID, String purchaseOrderNumber, Date purchaseOrderDate);
-    public ReturnHelper updatePurchaseOrder(Long purchaseOrderID, String status, String notes);
+    public ReturnHelper updatePurchaseOrder(Long purchaseOrderID, String purchaseOrderNumber, String status);
     public ReturnHelper updatePurchaseOrderStatus(Long purchaseOrderID, String status);
     public ReturnHelper updatePurchaseOrderNotes(Long salesConfirmationOrderID, String notes);
-    public ReturnHelper deletePurchaseOrder(Long purchaseOrderID);  
+    public ReturnHelper deletePurchaseOrder(Long purchaseOrderID);
+    public ReturnHelper checkIfPOnumberIsUnique(String purchaseOrderNumber);
     
     public PurchaseOrder getPurchaseOrder(Long purchaseOrderID);
     public List<PurchaseOrder> listAllPurchaseOrder(Long staffID);

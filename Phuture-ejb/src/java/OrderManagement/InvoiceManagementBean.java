@@ -41,6 +41,11 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
                 result.setDescription("Failed to create a new invoice. The selected SCO may have been deleted while the invoice is being created. Please try again.");
                 return result;
             }
+            ReturnHelper uniqueResult = checkIfInvoiceNumberIsUnique(invoiceNumber);
+            if(!uniqueResult.getResult()) {
+                uniqueResult.setDescription("Failed to save the invoice as the invoice number is already in use.");
+                return uniqueResult;
+            }
             //Create new invoice
             Invoice invoice = new Invoice(invoiceNumber);
             invoice.setSalesConfirmationOrder(sco);
@@ -92,6 +97,11 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             if (!checkResult.getResult()) {
                 result.setDescription(checkResult.getDescription());
                 return result;
+            }
+            ReturnHelper uniqueResult = checkIfInvoiceNumberIsUnique(newInvoiceNumber);
+            if(!uniqueResult.getResult() && !newInvoiceNumber.equals(invoice.getInvoiceNumber())) {
+                uniqueResult.setDescription("Failed to save the invoice as the invoice number is already in use.");
+                return uniqueResult;
             }
             //Update fields 
             invoice.setInvoiceNumber(newInvoiceNumber);
@@ -322,6 +332,31 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             result.setDescription("Unable to complete request, invoice not found.");
         } catch (Exception ex) {
             System.out.println("InvoiceManagementBean: checkIfInvoiceisEditable() failed");
+            result.setDescription("Internal server error.");
+            ex.printStackTrace();
+        }
+        return result;
+    }
+    
+     @Override
+    public ReturnHelper checkIfInvoiceNumberIsUnique(String invoiceNumber) {
+        System.out.println("InvoiceManagementBean: checkIfInvoiceNumberIsUnique() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        try {
+            Query q = em.createQuery("SELECT s FROM Invoice s WHERE s.invoiceNumber=:number");
+            q.setParameter("number", invoiceNumber);
+            List<Invoice> invoices = q.getResultList();
+            if (invoices.size() == 0) {
+                result.setResult(true);
+                result.setDescription("Invoice number is unique");
+                return result;
+            } else {
+                result.setDescription("Invoice number is already in use.");
+                return result;
+            }
+        } catch (Exception ex) {
+            System.out.println("InvoiceManagementBean: checkIfInvoiceNumberIsUnique() failed");
             result.setDescription("Internal server error.");
             ex.printStackTrace();
         }
@@ -569,7 +604,7 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             List<LineItem> lineItems = invoice.getItems();
             lineItems.remove(lineItem);
             invoice.setItems(lineItems);
-            //Update DO total price & tax
+            //Update invoice total price & tax
             Double totalPrice = 0.0;
             Double totalTax = 0.0;
             for (LineItem curLineItem : lineItems) {
