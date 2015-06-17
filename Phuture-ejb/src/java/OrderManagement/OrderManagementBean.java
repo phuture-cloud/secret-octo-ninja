@@ -434,6 +434,31 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
     }
 
     @Override
+    public ReturnHelper checkIfSCOnumberIsUnique(String salesConfirmationOrderNumber) {
+        System.out.println("OrderManagementBean: checkIfSCOnumberIsUnique() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        try {
+            Query q = em.createQuery("SELECT s FROM SalesConfirmationOrder s WHERE s.salesConfirmationOrderNumber=:number");
+            q.setParameter("number", salesConfirmationOrderNumber);
+            List<SalesConfirmationOrder> scos = q.getResultList();
+            if (scos.size() == 0) {
+                result.setResult(true);
+                result.setDescription("SCO number is unique");
+                return result;
+            } else {
+                result.setDescription("SCO number is already in use.");
+                return result;
+            }
+        } catch (Exception ex) {
+            System.out.println("OrderManagementBean: checkIfSCOnumberIsUnique() failed");
+            result.setDescription("Internal server error.");
+            ex.printStackTrace();
+        }
+        return result;
+    }
+
+    @Override
     public SalesConfirmationOrder getSalesConfirmationOrder(Long salesConfirmationOrderID) {
         System.out.println("OrderManagementBean: getSalesConfirmationOrder() called");
         ReturnHelper result = new ReturnHelper();
@@ -452,12 +477,13 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
     }
 
     @Override
-    public List<SalesConfirmationOrder> listAllSalesConfirmationOrder() {
+    public List<SalesConfirmationOrder> listAllSalesConfirmationOrder(Long staffID) {
         System.out.println("OrderManagementBean: listAllSalesConfirmationOrder() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
         try {
-            Query q = em.createQuery("SELECT s FROM SalesConfirmationOrder s WHERE s.isDeleted=false");
+            Query q = em.createQuery("SELECT s FROM SalesConfirmationOrder s WHERE s.isDeleted=false and s.salesPerson.id=:staffID");
+            q.setParameter("staffID", staffID);
             List<SalesConfirmationOrder> salesConfirmationOrders = q.getResultList();
             return salesConfirmationOrders;
         } catch (Exception ex) {
@@ -519,7 +545,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             for (LineItem curLineItem : lineItems) {
                 Double currLineItemTotalPriceBeforeTax = curLineItem.getItemUnitPrice() * curLineItem.getItemQty();
                 totalPrice = totalPrice + (currLineItemTotalPriceBeforeTax * ((gstRate / 100) + 1));
-                totalTax = totalTax + (currLineItemTotalPriceBeforeTax * gstRate/100);
+                totalTax = totalTax + (currLineItemTotalPriceBeforeTax * gstRate / 100);
             }
             sco.setTotalPrice(totalPrice);
             sco.setTotalTax(totalTax);
@@ -570,7 +596,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             for (LineItem curLineItem : lineItems) {
                 Double currLineItemTotalPriceBeforeTax = curLineItem.getItemUnitPrice() * curLineItem.getItemQty();
                 totalPrice = totalPrice + (currLineItemTotalPriceBeforeTax * ((gstRate / 100) + 1));
-                totalTax = totalTax + (currLineItemTotalPriceBeforeTax * gstRate/100);
+                totalTax = totalTax + (currLineItemTotalPriceBeforeTax * gstRate / 100);
             }
             sco.setTotalPrice(totalPrice);
             sco.setTotalTax(totalTax);
@@ -619,7 +645,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             for (LineItem curLineItem : lineItems) {
                 Double currLineItemTotalPriceBeforeTax = curLineItem.getItemUnitPrice() * curLineItem.getItemQty();
                 totalPrice = totalPrice + (currLineItemTotalPriceBeforeTax * ((gstRate / 100) + 1));
-                totalTax = totalTax + (currLineItemTotalPriceBeforeTax * gstRate/100);
+                totalTax = totalTax + (currLineItemTotalPriceBeforeTax * gstRate / 100);
             }
             sco.setTotalPrice(totalPrice);
             sco.setTotalTax(totalTax);

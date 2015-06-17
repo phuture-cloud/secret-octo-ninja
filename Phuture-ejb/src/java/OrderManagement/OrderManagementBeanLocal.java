@@ -19,9 +19,10 @@ public interface OrderManagementBeanLocal {
     public ReturnHelper updateSalesConfirmationOrderStatus(Long salesConfirmationOrderID, String status);
     public ReturnHelper deleteSalesConfirmationOrder(Long salesConfirmationOrderID, Boolean adminOverwrite);
     public ReturnHelper checkIfSCOisEditable(Long salesConfirmationOrderID, Boolean adminOverwrite);
+    public ReturnHelper checkIfSCOnumberIsUnique(String salesConfirmationNumber);
     
     public SalesConfirmationOrder getSalesConfirmationOrder(Long salesConfirmationOrderID);
-    public List<SalesConfirmationOrder> listAllSalesConfirmationOrder();
+    public List<SalesConfirmationOrder> listAllSalesConfirmationOrder(Long staffID);
     public List<SalesConfirmationOrder> listCustomerSalesConfirmationOrder(Long customerID);
     
     public ReturnHelper addSCOlineItem(Long salesConfirmationOrderID, String itemName, String itemDescription, Integer itemQty, Double itemUnitPrice,Boolean adminOverwrite);
