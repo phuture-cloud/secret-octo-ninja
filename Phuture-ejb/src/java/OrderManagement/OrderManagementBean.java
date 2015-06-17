@@ -85,7 +85,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
     }
 
     @Override
-    public ReturnHelper updateSalesConfirmationOrder(Long salesConfirmationOrderID, String newSalesConfirmationOrderNumber, Date newSalesConfirmationOrderDate, Long newCustomerID, Long newSalesStaffID, String status, Integer newTerms, Boolean adminOverwrite) {
+    public ReturnHelper updateSalesConfirmationOrder(Long salesConfirmationOrderID, String newSalesConfirmationOrderNumber, Date newSalesConfirmationOrderDate, Long newCustomerID, String status, Integer newTerms, Boolean adminOverwrite) {
         System.out.println("OrderManagementBean: updateSalesConfirmationOrder() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -112,9 +112,6 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
                 result.setDescription(updateStatusResult.getDescription());
                 return result;
             }
-            q = em.createQuery("SELECT s FROM Staff s WHERE s.id=:id");
-            q.setParameter("id", newSalesStaffID);
-            Staff staff = (Staff) q.getSingleResult();
             q = em.createQuery("SELECT c FROM Customer c WHERE c.id=:id");
             q.setParameter("id", newCustomerID);
             Customer newCustomer = (Customer) q.getSingleResult();
@@ -137,10 +134,6 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             customerSCOs.add(sco);
             newCustomer.setSCOs(customerSCOs);
             em.merge(newCustomer);
-            List<SalesConfirmationOrder> staffSCOs = staff.getSales();
-            staffSCOs.add(sco);
-            staff.setSales(staffSCOs);
-            em.merge(staff);
             //Update fields 
             sco.setCustomerName(newCustomerName);
             sco.setCustomer(newCustomer);
@@ -501,8 +494,8 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             } else {
                 //List only those that they create for normal staff
                 q = em.createQuery("SELECT s FROM SalesConfirmationOrder s WHERE s.isDeleted=false and s.salesPerson.id=:staffID");
+                q.setParameter("staffID", staffID);
             }
-            q.setParameter("staffID", staffID);
             List<SalesConfirmationOrder> salesConfirmationOrders = q.getResultList();
             return salesConfirmationOrders;
         } catch (Exception ex) {
