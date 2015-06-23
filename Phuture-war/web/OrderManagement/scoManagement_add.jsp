@@ -168,7 +168,6 @@
                     scoManagement.itemUnitPrice.value = document.getElementById("itemUnitPrice" + lineItemID).value;
                     scoManagement.itemQty.value = document.getElementById("itemQty"+lineItemID).value;
                     scoManagement.target.value = "EditLineItem";
-                    alert(document.getElementById("scoNumber").value);
                     scoManagement.scoNumber.value = document.getElementById("scoNumber").value;
                     document.scoManagement.action = "../OrderManagementController?editingLineItem=" + lineItemID+ "&scoNumber=" + scoNumber;
                     document.scoManagement.submit();
