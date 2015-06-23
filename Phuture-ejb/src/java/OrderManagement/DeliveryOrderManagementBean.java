@@ -52,6 +52,8 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             deliveryOrder.setDeliveryOrderNumber(deliveryOrderNumber);
             deliveryOrder.setDeliveryOrderDate(deliveryOrderDate);
             deliveryOrder.setTaxRate(gstRate);
+            //Copy SCO details
+            deliveryOrder.setCustomerPurchaseOrderNumber(sco.getCustomerPurchaseOrderNumber());
             //Copy contacts detail from SCO contact as default shipping contact
             deliveryOrder.setCustomerName(sco.getCustomerName());
             deliveryOrder.setContactName(sco.getContactName());
@@ -82,7 +84,7 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
     }
 
     @Override
-    public ReturnHelper updateDeliveryOrder(Long deliveryOrderID, String newDeliveryOrderNumber, Date newDeliveryOrderDate, String status, Boolean adminOverwrite) {
+    public ReturnHelper updateDeliveryOrder(Long deliveryOrderID, String newDeliveryOrderNumber, Date newDeliveryOrderDate, Date estimatedDeliveryDate, String customerPurchaseOrderNumber, String status, Boolean adminOverwrite) {
         System.out.println("DeliveryOrderManagementBean: updateDeliveryOrder() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -112,6 +114,7 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             //Update fields 
             deliveryOrder.setDeliveryOrderDate(newDeliveryOrderDate);
             deliveryOrder.setDeliveryOrderNumber(newDeliveryOrderNumber);
+            deliveryOrder.setCustomerPurchaseOrderNumber(customerPurchaseOrderNumber);
             em.merge(deliveryOrder);
             result.setID(deliveryOrder.getId());
             result.setResult(true);
@@ -354,10 +357,10 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             DeliveryOrder deliveryOrder = (DeliveryOrder) q.getSingleResult();
             if (!adminOverwrite) {//If not admin account
                 //Check if DO status is shipped. Prevent editing if it is already shipped.
-                if (deliveryOrder.getStatus().equals("Shipped")) {
-                    result.setDescription("DO can not be edited/deleted as the first invoice has already been issued.");
-                    return result;
-                }
+                //if (deliveryOrder.getStatus().equals("Shipped")) {
+                //    result.setDescription("DO can not be edited/deleted as the first invoice has already been issued.");
+                //    return result;
+                //}
             }
             if (deliveryOrder.getIsDeleted()) {
                 result.setDescription("DO can not be edited/deleted as it has already been deleted.");

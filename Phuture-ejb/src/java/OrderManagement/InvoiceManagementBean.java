@@ -51,6 +51,9 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             invoice.setSalesConfirmationOrder(sco);
             invoice.setInvoiceNumber(invoiceNumber);
             invoice.setTaxRate(gstRate);
+            //Copy SCO details
+            invoice.setEstimatedDeliveryDate(sco.getEstimatedDeliveryDate());
+            invoice.setCustomerPurchaseOrderNumber(sco.getCustomerPurchaseOrderNumber());
             //Copy contacts details from SCO to use as default for billing contact
             invoice.setCustomerName(sco.getCustomerName());
             invoice.setContactName(sco.getContactName());
@@ -81,7 +84,7 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
     }
 
     @Override
-    public ReturnHelper updateInvoice(Long invoiceID, String newInvoiceNumber, Date invoiceSent, Date invoicePaid, Boolean adminOverwrite) {
+    public ReturnHelper updateInvoice(Long invoiceID, String newInvoiceNumber, Date invoiceSent, Date invoicePaid, Date estimatedDeliveryDate, String customerPurchaseOrderNumber, Boolean adminOverwrite) {
         System.out.println("InvoiceManagementBean: updateInvoice() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -106,6 +109,8 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             //Update fields 
             invoice.setInvoiceNumber(newInvoiceNumber);
             invoice.setDateSent(invoiceSent);
+            invoice.setEstimatedDeliveryDate(estimatedDeliveryDate);
+            invoice.setCustomerPurchaseOrderNumber(customerPurchaseOrderNumber);
             if (invoiceSent!=null) {
                 invoice.setStatusAsSent();
             }
@@ -316,10 +321,10 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             Invoice invoice = (Invoice) q.getSingleResult();
             if (!adminOverwrite) {//If not admin account
                 //Check if Invoice status is sent or paid. Prevent editing if it is already sent.
-                if (invoice.getStatus().equals("Sent")||invoice.getStatus().equals("Paid")) {
-                    result.setDescription("Invoice can not be edited/deleted as the first invoice has already been issued.");
-                    return result;
-                }
+                //if (invoice.getStatus().equals("Sent")||invoice.getStatus().equals("Paid")) {
+                //    result.setDescription("Invoice can not be edited/deleted as the first invoice has already been issued.");
+                //    return result;
+                //}
             }
             if (invoice.getIsDeleted()) {
                 result.setDescription("Invoice can not be edited/deleted as it has already been deleted.");

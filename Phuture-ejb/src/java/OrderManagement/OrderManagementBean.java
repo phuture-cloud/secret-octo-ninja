@@ -85,7 +85,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
     }
 
     @Override
-    public ReturnHelper updateSalesConfirmationOrder(Long salesConfirmationOrderID, String newSalesConfirmationOrderNumber, Date newSalesConfirmationOrderDate, Long newCustomerID, String status, Integer newTerms, Boolean adminOverwrite) {
+    public ReturnHelper updateSalesConfirmationOrder(Long salesConfirmationOrderID, String newSalesConfirmationOrderNumber, Date newSalesConfirmationOrderDate, Date newEstimatedDeliveryDate, String customerPurchaseOrderNumber, Long newCustomerID, String status, Integer newTerms, Boolean adminOverwrite) {
         System.out.println("OrderManagementBean: updateSalesConfirmationOrder() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -139,6 +139,8 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             sco.setCustomer(newCustomer);
             sco.setSalesConfirmationOrderNumber(newSalesConfirmationOrderNumber);
             sco.setSalesConfirmationOrderDate(newSalesConfirmationOrderDate);
+            sco.setEstimatedDeliveryDate(newEstimatedDeliveryDate);
+            sco.setCustomerPurchaseOrderNumber(customerPurchaseOrderNumber);
             sco.setTerms(newTerms);
             em.merge(sco);
             result.setID(sco.getId());
@@ -411,13 +413,13 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             if (!adminOverwrite) {//If not admin account
                 //Check if any invoices has been sent to customer
                 //Prevent editing of SCO if any invoice has been sent
-                List<Invoice> invoices = sco.getInvoices();
-                for (Invoice invoice : invoices) {
-                    if (invoice.getStatus().equals("Sent")) {
-                        result.setDescription("SCO can not be edited/deleted as the first invoice has already been issued.");
-                        return result;
-                    }
-                }
+                //List<Invoice> invoices = sco.getInvoices();
+                //for (Invoice invoice : invoices) {
+                //    if (invoice.getStatus().equals("Sent")) {
+                //        result.setDescription("SCO can not be edited/deleted as the first invoice has already been issued.");
+                //        return result;
+                //    }
+                //}
             }
             if (sco.getIsDeleted()) {
                 result.setDescription("SCO can not be edited/deleted as it has already been deleted.");

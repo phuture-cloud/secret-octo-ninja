@@ -44,6 +44,7 @@ public class DeliveryOrder implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date deliveryOrderDate;
 
+    private String customerPurchaseOrderNumber;
     private String customerName;
     //Shipping contact
     private String contactName;
@@ -247,6 +248,14 @@ public class DeliveryOrder implements Serializable {
 
     public void setCustomerName(String customerName) {
         this.customerName = customerName;
+    }
+
+    public String getCustomerPurchaseOrderNumber() {
+        return customerPurchaseOrderNumber;
+    }
+
+    public void setCustomerPurchaseOrderNumber(String customerPurchaseOrderNumber) {
+        this.customerPurchaseOrderNumber = customerPurchaseOrderNumber;
     }
     
     @Override

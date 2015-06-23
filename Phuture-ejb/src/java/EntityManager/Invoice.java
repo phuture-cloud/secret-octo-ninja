@@ -42,7 +42,10 @@ public class Invoice implements Serializable {
     private Date dateSent;
     @Temporal(TemporalType.TIMESTAMP)
     private Date datePaid;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date estimatedDeliveryDate;
 
+    private String customerPurchaseOrderNumber;
     private String customerName;
     //Billing contact
     private String contactName;
@@ -249,6 +252,22 @@ public class Invoice implements Serializable {
 
     public void setCustomerName(String customerName) {
         this.customerName = customerName;
+    }
+
+    public Date getEstimatedDeliveryDate() {
+        return estimatedDeliveryDate;
+    }
+
+    public void setEstimatedDeliveryDate(Date estimatedDeliveryDate) {
+        this.estimatedDeliveryDate = estimatedDeliveryDate;
+    }
+
+    public String getCustomerPurchaseOrderNumber() {
+        return customerPurchaseOrderNumber;
+    }
+
+    public void setCustomerPurchaseOrderNumber(String customerPurchaseOrderNumber) {
+        this.customerPurchaseOrderNumber = customerPurchaseOrderNumber;
     }
 
     @Override

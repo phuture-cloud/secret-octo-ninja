@@ -28,6 +28,9 @@ public class SalesConfirmationOrder implements Serializable {
     //User specified
     @Temporal(TemporalType.DATE)
     private Date salesConfirmationOrderDate;
+    @Temporal(TemporalType.DATE)
+    private Date estimatedDeliveryDate;
+    private String customerPurchaseOrderNumber;
     
     private String customerName;
     private String contactName;
@@ -311,6 +314,22 @@ public class SalesConfirmationOrder implements Serializable {
 
     public void setTaxRate(Double taxRate) {
         this.taxRate = taxRate;
+    }
+
+    public Date getEstimatedDeliveryDate() {
+        return estimatedDeliveryDate;
+    }
+
+    public void setEstimatedDeliveryDate(Date estimatedDeliveryDate) {
+        this.estimatedDeliveryDate = estimatedDeliveryDate;
+    }
+
+    public String getCustomerPurchaseOrderNumber() {
+        return customerPurchaseOrderNumber;
+    }
+
+    public void setCustomerPurchaseOrderNumber(String customerPurchaseOrderNumber) {
+        this.customerPurchaseOrderNumber = customerPurchaseOrderNumber;
     }
 
     @Override
