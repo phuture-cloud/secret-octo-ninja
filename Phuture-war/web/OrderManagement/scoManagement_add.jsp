@@ -35,7 +35,7 @@
 <!doctype html>
 <html class="fixed">
     <head>
-        <jsp:include page="../head.html" />
+        <jsp:include page="../jspIncludePages/head.html" />
     </head>
     <body onload="alertFunc()">
         <jsp:include page="../displayNotification.jsp" />
@@ -166,10 +166,10 @@
                     scoManagement.itemName.value = document.getElementById("itemName" + lineItemID).value;
                     scoManagement.itemDescription.value = document.getElementById("itemDescription" + lineItemID).value;
                     scoManagement.itemUnitPrice.value = document.getElementById("itemUnitPrice" + lineItemID).value;
-                    scoManagement.itemQty.value = document.getElementById("itemQty"+lineItemID).value;
+                    scoManagement.itemQty.value = document.getElementById("itemQty" + lineItemID).value;
                     scoManagement.target.value = "EditLineItem";
                     scoManagement.scoNumber.value = document.getElementById("scoNumber").value;
-                    document.scoManagement.action = "../OrderManagementController?editingLineItem=" + lineItemID+ "&scoNumber=" + scoNumber;
+                    document.scoManagement.action = "../OrderManagementController?editingLineItem=" + lineItemID + "&scoNumber=" + scoNumber;
                     document.scoManagement.submit();
                 }
 
@@ -231,10 +231,10 @@
                     });
                 });
             </script>
-            <jsp:include page="../header.jsp" />
+            <jsp:include page="../jspIncludePages/header.jsp" />
 
             <div class="inner-wrapper">
-                <jsp:include page="../sidebar.jsp" />
+                <jsp:include page="../jspIncludePages/sidebar.jsp" />
                 <section role="main" class="content-body">
                     <header class="page-header">
                         <h2>Sales Confirmation Order</h2>
@@ -266,7 +266,7 @@
                                                     } else if (sco != null && scoID != null && !scoID.isEmpty()) {
                                                         out.print("<input type='text' class='form-control' id='scoNumber' name='scoNumber' value='" + sco.getSalesConfirmationOrderNumber() + "' style='max-width: 300px' required/>");
                                                     } else {
-                                                        out.print("<input type='text' class='form-control' id='scoNumber' name='scoNumber' placeholder='Enter SCO number' style='max-width: 300px' required/>");
+                                                        out.print("<input type='text' class='form-control' id='scoNumber' name='scoNumber' placeholder='Enter SCO number starting with your prefix" + staff.getStaffPrefix() + "' style='max-width: 300px' required/>");
                                                     }
                                                 %>
                                             </div>
@@ -278,6 +278,8 @@
                                                     28 Sin Ming Lane, #06-145 Midview City S(573972)
                                                     <br/>
                                                     Phone: (65) 6842 0198
+                                                    <br/>
+                                                    Fax: (65) 6285 6753
                                                 </address>
                                                 <div class="ib">
                                                     <img src="../assets/images/invoice-logo.png" alt="Phuture International" />
@@ -635,16 +637,22 @@
 
                                     <div class="invoice-summary" style="margin-top: 10px;">
                                         <div class="row">
-                                            <div class="col-sm-8">
+                                            <div class="col-sm-5">
+                                                Terms & Conditions
+                                                <ul>
+                                                    <li>Acceptance of this Sales Order constitutes a contract between the buyer & Phuture International Pte Ltd whereby buyer will adhere to conditions stated on this Sales Order</li>
+                                                    <li>Buyer shall be liable for at least 50% of total sales amount if buyer opt to cancel the order</li>
+                                                </ul>
                                                 <%
                                                     if (sco != null && scoID != null && !scoID.isEmpty() && sco.getRemarks() != null && !sco.getRemarks().isEmpty()) {
                                                         out.print("Remarks:");
                                                         String repl = sco.getRemarks().replaceAll("(\\r|\\n|\\r\\n)+", "<br>");
-                                                        out.print("<br>" + repl);
+                                                        out.print("Remarks: " + sco.getRemarks());
                                                     }
                                                 %>
                                             </div>
-                                            <div class="col-sm-4">
+                                            <div class="col-sm-1"></div>
+                                            <div class="col-sm-6">
                                                 <table class="table h5 text-dark">
                                                     <tbody>
                                                         <tr class="b-top-none">
@@ -936,7 +944,7 @@
                 </section>
             </div>
         </section>
-        <jsp:include page="../foot.html" />
+        <jsp:include page="../jspIncludePages/foot.html" />
     </body>
 </html>
 <%}%>

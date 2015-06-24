@@ -11,7 +11,7 @@
 <!doctype html>
 <html class="fixed">
     <head>
-        <jsp:include page="../head.html" />
+        <jsp:include page="../jspIncludePages/head.html" />
     </head>
     <body>
         <script>
@@ -20,10 +20,10 @@
             }
         </script>
         <section class="body">
-            <jsp:include page="../header.jsp" />
+            <jsp:include page="../jspIncludePages/header.jsp" />
 
             <div class="inner-wrapper">
-                <jsp:include page="../sidebar.jsp" />
+                <jsp:include page="../jspIncludePages/sidebar.jsp" />
                 <section role="main" class="content-body">
                     <header class="page-header">
                         <h2>Add Customer</h2>
@@ -159,7 +159,7 @@
                 </section>
             </div>
         </section>
-        <jsp:include page="../foot.html" />
+        <jsp:include page="../jspIncludePages/foot.html" />
     </body>
 </html>
 <%

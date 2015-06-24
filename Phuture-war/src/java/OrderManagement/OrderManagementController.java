@@ -34,7 +34,6 @@ public class OrderManagementController extends HttpServlet {
         System.out.println("target " + target);
         String id = request.getParameter("id");
         String scoNumber = request.getParameter("scoNumber");
-        System.out.println(">>>1>" + scoNumber);
         String customerID = request.getParameter("customerID");
         String contactID = request.getParameter("contactID");
         String lineItemID = request.getParameter("lineItemID");

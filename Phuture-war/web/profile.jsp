@@ -9,29 +9,14 @@
     } else if (staff == null) {
         response.sendRedirect("../index.jsp?errMsg=Session Expired.");
     } else {
-        String staffID = request.getParameter("id");
-        List<Staff> staffs = (List<Staff>) session.getAttribute("staffs");
-        if (staffID == null || staffs == null) {
-            response.sendRedirect("staffManagement.jsp?errMsg=An error has occured.");
-        } else {
-            staff = new Staff();
-            for (int i = 0; i < staffs.size(); i++) {
-                if (staffs.get(i).getId() == Long.parseLong(staffID)) {
-                    staff = staffs.get(i);
-                }
-            }
 %>
 <html class="fixed">
     <head>
-        <jsp:include page="../jspIncludePages/head.html" />
+        <jsp:include page="jspIncludePages/head-root.html" />
     </head>
     <body>
         <script>
-            function back() {
-                window.onbeforeunload = null;
-                window.location.href = "../AccountManagementController?target=ListAllStaff";
-            }
-            function updateStaff() {
+            function updateProfile() {
                 window.onbeforeunload = null;
                 window.location.href = "../AccountManagementController?target=UpdateStaff";
             }
@@ -40,13 +25,13 @@
             };
         </script>
         <section class="body">
-            <jsp:include page="../jspIncludePages/header.jsp" />
+            <jsp:include page="jspIncludePages/header-root.jsp" />
 
-            <div class="inner-wrapper">
-                <jsp:include page="../jspIncludePages/sidebar.jsp" />
+            <div class="root-wrapper">
+                <jsp:include page="jspIncludePages/sidebar-root.jsp" />
                 <section role="main" class="content-body">
                     <header class="page-header">
-                        <h2>Update Staff</h2>
+                        <h2>User Profile</h2>
                         <div class="right-wrapper pull-right">
                             <ol class="breadcrumbs">
                                 <li>
@@ -54,8 +39,7 @@
                                         <i class="fa fa-home"></i>
                                     </a>
                                 </li>
-                                <li><span><a href="../AccountManagementController?target=ListAllStaff">Staff Management</a></span></li>
-                                <li><span>Update Staff &nbsp;&nbsp</span></li>
+                                <li><span>User Profile &nbsp;&nbsp</span></li>
                             </ol>
                         </div>
                     </header>
@@ -66,7 +50,7 @@
                             <form class="form-horizontal form-bordered" action="../AccountManagementController">
                                 <section class="panel">
                                     <header class="panel-heading">
-                                        <h2 class="panel-title">Update Staff</h2>
+                                        <h2 class="panel-title">User Profile</h2>
                                     </header>
 
                                     <div class="panel-body">
@@ -108,16 +92,14 @@
                                             <div class="col-md-6">
                                                 <input id="repassword" type="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}" name="repassword" class="form-control">
                                             </div>
-                                        </div>
-                                        <input type="hidden" name="id" value="<%=staffID%>">   
-                                        <input type="hidden" name="target" value="UpdateStaff">   
+                                        </div>  
+                                        <input type="hidden" name="target" value="UpdateProfile">   
                                     </div>
 
                                     <footer class="panel-footer">
                                         <div class="row">
                                             <div class="col-sm-9 col-sm-offset-3">
-                                                <button class="btn btn-primary" onclick="javascript:updateStaff()">Submit</button>
-                                                <button class="btn btn-default" onclick="javascript:back()">Back</button>
+                                                <button class="btn btn-success" onclick="javascript:updateProfile()">Save</button>
                                             </div>
                                         </div>
                                     </footer>
@@ -129,10 +111,9 @@
                 </section>
             </div>
         </section>
-        <jsp:include page="../jspIncludePages/foot.html" />
+        <jsp:include page="jspIncludePages/foot-root.html" />
     </body>
 </html>
 <%
-        }
     }
 %>
