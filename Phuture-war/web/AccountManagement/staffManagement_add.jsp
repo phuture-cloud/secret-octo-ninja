@@ -11,19 +11,20 @@
 <!doctype html>
 <html class="fixed">
     <head>
-        <jsp:include page="../head.html" />
+        <jsp:include page="../jspIncludePages/head.html" />
     </head>
-    <body>
+    <body onload="alertFunc()">
+        <jsp:include page="../displayNotification.jsp" />
         <section class="body">
             <script>
                 function back() {
                     window.location.href = "../AccountManagementController?target=ListAllStaff";
                 }
             </script>
-            <jsp:include page="../header.jsp" />
+            <jsp:include page="../jspIncludePages/header.jsp" />
 
             <div class="inner-wrapper">
-                <jsp:include page="../sidebar.jsp" />
+                <jsp:include page="../jspIncludePages/sidebar.jsp" />
                 <section role="main" class="content-body">
                     <header class="page-header">
                         <h2>Add Staff</h2>
@@ -52,35 +53,35 @@
                                     <div class="panel-body">
 
                                         <div class="form-group">
-                                            <label class="col-md-3 control-label">Name</label>
+                                            <label class="col-md-3 control-label">Name <span class="required">*</span></label>
                                             <div class="col-md-6">
                                                 <input type="text" class="form-control" name="name" required>
                                             </div>
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="col-md-3 control-label">Prefix</label>
+                                            <label class="col-md-3 control-label">Prefix <span class="required">*</span></label>
                                             <div class="col-md-6">
                                                 <input type="text" class="form-control" name="prefix" required>
                                             </div>
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="col-md-3 control-label">Username</label>
+                                            <label class="col-md-3 control-label">Username <span class="required">*</span></label>
                                             <div class="col-md-6">
                                                 <input type="text" class="form-control" name="username" required>
                                             </div>
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="col-md-3 control-label">Password</label>
+                                            <label class="col-md-3 control-label">Password <span class="required">*</span></label>
                                             <div class="col-md-6">
                                                 <input id="password" type="password" title="Password must contain at least 6 characters, including UPPER/lowercase and numbers" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}"  name="pwd" class="form-control" required onchange="form.repassword.pattern = this.value;">
                                             </div>
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="col-md-3 control-label">Re-enter Password</label>
+                                            <label class="col-md-3 control-label">Re-enter Password <span class="required">*</span></label>
                                             <div class="col-md-6">
                                                 <input id="repassword" type="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}" name="repassword" class="form-control" required>
                                             </div>
@@ -108,7 +109,7 @@
         </section>
 
 
-        <jsp:include page="../foot.html" />
+        <jsp:include page="../jspIncludePages/foot.html" />
     </body>
 </html>
 <%
