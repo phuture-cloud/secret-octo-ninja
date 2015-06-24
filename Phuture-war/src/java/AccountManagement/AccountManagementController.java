@@ -21,7 +21,7 @@ public class AccountManagementController extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String target = request.getParameter("target");
-        String staffID = request.getParameter("id");
+        String id = request.getParameter("id");
         String name = request.getParameter("name");
         String prefix = request.getParameter("prefix");
         String username = request.getParameter("username");
@@ -64,7 +64,7 @@ public class AccountManagementController extends HttpServlet {
                                 nextPage = "AccountManagement/staffManagement.jsp?goodMsg=" + returnHelper.getDescription();
                             }
                         } else {
-                            nextPage = "AccountManagement/staffManagement.jsp?errMsg=" + returnHelper.getDescription();
+                            nextPage = "AccountManagement/staffManagement_add.jsp?errMsg=" + returnHelper.getDescription();
                         }
                     }
                     break;
@@ -72,12 +72,12 @@ public class AccountManagementController extends HttpServlet {
                 case "UpdateStaff":
                     if (checkLogin(response)) {
                         if (password != null && !password.equals("")) {
-                            returnHelper = accountManagementBean.updateStaffPassword(Long.parseLong(staffID), password);
+                            returnHelper = accountManagementBean.updateStaffPassword(Long.parseLong(id), password);
                             if (!returnHelper.getResult()) {
-                                nextPage = "AccountManagement/staffManagement.jsp?errMsg=" + returnHelper.getDescription();
+                                nextPage = "AccountManagement/staffManagement_update.jsp?id=" + id + "&errMsg=" + returnHelper.getDescription();
                             }
                         }
-                        returnHelper = accountManagementBean.updateStaff(Long.parseLong(staffID), name, prefix);
+                        returnHelper = accountManagementBean.updateStaff(Long.parseLong(id), name, prefix);
 
                         if (returnHelper.getResult()) {
                             List<Staff> staffs = accountManagementBean.listAllStaffAccount();
@@ -85,18 +85,17 @@ public class AccountManagementController extends HttpServlet {
                                 nextPage = "error500.html";
                             } else {
                                 session.setAttribute("staffs", staffs);
-                                nextPage = "AccountManagement/staffManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                                nextPage = "AccountManagement/staffManagement_update.jsp?id=" + id + "&goodMsg=" + returnHelper.getDescription();
                             }
                         } else {
-                            nextPage = "AccountManagement/staffManagement.jsp?errMsg=" + returnHelper.getDescription();
+                            nextPage = "AccountManagement/staffManagement_update.jsp?id=" + id + "&errMsg=" + returnHelper.getDescription();
                         }
-
                     }
                     break;
 
                 case "DisableStaff":
                     if (checkLogin(response)) {
-                        returnHelper = accountManagementBean.disableAccount(Long.parseLong(staffID));
+                        returnHelper = accountManagementBean.disableAccount(Long.parseLong(id));
                         if (returnHelper.getResult()) {
                             List<Staff> staffs = accountManagementBean.listAllStaffAccount();
                             if (staffs == null) {
@@ -119,6 +118,31 @@ public class AccountManagementController extends HttpServlet {
                         } else {
                             session.setAttribute("staffs", staffs);
                             nextPage = "AccountManagement/staffManagement.jsp";
+                        }
+                    }
+                    break;
+
+                case "UpdateProfile":
+                    if (checkLogin(response)) {
+                        if (password != null && !password.equals("")) {
+                            returnHelper = accountManagementBean.updateStaffPassword(Long.parseLong(id), password);
+                            if (!returnHelper.getResult()) {
+                                nextPage = "profile.jsp?errMsg=" + returnHelper.getDescription();
+                            }
+                        }
+                        returnHelper = accountManagementBean.updateStaff(Long.parseLong(id), name, prefix);
+
+                        if (returnHelper.getResult()) {
+                            Staff staff = accountManagementBean.getStaff(username);
+
+                            if (staff == null) {
+                                nextPage = "error500.html";
+                            } else {
+                                session.setAttribute("staff", staff);
+                                nextPage = "profile.jsp?goodMsg=" + returnHelper.getDescription();
+                            }
+                        } else {
+                            nextPage = "profile.jsp?errMsg=" + returnHelper.getDescription();
                         }
                     }
                     break;

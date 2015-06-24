@@ -9,14 +9,14 @@
     } else if (staff == null) {
         response.sendRedirect("../index.jsp?errMsg=Session Expired.");
     } else {
-        String staffID = request.getParameter("id");
+        String id = request.getParameter("id");
         List<Staff> staffs = (List<Staff>) session.getAttribute("staffs");
-        if (staffID == null || staffs == null) {
+        if (id == null || staffs == null) {
             response.sendRedirect("staffManagement.jsp?errMsg=An error has occured.");
         } else {
             staff = new Staff();
             for (int i = 0; i < staffs.size(); i++) {
-                if (staffs.get(i).getId() == Long.parseLong(staffID)) {
+                if (staffs.get(i).getId() == Long.parseLong(id)) {
                     staff = staffs.get(i);
                 }
             }
@@ -25,19 +25,22 @@
     <head>
         <jsp:include page="../jspIncludePages/head.html" />
     </head>
-    <body>
+    <body onload="alertFunc()">
+        <jsp:include page="../displayNotification.jsp" />
         <script>
             function back() {
                 window.onbeforeunload = null;
                 window.location.href = "../AccountManagementController?target=ListAllStaff";
             }
-            function updateStaff() {
-                window.onbeforeunload = null;
-                window.location.href = "../AccountManagementController?target=UpdateStaff";
-            }
             window.onbeforeunload = function () {
                 return 'There are unsaved changes to this page. If you continue, you will lose them';
             };
+
+            $(function () {
+                $('button[type=submit]').click(function (e) {
+                    window.onbeforeunload = null;
+                });
+            });
         </script>
         <section class="body">
             <jsp:include page="../jspIncludePages/header.jsp" />
@@ -99,7 +102,7 @@
                                         <div class="form-group">
                                             <label class="col-md-3 control-label">New Password</label>
                                             <div class="col-md-6">
-                                                <input id="password" type="pwd" title="Password must contain at least 6 characters, including UPPER/lowercase and numbers" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}"  name="pwd" class="form-control" onchange="form.repassword.pattern = this.value;">
+                                                <input id="password" type="password" title="Password must contain at least 6 characters, including UPPER/lowercase and numbers" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}"  name="pwd" class="form-control" onchange="form.repassword.pattern = this.value;">
                                             </div>
                                         </div>
 
@@ -109,14 +112,14 @@
                                                 <input id="repassword" type="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}" name="repassword" class="form-control">
                                             </div>
                                         </div>
-                                        <input type="hidden" name="id" value="<%=staffID%>">   
+                                        <input type="hidden" name="id" value="<%=id%>">   
                                         <input type="hidden" name="target" value="UpdateStaff">   
                                     </div>
 
                                     <footer class="panel-footer">
                                         <div class="row">
                                             <div class="col-sm-9 col-sm-offset-3">
-                                                <button class="btn btn-primary" onclick="javascript:updateStaff()">Submit</button>
+                                                <button class="btn btn-primary" type="submit">Submit</button>
                                                 <button class="btn btn-default" onclick="javascript:back()">Back</button>
                                             </div>
                                         </div>

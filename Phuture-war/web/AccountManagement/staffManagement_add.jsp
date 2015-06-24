@@ -13,7 +13,8 @@
     <head>
         <jsp:include page="../jspIncludePages/head.html" />
     </head>
-    <body>
+    <body onload="alertFunc()">
+        <jsp:include page="../displayNotification.jsp" />
         <section class="body">
             <script>
                 function back() {
