@@ -919,7 +919,7 @@
                                         <i class="fa fa-question-circle"></i>
                                     </div>
                                     <div class="modal-text">
-                                        <p>Are you sure that you want to delete this Sales Confirmation Order?<br> All associated PO/DO/Invoice will also be deleted together.</p>
+                                        <p>Are you sure that you want to delete this Sales Confirmation Order?<br> All associated PO/DO/Invoice/Payment records will also be deleted together!</p>
                                     </div>
                                 </div>
                             </div>
