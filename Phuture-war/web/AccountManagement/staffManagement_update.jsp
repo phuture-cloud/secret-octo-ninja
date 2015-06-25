@@ -127,7 +127,7 @@
                                         <div class="row">
                                             <div class="col-sm-9 col-sm-offset-3">
                                                 <button class="btn btn-primary" type="submit">Submit</button>
-                                                <button class="btn btn-default" onclick="javascript:back()">Back</button>
+                                                <button type="button" class="btn btn-default" onclick="javascript:back()">Back</button>
                                             </div>
                                         </div>
                                     </footer>
