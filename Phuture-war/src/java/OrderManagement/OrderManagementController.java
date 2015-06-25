@@ -34,6 +34,7 @@ public class OrderManagementController extends HttpServlet {
         System.out.println("target " + target);
         String id = request.getParameter("id");
         String scoNumber = request.getParameter("scoNumber");
+
         String customerID = request.getParameter("customerID");
         String contactID = request.getParameter("contactID");
         String lineItemID = request.getParameter("lineItemID");
@@ -41,6 +42,12 @@ public class OrderManagementController extends HttpServlet {
         if (scoDate == null) {
             scoDate = "";
         }
+        String estimatedDeliveryDate = request.getParameter("estimatedDeliveryDate");
+        if (estimatedDeliveryDate == null) {
+            estimatedDeliveryDate = "";
+        }
+        String poNumber = request.getParameter("poNumber");
+
         String terms = request.getParameter("terms");
         if (terms == null) {
             terms = "";
@@ -49,6 +56,7 @@ public class OrderManagementController extends HttpServlet {
         if (status == null) {
             status = "";
         }
+
         String remarks = request.getParameter("remarks");
         String notes = request.getParameter("notes");
         String itemName = request.getParameter("itemName");
@@ -181,8 +189,10 @@ public class OrderManagementController extends HttpServlet {
                             } else {
                                 SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
                                 Date scoDateDate = formatter.parse(scoDate);
+                                Date estDeliveryDate = formatter.parse(estimatedDeliveryDate);
+
                                 //Update SCO
-                                returnHelper = orderManagementBean.updateSalesConfirmationOrder(Long.parseLong(id), scoNumber, scoDateDate, Long.parseLong(customerID), status, Integer.parseInt(terms), isAdmin);
+                                returnHelper = orderManagementBean.updateSalesConfirmationOrder(Long.parseLong(id), scoNumber, scoDateDate, estDeliveryDate, poNumber, Long.parseLong(customerID), status, Integer.parseInt(terms), isAdmin);
                                 if (returnHelper.getResult()) {
 
                                     SalesConfirmationOrder sco = orderManagementBean.getSalesConfirmationOrder(returnHelper.getID());
