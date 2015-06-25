@@ -2,16 +2,24 @@ package AccountManagement;
 
 import EntityManager.ReturnHelper;
 import EntityManager.Staff;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.servlet.http.Part;
 
 @Stateless
 public class AccountManagementBean implements AccountManagementBeanLocal {
@@ -89,13 +97,13 @@ public class AccountManagementBean implements AccountManagementBeanLocal {
         try {
             Staff staff = (Staff) q.getSingleResult();
             if (staff.getIsDisabled() == false) {
-                result.setResult(false);
-                result.setDescription("Account is not disabled.");
+                result.setResult(true);
+                result.setDescription("Account enabled.");
             } else {
                 staff.setIsDisabled(false);
                 em.merge(staff);
                 result.setResult(true);
-                result.setDescription("Account enabled successfully.");
+                result.setDescription("Account enabled.");
             }
         } catch (Exception ex) {
             System.out.println("AccountManagementBean: enableAccount() failed");
@@ -115,13 +123,13 @@ public class AccountManagementBean implements AccountManagementBeanLocal {
         try {
             Staff staff = (Staff) q.getSingleResult();
             if (staff.getIsDisabled() == true) {
-                result.setResult(false);
-                result.setDescription("Account is already disabled.");
+                result.setResult(true);
+                result.setDescription("Account disabled.");
             } else {
                 staff.setIsDisabled(true);
                 em.merge(staff);
                 result.setResult(true);
-                result.setDescription("Account disabled successfully.");
+                result.setDescription("Account disabled.");
             }
         } catch (Exception ex) {
             System.out.println("AccountManagementBean: enableAccount() failed");
@@ -216,6 +224,10 @@ public class AccountManagementBean implements AccountManagementBeanLocal {
         q.setParameter("id", staffID);
         try {
             Staff staff = (Staff) q.getSingleResult();
+            if (staff.getIsDisabled() == true) {
+                result.setDescription("Account is disabled.");
+                return result;
+            }
             if (newName != null) {
                 staff.setName(newName);
             }
@@ -282,6 +294,89 @@ public class AccountManagementBean implements AccountManagementBeanLocal {
         } catch (Exception ex) {
             System.out.println("AccountManagementBean: updateStaffPassword() failed");
             result.setDescription("Unable to update staff's password, internal server error.");
+            ex.printStackTrace();
+        }
+        return result;
+    }
+
+    @Override
+    public ReturnHelper updateStaffSignature(Long staffID, Part signature) {
+        System.out.println("AccountManagementBean: updateStaffSignature() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        Query q = em.createQuery("SELECT s FROM Staff s WHERE s.id=:id");
+        q.setParameter("id", staffID);
+        try {
+            Staff staff = (Staff) q.getSingleResult();
+            if (staff.getIsDisabled() == true) {
+                result.setDescription("Account is disabled.");
+                return result;
+            }
+            if (signature == null) {
+                result.setDescription("No file selected.");
+                return result;
+            }
+
+            //Write the signature file to server filesystem first
+            String fileName = UUID.randomUUID().toString();
+            InputStream fileInputStream = signature.getInputStream();
+            OutputStream fileOutputStream = new FileOutputStream(fileName);
+            int nextByte;
+            while ((nextByte = fileInputStream.read()) != -1) {
+                fileOutputStream.write(nextByte);
+            }
+            fileOutputStream.close();
+            fileInputStream.close();
+
+            //Open the file
+            File signatureFile = new File(fileName);
+            byte[] signatureBytes = Files.readAllBytes(signatureFile.toPath());
+            //Write to database
+            staff.setSignature(signatureBytes);
+            em.merge(staff);
+
+            //Delete the file on the filesystem
+            signatureFile.delete();
+
+            result.setResult(true);
+            result.setDescription("Signature updated.");
+        } catch (NoResultException ex) {
+            result.setDescription("Unable to find staff with the provided ID.");
+        } catch (Exception ex) {
+            System.out.println("AccountManagementBean: updateStaffSignature() failed");
+            result.setDescription("Unable to update signature, internal server error.");
+            ex.printStackTrace();
+        }
+        return result;
+    }
+
+    @Override
+    public ReturnHelper removeStaffSignature(Long staffID) {
+        System.out.println("AccountManagementBean: removeStaffSignature() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        Query q = em.createQuery("SELECT s FROM Staff s WHERE s.id=:id");
+        q.setParameter("id", staffID);
+        try {
+            Staff staff = (Staff) q.getSingleResult();
+            if (staff.getIsDisabled() == true) {
+                result.setDescription("Account is disabled.");
+                return result;
+            }
+            if (staff.getSignature() == null || staff.getSignature().length == 0) {
+                result.setDescription("Signature removed.");
+                result.setResult(true);
+                return result;
+            }
+            staff.setSignature(null);
+            em.merge(staff);
+            result.setResult(true);
+            result.setDescription("Signature removed.");
+        } catch (NoResultException ex) {
+            result.setDescription("Unable to find staff with the provided ID.");
+        } catch (Exception ex) {
+            System.out.println("AccountManagementBean: removeStaffSignature() failed");
+            result.setDescription("Unable to remove signature, internal server error.");
             ex.printStackTrace();
         }
         return result;

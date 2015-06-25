@@ -22,8 +22,11 @@ public class Staff implements Serializable {
     private String username;
     private String passwordSalt;
     private String passwordHash;
+    @Lob
+    private byte[] signature;
     private boolean isAdmin;
     private boolean isDisabled;
+    
 
     @OneToMany
     private List<SalesConfirmationOrder> sales;
@@ -103,6 +106,14 @@ public class Staff implements Serializable {
 
     public void setSales(List<SalesConfirmationOrder> sales) {
         this.sales = sales;
+    }
+
+    public byte[] getSignature() {
+        return signature;
+    }
+
+    public void setSignature(byte[] signature) {
+        this.signature = signature;
     }
 
     public boolean getIsDisabled() {

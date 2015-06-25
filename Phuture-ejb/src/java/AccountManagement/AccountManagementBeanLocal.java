@@ -4,6 +4,7 @@ import EntityManager.ReturnHelper;
 import EntityManager.Staff;
 import java.util.List;
 import javax.ejb.Local;
+import javax.servlet.http.Part;
 
 @Local
 public interface AccountManagementBeanLocal {
@@ -21,5 +22,7 @@ public interface AccountManagementBeanLocal {
     public ReturnHelper updateStaff(Long staffID, String newName, String newStaffPrefix);
     public ReturnHelper updateStaffPassword(Long staffID, String oldPassword, String newPassword);
     public ReturnHelper updateStaffPassword(Long staffID, String newPassword);
+    public ReturnHelper updateStaffSignature(Long staffID, Part signature);
+    public ReturnHelper removeStaffSignature(Long staffID);
     public List<Staff> listAllStaffAccount();
 }
