@@ -6,11 +6,14 @@ import java.io.IOException;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
 
+@MultipartConfig
 public class AccountManagementController extends HttpServlet {
 
     @EJB
@@ -54,7 +57,8 @@ public class AccountManagementController extends HttpServlet {
 
                 case "AddStaff":
                     if (checkLogin(response)) {
-                        returnHelper = accountManagementBean.registerStaffAccount(name, prefix, username, password, false);
+                        Part signature = request.getPart("signature");
+                        returnHelper = accountManagementBean.registerStaffAccount(name, prefix, signature, username, password, false);
                         if (returnHelper.getResult()) {
                             List<Staff> staffs = accountManagementBean.listAllStaffAccount();
                             if (staffs == null) {
@@ -73,6 +77,13 @@ public class AccountManagementController extends HttpServlet {
                     if (checkLogin(response)) {
                         if (password != null && !password.equals("")) {
                             returnHelper = accountManagementBean.updateStaffPassword(Long.parseLong(id), password);
+                            if (!returnHelper.getResult()) {
+                                nextPage = "AccountManagement/staffManagement_update.jsp?id=" + id + "&errMsg=" + returnHelper.getDescription();
+                            }
+                        }
+                        Part signature = request.getPart("signature");
+                        if (signature != null) {
+                            returnHelper = accountManagementBean.updateStaffSignature(Long.parseLong(id), signature);
                             if (!returnHelper.getResult()) {
                                 nextPage = "AccountManagement/staffManagement_update.jsp?id=" + id + "&errMsg=" + returnHelper.getDescription();
                             }
@@ -128,6 +139,13 @@ public class AccountManagementController extends HttpServlet {
                             returnHelper = accountManagementBean.updateStaffPassword(Long.parseLong(id), password);
                             if (!returnHelper.getResult()) {
                                 nextPage = "profile.jsp?errMsg=" + returnHelper.getDescription();
+                            }
+                        }
+                        Part signature = request.getPart("signature");
+                        if (signature != null) {
+                            returnHelper = accountManagementBean.updateStaffSignature(Long.parseLong(id), signature);
+                            if (!returnHelper.getResult()) {
+                                nextPage = "AccountManagement/staffManagement_update.jsp?id=" + id + "&errMsg=" + returnHelper.getDescription();
                             }
                         }
                         returnHelper = accountManagementBean.updateStaff(Long.parseLong(id), name, prefix);

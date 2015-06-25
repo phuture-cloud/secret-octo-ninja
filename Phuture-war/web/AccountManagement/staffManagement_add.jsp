@@ -44,7 +44,7 @@
                     <!-- start: page -->
                     <div class="row">
                         <div class="col-lg-12">
-                            <form class="form-horizontal form-bordered" action="../AccountManagementController">
+                            <form  method="POST" enctype="multipart/form-data" class="form-horizontal form-bordered" action="../AccountManagementController">
                                 <section class="panel">
                                     <header class="panel-heading">
                                         <h2 class="panel-title">Add Staff</h2>
@@ -63,6 +63,13 @@
                                             <label class="col-md-3 control-label">Prefix <span class="required">*</span></label>
                                             <div class="col-md-6">
                                                 <input type="text" class="form-control" name="prefix" required>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Signature</label>
+                                            <div class="col-md-6">
+                                                <input type="file" id="picture" name="signature">
                                             </div>
                                         </div>
 

@@ -14,7 +14,7 @@ public interface AccountManagementBeanLocal {
     public ReturnHelper disableAccount(Long accountID);
     public ReturnHelper enableAccount(Long accountID);
     
-    public ReturnHelper registerStaffAccount(String name, String staffPrefix, String username, String password, boolean isAdmin);  
+    public ReturnHelper registerStaffAccount(String name, String staffPrefix, Part signature, String username, String password, boolean isAdmin);  
     public boolean checkIfUsernameExists(String username);
     public String generatePasswordHash(String salt, String password);
     public String generatePasswordSalt();
@@ -24,5 +24,6 @@ public interface AccountManagementBeanLocal {
     public ReturnHelper updateStaffPassword(Long staffID, String newPassword);
     public ReturnHelper updateStaffSignature(Long staffID, Part signature);
     public ReturnHelper removeStaffSignature(Long staffID);
+    public byte[] getSignature(Long staffID);
     public List<Staff> listAllStaffAccount();
 }

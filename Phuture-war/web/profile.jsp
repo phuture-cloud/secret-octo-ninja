@@ -50,7 +50,7 @@
                     <!-- start: page -->
                     <div class="row">
                         <div class="col-lg-12">
-                            <form class="form-horizontal form-bordered" action="AccountManagementController">
+                            <form method="POST" enctype="multipart/form-data" class="form-horizontal form-bordered" action="AccountManagementController">
                                 <section class="panel">
                                     <header class="panel-heading">
                                         <h2 class="panel-title">Update Staff</h2>
@@ -71,6 +71,13 @@
                                                 <input type="text" class="form-control" name="prefix" value="<%=staff.getStaffPrefix()%>">
                                             </div>
                                         </div>
+                                                                            
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Signature</label>
+                                            <div class="col-md-6">
+                                                <input type="file" id="picture" name="signature"> (use only if updating exisiting signature)
+                                            </div>
+                                        </div>
 
                                         <div class="form-group">
                                             <label class="col-md-3 control-label">Username</label>
@@ -80,7 +87,7 @@
                                         </div>
 
                                         <br>
-                                        <h4 align="center">Change Password (leave blank unless setting a new password).</h4>
+                                        <h4 align="center">Change Password (leave blank unless setting a new password)</h4>
                                         <br>
 
                                         <div class="form-group">

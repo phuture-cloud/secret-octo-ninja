@@ -141,7 +141,7 @@ public class AccountManagementBean implements AccountManagementBeanLocal {
     }
 
     @Override
-    public ReturnHelper registerStaffAccount(String name, String staffPrefix, String username, String password, boolean isAdmin) {
+    public ReturnHelper registerStaffAccount(String name, String staffPrefix, Part signature, String username, String password, boolean isAdmin) {
         System.out.println("AccountManagementBean: registerStaffAccount() called");
         ReturnHelper result = new ReturnHelper();
         try {
@@ -154,6 +154,14 @@ public class AccountManagementBean implements AccountManagementBeanLocal {
             String passwordHash = generatePasswordHash(passwordSalt, password);
             Staff staff = new Staff(name, staffPrefix, username, passwordSalt, passwordHash, isAdmin);
             em.persist(staff);
+            if (signature != null) {
+                result = updateStaffSignature(staff.getId(), signature);
+                if (!result.getResult()) {
+                    result.setResult(false);
+                    result.setDescription("Account created but signature could not be attached.");
+                    return result;
+                }
+            }
             result.setResult(true);
             result.setDescription("Account registered successfully.");
             return result;
@@ -380,6 +388,23 @@ public class AccountManagementBean implements AccountManagementBeanLocal {
             ex.printStackTrace();
         }
         return result;
+    }
+
+    @Override
+    public byte[] getSignature(Long staffID) {
+        System.out.println("AccountManagementBean: getSignature() called");
+        Query q = em.createQuery("SELECT s FROM Staff s WHERE s.id=:id");
+        q.setParameter("id", staffID);
+        try {
+            Staff staff = (Staff) q.getSingleResult();
+            return staff.getSignature();
+        } catch (NoResultException ex) {
+            return null;
+        } catch (Exception ex) {
+            System.out.println("AccountManagementBean: getSignature() failed");
+            ex.printStackTrace();
+        }
+        return null;
     }
 
     @Override
