@@ -28,6 +28,7 @@ public class SalesConfirmationOrder implements Serializable {
     //User specified
     @Temporal(TemporalType.DATE)
     private Date salesConfirmationOrderDate;
+    @Lob
     private String estimatedDeliveryDate;
     private String customerPurchaseOrderNumber;
     
