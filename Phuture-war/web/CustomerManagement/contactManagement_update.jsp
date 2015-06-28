@@ -162,7 +162,7 @@
                                     <footer class="panel-footer">
                                         <div class="row">
                                             <div class="col-sm-9 col-sm-offset-3">
-                                                <button class="btn btn-primary" type="submit">Submit</button>
+                                                <button class="btn btn-success" type="submit">Save</button>
                                                 <input type="button"  class="btn btn-default" value="Back" onclick="javascript:back()"/>
                                             </div>
                                         </div>

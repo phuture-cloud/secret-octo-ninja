@@ -28,8 +28,7 @@ public class SalesConfirmationOrder implements Serializable {
     //User specified
     @Temporal(TemporalType.DATE)
     private Date salesConfirmationOrderDate;
-    @Temporal(TemporalType.DATE)
-    private Date estimatedDeliveryDate;
+    private String estimatedDeliveryDate;
     private String customerPurchaseOrderNumber;
     
     private String customerName;
@@ -316,11 +315,11 @@ public class SalesConfirmationOrder implements Serializable {
         this.taxRate = taxRate;
     }
 
-    public Date getEstimatedDeliveryDate() {
+    public String getEstimatedDeliveryDate() {
         return estimatedDeliveryDate;
     }
 
-    public void setEstimatedDeliveryDate(Date estimatedDeliveryDate) {
+    public void setEstimatedDeliveryDate(String estimatedDeliveryDate) {
         this.estimatedDeliveryDate = estimatedDeliveryDate;
     }
 

@@ -47,7 +47,7 @@
                                         <i class="fa fa-home"></i>
                                     </a>
                                 </li>
-                                <li><span>Sales Confirmation Order Management &nbsp;&nbsp</span></li>
+                                <li><span>SCO Management &nbsp;&nbsp</span></li>
                             </ol>
                         </div>
                     </header>

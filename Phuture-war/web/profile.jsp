@@ -13,6 +13,7 @@
 <html class="fixed">
     <head>
         <jsp:include page="jspIncludePages/head-root.html" />
+        <link rel="stylesheet" href="assets/vendor/bootstrap-fileupload/bootstrap-fileupload.min.css" />
     </head>
     <body onload="alertFunc()">
         <jsp:include page="displayNotification.jsp" />
@@ -34,7 +35,7 @@
                 <jsp:include page="jspIncludePages/sidebar-root.jsp" />
                 <section role="main" class="content-body">
                     <header class="page-header">
-                        <h2>Update Staff</h2>
+                        <h2>Profile</h2>
                         <div class="right-wrapper pull-right">
                             <ol class="breadcrumbs">
                                 <li>
@@ -42,7 +43,7 @@
                                         <i class="fa fa-home"></i>
                                     </a>
                                 </li>
-                                <li><span>Update Staff &nbsp;&nbsp</span></li>
+                                <li><span>User Profile &nbsp;&nbsp</span></li>
                             </ol>
                         </div>
                     </header>
@@ -53,7 +54,7 @@
                             <form method="POST" enctype="multipart/form-data" class="form-horizontal form-bordered" action="AccountManagementController">
                                 <section class="panel">
                                     <header class="panel-heading">
-                                        <h2 class="panel-title">Update Staff</h2>
+                                        <h2 class="panel-title">User Profile</h2>
                                     </header>
 
                                     <div class="panel-body">
@@ -71,13 +72,54 @@
                                                 <input type="text" class="form-control" name="prefix" value="<%=staff.getStaffPrefix()%>">
                                             </div>
                                         </div>
-                                                                            
+
                                         <div class="form-group">
-                                            <label class="col-md-3 control-label">Signature</label>
+                                            <label class="col-md-3 control-label">Signature <br>(use only if updating existing signature)</label>
                                             <div class="col-md-6">
-                                                <input type="file" id="picture" name="signature"> (use only if updating exisiting signature)
+                                                <div class="fileupload fileupload-new" data-provides="fileupload">
+                                                    <div class="input-append">
+                                                        <div class="uneditable-input">
+                                                            <i class="fa fa-file fileupload-exists"></i>
+                                                            <span class="fileupload-preview"></span>
+                                                        </div>
+
+                                                        <span class="btn btn-default btn-file">
+                                                            <span class="fileupload-exists">Change</span>
+                                                            <span class="fileupload-new">Select file</span>
+                                                            <input type="file" id="picture" name="signature"> 
+                                                        </span>
+                                                        <a href="#" class="btn btn-default fileupload-exists" data-dismiss="fileupload">Remove</a>
+                                                    </div>
+                                                </div>
+
+                                                <%if (staff.getSignature() != null) {%>
+                                                <button type="button" href="#viewSign" class="btn btn-default modal-with-form">View Signature</button>
+                                                <%}%>
+
+                                                <div id="viewSign" class="modal-block modal-block-primary mfp-hide">
+                                                    <section class="panel">
+                                                        <header class="panel-heading">
+                                                            <h2 class="panel-title">Signature</h2>
+                                                        </header>
+                                                        <div class="panel-body">
+                                                            <div class="form-group mt-lg">
+                                                                <div class="col-sm-12">
+                                                                    <img src="http://localhost:8080/Phuture-war/sig?id=<%=staff.getId()%>">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <footer class="panel-footer">
+                                                            <div class="row">
+                                                                <div class="col-md-12 text-right">
+                                                                    <button class="btn btn-default modal-dismiss">Close</button>
+                                                                </div>
+                                                            </div>
+                                                        </footer>
+                                                    </section>
+                                                </div>
                                             </div>
                                         </div>
+
 
                                         <div class="form-group">
                                             <label class="col-md-3 control-label">Username</label>
@@ -111,7 +153,7 @@
                                     <footer class="panel-footer">
                                         <div class="row">
                                             <div class="col-sm-9 col-sm-offset-3">
-                                                <button class="btn btn-primary" type="submit">Submit</button>
+                                                <button class="btn btn-success" type="submit">Save</button>
                                             </div>
                                         </div>
                                     </footer>
@@ -123,6 +165,8 @@
                 </section>
             </div>
         </section>
+        <script src="assets/vendor/jquery-autosize/jquery.autosize.js"></script>
+        <script src="assets/vendor/bootstrap-fileupload/bootstrap-fileupload.min.js"></script>
         <jsp:include page="jspIncludePages/foot-root.html" />
     </body>
 </html>
