@@ -27,7 +27,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
     private static final Double gstRate = 7.0;//7%
 
     @Override
-    public ReturnHelper createSalesConfirmationOrder(String salesConfirmationOrderNumber, Date salesConfirmationOrderDate, Long customerID, Long contactID, Long salesStaffID, Integer terms) {
+    public ReturnHelper createSalesConfirmationOrder(String salesConfirmationOrderNumber, Date salesConfirmationOrderDate, String estimatedDeliveryDate, String customerPurchaseOrderNumber, Long customerID, Long contactID, Long salesStaffID, Integer terms) {
         System.out.println("OrderManagementBean: createSalesConfirmationOrder() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -52,6 +52,8 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
                 return uniqueResult;
             }
             SalesConfirmationOrder sco = new SalesConfirmationOrder(salesConfirmationOrderNumber, salesConfirmationOrderDate, customerName, staff, terms, gstRate);
+            sco.setEstimatedDeliveryDate(estimatedDeliveryDate);
+            sco.setCustomerPurchaseOrderNumber(customerPurchaseOrderNumber);
             sco.setCustomer(customer);
             sco.setContactAddress(contact.getAddress());
             sco.setContactEmail(contact.getEmail());
