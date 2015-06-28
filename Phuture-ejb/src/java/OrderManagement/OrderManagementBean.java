@@ -2,8 +2,10 @@ package OrderManagement;
 
 import EntityManager.Contact;
 import EntityManager.Customer;
+import EntityManager.DeliveryOrder;
 import EntityManager.Invoice;
 import EntityManager.LineItem;
+import EntityManager.PurchaseOrder;
 import EntityManager.ReturnHelper;
 import EntityManager.SalesConfirmationOrder;
 import EntityManager.Staff;
@@ -11,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -390,7 +393,11 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             }
             sco.setIsDeleted(true);
             em.merge(sco);
-            //TODO need to mark as deleted for all the associated PO, DO and invoices too?
+            //TODO need to mark as deleted for all the associated PO, DO, invoices and payment
+            List<PurchaseOrder> pos = sco.getPurchaseOrders();
+            List<DeliveryOrder> dos = sco.getDeliveryOrders();
+            List<Invoice> is = sco.getInvoices();
+            //List<Payment> payment = ;
             result.setResult(true);
             result.setDescription("SCO deleted successfully.");
         } catch (Exception ex) {
@@ -473,6 +480,9 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             q.setParameter("id", salesConfirmationOrderID);
             SalesConfirmationOrder salesConfirmationOrder = (SalesConfirmationOrder) q.getSingleResult();
             return salesConfirmationOrder;
+        } catch (EntityNotFoundException ex) {
+            System.out.println("OrderManagementBean: getSalesConfirmationOrder(): order not found");
+            return null;
         } catch (Exception ex) {
             System.out.println("OrderManagementBean: getSalesConfirmationOrder() failed");
             result.setDescription("Internal server error.");

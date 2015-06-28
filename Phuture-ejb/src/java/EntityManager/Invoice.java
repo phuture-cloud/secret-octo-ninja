@@ -1,6 +1,7 @@
 package EntityManager;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Entity;
@@ -23,6 +24,8 @@ public class Invoice implements Serializable {
     private String invoiceNumber;
     @ManyToOne
     private SalesConfirmationOrder salesConfirmationOrder;
+    @OneToMany
+    private List<PaymentRecord> paymentRecords;
     @OneToMany
     private List<LineItem> items;
     private Double taxRate;//in %
@@ -58,6 +61,8 @@ public class Invoice implements Serializable {
     private boolean isDeleted;
 
     public Invoice() {
+        this.items = new ArrayList();
+        this.paymentRecords = new ArrayList();
         this.dateCreated = new Date();
         this.isDeleted = false;
         this.remarks = "";
@@ -68,6 +73,8 @@ public class Invoice implements Serializable {
     }
 
     public Invoice(String invoiceNumber) {
+        this.items = new ArrayList();
+        this.paymentRecords = new ArrayList();
         this.invoiceNumber = invoiceNumber;
         this.dateCreated = new Date();
         this.isDeleted = false;
@@ -268,6 +275,14 @@ public class Invoice implements Serializable {
 
     public void setCustomerPurchaseOrderNumber(String customerPurchaseOrderNumber) {
         this.customerPurchaseOrderNumber = customerPurchaseOrderNumber;
+    }
+
+    public List<PaymentRecord> getPaymentRecords() {
+        return paymentRecords;
+    }
+
+    public void setPaymentRecords(List<PaymentRecord> paymentRecords) {
+        this.paymentRecords = paymentRecords;
     }
 
     @Override

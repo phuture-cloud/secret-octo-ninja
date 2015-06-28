@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -378,6 +379,9 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             q.setParameter("id", invoiceID);
             Invoice invoice = (Invoice) q.getSingleResult();
             return invoice;
+        } catch (EntityNotFoundException ex) {
+            System.out.println("InvoiceManagementBean: getInvoice(): invoice not found");
+            return null;
         } catch (Exception ex) {
             System.out.println("InvoiceManagementBean: getInvoice() failed");
             result.setDescription("Internal server error.");
