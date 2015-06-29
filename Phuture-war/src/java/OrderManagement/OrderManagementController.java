@@ -146,7 +146,7 @@ public class OrderManagementController extends HttpServlet {
                                 Date scoDateDate = sourceFormat.parse(scoDate);
 
                                 //Create SCO
-                                returnHelper = orderManagementBean.createSalesConfirmationOrder(scoNumber, scoDateDate, Long.parseLong(customerID), Long.parseLong(contactID), loggedInStaffID, Integer.parseInt(terms));
+                                returnHelper = orderManagementBean.createSalesConfirmationOrder(scoNumber, scoDateDate, estimatedDeliveryDate, poNumber, Long.parseLong(customerID), Long.parseLong(contactID), loggedInStaffID, Integer.parseInt(terms));
                                 if (returnHelper.getResult()) {
                                     Long scoID = returnHelper.getID();
                                     SalesConfirmationOrder sco = orderManagementBean.getSalesConfirmationOrder(scoID);

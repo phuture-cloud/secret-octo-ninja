@@ -23,7 +23,7 @@
         <jsp:include page="../displayNotification.jsp" />
         <script>
             function viewDO(id) {
-                //window.location.href = "../OrderManagementController?target=RetrieveSCO&source=listAllInvoices&id=" + id;
+
             }
 
             function back(id) {
