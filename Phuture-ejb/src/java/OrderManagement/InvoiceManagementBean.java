@@ -434,6 +434,24 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             return null;
         }
     }
+    
+        @Override
+    public List<Invoice> listInvoicesTiedToCustomer(Long customerID) {
+        System.out.println("InvoiceManagementBean: listInvoicesTiedToCustomer() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        try {
+            Query q = em.createQuery("SELECT s FROM Invoice s WHERE s.isDeleted=false AND s.salesConfirmationOrder.customerLink.id=:id");
+            q.setParameter("id", customerID);
+            List<Invoice> invoices = q.getResultList();
+            return invoices;
+        } catch (Exception ex) {
+            System.out.println("InvoiceManagementBean: listInvoicesTiedToCustomer() failed");
+            result.setDescription("Internal server error.");
+            ex.printStackTrace();
+            return null;
+        }
+    }
 
     @Override
     public ReturnHelper replaceInvoiceLineItemWithSCOitems(Long salesConfirmationOrderID, Long invoiceID, Boolean adminOverwrite) {
