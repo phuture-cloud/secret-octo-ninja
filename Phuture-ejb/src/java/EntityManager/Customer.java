@@ -25,16 +25,27 @@ public class Customer implements Serializable {
     @OneToMany
     private List<SalesConfirmationOrder> SCOs;
     @OneToMany
+    private List<PaymentRecord> PaymentRecords;
+//    @OneToOne
+//    private StatementOfAccount statementOfAccount;
+    @OneToMany
     private List<CreditNote> creditNotes;
+    private Double availableCredits;
     private boolean isDeleted;
 
     public Customer() {
+        this.companyContacts = new ArrayList();
+        this.SCOs = new ArrayList();
+        this.PaymentRecords = new ArrayList();
+        this.creditNotes = new ArrayList();
+        this.isDeleted = false;
     }
 
     public Customer(String customerName) {
         this.customerName = customerName;
         this.companyContacts = new ArrayList();
         this.SCOs = new ArrayList();
+        this.PaymentRecords = new ArrayList();
         this.creditNotes = new ArrayList();
         this.isDeleted = false;
     }
@@ -86,6 +97,22 @@ public class Customer implements Serializable {
     public void setCreditNotes(List<CreditNote> creditNotes) {
         this.creditNotes = creditNotes;
     }
+
+    public List<PaymentRecord> getPaymentRecords() {
+        return PaymentRecords;
+    }
+
+    public void setPaymentRecords(List<PaymentRecord> PaymentRecords) {
+        this.PaymentRecords = PaymentRecords;
+    }
+
+//    public StatementOfAccount getStatementOfAccount() {
+//        return statementOfAccount;
+//    }
+//
+//    public void setStatementOfAccount(StatementOfAccount statementOfAccount) {
+//        this.statementOfAccount = statementOfAccount;
+//    }
 
     public boolean getIsDeleted() {
         return isDeleted;
