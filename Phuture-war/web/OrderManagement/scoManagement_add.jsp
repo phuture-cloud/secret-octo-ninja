@@ -563,9 +563,9 @@
                                                     </td>
                                                     <td>
                                                         <%if (scoID == null && (customers == null || selectedContactID == null || selectedContactID.equals("")) || !editingLineItem.equals("")) {
-                                                                out.println("<input type='text' class='form-control' name='itemDescription' disabled/>");
+                                                                out.println("<textarea class='form-control' rows='1' name='itemDescription' disabled></textarea>");
                                                             } else {
-                                                                out.println("<input type='text' class='form-control' name='itemDescription'/>");
+                                                                out.println("<textarea class='form-control' rows='1' name='itemDescription'></textarea>");
                                                             }
                                                         %>
                                                     </td>
@@ -619,14 +619,14 @@
                                                             if (!editingLineItem.isEmpty() && editingLineItem.equals(sco.getItems().get(i).getId() + "")) {
                                                                 //Print editable fields
                                                                 double price = sco.getItems().get(i).getItemUnitPrice();
-
+                                                                String repl = sco.getItems().get(i).getItemDescription().replaceAll("(\\r|\\n|\\r\\n)+", "<br>");
                                                 %>
                                                 <tr>
                                                     <td>
                                                         <input type='text' class='form-control' name='itemName' id='itemName<%=sco.getItems().get(i).getId()%>' value='<%=sco.getItems().get(i).getItemName()%>'/>
                                                     </td>
-                                                    <td>
-                                                        <input type='text' class='form-control' name='itemDescription' id='itemDescription<%=sco.getItems().get(i).getId()%>' value='<%=sco.getItems().get(i).getItemDescription()%>'/>
+                                                    <td>              
+                                                        <input type='text' class='form-control' name='itemDescription' id='itemDescription<%=sco.getItems().get(i).getId()%>' value='<%=repl%>'/>
                                                     </td>
                                                     <td class="text-center">
                                                         <div class="input-group">
@@ -688,9 +688,10 @@
                                                 </ul>
                                                 <%
                                                     if (sco != null && scoID != null && !scoID.isEmpty() && sco.getRemarks() != null && !sco.getRemarks().isEmpty()) {
-                                                        out.print("Remarks:");
-                                                        String repl = sco.getRemarks().replaceAll("(\\r|\\n|\\r\\n)+", "<br>");
-                                                        out.print("Remarks: " + sco.getRemarks());
+                                                        out.print("Remarks: ");
+                                                        //String repl = sco.getRemarks().replaceAll("(\\r|\\n|\\r\\n)+", "<br>");
+                                                        String repl = sco.getRemarks().replaceAll("/\n/g", "<br />");
+                                                        out.print(sco.getRemarks());
                                                     }
                                                 %>
                                             </div>
