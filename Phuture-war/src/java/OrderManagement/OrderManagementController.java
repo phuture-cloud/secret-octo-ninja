@@ -84,7 +84,7 @@ public class OrderManagementController extends HttpServlet {
 
         try {
             //Following functions are only accessible if logged in
-            if (checkLogin(response)) {
+            if (checkLogin()) {
                 //Set the admin flag so he can overwrite some functionalities
                 Staff staff = (Staff) (session.getAttribute("staff"));
                 if (staff.getIsAdmin()) {
@@ -370,10 +370,13 @@ public class OrderManagementController extends HttpServlet {
 
                             returnHelper = deliveryOrderManagementBean.createDeliveryOrder(Long.parseLong(id), doNumber, doDateDate);
                             if (returnHelper.getResult()) {
-                                session.setAttribute("do",  deliveryOrderManagementBean.getDeliveryOrder(returnHelper.getID()));
-                                nextPage = "OrderManagement/doManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                                SalesConfirmationOrder sco = orderManagementBean.getSalesConfirmationOrder(Long.parseLong(id));
+                                session.setAttribute("sco", sco);
+                                
+                                session.setAttribute("do", deliveryOrderManagementBean.getDeliveryOrder(returnHelper.getID()));
+                                nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&goodMsg=" + returnHelper.getDescription();
                             } else {
-                                nextPage = "OrderManagement/doManagement.jsp?errMsg=" + returnHelper.getDescription();
+                                nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&errMsg=" + returnHelper.getDescription();
                             }
                         }
                         break;
@@ -398,7 +401,7 @@ public class OrderManagementController extends HttpServlet {
         }
     }
 
-    public boolean checkLogin(HttpServletResponse response) {
+    public boolean checkLogin() {
         try {
             Staff staff = (Staff) (session.getAttribute("staff"));
             if (staff == null) {

@@ -8,14 +8,11 @@
 <%
     Staff staff = (Staff) (session.getAttribute("staff"));
     DeliveryOrder deliveryOrder = (DeliveryOrder) (session.getAttribute("do"));
-    Contact contact = null;
     if (session.isNew()) {
         response.sendRedirect("../index.jsp?errMsg=Invalid Request. Please login.");
     } else if (staff == null) {
         response.sendRedirect("../index.jsp?errMsg=Session Expired.");
     } else {
-        String doDate = request.getParameter("doDate");
-        String status = request.getParameter("status");
         String editingLineItem = request.getParameter("editingLineItem");
         String formDisablerFlag = "";
         if (editingLineItem == null) {
@@ -73,7 +70,7 @@
                 });
 
                 function back() {
-                    window.location.href = "../OrderManagementController?target=ListAllSCO";
+                    window.location.href = "scoManagement_DO.jsp";
                 }
 
                 function back2(id) {
@@ -229,7 +226,7 @@
                                     <header class="clearfix">
                                         <div class="row">
                                             <div class="col-sm-6 mt-md">
-                                                <h2 class="h2 mt-none mb-sm text-dark text-weight-bold">Delivery No</h2>
+                                                <h2 class="h2 mt-none mb-sm text-dark text-weight-bold">Delivery No.</h2>
                                                 <%
                                                     if (deliveryOrder != null) {
                                                         out.print("<input type='text' class='form-control' id='doNumber' name='doNumber' value='" + deliveryOrder.getDeliveryOrderNumber() + "' style='max-width: 300px' required/>");
@@ -284,20 +281,8 @@
                                                                     out.print("<br><br>");
                                                                 }
                                                             %>
-
                                                         </div>
                                                         <br/><br/>
-
-                                                        <div class="col-md-8" style="padding-top: 4px;">
-                                                            <%
-                                                                if (contact != null) {
-                                                                    out.println("Address: " + contact.getAddress());
-                                                                    out.println("<br/>Telephone: " + contact.getOfficeNo());
-                                                                    out.println("<br/>Fasimile: " + contact.getFaxNo());
-                                                                    out.println("<br/>Mobile: " + contact.getMobileNo() + "<br/><br/>");
-                                                                }
-                                                            %>
-                                                        </div>
                                                     </address>
                                                 </div>
                                             </div>
@@ -319,9 +304,7 @@
                                                         <span class="text-dark">Date:</span>
                                                         <span class="value" style="min-width: 110px">
                                                             <%
-                                                                if (doDate != null && !doDate.isEmpty()) {
-                                                                    out.print("<input " + formDisablerFlag + " id='doDate' name='doDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + doDate + "' required>");
-                                                                } else if (deliveryOrder != null) {
+                                                                if (deliveryOrder != null) {
                                                                     SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
                                                                     String date = DATE_FORMAT.format(deliveryOrder.getDeliveryOrderDate());
                                                                     out.print("<input " + formDisablerFlag + " id='doDate' name='doDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "' required>");
@@ -353,15 +336,8 @@
                                                         <span class="value" style="min-width: 110px">
                                                             <select <%=formDisablerFlag%> id="status" name="status" class="form-control input-sm" required>
                                                                 <%
-                                                                    if ((deliveryOrder.getStatus() != null && !deliveryOrder.getStatus().isEmpty()) || status != null && status != "") {
-                                                                        String selectedStatus;
-                                                                        if (status != null && !status.isEmpty()) {
-                                                                            //Get from request (haven't saved to DO)
-                                                                            selectedStatus = status;
-                                                                        } else {
-                                                                            //Get from DO
-                                                                            selectedStatus = deliveryOrder.getStatus();
-                                                                        }
+                                                                    if ((deliveryOrder.getStatus() != null && !deliveryOrder.getStatus().isEmpty())) {
+                                                                        String selectedStatus = deliveryOrder.getStatus();
 
                                                                         if (selectedStatus.equals("Created")) {
                                                                             out.print("<option value='Created' selected>Created</option>");
