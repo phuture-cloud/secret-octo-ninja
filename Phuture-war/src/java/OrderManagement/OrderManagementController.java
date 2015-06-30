@@ -21,6 +21,9 @@ import javax.servlet.http.HttpSession;
 public class OrderManagementController extends HttpServlet {
 
     @EJB
+    private DeliveryOrderManagementBeanLocal deliveryOrderManagementBean;
+
+    @EJB
     private OrderManagementBeanLocal orderManagementBean;
 
     @EJB
@@ -68,6 +71,12 @@ public class OrderManagementController extends HttpServlet {
         String mobileNo = request.getParameter("mobileNo");
         String faxNo = request.getParameter("faxNo");
         String address = request.getParameter("address");
+
+        String doNumber = request.getParameter("doNumber");
+        String doDate = request.getParameter("doDate");
+        if (doDate == null) {
+            doDate = "";
+        }
 
         session = request.getSession();
         ReturnHelper returnHelper = null;
@@ -353,6 +362,22 @@ public class OrderManagementController extends HttpServlet {
                             }
                         }
                         break;
+
+                    case "GenerateDO":
+                        if (true) {
+                            DateFormat sourceFormat = new SimpleDateFormat("dd/MM/yyyy");
+                            Date doDateDate = sourceFormat.parse(doDate);
+
+                            returnHelper = deliveryOrderManagementBean.createDeliveryOrder(Long.parseLong(id), doNumber, doDateDate);
+                            if (returnHelper.getResult()) {
+                                session.setAttribute("do",  deliveryOrderManagementBean.getDeliveryOrder(returnHelper.getID()));
+                                nextPage = "OrderManagement/doManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                            } else {
+                                nextPage = "OrderManagement/doManagement.jsp?errMsg=" + returnHelper.getDescription();
+                            }
+                        }
+                        break;
+
                     default:
                         System.out.println("OrderManagementController: Unknown target value.");
                         break;
