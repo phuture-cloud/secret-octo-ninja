@@ -63,6 +63,8 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             deliveryOrder.setContactOfficeNo(sco.getContactName());
             deliveryOrder.setContactFaxNo(sco.getContactName());
             em.persist(deliveryOrder);
+            //Copy line items from SCO
+            replaceDOlineItemWithSCOitems(sco.getId(),deliveryOrder.getId(),false);
             //Update SCO list of DOs
             List<DeliveryOrder> deliveryOrders = sco.getDeliveryOrders();
             deliveryOrders.add(deliveryOrder);
