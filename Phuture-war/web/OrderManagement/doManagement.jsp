@@ -10,7 +10,7 @@
     Staff staff = (Staff) (session.getAttribute("staff"));
     List<Customer> customers = (List<Customer>) (session.getAttribute("customers"));
     List<Contact> contacts = (List<Contact>) (session.getAttribute("contacts"));
-    SalesConfirmationOrder sco = (SalesConfirmationOrder) (session.getAttribute("sco"));
+    DeliveryOrder sco = (DeliveryOrder) (session.getAttribute("do"));
     Contact contact = null;
     if (session.isNew()) {
         response.sendRedirect("../index.jsp?errMsg=Invalid Request. Please login.");
@@ -19,11 +19,9 @@
     } else {
         String doID = request.getParameter("id");
         String doNumber = request.getParameter("doNumber");
-        String scoDate = request.getParameter("scoDate");
-        String terms = request.getParameter("terms");
-        String status = request.getParameter("status");
-        String estimatedDeliveryDate = request.getParameter("estimatedDeliveryDate");
         String poNumber = request.getParameter("poNumber");
+        String doDate = request.getParameter("doDate");
+        String status = request.getParameter("status");
         String selectedCustomerID = request.getParameter("selectedCustomerID");
         String selectedContactID = request.getParameter("selectedContactID");
         String editingLineItem = request.getParameter("editingLineItem");
@@ -89,22 +87,19 @@
                 function back2(id) {
                     window.onbeforeunload = null;
                     var doNumber = document.getElementById("doNumber").value;
-                    var scoDate = document.getElementById("scoDate").value;
-                    var terms = document.getElementById("terms").value;
+                    var doDate = document.getElementById("doDate").value;
                     var status = document.getElementById("status").value;
-                    window.location.href = "scoManagement_add.jsp?id=" + id + "&status=" + status + "&doNumber=" + doNumber + "&scoDate=" + scoDate + "&terms=" + terms;
+                    window.location.href = "scoManagement_add.jsp?id=" + id + "&status=" + status + "&doNumber=" + doNumber + "&doDate=" + doDate;
                 }
 
                 function getCustomerContacts() {
                     window.onbeforeunload = null;
                     var customerID = document.getElementById("customerList").value;
                     var doNumber = document.getElementById("doNumber").value;
-                    var scoDate = document.getElementById("scoDate").value;
-                    var terms = document.getElementById("terms").value;
-                    var estimatedDeliveryDate = document.getElementById("estimatedDeliveryDate").value;
+                    var doDate = document.getElementById("doDate").value;
                     var poNumber = document.getElementById("poNumber").value;
                     if (customerID !== "") {
-                        window.location.href = "../OrderManagementController?target=ListCustomerContacts&customerID=" + customerID + "&doNumber=" + doNumber + "&scoDate=" + scoDate + "&terms=" + terms + "&estimatedDeliveryDate=" + estimatedDeliveryDate + "&poNumber=" + poNumber;
+                        window.location.href = "../OrderManagementController?target=ListCustomerContacts&customerID=" + customerID + "&doNumber=" + doNumber + "&doDate=" + doDate + "&poNumber=" + poNumber;
                     }
                 }
 
@@ -112,13 +107,11 @@
                     window.onbeforeunload = null;
                     var customerID = document.getElementById("customerList").value;
                     var doNumber = document.getElementById("doNumber").value;
-                    var scoDate = document.getElementById("scoDate").value;
-                    var terms = document.getElementById("terms").value;
-                    var estimatedDeliveryDate = document.getElementById("estimatedDeliveryDate").value;
+                    var doDate = document.getElementById("doDate").value;
                     var poNumber = document.getElementById("poNumber").value;
                     if (customerID !== "") {
                         var contactID = document.getElementById("customerContactid").value;
-                        window.location.href = "scoManagement_add.jsp?selectedCustomerID=" + customerID + "&selectedContactID=" + contactID + "&doNumber=" + doNumber + "&scoDate=" + scoDate + "&terms=" + terms + "&estimatedDeliveryDate=" + estimatedDeliveryDate + "&poNumber=" + poNumber;
+                        window.location.href = "scoManagement_add.jsp?selectedCustomerID=" + customerID + "&selectedContactID=" + contactID + "&doNumber=" + doNumber + "&doDate=" + doDate + "&poNumber=" + poNumber;
                     }
                 }
 
@@ -159,12 +152,10 @@
                     scoManagement.id.value = id;
                     scoManagement.lineItemID.value = lineItemID;
                     var doNumber = document.getElementById("doNumber").value;
-                    var scoDate = document.getElementById("scoDate").value;
-                    var terms = document.getElementById("terms").value;
+                    var doDate = document.getElementById("doDate").value;
                     var status = document.getElementById("status").value;
-                    var estimatedDeliveryDate = document.getElementById("estimatedDeliveryDate").value;
                     var poNumber = document.getElementById("poNumber").value;
-                    window.location.href = "scoManagement_add.jsp?id=" + id + "&doNumber=" + doNumber + "&scoDate=" + scoDate + "&terms=" + terms + "&status=" + status + "&editingLineItem=" + lineItemID + "&estimatedDeliveryDate=" + estimatedDeliveryDate + "&poNumber=" + poNumber;
+                    window.location.href = "scoManagement_add.jsp?id=" + id + "&doNumber=" + doNumber + "&doDate=" + doDate + "&status=" + status + "&editingLineItem=" + lineItemID + "&poNumber=" + poNumber;
                 }
 
                 function saveEditLineItem(id, lineItemID) {
@@ -324,57 +315,9 @@
                                                                         out.print("<div class='text-right'><a href='#modalEditForm' class='modal-with-form'>edit</a></div>");
                                                                     }
                                                                     out.print("<br><br>");
-                                                                } else {
-                                                            %>
-                                                            <select id="customerList" name="customerID" data-plugin-selectTwo class="form-control populate" onchange="javascript:getCustomerContacts()" required>
-                                                                <option value="">Select a customer</option>
-                                                                <%
-                                                                    if (customers != null && customers.size() > 0) {
-                                                                        for (int i = 0; i < customers.size(); i++) {
-                                                                            if (selectedCustomerID != null && selectedCustomerID.equals(customers.get(i).getId().toString())) {
-                                                                                out.print("<option value='" + customers.get(i).getId() + "' selected>" + customers.get(i).getCustomerName() + "</option>");
-                                                                            } else {
-                                                                                out.print("<option value='" + customers.get(i).getId() + "'>" + customers.get(i).getCustomerName() + "</option>");
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                %>
-                                                            </select>
-                                                            <%}%>
-                                                        </div>
-
-                                                        <%
-                                                            if (sco == null || doID == null || doID.isEmpty()) {
-                                                        %>
-                                                        <br/><br/>
-                                                        <div class="col-md-6" style="padding-left: 0px;">
-                                                            <select id="customerContactid" name="contactID" data-plugin-selectTwo class="form-control populate"  onchange="javascript:selectCustomerContact()" required>
-                                                                <option value="">Select a contact</option>
-                                                                <%
-                                                                    if (contacts != null && contacts.size() > 0) {
-                                                                        for (int i = 0; i < contacts.size(); i++) {
-                                                                            if (selectedContactID != null && selectedContactID.equals(contacts.get(i).getId().toString())) {
-                                                                                contact = contacts.get(i);
-                                                                                out.print("<option value='" + contacts.get(i).getId() + "' selected>" + contacts.get(i).getName() + "</option>");
-                                                                            } else {
-                                                                                out.print("<option value='" + contacts.get(i).getId() + "'>" + contacts.get(i).getName() + "</option>");
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                %>
-                                                            </select>
-                                                        </div>
-                                                        <div class="col-md-8" style="padding-top: 4px;">
-                                                            <%
-                                                                if (contact != null) {
-                                                                    out.println("Address: " + contact.getAddress());
-                                                                    out.println("<br/>Telephone: " + contact.getOfficeNo());
-                                                                    out.println("<br/>Fasimile: " + contact.getFaxNo());
-                                                                    out.println("<br/>Mobile: " + contact.getMobileNo() + "<br/><br/>");
                                                                 }
                                                             %>
                                                         </div>
-                                                        <%}%>
                                                     </address>
                                                 </div>
                                             </div>
@@ -396,59 +339,16 @@
                                                         <span class="text-dark">Date:</span>
                                                         <span class="value" style="min-width: 110px">
                                                             <%
-                                                                if (scoDate != null && !scoDate.isEmpty()) {
-                                                                    out.print("<input " + formDisablerFlag + " id='scoDate' name='scoDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + scoDate + "' required>");
+                                                                if (doDate != null && !doDate.isEmpty()) {
+                                                                    out.print("<input " + formDisablerFlag + " id='doDate' name='doDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + doDate + "' required>");
                                                                 } else if (sco != null && doID != null && !doID.isEmpty()) {
                                                                     SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
                                                                     String date = DATE_FORMAT.format(sco.getSalesConfirmationOrderDate());
-                                                                    out.print("<input " + formDisablerFlag + " id='scoDate' name='scoDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "' required>");
+                                                                    out.print("<input " + formDisablerFlag + " id='doDate' name='doDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "' required>");
                                                                 } else {
-                                                                    out.print("<input " + formDisablerFlag + " id='scoDate' name='scoDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' required placeholder='dd/mm/yyyy'>");
+                                                                    out.print("<input " + formDisablerFlag + " id='doDate' name='doDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' required placeholder='dd/mm/yyyy'>");
                                                                 }
                                                             %>
-                                                        </span>
-                                                    </p>
-                                                    <p class="mb-none">
-                                                        <span class="text-dark">Terms:</span>
-                                                        <span class="value" style="min-width: 110px">
-                                                            <select <%=formDisablerFlag%> id="terms" name="terms" class="form-control input-sm" required>
-                                                                <%
-                                                                    out.print("<option value=''>Select</option>");
-                                                                    if (terms != null && !terms.isEmpty()) {
-                                                                        if (terms.equals("0")) {
-                                                                            out.print("<option value='0' selected>COD</option>");
-                                                                            out.print("<option value='14'>14 Days</option>");
-                                                                            out.print("<option value='30'>30 Days</option>");
-                                                                        } else if (terms.equals("14")) {
-                                                                            out.print("<option value='0'>COD</option>");
-                                                                            out.print("<option value='14' selected>14 Days</op  tion>");
-                                                                            out.print("<option value='30'>30 Days</option>");
-                                                                        } else if (terms.equals("30")) {
-                                                                            out.print("<option value='0'>COD</option>");
-                                                                            out.print("<option value='14'>14 Days</option>");
-                                                                            out.print("<option value='30' selected>30 Days</option>");
-                                                                        }
-                                                                    } else if (sco != null && doID != null && !doID.isEmpty()) {
-                                                                        if (sco.getTerms() == 0) {
-                                                                            out.print("<option value='0' selected>COD</option>");
-                                                                            out.print("<option value='14'>14 Days</option>");
-                                                                            out.print("<option value='30'>30 Days</option>");
-                                                                        } else if (sco.getTerms() == 14) {
-                                                                            out.print("<option value='0'>COD</option>");
-                                                                            out.print("<option value='14' selected>14 Days</option>");
-                                                                            out.print("<option value='30'>30 Days</option>");
-                                                                        } else if (sco.getTerms() == 30) {
-                                                                            out.print("<option value='0'>COD</option>");
-                                                                            out.print("<option value='14'>14 Days</option>");
-                                                                            out.print("<option value='30' selected>30 Days</option>");
-                                                                        }
-                                                                    } else {
-                                                                        out.print("<option value='0'>COD</option>");
-                                                                        out.print("<option value='14'>14 Days</option>");
-                                                                        out.print("<option value='30'>30 Days</option>");
-                                                                    }
-                                                                %>
-                                                            </select>
                                                         </span>
                                                     </p>
 
@@ -466,24 +366,6 @@
                                                             %>
                                                         </span>
                                                     </p>
-
-
-                                                    <p class="mb-none">
-                                                        <span class="text-dark">Estimated Delivery Date:</span>
-                                                        <span class="value" style="min-width: 200px">
-                                                            <%
-                                                                if (estimatedDeliveryDate != null && !estimatedDeliveryDate.isEmpty()) {
-                                                                    out.print("<input " + formDisablerFlag + " id='estimatedDeliveryDate' name='estimatedDeliveryDate' type='text' class='form-control' value='" + estimatedDeliveryDate + "'>");
-                                                                } else if (sco != null && doID != null && !doID.isEmpty()) {
-                                                                    out.print("<input " + formDisablerFlag + " id='estimatedDeliveryDate' name='estimatedDeliveryDate' type='text' class='form-control' value='" + sco.getEstimatedDeliveryDate() + "'>");
-                                                                } else {
-                                                                    out.print("<input " + formDisablerFlag + " id='estimatedDeliveryDate' name='estimatedDeliveryDate' type='text' class='form-control' placeholder='Estimated date'>");
-                                                                }
-                                                            %>
-                                                        </span>
-                                                    </p>
-
-
 
 
                                                     <% if (sco != null && doID != null && !doID.isEmpty()) {%>
