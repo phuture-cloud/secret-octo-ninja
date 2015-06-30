@@ -58,11 +58,11 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             //Copy contacts details from SCO to use as default for billing contact
             invoice.setCustomerName(sco.getCustomerName());
             invoice.setContactName(sco.getContactName());
-            invoice.setContactEmail(sco.getContactName());
-            invoice.setContactAddress(sco.getContactName());
-            invoice.setContactMobileNo(sco.getContactName());
-            invoice.setContactOfficeNo(sco.getContactName());
-            invoice.setContactFaxNo(sco.getContactName());
+            invoice.setContactEmail(sco.getContactEmail());
+            invoice.setContactAddress(sco.getContactAddress());
+            invoice.setContactMobileNo(sco.getContactMobileNo());
+            invoice.setContactOfficeNo(sco.getContactOfficeNo());
+            invoice.setContactFaxNo(sco.getContactFaxNo());
             em.persist(invoice);
             //Copy line items from SCO
             replaceInvoiceLineItemWithSCOitems(sco.getId(),invoice.getId(),false);
