@@ -125,7 +125,6 @@
                     var doDate = document.getElementById("doDate").value;
                     var terms = document.getElementById("terms").value;
                     var status = document.getElementById("status").value;
-                    var estimatedDeliveryDate = document.getElementById("estimatedDeliveryDate").value;
                     var poNumber = document.getElementById("poNumber").value;
                     window.location.href = "scoManagement_add.jsp?id=" + id + "&doNumber=" + doNumber + "&doDate=" + doDate + "&terms=" + terms + "&status=" + status + "&editingLineItem=" + lineItemID + "&estimatedDeliveryDate=" + estimatedDeliveryDate + "&poNumber=" + poNumber;
                 }
@@ -287,10 +286,6 @@
                                                             %>
 
                                                         </div>
-
-                                                        <%
-                                                            if (deliveryOrder != null) {
-                                                        %>
                                                         <br/><br/>
 
                                                         <div class="col-md-8" style="padding-top: 4px;">
@@ -303,7 +298,6 @@
                                                                 }
                                                             %>
                                                         </div>
-                                                        <%}%>
                                                     </address>
                                                 </div>
                                             </div>

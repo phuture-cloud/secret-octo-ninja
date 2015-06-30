@@ -54,7 +54,6 @@
                     </header>
 
                     <!-- start: page -->
-
                     <section class="panel">
                         <header class="panel-heading">
                             <h2 class="panel-title">SCO No. <%=sco.getSalesConfirmationOrderNumber()%> - Delivery Orders</h2>

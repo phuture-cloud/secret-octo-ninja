@@ -52,6 +52,8 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
             po.setPurchaseOrderDate(purchaseOrderDate);
             po.setTaxRate(gstRate);
             em.persist(po);
+            //Copy line items from SCO
+            replacePOlineItemWithSCOitems(sco.getId(),po.getId());
             //Update SCO list of POs
             List<PurchaseOrder> purchaseOrders = sco.getPurchaseOrders();
             purchaseOrders.add(po);

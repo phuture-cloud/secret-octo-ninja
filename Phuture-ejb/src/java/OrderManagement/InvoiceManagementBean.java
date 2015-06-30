@@ -64,6 +64,8 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             invoice.setContactOfficeNo(sco.getContactName());
             invoice.setContactFaxNo(sco.getContactName());
             em.persist(invoice);
+            //Copy line items from SCO
+            replaceInvoiceLineItemWithSCOitems(sco.getId(),invoice.getId(),false);
             //Update SCO list of invoice
             List<Invoice> invoices = sco.getInvoices();
             invoices.add(invoice);
