@@ -57,11 +57,11 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             //Copy contacts detail from SCO contact as default shipping contact
             deliveryOrder.setCustomerName(sco.getCustomerName());
             deliveryOrder.setContactName(sco.getContactName());
-            deliveryOrder.setContactEmail(sco.getContactName());
-            deliveryOrder.setContactAddress(sco.getContactName());
-            deliveryOrder.setContactMobileNo(sco.getContactName());
-            deliveryOrder.setContactOfficeNo(sco.getContactName());
-            deliveryOrder.setContactFaxNo(sco.getContactName());
+            deliveryOrder.setContactEmail(sco.getContactEmail());
+            deliveryOrder.setContactAddress(sco.getContactAddress());
+            deliveryOrder.setContactMobileNo(sco.getContactMobileNo());
+            deliveryOrder.setContactOfficeNo(sco.getContactOfficeNo());
+            deliveryOrder.setContactFaxNo(sco.getContactFaxNo());
             em.persist(deliveryOrder);
             //Copy line items from SCO
             replaceDOlineItemWithSCOitems(sco.getId(),deliveryOrder.getId(),false);
