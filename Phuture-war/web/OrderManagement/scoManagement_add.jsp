@@ -306,7 +306,7 @@
                                                             <%
                                                                 if (sco != null && scoID != null && !scoID.isEmpty()) {
                                                                     out.print("<b>" + sco.getCustomerName() + "</b>");
-                                                                    String repl = sco.getRemarks().replaceAll("\\r", "<br>");
+                                                                    String repl = sco.getContactAddress().replaceAll("\\r", "<br>");
                                                                     out.print("<br>" + repl);
                                                                     out.print("<br>" + sco.getContactOfficeNo());
                                                                     if (sco.getContactFaxNo() != null && !sco.getContactFaxNo().isEmpty()) {
@@ -367,10 +367,11 @@
                                                         <div class="col-md-8" style="padding-top: 4px;">
                                                             <%
                                                                 if (contact != null) {
-                                                                    out.println("Address: " + contact.getAddress());
-                                                                    out.println("<br/>Telephone: " + contact.getOfficeNo());
-                                                                    out.println("<br/>Fasimile: " + contact.getFaxNo());
-                                                                    out.println("<br/>Mobile: " + contact.getMobileNo() + "<br/><br/>");
+                                                                    String repl = contact.getAddress().replaceAll("\\r", "<br>");
+                                                                    out.println(repl);
+                                                                    out.println("<br/>" + contact.getOfficeNo());
+                                                                    out.println("<br/>" + contact.getFaxNo());
+                                                                    out.println("<br/>" + contact.getMobileNo() + "<br/><br/>");
                                                                 }
                                                             %>
                                                         </div>
@@ -801,7 +802,7 @@
                                                     out.print("<button type='button' class='modal-with-move-anim btn btn-danger' href='#modalRemove'>Delete</button>");
                                                     if (sco.getItems().size() > 0) {
                                                         out.print("<button " + formDisablerFlag + " class='btn btn-primary' onclick='javascript:generatePO()'>Generate PO</button>");
-                                                        out.print("<button " + formDisablerFlag + " class='btn btn-primary' onclick='javascript:generateDO()'>Generate DO</button>");
+                                                        out.print("<button " + formDisablerFlag + " class='btn btn-primary modal-with-form' href='#modalGenerateDO' >Generate DO</button>");
                                                     }
                                                     out.print("<button " + formDisablerFlag + " class='btn btn-success' onclick='javascript:updateSCO(" + scoID + ")'>Save</button>");
                                                 } else {
@@ -827,6 +828,42 @@
                     <!-- end: page -->
 
                     <%if (sco != null && scoID != null && !scoID.isEmpty()) {%>
+                    <div id="modalGenerateDO" class="modal-block modal-block-primary mfp-hide">
+                        <section class="panel">
+                            <form name="editContactForm" action="../OrderManagementController" class="form-horizontal mb-lg">
+                                <header class="panel-heading">
+                                    <h2 class="panel-title">Generate Delivery Order</h2>
+                                </header>
+                                <div class="panel-body">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Delivery No <span class="required">*</span></label>
+                                        <div class="col-sm-9">
+                                            <input type="text" name="doNumber" class="form-control" required/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">Date <span class="required">*</span></label>
+                                        <div class="col-md-9">
+                                            <input type="text" name="doDate" data-plugin-datepicker data-date-format="dd/mm/yyyy" class="form-control" placeholder="dd/mm/yyyy" required/>
+                                        </div>
+                                    </div>
+
+                                    <br>
+                                    <input type="hidden" name="target" value="GenerateDO">    
+                                    <input type="hidden" name="id" value="<%=scoID%>">  
+                                </div>
+                                <footer class="panel-footer">
+                                    <div class="row">
+                                        <div class="col-md-12 text-right">
+                                            <button class="btn btn-success" type="submit">Generate</button>
+                                            <button class="btn btn-default modal-dismiss">Cancel</button>
+                                        </div>
+                                    </div>
+                                </footer>
+                            </form>
+                        </section>
+                    </div>
+
                     <div id="modalEditForm" class="modal-block modal-block-primary mfp-hide">
                         <section class="panel">
                             <form name="editContactForm" action="../OrderManagementController" class="form-horizontal mb-lg">
