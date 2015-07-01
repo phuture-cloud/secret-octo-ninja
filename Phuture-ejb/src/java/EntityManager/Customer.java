@@ -26,8 +26,8 @@ public class Customer implements Serializable {
     private List<SalesConfirmationOrder> SCOs;
     @OneToMany
     private List<PaymentRecord> PaymentRecords;
-//    @OneToOne
-//    private StatementOfAccount statementOfAccount;
+    @OneToOne
+    private StatementOfAccount statementOfAccount;
     @OneToMany
     private List<CreditNote> creditNotes;
     private Double availableCredits;
@@ -48,6 +48,14 @@ public class Customer implements Serializable {
         this.PaymentRecords = new ArrayList();
         this.creditNotes = new ArrayList();
         this.isDeleted = false;
+    }
+
+    public StatementOfAccount getStatementOfAccount() {
+        return statementOfAccount;
+    }
+
+    public void setStatementOfAccount(StatementOfAccount statementOfAccount) {
+        this.statementOfAccount = statementOfAccount;
     }
 
     public Long getId() {

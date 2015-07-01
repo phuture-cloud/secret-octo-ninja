@@ -35,15 +35,17 @@ public class Invoice implements Serializable {
     private String remarks;//Will appear on order
     @Lob
     private String notes;//For internal staff use on the CRM system only  
-
+    private Integer terms;
     private String status;
     //Automatic
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateCreated;
+    @Temporal(TemporalType.DATE)
+    private Date dateDue;
     //Manual
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date dateSent;
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date datePaid;
     private String estimatedDeliveryDate;
 
@@ -90,6 +92,22 @@ public class Invoice implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+ 
+    public Date getDateDue() {
+        return dateDue;
+    }
+
+    public void setDateDue(Date dateDue) {
+        this.dateDue = dateDue;
+    }
+
+    public Integer getTerms() {
+        return terms;
+    }
+
+    public void setTerms(Integer terms) {
+        this.terms = terms;
     }
 
     public String getInvoiceNumber() {

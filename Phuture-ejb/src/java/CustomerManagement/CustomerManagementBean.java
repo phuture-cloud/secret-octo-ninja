@@ -3,6 +3,7 @@ package CustomerManagement;
 import EntityManager.Contact;
 import EntityManager.Customer;
 import EntityManager.ReturnHelper;
+import EntityManager.SalesConfirmationOrder;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -52,6 +53,14 @@ public class CustomerManagementBean implements CustomerManagementBeanLocal {
                 result.setResult(false);
                 result.setDescription("Customer is already deleted.");
             } else {
+                //Allow delete only if all the SCO has been deleted
+                List<SalesConfirmationOrder> scos = customer.getSCOs();
+                for (SalesConfirmationOrder sco:scos) {
+                    if (!sco.getIsDeleted()) {
+                        result.setDescription("Customer has exisiting sales orders and cannot be deleted.");
+                        return result;
+                    }
+                }
                 customer.setIsDeleted(true);
                 //Loop all it's contact and mark them as deleted also
                 List<Contact> contacts = customer.getCustomerContacts();

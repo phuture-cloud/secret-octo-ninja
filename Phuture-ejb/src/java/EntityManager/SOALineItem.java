@@ -7,11 +7,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
 public class SOALineItem implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -19,11 +21,16 @@ public class SOALineItem implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date entryDate;
     private String referenceNo;
+    private String method;
+    @ManyToOne
+    private StatementOfAccount statementOfAccount;
+    @Lob
+    private String description;
     @Temporal(TemporalType.DATE)
     private Date dueDate;
-    private int debit;
-    private int credit;
-    private int balance;
+    private Double debit;
+    private Double credit;
+    private Double balance;
     private Long scoID;
     private Long invoiceID;
     private Long paymentID;
@@ -34,6 +41,38 @@ public class SOALineItem implements Serializable {
 
     public void setScoID(Long scoID) {
         this.scoID = scoID;
+    }
+
+    public String getMethod() {
+        return method;
+    }
+
+    public void setMethod(String method) {
+        this.method = method;
+    }
+
+    public Date getEntryDate() {
+        return entryDate;
+    }
+
+    public void setEntryDate(Date entryDate) {
+        this.entryDate = entryDate;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public StatementOfAccount getStatementOfAccount() {
+        return statementOfAccount;
+    }
+
+    public void setStatementOfAccount(StatementOfAccount statementOfAccount) {
+        this.statementOfAccount = statementOfAccount;
     }
 
     public Long getInvoiceID() {
@@ -76,31 +115,29 @@ public class SOALineItem implements Serializable {
         this.dueDate = dueDate;
     }
 
-    public int getDebit() {
+    public Double getDebit() {
         return debit;
     }
 
-    public void setDebit(int debit) {
+    public void setDebit(Double debit) {
         this.debit = debit;
     }
 
-    public int getCredit() {
+    public Double getCredit() {
         return credit;
     }
 
-    public void setCredit(int credit) {
+    public void setCredit(Double credit) {
         this.credit = credit;
     }
 
-    public int getBalance() {
+    public Double getBalance() {
         return balance;
     }
 
-    public void setBalance(int balance) {
+    public void setBalance(Double balance) {
         this.balance = balance;
     }
-    
-    
 
     public Long getId() {
         return id;
@@ -134,5 +171,5 @@ public class SOALineItem implements Serializable {
     public String toString() {
         return "EntityManager.LineItemEntity[ id=" + id + " ]";
     }
-    
+
 }

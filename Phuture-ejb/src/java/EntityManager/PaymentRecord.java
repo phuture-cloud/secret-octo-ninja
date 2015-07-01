@@ -8,7 +8,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -62,13 +61,22 @@ public class PaymentRecord implements Serializable {
         this.notes = notes;
     }
 
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+
     public void setPaymentMethod(String paymentMethod) {
         this.paymentMethod = paymentMethod;
+    }
+
+    public String getPaymentReferenceNumber() {
+        return paymentReferenceNumber;
     }
 
     public void setPaymentReferenceNumber(String paymentReferenceNumber) {
         this.paymentReferenceNumber = paymentReferenceNumber;
     }
+
 
     public Date getPaymentDate() {
         return paymentDate;

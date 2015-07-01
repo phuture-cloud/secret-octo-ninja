@@ -2,14 +2,15 @@ package OrderManagement;
 
 import EntityManager.Contact;
 import EntityManager.Customer;
-import EntityManager.DeliveryOrder;
 import EntityManager.Invoice;
 import EntityManager.LineItem;
 import EntityManager.ReturnHelper;
 import EntityManager.SalesConfirmationOrder;
 import EntityManager.Staff;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -53,6 +54,7 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             invoice.setInvoiceNumber(invoiceNumber);
             invoice.setTaxRate(gstRate);
             //Copy SCO details
+            invoice.setTerms(sco.getTerms());
             invoice.setEstimatedDeliveryDate(sco.getEstimatedDeliveryDate());
             invoice.setCustomerPurchaseOrderNumber(sco.getCustomerPurchaseOrderNumber());
             //Copy contacts details from SCO to use as default for billing contact
@@ -87,7 +89,7 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
     }
 
     @Override
-    public ReturnHelper updateInvoice(Long invoiceID, String newInvoiceNumber, Date invoiceSent, Date invoicePaid, String estimatedDeliveryDate, String customerPurchaseOrderNumber, Boolean adminOverwrite) {
+    public ReturnHelper updateInvoice(Long invoiceID, String newInvoiceNumber, Date invoiceSent, Date invoicePaid, String estimatedDeliveryDate, Integer terms, String customerPurchaseOrderNumber, Boolean adminOverwrite) {
         System.out.println("InvoiceManagementBean: updateInvoice() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -112,6 +114,7 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             //Update fields 
             invoice.setInvoiceNumber(newInvoiceNumber);
             invoice.setDateSent(invoiceSent);
+            invoice.setTerms(terms);
             invoice.setEstimatedDeliveryDate(estimatedDeliveryDate);
             invoice.setCustomerPurchaseOrderNumber(customerPurchaseOrderNumber);
             if (invoiceSent!=null) {
@@ -120,6 +123,13 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             invoice.setDatePaid(invoicePaid);
             if (invoicePaid!=null) {
                 invoice.setStatusAsPaid();
+                //Update due date based on terms
+                Calendar c = new GregorianCalendar();
+                c.add(Calendar.DATE, terms);
+                Date dateDue = c.getTime();
+                invoice.setDateDue(dateDue);
+            } else {
+                invoice.setDateDue(null);
             }
             em.merge(invoice);
             result.setID(invoice.getId());

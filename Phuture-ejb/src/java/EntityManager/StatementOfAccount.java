@@ -16,11 +16,12 @@ public class StatementOfAccount implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    //@OneToOne(mappedBy = "statementOfAccount")
+    @OneToOne(mappedBy = "statementOfAccount")
     private Customer customer;
+    private Double totalAmountOrdered;
     private Double totalAmountInvoiced;
     private Double totalAmountPaid;
-    
+
     @OneToMany
     private List<SOALineItem> lineItem;
 
@@ -50,6 +51,14 @@ public class StatementOfAccount implements Serializable {
 
     public Double getTotalAmountInvoiced() {
         return totalAmountInvoiced;
+    }
+
+    public Double getTotalAmountOrdered() {
+        return totalAmountOrdered;
+    }
+
+    public void setTotalAmountOrdered(Double totalAmountOrdered) {
+        this.totalAmountOrdered = totalAmountOrdered;
     }
 
     public void setTotalAmountInvoiced(Double totalAmountInvoiced) {
