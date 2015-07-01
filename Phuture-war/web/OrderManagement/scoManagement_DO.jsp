@@ -23,7 +23,7 @@
         <jsp:include page="../displayNotification.jsp" />
         <script>
             function viewDO(id) {
-
+                window.location.href = "../DeliveryOrderManagementController?target=RetrieveDO&id=" + id;
             }
 
             function back(id) {
@@ -78,11 +78,7 @@
                                             <td><%=sco.getDeliveryOrders().get(i).getDeliveryOrderNumber()%></td>
                                             <td><%=sco.getDeliveryOrders().get(i).getDeliveryOrderDate()%></td>
                                             <td><%=sco.getDeliveryOrders().get(i).getStatus()%></td>
-                                            <td>
-                                                <div class="btn-group" role="group" aria-label="...">
-                                                    <button  class="btn btn-default" onclick="javascript:viewDO('<%=sco.getInvoices().get(i).getId()%>')">View</button>
-                                                </div>
-                                            </td>
+                                            <td><button type="button" class="btn btn-default btn-block" onclick="javascript:viewDO('<%=sco.getDeliveryOrders().get(i).getId()%>')">View</button></td>
                                         </tr>
                                         <%
                                                 }
@@ -91,9 +87,10 @@
 
                                     </tbody>
                                 </table>
-                                <div class="col-sm-12 text-right mt-md mb-md">
-                                    <button type="button" class="btn btn-default" onclick="javascript:back(<%=sco.getId()%>)">Back</button>   
-                                </div>
+
+                                <br>
+                                <button type="button" class="btn btn-default" onclick="javascript:back(<%=sco.getId()%>)">Back</button>   
+
                             </form>
                         </div>
 
