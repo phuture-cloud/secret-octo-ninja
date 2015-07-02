@@ -1,9 +1,10 @@
 package OrderManagement;
 
 import EntityManager.ReturnHelper;
+import EntityManager.SalesConfirmationOrder;
 import EntityManager.Staff;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -14,10 +15,15 @@ import javax.servlet.http.HttpSession;
 public class DeliveryOrderManagementController extends HttpServlet {
 
     @EJB
+    private OrderManagementBeanLocal orderManagementBean;
+
+    @EJB
     private DeliveryOrderManagementBeanLocal deliveryOrderManagementBean;
 
     String nextPage = "", goodMsg = "", errMsg = "";
     HttpSession session;
+    Boolean isAdmin = false;
+    Long loggedInStaffID = null;
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         System.out.println("Welcome to DeliveryOrderManagementController");
@@ -28,7 +34,6 @@ public class DeliveryOrderManagementController extends HttpServlet {
 
         session = request.getSession();
         ReturnHelper returnHelper = null;
-        Boolean isAdmin = false;
 
         try {
             if (checkLogin()) {
@@ -39,6 +44,27 @@ public class DeliveryOrderManagementController extends HttpServlet {
                             nextPage = "OrderManagement/doManagement.jsp";
                         }
                         break;
+
+                    case "DeleteDO":
+                        if (id != null) {
+                            returnHelper = deliveryOrderManagementBean.deleteDeliveryOrder(Long.parseLong(id), isAdmin);
+                            if (returnHelper.getResult()) {
+                                List<SalesConfirmationOrder> salesConfirmationOrders = orderManagementBean.listAllSalesConfirmationOrder(loggedInStaffID);
+                                if (salesConfirmationOrders == null) {
+                                    nextPage = "error500.html";
+                                } else {
+                                    session.setAttribute("salesConfirmationOrders", salesConfirmationOrders);
+                                }
+                                SalesConfirmationOrder sco = (SalesConfirmationOrder) (session.getAttribute("sco"));
+                                session.setAttribute("sco", orderManagementBean.getSalesConfirmationOrder(sco.getId()));
+
+                                nextPage = "OrderManagement/scoManagement_DO.jsp?goodMsg=" + returnHelper.getDescription();
+                            } else {
+                                nextPage = "OrderManagement/scoManagement_DO.jsp?errMsg=" + returnHelper.getDescription();
+                            }
+                        }
+                        break;
+
                 }
 
             }
@@ -61,6 +87,10 @@ public class DeliveryOrderManagementController extends HttpServlet {
     public boolean checkLogin() {
         try {
             Staff staff = (Staff) (session.getAttribute("staff"));
+            if (staff.getIsAdmin()) {
+                isAdmin = true;
+                loggedInStaffID = staff.getId();
+            }
             if (staff == null) {
                 return false;
             } else {

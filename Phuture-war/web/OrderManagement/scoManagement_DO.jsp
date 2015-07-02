@@ -73,6 +73,7 @@
                                         <%
                                             if (sco != null) {
                                                 for (int i = 0; i < sco.getDeliveryOrders().size(); i++) {
+                                                    if (!sco.getDeliveryOrders().get(i).getIsDeleted()) {
                                         %>
                                         <tr>        
                                             <td><%=sco.getDeliveryOrders().get(i).getDeliveryOrderNumber()%></td>
@@ -81,6 +82,7 @@
                                             <td><button type="button" class="btn btn-default btn-block" onclick="javascript:viewDO('<%=sco.getDeliveryOrders().get(i).getId()%>')">View</button></td>
                                         </tr>
                                         <%
+                                                    }
                                                 }
                                             }
                                         %>
