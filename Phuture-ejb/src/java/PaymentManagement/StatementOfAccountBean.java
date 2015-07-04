@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import javax.ejb.Schedule;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -27,31 +28,39 @@ public class StatementOfAccountBean implements StatementOfAccountBeanLocal {
 
     @Override
     public List<StatementOfAccount> listAllStatementOfAccounts() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        System.out.println("StatementOfAccountBean: listAllStatementOfAccounts(): called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        try {
+            //Delete all the SOA
+            Query q = em.createQuery("SELECT e FROM StatementOfAccount e");
+            List<StatementOfAccount> soas = q.getResultList();
+            return soas;
+        } catch (Exception ex) {
+            System.out.println("StatementOfAccountBean: listAllStatementOfAccounts() failed");
+            result.setDescription("Failed to get statements. Internal server error");
+            ex.printStackTrace();
+            return null;
+        }
     }
 
     @Override
     public StatementOfAccount getCustomerSOA(Long customerID) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Double calculateAmountOverDue(Long customerID, int from, int to) {
-//    private Double amountOverDueFrom0to30Days;
-//    private Double amountOverDueFrom31to60Days;
-//    private Double amountOverDueFrom61to90Days;
-//    private Double amountOverDueOver91Days;
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Double calculateTotalAmountOverDue(Long customerID) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public List<Invoice> getOverDueInvoices(Long customerID) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        System.out.println("StatementOfAccountBean: getCustomerSOA(): called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        try {
+            //Delete all the SOA
+            Query q = em.createQuery("SELECT e FROM StatementOfAccount e WHERE e.customer.id=:customerID");
+            q.setParameter("customerID", customerID);
+            StatementOfAccount soa = (StatementOfAccount) q.getSingleResult();
+            return soa;
+        } catch (Exception ex) {
+            System.out.println("StatementOfAccountBean: getCustomerSOA() failed");
+            result.setDescription("Failed to get statements. Internal server error");
+            ex.printStackTrace();
+            return null;
+        }
     }
 
     @Override
@@ -77,19 +86,25 @@ public class StatementOfAccountBean implements StatementOfAccountBeanLocal {
             //Recreate all the SOA
             q = em.createQuery("SELECT e FROM Customer e WHERE e.isDeleted=false");
             List<Customer> customers = q.getResultList();
+            Boolean someFailed = false;
             for (Customer customer : customers) {
-
+                result = refreshCustomerSOA(customer.getId());
+                if (!result.getResult()) {
+                    someFailed = true;
+                }
             }
-
-            //em.persist(soa);
+            if (someFailed) {
+                result.setDescription("Failed to generate statements for some customers due to inconsistent records.");
+            } else {
+                result.setDescription("All customer's statements refreshed");
+                result.setResult(true);
+            }
         } catch (Exception ex) {
-            System.out.println("StatementOfAccountBean: listPaymentByCustomer() failed");
+            System.out.println("StatementOfAccountBean: refreshAllSOA() failed");
             result.setDescription("Failed to generate statements. Internal server error");
             ex.printStackTrace();
         }
-        //return result;
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-
+        return result;
     }
 
     public static long getDifferenceDays(Date d1, Date d2) {
@@ -113,12 +128,17 @@ public class StatementOfAccountBean implements StatementOfAccountBeanLocal {
             }
             //Delete existing SOA first
             StatementOfAccount soa = customer.getStatementOfAccount();
-            List<SOALineItem> soalis = soa.getLineItem();
-            //Delete all SOALineItem
-            for (SOALineItem soali : soalis) {
-                em.remove(soali);
+            List<SOALineItem> soalis = null;
+            if (soa != null) {
+                soalis = soa.getLineItem();
+                if (soalis != null) {
+                    //Delete all SOALineItem
+                    for (SOALineItem soali : soalis) {
+                        em.remove(soali);
+                    }
+                }
+                em.remove(soa);
             }
-            em.remove(soa);
 
             //Create new SOA
             soa = new StatementOfAccount();
@@ -129,8 +149,9 @@ public class StatementOfAccountBean implements StatementOfAccountBeanLocal {
             soalis = new ArrayList();
             Double totalAmountOrdered = 0.0;
             Double totalAmountInvoiced = 0.0;
-            Double totalAmountPaid = 0.0;
+            Double totalAmountPaidForThisCustomer = 0.0;
             Double totalAmountOverDue = 0.0;
+            List<Invoice> overDueInvoices = new ArrayList();
             Double amountOverDueFrom0to30Days = 0.0;
             Double amountOverDueFrom31to60Days = 0.0;
             Double amountOverDueFrom61to90Days = 0.0;
@@ -145,7 +166,7 @@ public class StatementOfAccountBean implements StatementOfAccountBeanLocal {
             }
 
             //Loop thru the customer invoice and create it as an SOALineItem
-            q = em.createQuery("SELECT e FROM Invoice e where e.salesConfirmationOrder.customerLink=:customerID");
+            q = em.createQuery("SELECT e FROM Invoice e where e.salesConfirmationOrder.customerLink.id=:customerID");
             q.setParameter("customerID", customerID);
             List<Invoice> invoices = q.getResultList();
             soalis = new ArrayList();
@@ -164,43 +185,52 @@ public class StatementOfAccountBean implements StatementOfAccountBeanLocal {
                 em.persist(soali);
                 soalis.add(soali);
                 totalAmountInvoiced = totalAmountInvoiced + invoice.getTotalPrice();
+                //For each invoice
+                //Loop thru the customer payment and create it as an SOALineItem
+                //At the same time calculate the amount overdue for each invoice
+                q = em.createQuery("SELECT e FROM PaymentRecord e where e.customer.id=:customerID");
+                q.setParameter("customerID", customerID);
+                List<PaymentRecord> paymentRecords = q.getResultList();
+                soalis = new ArrayList();
+                Double totalAmountPaidForThisInvoice = 0.0;
+                for (PaymentRecord paymentRecord : paymentRecords) {
+                    SOALineItem soali2 = new SOALineItem();
+                    soali2.setStatementOfAccount(customer.getStatementOfAccount());
+                    soali2.setEntryDate(paymentRecord.getPaymentDate());
+                    soali2.setReferenceNo(paymentRecord.getPaymentReferenceNumber());
+                    soali2.setMethod(paymentRecord.getPaymentMethod());
+                    soali2.setDescription("Pymt for invoice " + paymentRecord.getInvoice().getInvoiceNumber());
+                    soali2.setDueDate(paymentRecord.getInvoice().getDateDue());
+                    soali2.setScoID(paymentRecord.getInvoice().getSalesConfirmationOrder().getId());
+                    soali2.setInvoiceID(paymentRecord.getInvoice().getId());
+                    soali2.setPaymentID(paymentRecord.getId());
+                    soali2.setCredit(paymentRecord.getAmount());
+                    soali2.setDebit(0.0);
+                    em.persist(soali2);
+                    soalis.add(soali2);
+                    totalAmountPaidForThisCustomer = totalAmountPaidForThisCustomer + paymentRecord.getAmount();
+                    totalAmountPaidForThisInvoice = totalAmountPaidForThisInvoice + paymentRecord.getAmount();
+                }
                 //Calculate amount overdue for each invoice
-                if (invoice.getDateDue() != null && invoice.getDateDue().before(todayDate)) {
-                    Long dayDifference = getDifferenceDays(todayDate, invoice.getDateDue());
-                    if (dayDifference > 91) {
-                        amountOverDueOver91Days = amountOverDueOver91Days + invoice.getTotalPrice();
-                    } else if (dayDifference >= 61) {
-                        amountOverDueFrom61to90Days = amountOverDueFrom61to90Days + invoice.getTotalPrice();
-                    } else if (dayDifference >= 31) {
-                        amountOverDueFrom31to60Days = amountOverDueFrom31to60Days + invoice.getTotalPrice();
-                    } else if (dayDifference >= 0) {
-                        amountOverDueFrom0to30Days = amountOverDueFrom0to30Days + invoice.getTotalPrice();
+                //only if payment is less then amount invoiced
+                //TODO only mark as overdue if invoice is not writen off
+                if (invoice.getTotalPrice() > totalAmountPaidForThisInvoice) {
+                    if (invoice.getDateDue() != null && invoice.getDateDue().before(todayDate)) {
+                        Long dayDifference = getDifferenceDays(todayDate, invoice.getDateDue());
+                        Double amountOwedForThisInvoice = invoice.getTotalPrice() - totalAmountPaidForThisInvoice;
+                        if (dayDifference > 91) {
+                            amountOverDueOver91Days = amountOverDueOver91Days + amountOwedForThisInvoice;
+                        } else if (dayDifference >= 61) {
+                            amountOverDueFrom61to90Days = amountOverDueFrom61to90Days + amountOwedForThisInvoice;
+                        } else if (dayDifference >= 31) {
+                            amountOverDueFrom31to60Days = amountOverDueFrom31to60Days + amountOwedForThisInvoice;
+                        } else if (dayDifference >= 0) {
+                            amountOverDueFrom0to30Days = amountOverDueFrom0to30Days + amountOwedForThisInvoice;
+                        }
+                        overDueInvoices.add(invoice);
                     }
                 }
             }
-            //Loop thru the customer payment and create it as an SOALineItem
-            q = em.createQuery("SELECT e FROM PaymentRecord e where e.customer.id=:customerID");
-            q.setParameter("customerID", customerID);
-            List<PaymentRecord> paymentRecords = q.getResultList();
-            soalis = new ArrayList();
-            for (PaymentRecord paymentRecord : paymentRecords) {
-                SOALineItem soali = new SOALineItem();
-                soali.setStatementOfAccount(customer.getStatementOfAccount());
-                soali.setEntryDate(paymentRecord.getPaymentDate());
-                soali.setReferenceNo(paymentRecord.getPaymentReferenceNumber());
-                soali.setMethod(paymentRecord.getPaymentMethod());
-                soali.setDescription("Pymt for invoice " + paymentRecord.getInvoice().getInvoiceNumber());
-                soali.setDueDate(paymentRecord.getInvoice().getDateDue());
-                soali.setScoID(paymentRecord.getInvoice().getSalesConfirmationOrder().getId());
-                soali.setInvoiceID(paymentRecord.getInvoice().getId());
-                soali.setPaymentID(paymentRecord.getId());
-                soali.setCredit(paymentRecord.getAmount());
-                soali.setDebit(0.0);
-                em.persist(soali);
-                soalis.add(soali);
-                totalAmountPaid = totalAmountPaid + paymentRecord.getAmount();
-            }
-
             //Sort the SOALIS by their date and calculate the balance fields
             q = em.createQuery("SELECT e FROM SOALineItem e where e.statementOfAccount.customer.id=:customerID ORDER BY e.entryDate ASC");
             q.setParameter("customerID", customerID);
@@ -215,7 +245,9 @@ public class StatementOfAccountBean implements StatementOfAccountBeanLocal {
             // Store the computed total amounts
             soa.setTotalAmountOrdered(totalAmountOrdered);
             soa.setTotalAmountInvoiced(totalAmountInvoiced);
-            soa.setTotalAmountPaid(totalAmountPaid);
+            soa.setTotalAmountPaid(totalAmountPaidForThisCustomer);
+            soa.setOverDueInvoices(overDueInvoices);
+            soa.setLineItem(soalis);
             totalAmountOverDue = amountOverDueFrom0to30Days + amountOverDueFrom31to60Days + amountOverDueFrom61to90Days + amountOverDueOver91Days;
             soa.setTotalAmountOverDue(totalAmountOverDue);
             soa.setAmountOverDueFrom0to30Days(amountOverDueFrom0to30Days);

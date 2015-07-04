@@ -11,9 +11,6 @@ public interface StatementOfAccountBeanLocal {
     
     public List<StatementOfAccount> listAllStatementOfAccounts();
     public StatementOfAccount getCustomerSOA(Long customerID);
-    public Double calculateAmountOverDue(Long customerID, int from, int to);
-    public Double calculateTotalAmountOverDue(Long customerID);
-    public List<Invoice> getOverDueInvoices(Long customerID);
     
     public ReturnHelper refreshAllSOA();
     public ReturnHelper refreshCustomerSOA(Long customerID);

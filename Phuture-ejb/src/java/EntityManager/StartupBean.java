@@ -4,6 +4,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.ejb.EJB;
+import javax.ejb.Schedule;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.persistence.EntityManager;
@@ -18,9 +19,16 @@ public class StartupBean {
     private AccountManagement.AccountManagementBeanLocal ambl;
     @EJB
     private CustomerManagement.CustomerManagementBeanLocal cmbl;
+    @EJB
+    private PaymentManagement.StatementOfAccountBeanLocal soabl;
 
     @PersistenceContext
     private EntityManager em;
+
+    @Schedule(hour = "0", minute = "0")
+    private void refreshSOA(){
+        soabl.refreshAllSOA();
+    }
 
     @PostConstruct
     private void startup() {
