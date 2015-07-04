@@ -70,6 +70,7 @@
                 });
 
                 function back() {
+                    window.onbeforeunload = null;
                     window.location.href = "scoManagement_DO.jsp";
                 }
 
@@ -161,8 +162,8 @@
                 function deleteDO(id) {
                     window.onbeforeunload = null;
                     doManagement.id.value = id;
-                    doManagement.target.value = "DeleteSCO";
-                    document.doManagement.action = "../OrderManagementController";
+                    doManagement.target.value = "DeleteDO";
+                    document.doManagement.action = "../DeliveryOrderManagementController";
                     document.doManagement.submit();
                 }
 
@@ -775,7 +776,7 @@
                                         <i class="fa fa-question-circle"></i>
                                     </div>
                                     <div class="modal-text">
-                                        <p>Are you sure that you want to delete this Delivery Order?<br> All associated PO/DO/Invoice/Payment records will also be deleted together!</p>
+                                        <p>Are you sure that you want to delete this Delivery Order?<br> All associated Invoice/Payment records will also be deleted together!</p>
                                     </div>
                                 </div>
                             </div>
