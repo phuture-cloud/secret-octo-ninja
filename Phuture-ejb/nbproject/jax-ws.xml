@@ -4,6 +4,9 @@
     <service name="NewWebService">
       <implementation-class>OrderManagement.NewWebService</implementation-class>
     </service>
+    <service name="StatementOfAccountWS">
+      <implementation-class>PaymentManagement.StatementOfAccountWS</implementation-class>
+    </service>
   </services>
   <clients/>
 </jax-ws>

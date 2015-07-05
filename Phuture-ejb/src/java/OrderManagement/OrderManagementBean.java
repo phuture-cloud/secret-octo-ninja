@@ -5,6 +5,7 @@ import EntityManager.Customer;
 import EntityManager.DeliveryOrder;
 import EntityManager.Invoice;
 import EntityManager.LineItem;
+import EntityManager.PaymentRecord;
 import EntityManager.PurchaseOrder;
 import EntityManager.ReturnHelper;
 import EntityManager.SalesConfirmationOrder;
@@ -399,7 +400,9 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             List<PurchaseOrder> pos = sco.getPurchaseOrders();
             List<DeliveryOrder> dos = sco.getDeliveryOrders();
             List<Invoice> is = sco.getInvoices();
-            //List<Payment> payment = ;
+            for (Invoice invoice : is) {
+                List<PaymentRecord> payment = invoice.getPaymentRecords();
+            }
             result.setResult(true);
             result.setDescription("SCO deleted successfully.");
         } catch (Exception ex) {
