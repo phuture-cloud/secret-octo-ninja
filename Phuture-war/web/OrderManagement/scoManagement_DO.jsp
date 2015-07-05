@@ -1,3 +1,4 @@
+<%@page import="java.text.SimpleDateFormat"%>
 <%@page import="EntityManager.SalesConfirmationOrder"%>
 <%@page import="EntityManager.Customer"%>
 <%@page import="java.util.List"%>
@@ -77,7 +78,13 @@
                                         %>
                                         <tr>        
                                             <td><%=sco.getDeliveryOrders().get(i).getDeliveryOrderNumber()%></td>
-                                            <td><%=sco.getDeliveryOrders().get(i).getDeliveryOrderDate()%></td>
+                                            <td>
+                                                <%
+                                                    SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("d MMM yyyy hh:mm:ss");
+                                                    String date = DATE_FORMAT.format(sco.getDeliveryOrders().get(i).getDeliveryOrderDate());
+                                                    out.print(date);
+                                                %>
+                                            </td>
                                             <td><%=sco.getDeliveryOrders().get(i).getStatus()%></td>
                                             <td><button type="button" class="btn btn-default btn-block" onclick="javascript:viewDO('<%=sco.getDeliveryOrders().get(i).getId()%>')">View</button></td>
                                         </tr>
