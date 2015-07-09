@@ -98,20 +98,18 @@
                     document.doManagement.submit();
                 }
 
-                function addLineItemToExistingDO(id) {
+                function addLineItemToExistingDO() {
                     window.onbeforeunload = null;
-                    doManagement.id.value = id;
-                    doManagement.target.value = "UpdateSCO";
+                    doManagement.target.value = "UpdateDO";
                     doManagement.source.value = "AddLineItemToExistingSCO";
                     document.doManagement.action = "../OrderManagementController";
                     document.doManagement.submit();
                 }
 
-                function updateDO(id) {
+                function updateDO() {
                     window.onbeforeunload = null;
-                    doManagement.id.value = id;
-                    doManagement.target.value = "UpdateSCO";
-                    document.doManagement.action = "../OrderManagementController";
+                    doManagement.target.value = "UpdateDO";
+                    document.doManagement.action = "../DeliveryOrderManagementController";
                     document.doManagement.submit();
                 }
 
@@ -159,12 +157,9 @@
                     document.doManagement.submit();
                 }
 
-                function deleteDO(id) {
+                function deleteDO() {
                     window.onbeforeunload = null;
-                    doManagement.id.value = id;
-                    doManagement.target.value = "DeleteDO";
-                    document.doManagement.action = "../DeliveryOrderManagementController";
-                    document.doManagement.submit();
+                    window.location.href = "../DeliveryOrderManagementController?target=DeleteDO";
                 }
 
                 function addressBook() {
@@ -610,7 +605,7 @@
                                                     if (deliveryOrder.getItems().size() > 0) {
                                                         out.print("<button " + formDisablerFlag + " class='btn btn-primary' onclick='javascript:generateInvoice()'>Generate Invoice</button>");
                                                     }
-                                                    out.print("<button " + formDisablerFlag + " class='btn btn-success' onclick='javascript:updateDO(" + deliveryOrder.getId() + ")'>Save</button>");
+                                                    out.print("<button " + formDisablerFlag + " class='btn btn-success' onclick='javascript:updateDO();'>Save</button>");
                                                 } else {
                                                     out.print("<button " + formDisablerFlag + " class='btn btn-success' type='submit'>Save</button>");
                                                 }
@@ -705,7 +700,7 @@
 
                     <div id="modalNotes" class="modal-block modal-block-primary mfp-hide">
                         <section class="panel">
-                            <form name="editNotesForm" action="../OrderManagementController" class="form-horizontal mb-lg">
+                            <form name="editNotesForm" action="../DeliveryOrderManagementController" class="form-horizontal mb-lg">
                                 <header class="panel-heading">
                                     <h2 class="panel-title">Notes</h2>
                                 </header>
@@ -719,7 +714,6 @@
                                         </div>
                                     </div>
                                     <input type="hidden" name="target" value="UpdateDONotes">    
-                                    <input type="hidden" name="id" value="<%=deliveryOrder.getId()%>">  
                                 </div>
                                 <footer class="panel-footer">
                                     <div class="row">
@@ -750,7 +744,6 @@
                                         </div>
                                     </div>
                                     <input type="hidden" name="target" value="UpdateDORemarks">    
-                                    <input type="hidden" name="id" value="<%=deliveryOrder.getId()%>">  
                                 </div>
                                 <footer class="panel-footer">
                                     <div class="row">
@@ -783,7 +776,7 @@
                             <footer class="panel-footer">
                                 <div class="row">
                                     <div class="col-md-12 text-right">
-                                        <button class="btn btn-primary modal-confirm" onclick="deleteDO(<%=deliveryOrder.getId()%>)">Confirm</button>
+                                        <button class="btn btn-primary modal-confirm" onclick="javascript:deleteDO();">Confirm</button>
                                         <button class="btn btn-default modal-dismiss">Cancel</button>
                                     </div>
                                 </div>

@@ -64,7 +64,7 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             deliveryOrder.setContactFaxNo(sco.getContactFaxNo());
             em.persist(deliveryOrder);
             //Copy line items from SCO
-            replaceDOlineItemWithSCOitems(sco.getId(),deliveryOrder.getId(),false);
+            replaceDOlineItemWithSCOitems(sco.getId(), deliveryOrder.getId(), false);
             //Update SCO list of DOs
             List<DeliveryOrder> deliveryOrders = sco.getDeliveryOrders();
             deliveryOrders.add(deliveryOrder);
@@ -86,7 +86,7 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
     }
 
     @Override
-    public ReturnHelper updateDeliveryOrder(Long deliveryOrderID, String newDeliveryOrderNumber, Date newDeliveryOrderDate, Date estimatedDeliveryDate, String customerPurchaseOrderNumber, String status, Boolean adminOverwrite) {
+    public ReturnHelper updateDeliveryOrder(Long deliveryOrderID, String newDeliveryOrderNumber, Date newDeliveryOrderDate, String customerPurchaseOrderNumber, String status, Boolean adminOverwrite) {
         System.out.println("DeliveryOrderManagementBean: updateDeliveryOrder() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);

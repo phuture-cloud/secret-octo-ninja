@@ -1,9 +1,12 @@
 package OrderManagement;
 
+import EntityManager.DeliveryOrder;
 import EntityManager.ReturnHelper;
 import EntityManager.SalesConfirmationOrder;
 import EntityManager.Staff;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
@@ -28,17 +31,35 @@ public class DeliveryOrderManagementController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         System.out.println("Welcome to DeliveryOrderManagementController");
         String target = request.getParameter("target");
-        String id = request.getParameter("id");
-        System.out.println("target " + target);
-        System.out.println("id " + id);
+        String source = request.getParameter("source");
+
+        String remarks = request.getParameter("remarks");
+        String notes = request.getParameter("notes");
+        String itemName = request.getParameter("itemName");
+        String itemDescription = request.getParameter("itemDescription");
+        String itemQty = request.getParameter("itemQty");
+        String itemUnitPrice = request.getParameter("itemUnitPrice");
+
+        String doNumber = request.getParameter("doNumber");
+        String poNumber = request.getParameter("poNumber");
+        String doDate = request.getParameter("doDate");
+        if (doDate == null) {
+            doDate = "";
+        }
+        String status = request.getParameter("status");
+        if (status == null) {
+            status = "";
+        }
 
         session = request.getSession();
         ReturnHelper returnHelper = null;
+        DeliveryOrder deliveryOrder = (DeliveryOrder) (session.getAttribute("do"));
 
         try {
             if (checkLogin()) {
                 switch (target) {
                     case "RetrieveDO":
+                        String id = request.getParameter("id");
                         if (id != null) {
                             session.setAttribute("do", deliveryOrderManagementBean.getDeliveryOrder(Long.parseLong(id)));
                             nextPage = "OrderManagement/doManagement.jsp";
@@ -46,8 +67,8 @@ public class DeliveryOrderManagementController extends HttpServlet {
                         break;
 
                     case "DeleteDO":
-                        if (id != null) {
-                            returnHelper = deliveryOrderManagementBean.deleteDeliveryOrder(Long.parseLong(id), isAdmin);
+                        if (deliveryOrder != null) {
+                            returnHelper = deliveryOrderManagementBean.deleteDeliveryOrder(deliveryOrder.getId(), isAdmin);
                             if (returnHelper.getResult()) {
                                 List<SalesConfirmationOrder> salesConfirmationOrders = orderManagementBean.listAllSalesConfirmationOrder(loggedInStaffID);
                                 if (salesConfirmationOrders == null) {
@@ -57,17 +78,80 @@ public class DeliveryOrderManagementController extends HttpServlet {
                                 }
                                 SalesConfirmationOrder sco = (SalesConfirmationOrder) (session.getAttribute("sco"));
                                 session.setAttribute("sco", orderManagementBean.getSalesConfirmationOrder(sco.getId()));
+                                session.removeAttribute("do");
 
                                 nextPage = "OrderManagement/scoManagement_DO.jsp?goodMsg=" + returnHelper.getDescription();
                             } else {
                                 nextPage = "OrderManagement/scoManagement_DO.jsp?errMsg=" + returnHelper.getDescription();
                             }
+                        } else {
+                            nextPage = "OrderManagement/scoManagement_DO.jsp?errMsg=Delete Delivery Order failed. An error has occured.";
                         }
                         break;
 
-                }
+                    case "UpdateDO":
+                        if (source.equals("AddLineItemToExistingDO")) {
+                            if (itemName == null || itemName.isEmpty() || itemDescription == null || itemDescription.isEmpty() || itemQty == null || itemQty.isEmpty() || itemUnitPrice == null || itemUnitPrice.isEmpty()) {
+                                nextPage = "OrderManagement/doManagement.jsp?doNumber=" + doNumber + "&doDate=" + doDate + "&errMsg=Please fill in all the fields for the item.";
+                                break;
+                            }
+                        }
+                        if (doNumber == null || doNumber.isEmpty() || doDate == null || doDate.isEmpty()) {
+                            nextPage = "OrderManagement/doManagement.jsp?doNumber=" + doNumber + "&doDate=" + doDate + "&errMsg=Please fill in all the fields for the DO.";
+                        } else {
+                            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+                            Date doDateDate = formatter.parse(doDate);
 
-            }
+                            //Update DO
+                            returnHelper = deliveryOrderManagementBean.updateDeliveryOrder(deliveryOrder.getId(), doNumber, doDateDate, poNumber, status, isAdmin);
+                            if (returnHelper.getResult()) {
+                                Long doID = returnHelper.getID();
+                                deliveryOrder = deliveryOrderManagementBean.getDeliveryOrder(doID);
+                                session.setAttribute("do", deliveryOrder);
+                                nextPage = "OrderManagement/doManagement.jsp?goodMsg=" + returnHelper.getDescription() + "&doNumber=" + doNumber;
+
+                                //Update line item if there is any
+                                if (itemName != null && !itemName.isEmpty() && itemDescription != null && !itemDescription.isEmpty() && itemQty != null && !itemQty.isEmpty() && itemUnitPrice != null && !itemUnitPrice.isEmpty()) {
+                                    returnHelper = deliveryOrderManagementBean.addDOlineItem(doID, itemName, itemDescription, Integer.parseInt(itemQty), Double.parseDouble(itemUnitPrice), isAdmin);
+                                    deliveryOrder = deliveryOrderManagementBean.getDeliveryOrder(doID);
+                                    if (returnHelper.getResult() && deliveryOrder != null) {
+                                        session.setAttribute("do", deliveryOrder);
+                                        nextPage = "OrderManagement/doManagement.jsp?goodMsg=" + returnHelper.getDescription() + "&doNumber=" + doNumber;
+                                    } else {
+                                        nextPage = "OrderManagement/doManagement.jsp?errMsg=" + returnHelper.getDescription() + "&doNumber=" + doNumber;
+                                    }
+                                }
+                            } else {
+                                nextPage = "OrderManagement/doManagement.jsp?doNumber=" + doNumber + "&doDate=" + doDate + "&errMsg=" + returnHelper.getDescription();
+                                break;
+                            }
+                        }
+                        break;
+
+                    case "UpdateDONotes":
+                        returnHelper = deliveryOrderManagementBean.updateDeliveryOrderNotes(deliveryOrder.getId(), notes, isAdmin);
+                        deliveryOrder = deliveryOrderManagementBean.getDeliveryOrder(deliveryOrder.getId());
+                        if (returnHelper.getResult() && deliveryOrder != null) {
+                            session.setAttribute("do", deliveryOrder);
+                            nextPage = "OrderManagement/doManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                        } else {
+                            nextPage = "OrderManagement/doManagement.jsp?errMsg=" + returnHelper.getDescription();
+                        }
+                        break;
+
+                    case "UpdateDORemarks":
+                        returnHelper = deliveryOrderManagementBean.updateDeliveryOrderRemarks(deliveryOrder.getId(), remarks, isAdmin);
+                        deliveryOrder = deliveryOrderManagementBean.getDeliveryOrder(deliveryOrder.getId());
+                        if (returnHelper.getResult() && deliveryOrder != null) {
+                            session.setAttribute("do", deliveryOrder);
+                            nextPage = "OrderManagement/doManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                        } else {
+                            nextPage = "OrderManagement/doManagement.jsp?errMsg=" + returnHelper.getDescription();
+                        }
+                        break;
+
+                }//end switch
+            }//end checkLogin
 
             if (nextPage.equals("")) {
                 response.sendRedirect("index.jsp?errMsg=Session Expired.");
@@ -77,7 +161,7 @@ public class DeliveryOrderManagementController extends HttpServlet {
                 return;
             }
         } catch (Exception ex) {
-            response.sendRedirect("OrderManagement/scoManagement.jsp?errMsg=An error has occured");
+            response.sendRedirect("OrderManagement/scoManagement_DO.jsp?errMsg=An error has occured");
             ex.printStackTrace();
             return;
         }
