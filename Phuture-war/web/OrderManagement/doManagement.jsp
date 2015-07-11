@@ -74,35 +74,16 @@
                     window.location.href = "scoManagement_DO.jsp";
                 }
 
-                function back2(id) {
+                function back2() {
                     window.onbeforeunload = null;
-                    var doNumber = document.getElementById("doNumber").value;
-                    var doDate = document.getElementById("doDate").value;
-                    var terms = document.getElementById("terms").value;
-                    var status = document.getElementById("status").value;
-                    window.location.href = "scoManagement_add.jsp?id=" + id + "&status=" + status + "&doNumber=" + doNumber + "&doDate=" + doDate + "&terms=" + terms;
-                }
-
-                function addLineItemToNewDO() {
-                    window.onbeforeunload = null;
-                    doManagement.target.value = "SaveSCO";
-                    doManagement.source.value = "AddLineItemToNewSCO";
-                    document.doManagement.action = "../OrderManagementController";
-                    document.doManagement.submit();
-                }
-
-                function saveDO() {
-                    window.onbeforeunload = null;
-                    doManagement.target.value = "SaveSCO";
-                    document.doManagement.action = "../OrderManagementController";
-                    document.doManagement.submit();
+                    window.location.href = "doManagement.jsp";
                 }
 
                 function addLineItemToExistingDO() {
                     window.onbeforeunload = null;
                     doManagement.target.value = "UpdateDO";
                     doManagement.source.value = "AddLineItemToExistingSCO";
-                    document.doManagement.action = "../OrderManagementController";
+                    document.doManagement.action = "../DeliveryOrderManagementController";
                     document.doManagement.submit();
                 }
 
@@ -113,16 +94,10 @@
                     document.doManagement.submit();
                 }
 
-                function editLineItem(id, lineItemID) {
+                function editLineItem(lineItemID) {
                     window.onbeforeunload = null;
-                    doManagement.id.value = id;
                     doManagement.lineItemID.value = lineItemID;
-                    var doNumber = document.getElementById("doNumber").value;
-                    var doDate = document.getElementById("doDate").value;
-                    var terms = document.getElementById("terms").value;
-                    var status = document.getElementById("status").value;
-                    var poNumber = document.getElementById("poNumber").value;
-                    window.location.href = "scoManagement_add.jsp?id=" + id + "&doNumber=" + doNumber + "&doDate=" + doDate + "&terms=" + terms + "&status=" + status + "&editingLineItem=" + lineItemID + "&estimatedDeliveryDate=" + estimatedDeliveryDate + "&poNumber=" + poNumber;
+                    window.location.href = "scoManagement_add.jsp?editingLineItem=" + lineItemID;
                 }
 
                 function saveEditLineItem(id, lineItemID) {
@@ -139,21 +114,11 @@
                     document.doManagement.submit();
                 }
 
-                function removeLineItemSubmit(id, lineItemID) {
+                function removeLineItem(lineItemID) {
                     window.onbeforeunload = null;
-                    doManagement.id.value = id;
                     doManagement.lineItemID.value = lineItemID;
                     doManagement.target.value = "RemoveLineItem";
-                    document.doManagement.action = "../OrderManagementController";
-                    document.doManagement.submit();
-                }
-
-                function removeLineItem(id, lineItemID) {
-                    window.onbeforeunload = null;
-                    doManagement.id.value = id;
-                    doManagement.lineItemID.value = lineItemID;
-                    doManagement.target.value = "RemoveLineItem";
-                    document.doManagement.action = "../OrderManagementController";
+                    document.doManagement.action = "../DeliveryOrderManagementController";
                     document.doManagement.submit();
                 }
 
@@ -316,7 +281,7 @@
                                                         <span class="text-dark">PO Number:</span>
                                                         <span class="value" style="min-width: 110px">
                                                             <%
-                                                                if (deliveryOrder != null) {
+                                                                if (deliveryOrder != null && deliveryOrder.getCustomerPurchaseOrderNumber() != null && !deliveryOrder.getCustomerPurchaseOrderNumber().isEmpty()) {
                                                                     out.print("<input " + formDisablerFlag + " id='poNumber' name='poNumber' type='text' class='form-control' value='" + deliveryOrder.getCustomerPurchaseOrderNumber() + "'>");
                                                                 } else {
                                                                     out.print("<input " + formDisablerFlag + " id='poNumber' name='poNumber' type='text' class='form-control' placeholder='PO Number'>");
@@ -471,7 +436,7 @@
                                                     </td>
                                                     <% //Print buttons for current editing line item
                                                         out.print("<td class='text-center'><div class='btn-group'><button class='btn btn-default' type='button' onclick='javascript:saveEditLineItem(" + deliveryOrder.getId() + "," + deliveryOrder.getItems().get(i).getId() + ")'>Save</button>&nbsp;");
-                                                        out.print("<button class='btn btn-default' type='button' onclick='javascript:back2(" + deliveryOrder.getId() + ")' >Back</button></div></td>");
+                                                        out.print("<button class='btn btn-default' type='button' onclick='javascript:back2()' >Back</button></div></td>");
                                                     %>
                                                 </tr> 
                                                 <%
@@ -486,8 +451,8 @@
                                                                 out.print("<td class='text-center'>" + deliveryOrder.getItems().get(i).getItemQty() + "</td>");
                                                                 price = deliveryOrder.getItems().get(i).getItemUnitPrice() * deliveryOrder.getItems().get(i).getItemQty();
                                                                 out.print("<td class='text-center'>" + formatter.format(price) + "</td>");
-                                                                out.print("<td class='text-center'><div class='btn-group'><button " + formDisablerFlag + " class='btn btn-default' type='button' onclick='javascript:editLineItem(" + deliveryOrder.getId() + "," + deliveryOrder.getItems().get(i).getId() + ")'>Edit</button>&nbsp;");
-                                                                out.print("<button " + formDisablerFlag + " class='btn btn-default' onclick='javascript:removeLineItem(" + deliveryOrder.getId() + "," + deliveryOrder.getItems().get(i).getId() + ")'>Del</button></div></td>");
+                                                                out.print("<td class='text-center'><div class='btn-group'><button " + formDisablerFlag + " class='btn btn-default' type='button' onclick='javascript:editLineItem(" + deliveryOrder.getItems().get(i).getId() + ")'>Edit</button>&nbsp;");
+                                                                out.print("<button " + formDisablerFlag + " class='btn btn-default' onclick='javascript:removeLineItem(" + deliveryOrder.getItems().get(i).getId() + ")'>Del</button></div></td>");
                                                                 out.print("</div>");
                                                                 out.print("</tr>");
                                                             }

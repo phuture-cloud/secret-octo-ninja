@@ -181,15 +181,6 @@
                     document.scoManagement.submit();
                 }
 
-                function removeLineItemSubmit(id, lineItemID) {
-                    window.onbeforeunload = null;
-                    scoManagement.id.value = id;
-                    scoManagement.lineItemID.value = lineItemID;
-                    scoManagement.target.value = "RemoveLineItem";
-                    document.scoManagement.action = "../OrderManagementController";
-                    document.scoManagement.submit();
-                }
-
                 function removeLineItem(id, lineItemID) {
                     window.onbeforeunload = null;
                     scoManagement.id.value = id;
