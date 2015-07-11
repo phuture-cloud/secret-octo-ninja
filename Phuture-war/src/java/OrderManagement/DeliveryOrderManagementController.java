@@ -52,6 +52,7 @@ public class DeliveryOrderManagementController extends HttpServlet {
         }
 
         String id;
+        String lineItemID = request.getParameter("lineItemID");
 
         session = request.getSession();
         ReturnHelper returnHelper = null;
@@ -153,8 +154,25 @@ public class DeliveryOrderManagementController extends HttpServlet {
                         break;
 
                     case "RemoveLineItem":
-                        String lineItemID = request.getParameter("lineItemID");
                         returnHelper = deliveryOrderManagementBean.deleteDOlineItem(deliveryOrder.getId(), Long.parseLong(lineItemID), isAdmin);
+                        deliveryOrder = deliveryOrderManagementBean.getDeliveryOrder(deliveryOrder.getId());
+                        if (returnHelper.getResult() && deliveryOrder != null) {
+                            session.setAttribute("do", deliveryOrder);
+                            nextPage = "OrderManagement/doManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                        } else {
+                            nextPage = "OrderManagement/doManagement.jsp?errMsg=" + returnHelper.getDescription();
+                        }
+                        break;
+
+                    case "EditLineItem":
+                        //Check for empty fields
+                        if (itemName == null || itemName.isEmpty() || itemDescription == null || itemDescription.isEmpty() || itemQty == null || itemQty.isEmpty() || itemUnitPrice == null || itemUnitPrice.isEmpty()) {
+                            nextPage = "OrderManagement/doManagement.jsp?errMsg=Please fill in all the fields for the item.";
+                            break;
+                        }
+
+                        //Edit line item
+                        returnHelper = deliveryOrderManagementBean.updateDOlineItem(deliveryOrder.getId(), Long.parseLong(lineItemID), itemName, itemDescription, Integer.parseInt(itemQty), Double.parseDouble(itemUnitPrice), isAdmin);
                         deliveryOrder = deliveryOrderManagementBean.getDeliveryOrder(deliveryOrder.getId());
                         if (returnHelper.getResult() && deliveryOrder != null) {
                             session.setAttribute("do", deliveryOrder);

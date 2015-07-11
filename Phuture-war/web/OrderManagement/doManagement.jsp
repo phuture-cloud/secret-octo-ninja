@@ -97,20 +97,18 @@
                 function editLineItem(lineItemID) {
                     window.onbeforeunload = null;
                     doManagement.lineItemID.value = lineItemID;
-                    window.location.href = "scoManagement_add.jsp?editingLineItem=" + lineItemID;
+                    window.location.href = "doManagement.jsp?editingLineItem=" + lineItemID;
                 }
 
-                function saveEditLineItem(id, lineItemID) {
+                function saveEditLineItem(lineItemID) {
                     window.onbeforeunload = null;
-                    doManagement.id.value = id;
                     doManagement.lineItemID.value = lineItemID;
                     doManagement.itemName.value = document.getElementById("itemName" + lineItemID).value;
                     doManagement.itemDescription.value = document.getElementById("itemDescription" + lineItemID).value;
                     doManagement.itemUnitPrice.value = document.getElementById("itemUnitPrice" + lineItemID).value;
                     doManagement.itemQty.value = document.getElementById("itemQty" + lineItemID).value;
                     doManagement.target.value = "EditLineItem";
-                    doManagement.doNumber.value = document.getElementById("doNumber").value;
-                    document.doManagement.action = "../OrderManagementController?editingLineItem=" + lineItemID + "&doNumber=" + doNumber;
+                    document.doManagement.action = "../DeliveryOrderManagementController?editingLineItem=" + lineItemID;
                     document.doManagement.submit();
                 }
 
@@ -165,7 +163,9 @@
                 <jsp:include page="../jspIncludePages/sidebar.jsp" />
                 <section role="main" class="content-body">
                     <header class="page-header">
-                        <h2>Delivery Order</h2>
+                        <h2>Delivery Order: <%if (deliveryOrder != null && deliveryOrder.getDeliveryOrderNumber() != null) {
+                                out.print(deliveryOrder.getDeliveryOrderNumber());
+                            }%></h2>
                         <div class="right-wrapper pull-right">
                             <ol class="breadcrumbs">
                                 <li>
@@ -187,10 +187,10 @@
                                     <header class="clearfix">
                                         <div class="row">
                                             <div class="col-sm-6 mt-md">
-                                                <h2 class="h2 mt-none mb-sm text-dark text-weight-bold">Delivery No.</h2>
+                                                <h2 class="h2 mt-none mb-sm text-dark text-weight-bold">Delivery Order</h2>
                                                 <%
                                                     if (deliveryOrder != null) {
-                                                        out.print("<input type='text' class='form-control' id='doNumber' name='doNumber' value='" + deliveryOrder.getDeliveryOrderNumber() + "' style='max-width: 300px' required/>");
+                                                        out.print("<input type='text' " + formDisablerFlag + " class='form-control' id='doNumber' name='doNumber' value='" + deliveryOrder.getDeliveryOrderNumber() + "' style='max-width: 300px' required/>");
                                                     }
                                                 %>
                                             </div>
@@ -435,7 +435,7 @@
                                                         </div>
                                                     </td>
                                                     <% //Print buttons for current editing line item
-                                                        out.print("<td class='text-center'><div class='btn-group'><button class='btn btn-default' type='button' onclick='javascript:saveEditLineItem(" + deliveryOrder.getId() + "," + deliveryOrder.getItems().get(i).getId() + ")'>Save</button>&nbsp;");
+                                                        out.print("<td class='text-center'><div class='btn-group'><button class='btn btn-default' type='button' onclick='javascript:saveEditLineItem(" + deliveryOrder.getItems().get(i).getId() + ")'>Save</button>&nbsp;");
                                                         out.print("<button class='btn btn-default' type='button' onclick='javascript:back2()' >Back</button></div></td>");
                                                     %>
                                                 </tr> 
