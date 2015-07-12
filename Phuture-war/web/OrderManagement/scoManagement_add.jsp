@@ -450,7 +450,7 @@
                                                             <%
                                                                 if (poNumber != null && !poNumber.isEmpty()) {
                                                                     out.print("<input " + formDisablerFlag + " id='poNumber' name='poNumber' type='text' class='form-control' value='" + poNumber + "'>");
-                                                                } else if (sco != null && scoID != null && !scoID.isEmpty()) {
+                                                                } else if (sco != null && scoID != null && !scoID.isEmpty() && !sco.getCustomerPurchaseOrderNumber().isEmpty()) {
                                                                     out.print("<input " + formDisablerFlag + " id='poNumber' name='poNumber' type='text' class='form-control' value='" + sco.getCustomerPurchaseOrderNumber() + "'>");
                                                                 } else {
                                                                     out.print("<input " + formDisablerFlag + " id='poNumber' name='poNumber' type='text' class='form-control' placeholder='PO Number'>");
@@ -466,7 +466,7 @@
                                                             <%
                                                                 if (estimatedDeliveryDate != null && !estimatedDeliveryDate.isEmpty()) {
                                                                     out.print("<input " + formDisablerFlag + " id='estimatedDeliveryDate' name='estimatedDeliveryDate' type='text' class='form-control' value='" + estimatedDeliveryDate + "'>");
-                                                                } else if (sco != null && scoID != null && !scoID.isEmpty()) {
+                                                                } else if (sco != null && scoID != null && !scoID.isEmpty() && !sco.getEstimatedDeliveryDate().isEmpty()) {
                                                                     out.print("<input " + formDisablerFlag + " id='estimatedDeliveryDate' name='estimatedDeliveryDate' type='text' class='form-control' value='" + sco.getEstimatedDeliveryDate() + "'>");
                                                                 } else {
                                                                     out.print("<input " + formDisablerFlag + " id='estimatedDeliveryDate' name='estimatedDeliveryDate' type='text' class='form-control' placeholder='Estimated date'>");
@@ -792,7 +792,7 @@
                                             <% if (sco != null && scoID != null && !scoID.isEmpty()) {
                                                     out.print("<button type='button' class='modal-with-move-anim btn btn-danger' href='#modalRemove'>Delete</button>");
                                                     if (sco.getItems().size() > 0) {
-                                                        out.print("<button " + formDisablerFlag + " class='btn btn-primary' onclick='javascript:generatePO()'>Generate PO</button>");
+                                                        out.print("<button " + formDisablerFlag + " class='btn btn-primary modal-with-form' href='#modalGeneratePO'>Generate PO</button>");
                                                         out.print("<button " + formDisablerFlag + " class='btn btn-primary modal-with-form' href='#modalGenerateDO' >Generate DO</button>");
                                                     }
                                                     out.print("<button " + formDisablerFlag + " class='btn btn-success' onclick='javascript:updateSCO(" + scoID + ")'>Save</button>");
@@ -819,15 +819,50 @@
                     <!-- end: page -->
 
                     <%if (sco != null && scoID != null && !scoID.isEmpty()) {%>
+                    <div id="modalGeneratePO" class="modal-block modal-block-primary mfp-hide">
+                        <section class="panel">
+                            <form action="../OrderManagementController" class="form-horizontal mb-lg">
+                                <header class="panel-heading">
+                                    <h2 class="panel-title">Generate Purchase Order</h2>
+                                </header>
+                                <div class="panel-body">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">PO No <span class="required">*</span></label>
+                                        <div class="col-sm-9">
+                                            <input type="text" name="poNumber" class="form-control" required/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">Date <span class="required">*</span></label>
+                                        <div class="col-md-9">
+                                            <input type="text" name="poDate" data-plugin-datepicker data-date-format="dd/mm/yyyy" class="form-control" placeholder="dd/mm/yyyy" required/>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <input type="hidden" name="target" value="GeneratePO">    
+                                    <input type="hidden" name="id" value="<%=scoID%>">  
+                                </div>
+                                <footer class="panel-footer">
+                                    <div class="row">
+                                        <div class="col-md-12 text-right">
+                                            <button class="btn btn-success" type="submit">Generate</button>
+                                            <button class="btn btn-default modal-dismiss">Cancel</button>
+                                        </div>
+                                    </div>
+                                </footer>
+                            </form>
+                        </section>
+                    </div>
+
                     <div id="modalGenerateDO" class="modal-block modal-block-primary mfp-hide">
                         <section class="panel">
-                            <form name="editContactForm" action="../OrderManagementController" class="form-horizontal mb-lg">
+                            <form action="../OrderManagementController" class="form-horizontal mb-lg">
                                 <header class="panel-heading">
                                     <h2 class="panel-title">Generate Delivery Order</h2>
                                 </header>
                                 <div class="panel-body">
                                     <div class="form-group">
-                                        <label class="col-sm-3 control-label">Delivery No <span class="required">*</span></label>
+                                        <label class="col-sm-3 control-label">DO No <span class="required">*</span></label>
                                         <div class="col-sm-9">
                                             <input type="text" name="doNumber" class="form-control" required/>
                                         </div>
@@ -838,7 +873,6 @@
                                             <input type="text" name="doDate" data-plugin-datepicker data-date-format="dd/mm/yyyy" class="form-control" placeholder="dd/mm/yyyy" required/>
                                         </div>
                                     </div>
-
                                     <br>
                                     <input type="hidden" name="target" value="GenerateDO">    
                                     <input type="hidden" name="id" value="<%=scoID%>">  
@@ -915,7 +949,7 @@
                                     <div class="row">
                                         <div class="col-md-12 text-right">
                                             <button class="btn btn-success" type="submit">Save</button>
-                                            <button class="btn btn-primary" onclick="javascript:addressBook(<%=scoID%>)">Address Book</button>
+                                            <button class="btn btn-primary" onclick="javascript:addressBook();">Address Book</button>
                                             <button class="btn btn-default modal-dismiss">Cancel</button>
                                         </div>
                                     </div>

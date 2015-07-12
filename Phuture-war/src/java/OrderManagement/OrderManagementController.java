@@ -21,6 +21,9 @@ import javax.servlet.http.HttpSession;
 public class OrderManagementController extends HttpServlet {
 
     @EJB
+    private PurchaseOrderManagementBeanLocal purchaseOrderManagementBean;
+
+    @EJB
     private DeliveryOrderManagementBeanLocal deliveryOrderManagementBean;
 
     @EJB
@@ -225,8 +228,8 @@ public class OrderManagementController extends HttpServlet {
 
                     case "UpdateSCOContact":
                         if (true) {
+                            //if address book
                             if (source != null && source.equals("UpdateContact")) {
-
                                 returnHelper = orderManagementBean.updateSalesConfirmationOrderCustomerContactDetails(Long.parseLong(id), Long.parseLong(customerID), Long.parseLong(contactID), isAdmin);
                                 SalesConfirmationOrder sco = orderManagementBean.getSalesConfirmationOrder(Long.parseLong(id));
                                 if (returnHelper.getResult() && sco != null) {
@@ -235,7 +238,7 @@ public class OrderManagementController extends HttpServlet {
                                 } else {
                                     nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&errMsg=" + returnHelper.getDescription();
                                 }
-
+                                //manual key in
                             } else if (company != null && !company.isEmpty() && name != null && !name.isEmpty() && address != null && !address.isEmpty() && officeNo != null && !officeNo.isEmpty() && email != null && !email.isEmpty()) {
                                 returnHelper = orderManagementBean.updateSalesConfirmationOrderCustomerContactDetails(Long.parseLong(id), company, name, email, officeNo, mobileNo, faxNo, address, isAdmin);
                                 SalesConfirmationOrder sco = orderManagementBean.getSalesConfirmationOrder(Long.parseLong(id));
@@ -372,8 +375,25 @@ public class OrderManagementController extends HttpServlet {
                             if (returnHelper.getResult()) {
                                 SalesConfirmationOrder sco = orderManagementBean.getSalesConfirmationOrder(Long.parseLong(id));
                                 session.setAttribute("sco", sco);
-                                
                                 session.setAttribute("do", deliveryOrderManagementBean.getDeliveryOrder(returnHelper.getID()));
+                                nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&goodMsg=" + returnHelper.getDescription();
+                            } else {
+                                nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&errMsg=" + returnHelper.getDescription();
+                            }
+                        }
+                        break;
+
+                    case "GeneratePO":
+                        if (true) {
+                            String poDate = request.getParameter("poDate");
+                            DateFormat sourceFormat = new SimpleDateFormat("dd/MM/yyyy");
+                            Date poDateDate = sourceFormat.parse(poDate);
+
+                            returnHelper = purchaseOrderManagementBean.createPurchaseOrder(Long.parseLong(id), poNumber, poDateDate);
+                            if (returnHelper.getResult()) {
+                                SalesConfirmationOrder sco = orderManagementBean.getSalesConfirmationOrder(Long.parseLong(id));
+                                session.setAttribute("sco", sco);
+                                session.setAttribute("po", purchaseOrderManagementBean.getPurchaseOrder(returnHelper.getID()));
                                 nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&goodMsg=" + returnHelper.getDescription();
                             } else {
                                 nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&errMsg=" + returnHelper.getDescription();

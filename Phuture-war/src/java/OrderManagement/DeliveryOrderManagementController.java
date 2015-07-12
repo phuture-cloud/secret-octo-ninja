@@ -1,5 +1,8 @@
 package OrderManagement;
 
+import CustomerManagement.CustomerManagementBeanLocal;
+import EntityManager.Contact;
+import EntityManager.Customer;
 import EntityManager.DeliveryOrder;
 import EntityManager.ReturnHelper;
 import EntityManager.SalesConfirmationOrder;
@@ -22,6 +25,9 @@ public class DeliveryOrderManagementController extends HttpServlet {
 
     @EJB
     private DeliveryOrderManagementBeanLocal deliveryOrderManagementBean;
+
+    @EJB
+    private CustomerManagementBeanLocal customerManagementBean;
 
     String nextPage = "", goodMsg = "", errMsg = "";
     HttpSession session;
@@ -51,7 +57,7 @@ public class DeliveryOrderManagementController extends HttpServlet {
             status = "";
         }
 
-        String id;
+        String customerID = "";
         String lineItemID = request.getParameter("lineItemID");
 
         session = request.getSession();
@@ -62,7 +68,7 @@ public class DeliveryOrderManagementController extends HttpServlet {
             if (checkLogin()) {
                 switch (target) {
                     case "RetrieveDO":
-                        id = request.getParameter("id");
+                        String id = request.getParameter("id");
                         if (id != null) {
                             session.setAttribute("do", deliveryOrderManagementBean.getDeliveryOrder(Long.parseLong(id)));
                             nextPage = "OrderManagement/doManagement.jsp";
@@ -182,6 +188,65 @@ public class DeliveryOrderManagementController extends HttpServlet {
                         }
                         break;
 
+                    case "UpdateDOContact":
+                        if (source != null && source.equals("UpdateContact")) {
+                            customerID = request.getParameter("customerID");
+                            String contactID = request.getParameter("contactID");
+                            returnHelper = deliveryOrderManagementBean.updateDeliveryOrderCustomerContactDetails(deliveryOrder.getId(), Long.parseLong(customerID), Long.parseLong(contactID), isAdmin);
+                            deliveryOrder = deliveryOrderManagementBean.getDeliveryOrder(deliveryOrder.getId());
+                            if (returnHelper.getResult() && deliveryOrder != null) {
+                                session.setAttribute("do", deliveryOrder);
+                                nextPage = "OrderManagement/doManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                            } else {
+                                nextPage = "OrderManagement/doManagement.jsp?errMsg=" + returnHelper.getDescription();
+                            }
+                            //manual key in
+                        } else if (source == null) {
+                            String company = request.getParameter("company");
+                            String name = request.getParameter("name");
+                            String email = request.getParameter("email");
+                            String officeNo = request.getParameter("officeNo");
+                            String mobileNo = request.getParameter("mobileNo");
+                            String faxNo = request.getParameter("faxNo");
+                            String address = request.getParameter("address");
+                            System.out.println("email " + email);
+
+                            if (company != null && !company.isEmpty() && name != null && !name.isEmpty() && address != null && !address.isEmpty() && officeNo != null && !officeNo.isEmpty() && email != null && !email.isEmpty()) {
+                                returnHelper = deliveryOrderManagementBean.updateDeliveryOrderCustomerContactDetails(deliveryOrder.getId(), company, name, email, officeNo, mobileNo, faxNo, address, isAdmin);
+                                deliveryOrder = deliveryOrderManagementBean.getDeliveryOrder(deliveryOrder.getId());
+                                if (returnHelper.getResult() && deliveryOrder != null) {
+                                    session.setAttribute("do", deliveryOrder);
+                                    nextPage = "OrderManagement/doManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                                } else {
+                                    nextPage = "OrderManagement/doManagement.jsp?errMsg=" + returnHelper.getDescription();
+                                }
+                            }
+                        }
+                        break;
+
+                    case "ListAllCustomer":
+                        List<Customer> customers = customerManagementBean.listCustomers();
+                        if (customers == null) {
+                            nextPage = "error500.html";
+                        } else {
+                            session.setAttribute("customers", customers);
+                            nextPage = "OrderManagement/updateContact.jsp";
+                        }
+                        break;
+
+                    case "ListCustomerContacts":
+                        customerID = request.getParameter("customerID");
+                        List<Contact> contacts = customerManagementBean.listCustomerContacts(Long.parseLong(customerID));
+                        if (contacts == null) {
+                            nextPage = "error500.html";
+                        } else {
+                            session.setAttribute("contacts", contacts);
+                            if (source != null && source.equals("addressBook")) {
+                                nextPage = "OrderManagement/updateContact.jsp?selectedCustomerID=" + customerID;
+                            }
+                        }
+                        break;
+
                 }//end switch
             }//end checkLogin
 
@@ -197,7 +262,6 @@ public class DeliveryOrderManagementController extends HttpServlet {
             ex.printStackTrace();
             return;
         }
-
     }
 
     public boolean checkLogin() {

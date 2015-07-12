@@ -16,6 +16,10 @@
         <servlet-name>DeliveryOrderManagementController</servlet-name>
         <servlet-class>OrderManagement.DeliveryOrderManagementController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>PurchaseOrderManagementController</servlet-name>
+        <servlet-class>OrderManagement.PurchaseOrderManagementController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>AccountManagementController</servlet-name>
         <url-pattern>/AccountManagementController</url-pattern>
@@ -31,6 +35,10 @@
     <servlet-mapping>
         <servlet-name>DeliveryOrderManagementController</servlet-name>
         <url-pattern>/DeliveryOrderManagementController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>PurchaseOrderManagementController</servlet-name>
+        <url-pattern>/PurchaseOrderManagementController</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

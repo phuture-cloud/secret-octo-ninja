@@ -82,7 +82,7 @@
                 function addLineItemToExistingDO() {
                     window.onbeforeunload = null;
                     doManagement.target.value = "UpdateDO";
-                    doManagement.source.value = "AddLineItemToExistingSCO";
+                    doManagement.source.value = "AddLineItemToExistingDO";
                     document.doManagement.action = "../DeliveryOrderManagementController";
                     document.doManagement.submit();
                 }
@@ -128,23 +128,8 @@
                 function addressBook() {
                     window.onbeforeunload = null;
                     editContactForm.target.value = "ListAllCustomer";
-                    document.editContactForm.action = "../OrderManagementController";
+                    document.editContactForm.action = "../DeliveryOrderManagementController";
                     document.editContactForm.submit();
-                }
-
-                function listAllInvoices(id) {
-                    window.onbeforeunload = null;
-                    window.location.href = "../OrderManagementController?target=RetrieveSCO&source=listAllInvoices&id=" + id;
-                }
-
-                function listAllPO(id) {
-                    window.onbeforeunload = null;
-                    window.location.href = "../OrderManagementController?target=RetrieveSCO&source=listAllPO&id=" + id;
-                }
-
-                function listAllDO(id) {
-                    window.onbeforeunload = null;
-                    window.location.href = "../OrderManagementController?target=RetrieveSCO&source=listAllDO&id=" + id;
                 }
 
                 window.onbeforeunload = function () {
@@ -180,7 +165,7 @@
                     </header>
 
                     <!-- start: page -->
-                    <form name="doManagement" action="../OrderManagementController">
+                    <form name="doManagement" action="../DeliveryOrderManagementController">
                         <section class="panel">
                             <div class="panel-body">
                                 <div class="invoice">
@@ -596,7 +581,7 @@
                     <%if (deliveryOrder != null) {%>
                     <div id="modalEditForm" class="modal-block modal-block-primary mfp-hide">
                         <section class="panel">
-                            <form name="editContactForm" action="../OrderManagementController" class="form-horizontal mb-lg">
+                            <form name="editContactForm" action="../DeliveryOrderManagementController" class="form-horizontal mb-lg">
                                 <header class="panel-heading">
                                     <h2 class="panel-title">Edit Contact</h2>
                                 </header>
@@ -647,14 +632,12 @@
                                     </div>
                                     <br>
                                     <input type="hidden" name="target" value="UpdateDOContact">    
-                                    <input type="hidden" name="id" value="<%=deliveryOrder.getId()%>">  
-                                    <input type="hidden" name="source" value="addressBook"> 
                                 </div>
                                 <footer class="panel-footer">
                                     <div class="row">
                                         <div class="col-md-12 text-right">
                                             <button class="btn btn-success" type="submit">Save</button>
-                                            <button class="btn btn-primary" onclick="javascript:addressBook(<%=deliveryOrder.getId()%>)">Address Book</button>
+                                            <button class="btn btn-primary" onclick="javascript:addressBook()">Address Book</button>
                                             <button class="btn btn-default modal-dismiss">Cancel</button>
                                         </div>
                                     </div>
