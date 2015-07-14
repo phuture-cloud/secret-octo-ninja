@@ -30,15 +30,13 @@ public class PurchaseOrder implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date purchaseOrderDate;
 
-    //Unused
     private String supplierName;
     private String supplierEmail;
     private String supplierOfficeNo;
     private String supplierMobileNo;
     private String supplierFaxNo;
-    private Double taxRate;
-    private Double totalTax;
-    //Unused end
+    @Lob
+    private String supplierAddress;
 
     private String status;
     @OneToMany
@@ -61,7 +59,7 @@ public class PurchaseOrder implements Serializable {
         this.supplierOfficeNo = "";
         this.supplierMobileNo = "";
         this.supplierFaxNo = "";
-        this.taxRate = 0.0;
+        this.supplierAddress = "";
     }
 
     public Long getId() {
@@ -78,6 +76,14 @@ public class PurchaseOrder implements Serializable {
 
     public void setSalesConfirmationOrder(SalesConfirmationOrder salesConfirmationOrder) {
         this.salesConfirmationOrder = salesConfirmationOrder;
+    }
+
+    public String getSupplierAddress() {
+        return supplierAddress;
+    }
+
+    public void setSupplierAddress(String supplierAddress) {
+        this.supplierAddress = supplierAddress;
     }
 
     public String getPurchaseOrderNumber() {
@@ -110,14 +116,6 @@ public class PurchaseOrder implements Serializable {
 
     public void setItems(List<LineItem> items) {
         this.items = items;
-    }
-
-    public Double getTaxRate() {
-        return taxRate;
-    }
-
-    public void setTaxRate(Double taxRate) {
-        this.taxRate = taxRate;
     }
 
     public Double getTotalPrice() {
@@ -190,14 +188,6 @@ public class PurchaseOrder implements Serializable {
 
     public void setSupplierFaxNo(String supplierFaxNo) {
         this.supplierFaxNo = supplierFaxNo;
-    }
-
-    public Double getTotalTax() {
-        return totalTax;
-    }
-
-    public void setTotalTax(Double totalTax) {
-        this.totalTax = totalTax;
     }
 
     @Override
