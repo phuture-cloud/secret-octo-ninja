@@ -153,11 +153,11 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             }
             deliveryOrder.setCustomerName(customerName);
             deliveryOrder.setContactAddress(address);
-            deliveryOrder.setContactName(email);
+            deliveryOrder.setContactName(contactName);
+            deliveryOrder.setContactEmail(email);
             deliveryOrder.setContactOfficeNo(officeNo);
             deliveryOrder.setContactFaxNo(faxNo);
             deliveryOrder.setContactMobileNo(mobileNo);
-            deliveryOrder.setContactName(contactName);
             em.merge(deliveryOrder);
             result.setResult(true);
             result.setDescription("DO edited successfully.");

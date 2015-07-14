@@ -50,7 +50,6 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
             po.setSalesConfirmationOrder(sco);
             po.setPurchaseOrderNumber(purchaseOrderNumber);
             po.setPurchaseOrderDate(purchaseOrderDate);
-            po.setTaxRate(gstRate);
             em.persist(po);
             //Copy line items from SCO
             replacePOlineItemWithSCOitems(sco.getId(),po.getId());
@@ -75,7 +74,7 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
     }
 
     @Override
-    public ReturnHelper updatePurchaseOrder(Long purchaseOrderID, String purchaseOrderNumber, String status) {
+    public ReturnHelper updatePurchaseOrder(Long purchaseOrderID, String purchaseOrderNumber, String status, String supplierName, String supplierEmail, String supplierOfficeNo, String supplierMobileNo, String supplierFaxNo, String supplierAddress) {
         System.out.println("PurchaseOrderManagementBean: updatePurchaseOrder() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -97,6 +96,12 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
                 return updateStatusResult;
             }
             po.setPurchaseOrderNumber(purchaseOrderNumber);
+            po.setSupplierName(supplierName);
+            po.setSupplierEmail(supplierEmail);
+            po.setSupplierOfficeNo(supplierOfficeNo);
+            po.setSupplierMobileNo(supplierMobileNo);
+            po.setSupplierFaxNo(supplierFaxNo);
+            po.setSupplierAddress(supplierAddress);
             em.merge(po);
             result.setID(po.getId());
             result.setResult(true);
@@ -333,7 +338,6 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
                 totalTax = totalTax + (currLineItemTotalPriceBeforeTax * gstRate/100);
             }
             po.setTotalPrice(totalPrice);
-            po.setTotalTax(totalTax);
             em.merge(po);
             result.setResult(true);
             result.setDescription("PO edited successfully.");
@@ -380,7 +384,6 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
                 totalTax = totalTax + (currLineItemTotalPriceBeforeTax * gstRate/100);
             }
             po.setTotalPrice(totalPrice);
-            po.setTotalTax(totalTax);
             em.merge(po);
             result.setResult(true);
             result.setDescription("Item added.");
@@ -426,7 +429,6 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
                 totalTax = totalTax + (currLineItemTotalPriceBeforeTax * gstRate/100);
             }
             sco.setTotalPrice(totalPrice);
-            sco.setTotalTax(totalTax);
             em.merge(sco);
             result.setResult(true);
             result.setDescription("Line item updated.");
@@ -470,7 +472,6 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
                 totalTax = totalTax + (currLineItemTotalPriceBeforeTax * gstRate/100);
             }
             po.setTotalPrice(totalPrice);
-            po.setTotalTax(totalTax);
             em.merge(po);
             em.remove(lineItem);
             result.setResult(true);
@@ -507,7 +508,6 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
             }
             po.setItems(lineItems);
             po.setTotalPrice(0.0);
-            po.setTotalTax(0.0);
             em.merge(po);
             result.setResult(true);
             result.setDescription("Line items deleted.");

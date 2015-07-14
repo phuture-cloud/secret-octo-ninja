@@ -12,6 +12,7 @@ import EntityManager.SalesConfirmationOrder;
 import EntityManager.Staff;
 import java.util.Date;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
@@ -27,6 +28,11 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
 
     @PersistenceContext
     private EntityManager em;
+    
+    @EJB
+    private DeliveryOrderManagementBeanLocal dombl;
+    @EJB
+    private PurchaseOrderManagementBeanLocal pombl;
 
     private static final Double gstRate = 7.0;//7%
 
@@ -749,4 +755,16 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             return null;
         }
     }
+
+    @Override
+    public Integer getNumOfDO(Long salesConfirmationOrderID) {
+        return dombl.listDeliveryOrdersTiedToSCO(salesConfirmationOrderID).size();
+    }
+
+    @Override
+    public Integer getNumOfPO(Long salesConfirmationOrderID) {
+        return pombl.listPurchaseOrdersTiedToSCO(salesConfirmationOrderID).size();
+    }
+    
+    
 }
