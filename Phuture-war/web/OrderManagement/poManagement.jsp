@@ -79,7 +79,7 @@
                     window.location.href = "poManagement.jsp";
                 }
 
-                function addLineItemToExistingDO() {
+                function addLineItemToExistingPO() {
                     window.onbeforeunload = null;
                     poManagement.target.value = "UpdateDO";
                     poManagement.source.value = "AddLineItemToExistingPO";
@@ -120,7 +120,7 @@
                     document.poManagement.submit();
                 }
 
-                function deleteDO() {
+                function deletePO() {
                     window.onbeforeunload = null;
                     window.location.href = "../PurchaseOrderManagementController?target=DeleteDO";
                 }
@@ -340,13 +340,7 @@
                                                         </div>
                                                     </td>
                                                     <td class="text-center">
-                                                        <%
-                                                            if (!editingLineItem.equals("")) {
-                                                                out.print("<button class='btn btn-default btn-block' onclick='javascript:addLineItemToNewDO()' disabled>Add Item</button>");
-                                                            } else {
-                                                                out.print("<button class='btn btn-default btn-block' onclick='javascript:addLineItemToExistingDO(" + purchaseOrder.getId() + ")'>Add Item</button>");
-                                                            }
-                                                        %>
+                                                        <button class='btn btn-default btn-block' onclick='javascript:addLineItemToExistingPO(addLineItemToExistingPO<%=purchaseOrder.getId()%>)'>Add Item</button>
                                                     </td>
                                                 </tr>
 
@@ -429,44 +423,6 @@
                                             <div class="col-sm-4">
                                                 <table class="table h5 text-dark">
                                                     <tbody>
-                                                        <tr class="b-top-none">
-                                                            <td colspan="2">Subtotal</td>
-                                                            <td class="text-left">
-                                                                <%
-                                                                    double formatedPrice = 0;
-                                                                    NumberFormat formatter = NumberFormat.getCurrencyInstance();
-                                                                    if (purchaseOrder == null) {
-                                                                        out.print("<span id='output_subtotal'>$0.00</span>");
-                                                                    } else {
-                                                                        formatedPrice = purchaseOrder.getTotalPrice() / (purchaseOrder.getTaxRate() / 100 + 1);
-                                                                        out.print("<span id='output_subtotal'>" + formatter.format(formatedPrice) + "</span>");
-                                                                        out.print("<input type='hidden' value='" + (purchaseOrder.getTotalPrice() / (purchaseOrder.getTaxRate() / 100 + 1)) + "' id='subtotal'>");
-                                                                    }
-                                                                %>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td colspan="2">
-                                                                <%
-                                                                    if (purchaseOrder == null) {
-                                                                        out.print("7.0% GST");
-                                                                    } else {
-                                                                        out.print("" + purchaseOrder.getTaxRate() + "% GST");
-                                                                    }
-                                                                %>
-                                                            </td>
-                                                            <td class="text-left">
-                                                                <%
-                                                                    if (purchaseOrder == null) {
-                                                                        out.print("<span id='output_gst'>$0.00</span>");
-                                                                    } else {
-                                                                        formatedPrice = purchaseOrder.getTotalTax();
-                                                                        out.print("<span id='output_gst'>" + formatter.format(formatedPrice) + "</span>");
-                                                                        out.print("<input type='hidden' value='" + purchaseOrder.getTotalTax() + "' id='gst'>");
-                                                                    }
-                                                                %>
-                                                            </td>
-                                                        </tr>
                                                         <tr class="h4">
                                                             <td colspan="2">Total (SGD)</td>
                                                             <td class="text-left">
@@ -474,6 +430,8 @@
                                                                     if (purchaseOrder == null) {
                                                                         out.print("<span id='output_totalPrice'>$0.00</span>");
                                                                     } else {
+                                                                        double formatedPrice = 0;
+                                                                        NumberFormat formatter = NumberFormat.getCurrencyInstance();
                                                                         formatedPrice = purchaseOrder.getTotalPrice();
                                                                         out.print("<span id='output_totalPrice'>" + formatter.format(formatedPrice) + "</span>");
                                                                         out.print("<input type='hidden' value='" + purchaseOrder.getTotalPrice() + "' id='totalPrice'>");
@@ -531,7 +489,7 @@
                             }
                         %>
                         <input type="hidden" name="lineItemID" value="">   
-                        <input type="hidden" name="target" value="SaveDO">    
+                        <input type="hidden" name="target" value="SavePO">    
                         <input type="hidden" name="source" value="">    
                         <input type="hidden" name="id" value="">    
                     </form>
@@ -554,7 +512,7 @@
                                     <div class="form-group">
                                         <label class="col-md-3 control-label">Address <span class="required">*</span></label>
                                         <div class="col-md-9">
-                                            <textarea class="form-control" rows="3" name="address" required><%%></textarea>
+                                            <textarea class="form-control" rows="3" name="address" required><%=purchaseOrder.getSupplierAddress()%></textarea>
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -648,14 +606,14 @@
                                         <i class="fa fa-question-circle"></i>
                                     </div>
                                     <div class="modal-text">
-                                        <p>Are you sure that you want to delete this Delivery Order?<br> All associated Invoice/Payment records will also be deleted together!</p>
+                                        <p>Are you sure that you want to delete this Purchase Order?</p>
                                     </div>
                                 </div>
                             </div>
                             <footer class="panel-footer">
                                 <div class="row">
                                     <div class="col-md-12 text-right">
-                                        <button class="btn btn-primary modal-confirm" onclick="javascript:deleteDO();">Confirm</button>
+                                        <button class="btn btn-primary modal-confirm" onclick="javascript:deletePO();">Confirm</button>
                                         <button class="btn btn-default modal-dismiss">Cancel</button>
                                     </div>
                                 </div>

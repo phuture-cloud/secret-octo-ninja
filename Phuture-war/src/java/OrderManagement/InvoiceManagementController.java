@@ -46,7 +46,7 @@ public class InvoiceManagementController extends HttpServlet {
         String itemQty = request.getParameter("itemQty");
         String itemUnitPrice = request.getParameter("itemUnitPrice");
 
-        String doNumber = request.getParameter("doNumber");
+        String invoiceNumber = request.getParameter("invoiceNumber");
         String poNumber = request.getParameter("poNumber");
         String doDate = request.getParameter("doDate");
         if (doDate == null) {
@@ -67,7 +67,7 @@ public class InvoiceManagementController extends HttpServlet {
         try {
             if (checkLogin()) {
                 switch (target) {
-                    case "RetrieveDO":
+                    case "RetrieveInvoice":
                         String id = request.getParameter("id");
                         if (id != null) {
                             session.setAttribute("invoice", invoiceManagementBean.getInvoice(Long.parseLong(id)));
@@ -75,7 +75,7 @@ public class InvoiceManagementController extends HttpServlet {
                         }
                         break;
 
-                    case "DeleteDO":
+                    case "DeleteInvoice":
                         if (invoice != null) {
                             returnHelper = invoiceManagementBean.deleteInvoice(invoice.getId(), isAdmin);
                             if (returnHelper.getResult()) {
@@ -98,26 +98,26 @@ public class InvoiceManagementController extends HttpServlet {
                         }
                         break;
 
-                    case "UpdateDO":
+                    case "UpdateInvoice":
                         if (source.equals("AddLineItemToExistingDO")) {
                             if (itemName == null || itemName.isEmpty() || itemDescription == null || itemDescription.isEmpty() || itemQty == null || itemQty.isEmpty() || itemUnitPrice == null || itemUnitPrice.isEmpty()) {
-                                nextPage = "OrderManagement/invoiceManagement.jsp?doNumber=" + doNumber + "&doDate=" + doDate + "&errMsg=Please fill in all the fields for the item.";
+                                nextPage = "OrderManagement/invoiceManagement.jsp?invoiceNumber=" + invoiceNumber + "&doDate=" + doDate + "&errMsg=Please fill in all the fields for the item.";
                                 break;
                             }
                         }
-                        if (doNumber == null || doNumber.isEmpty() || doDate == null || doDate.isEmpty()) {
-                            nextPage = "OrderManagement/invoiceManagement.jsp?doNumber=" + doNumber + "&doDate=" + doDate + "&errMsg=Please fill in all the fields for the DO.";
+                        if (invoiceNumber == null || invoiceNumber.isEmpty() || doDate == null || doDate.isEmpty()) {
+                            nextPage = "OrderManagement/invoiceManagement.jsp?invoiceNumber=" + invoiceNumber + "&doDate=" + doDate + "&errMsg=Please fill in all the fields for the DO.";
                         } else {
                             SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
                             Date doDateDate = formatter.parse(doDate);
 
                             //Update DO
-                            returnHelper = invoiceManagementBean.updateInvoice(invoice.getId(), doNumber, doDateDate, poNumber, status, isAdmin);
+                            returnHelper = invoiceManagementBean.updateInvoice(invoice.getId(), invoiceNumber, doDateDate, poNumber, status, isAdmin);
                             if (returnHelper.getResult()) {
                                 Long doID = returnHelper.getID();
                                 invoice = invoiceManagementBean.getInvoice(doID);
                                 session.setAttribute("invoice", invoice);
-                                nextPage = "OrderManagement/invoiceManagement.jsp?goodMsg=" + returnHelper.getDescription() + "&doNumber=" + doNumber;
+                                nextPage = "OrderManagement/invoiceManagement.jsp?goodMsg=" + returnHelper.getDescription() + "&invoiceNumber=" + invoiceNumber;
 
                                 //Update line item if there is any
                                 if (itemName != null && !itemName.isEmpty() && itemDescription != null && !itemDescription.isEmpty() && itemQty != null && !itemQty.isEmpty() && itemUnitPrice != null && !itemUnitPrice.isEmpty()) {
@@ -125,13 +125,13 @@ public class InvoiceManagementController extends HttpServlet {
                                     invoice = invoiceManagementBean.getInvoice(doID);
                                     if (returnHelper.getResult() && invoice != null) {
                                         session.setAttribute("invoice", invoice);
-                                        nextPage = "OrderManagement/invoiceManagement.jsp?goodMsg=" + returnHelper.getDescription() + "&doNumber=" + doNumber;
+                                        nextPage = "OrderManagement/invoiceManagement.jsp?goodMsg=" + returnHelper.getDescription();
                                     } else {
-                                        nextPage = "OrderManagement/invoiceManagement.jsp?errMsg=" + returnHelper.getDescription() + "&doNumber=" + doNumber;
+                                        nextPage = "OrderManagement/invoiceManagement.jsp?errMsg=" + returnHelper.getDescription();
                                     }
                                 }
                             } else {
-                                nextPage = "OrderManagement/invoiceManagement.jsp?doNumber=" + doNumber + "&doDate=" + doDate + "&errMsg=" + returnHelper.getDescription();
+                                nextPage = "OrderManagement/invoiceManagement.jsp?errMsg=" + returnHelper.getDescription();
                                 break;
                             }
                         }

@@ -1,4 +1,4 @@
-<%@page import="EntityManager.DeliveryOrder"%>
+<%@page import="EntityManager.Invoice"%>
 <%@page import="java.text.NumberFormat"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="EntityManager.Contact"%>
@@ -7,7 +7,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
     Staff staff = (Staff) (session.getAttribute("staff"));
-    DeliveryOrder deliveryOrder = (DeliveryOrder) (session.getAttribute("do"));
+    Invoice invoice = (Invoice) (session.getAttribute("invoice"));
     if (session.isNew()) {
         response.sendRedirect("../index.jsp?errMsg=Invalid Request. Please login.");
     } else if (staff == null) {
@@ -76,59 +76,59 @@
 
                 function back2() {
                     window.onbeforeunload = null;
-                    window.location.href = "doManagement.jsp";
+                    window.location.href = "invoiceManagement.jsp";
                 }
 
-                function addLineItemToExistingDO() {
+                function addLineItemToExistingInvoice() {
                     window.onbeforeunload = null;
-                    doManagement.target.value = "UpdateDO";
-                    doManagement.source.value = "AddLineItemToExistingDO";
-                    document.doManagement.action = "../DeliveryOrderManagementController";
-                    document.doManagement.submit();
+                    invoiceManagement.target.value = "UpdateInvoice";
+                    invoiceManagement.source.value = "AddLineItemToExistingDO";
+                    document.invoiceManagement.action = "../InvoiceManagementController";
+                    document.invoiceManagement.submit();
                 }
 
-                function updateDO() {
+                function updateInvoice() {
                     window.onbeforeunload = null;
-                    doManagement.target.value = "UpdateDO";
-                    document.doManagement.action = "../DeliveryOrderManagementController";
-                    document.doManagement.submit();
+                    invoiceManagement.target.value = "UpdateInvoice";
+                    document.invoiceManagement.action = "../InvoiceManagementController";
+                    document.invoiceManagement.submit();
                 }
 
                 function editLineItem(lineItemID) {
                     window.onbeforeunload = null;
-                    doManagement.lineItemID.value = lineItemID;
-                    window.location.href = "doManagement.jsp?editingLineItem=" + lineItemID;
+                    invoiceManagement.lineItemID.value = lineItemID;
+                    window.location.href = "invoiceManagement.jsp?editingLineItem=" + lineItemID;
                 }
 
                 function saveEditLineItem(lineItemID) {
                     window.onbeforeunload = null;
-                    doManagement.lineItemID.value = lineItemID;
-                    doManagement.itemName.value = document.getElementById("itemName" + lineItemID).value;
-                    doManagement.itemDescription.value = document.getElementById("itemDescription" + lineItemID).value;
-                    doManagement.itemUnitPrice.value = document.getElementById("itemUnitPrice" + lineItemID).value;
-                    doManagement.itemQty.value = document.getElementById("itemQty" + lineItemID).value;
-                    doManagement.target.value = "EditLineItem";
-                    document.doManagement.action = "../DeliveryOrderManagementController?editingLineItem=" + lineItemID;
-                    document.doManagement.submit();
+                    invoiceManagement.lineItemID.value = lineItemID;
+                    invoiceManagement.itemName.value = document.getElementById("itemName" + lineItemID).value;
+                    invoiceManagement.itemDescription.value = document.getElementById("itemDescription" + lineItemID).value;
+                    invoiceManagement.itemUnitPrice.value = document.getElementById("itemUnitPrice" + lineItemID).value;
+                    invoiceManagement.itemQty.value = document.getElementById("itemQty" + lineItemID).value;
+                    invoiceManagement.target.value = "EditLineItem";
+                    document.invoiceManagement.action = "../InvoiceManagementController?editingLineItem=" + lineItemID;
+                    document.invoiceManagement.submit();
                 }
 
                 function removeLineItem(lineItemID) {
                     window.onbeforeunload = null;
-                    doManagement.lineItemID.value = lineItemID;
-                    doManagement.target.value = "RemoveLineItem";
-                    document.doManagement.action = "../DeliveryOrderManagementController";
-                    document.doManagement.submit();
+                    invoiceManagement.lineItemID.value = lineItemID;
+                    invoiceManagement.target.value = "RemoveLineItem";
+                    document.invoiceManagement.action = "../InvoiceManagementController";
+                    document.invoiceManagement.submit();
                 }
 
-                function deleteDO() {
+                function deleteInvoice() {
                     window.onbeforeunload = null;
-                    window.location.href = "../DeliveryOrderManagementController?target=DeleteDO";
+                    window.location.href = "../InvoiceManagementController?target=DeleteInvoice";
                 }
 
                 function addressBook() {
                     window.onbeforeunload = null;
                     editContactForm.target.value = "ListAllCustomer";
-                    document.editContactForm.action = "../DeliveryOrderManagementController";
+                    document.editContactForm.action = "../InvoiceManagementController";
                     document.editContactForm.submit();
                 }
 
@@ -148,8 +148,8 @@
                 <jsp:include page="../jspIncludePages/sidebar.jsp" />
                 <section role="main" class="content-body">
                     <header class="page-header">
-                        <h2>Delivery Order: <%if (deliveryOrder != null && deliveryOrder.getDeliveryOrderNumber() != null) {
-                                out.print(deliveryOrder.getDeliveryOrderNumber());
+                        <h2>Invoice <%if (invoice != null && invoice.getInvoiceNumber()!= null) {
+                                out.print(invoice.getInvoiceNumber());
                             }%></h2>
                         <div class="right-wrapper pull-right">
                             <ol class="breadcrumbs">
@@ -158,24 +158,24 @@
                                         <i class="fa fa-home"></i>
                                     </a>
                                 </li>
-                                <li><span><a href= "../OrderManagementController?target=ListAllSCO">DO Management</a></span></li>
-                                <li><span>DO &nbsp;&nbsp</span></li>
+                                <li><span><a href= "../OrderManagementController?target=ListAllSCO">Invoice Management</a></span></li>
+                                <li><span>Invoice &nbsp;&nbsp</span></li>
                             </ol>
                         </div>
                     </header>
 
                     <!-- start: page -->
-                    <form name="doManagement" action="../DeliveryOrderManagementController">
+                    <form name="invoiceManagement" action="../InvoiceManagementController">
                         <section class="panel">
                             <div class="panel-body">
                                 <div class="invoice">
                                     <header class="clearfix">
                                         <div class="row">
                                             <div class="col-sm-6 mt-md">
-                                                <h2 class="h2 mt-none mb-sm text-dark text-weight-bold">Delivery Order</h2>
+                                                <h2 class="h2 mt-none mb-sm text-dark text-weight-bold">Invoice</h2>
                                                 <%
-                                                    if (deliveryOrder != null) {
-                                                        out.print("<input type='text' " + formDisablerFlag + " class='form-control' id='doNumber' name='doNumber' value='" + deliveryOrder.getDeliveryOrderNumber() + "' style='max-width: 300px' required/>");
+                                                    if (invoice != null) {
+                                                        out.print("<input type='text' " + formDisablerFlag + " class='form-control' id='invoiceNumber' name='invoiceNumber' value='" + invoice.getInvoiceNumber() + "' style='max-width: 300px' required/>");
                                                     }
                                                 %>
                                             </div>
@@ -205,21 +205,21 @@
                                                     <address>
                                                         <div class="col-md-6" style="padding-left: 0px;">
                                                             <%
-                                                                if (deliveryOrder != null) {
-                                                                    out.print("<b>" + deliveryOrder.getCustomerName() + "</b>");
-                                                                    String repl = deliveryOrder.getContactAddress().replaceAll("(\\r|\\n|\\r\\n)+", "<br>");
+                                                                if (invoice != null) {
+                                                                    out.print("<b>" + invoice.getCustomerName() + "</b>");
+                                                                    String repl = invoice.getContactAddress().replaceAll("(\\r|\\n|\\r\\n)+", "<br>");
                                                                     out.print("<br>" + repl);
-                                                                    out.print("<br>" + deliveryOrder.getContactOfficeNo());
-                                                                    if (deliveryOrder.getContactFaxNo() != null && !deliveryOrder.getContactFaxNo().isEmpty()) {
-                                                                        out.print("<br>" + deliveryOrder.getContactFaxNo());
+                                                                    out.print("<br>" + invoice.getContactOfficeNo());
+                                                                    if (invoice.getContactFaxNo() != null && !invoice.getContactFaxNo().isEmpty()) {
+                                                                        out.print("<br>" + invoice.getContactFaxNo());
                                                                     }
                                                                     out.print("<p class='h5 mb-xs text-dark text-weight-semibold'>Attention:</p>");
-                                                                    out.print(deliveryOrder.getContactName() + " ");
-                                                                    if (deliveryOrder.getContactMobileNo() != null && !deliveryOrder.getContactMobileNo().isEmpty()) {
-                                                                        out.print("<br>" + deliveryOrder.getContactMobileNo());
+                                                                    out.print(invoice.getContactName() + " ");
+                                                                    if (invoice.getContactMobileNo() != null && !invoice.getContactMobileNo().isEmpty()) {
+                                                                        out.print("<br>" + invoice.getContactMobileNo());
                                                                     }
-                                                                    if (deliveryOrder.getContactEmail() != null && !deliveryOrder.getContactEmail().isEmpty()) {
-                                                                        out.print("<br>" + deliveryOrder.getContactEmail() + "<br>");
+                                                                    if (invoice.getContactEmail() != null && !invoice.getContactEmail().isEmpty()) {
+                                                                        out.print("<br>" + invoice.getContactEmail() + "<br>");
                                                                     }
                                                                     if (!formDisablerFlag.equals("disabled")) {
                                                                         out.print("<div class='text-right'><a href='#modalEditForm' class='modal-with-form'>edit</a></div>");
@@ -238,8 +238,8 @@
                                                         <span class="text-dark">Salesperson: </span>
                                                         <span class="value" style="min-width: 110px; font-size: 10.5pt; text-align: left;">
                                                             <%
-                                                                if (deliveryOrder != null && deliveryOrder.getSalesConfirmationOrder().getSalesPerson().getName() != null) {
-                                                                    out.print(deliveryOrder.getSalesConfirmationOrder().getSalesPerson().getName());
+                                                                if (invoice != null && invoice.getSalesConfirmationOrder().getSalesPerson().getName() != null) {
+                                                                    out.print(invoice.getSalesConfirmationOrder().getSalesPerson().getName());
                                                                 } else {
                                                                     out.print(staff.getName());
                                                                 }
@@ -250,13 +250,13 @@
                                                         <span class="text-dark">Date:</span>
                                                         <span class="value" style="min-width: 110px">
                                                             <%
-                                                                if (deliveryOrder != null) {
+                                                               /* if (invoice != null) {
                                                                     SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
-                                                                    String date = DATE_FORMAT.format(deliveryOrder.getDeliveryOrderDate());
+                                                                    String date = DATE_FORMAT.format(invoice.getDateDue());
                                                                     out.print("<input " + formDisablerFlag + " id='doDate' name='doDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "' required>");
                                                                 } else {
                                                                     out.print("<input " + formDisablerFlag + " id='doDate' name='doDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' required placeholder='dd/mm/yyyy'>");
-                                                                }
+                                                                }*/
                                                             %>
                                                         </span>
                                                     </p>
@@ -266,8 +266,8 @@
                                                         <span class="text-dark">PO Number:</span>
                                                         <span class="value" style="min-width: 110px">
                                                             <%
-                                                                if (deliveryOrder != null && deliveryOrder.getCustomerPurchaseOrderNumber() != null && !deliveryOrder.getCustomerPurchaseOrderNumber().isEmpty()) {
-                                                                    out.print("<input " + formDisablerFlag + " id='poNumber' name='poNumber' type='text' class='form-control' value='" + deliveryOrder.getCustomerPurchaseOrderNumber() + "'>");
+                                                                if (invoice != null && invoice.getCustomerPurchaseOrderNumber() != null && !invoice.getCustomerPurchaseOrderNumber().isEmpty()) {
+                                                                    out.print("<input " + formDisablerFlag + " id='poNumber' name='poNumber' type='text' class='form-control' value='" + invoice.getCustomerPurchaseOrderNumber() + "'>");
                                                                 } else {
                                                                     out.print("<input " + formDisablerFlag + " id='poNumber' name='poNumber' type='text' class='form-control' placeholder='PO Number'>");
                                                                 }
@@ -276,14 +276,14 @@
                                                     </p>
 
 
-                                                    <% if (deliveryOrder != null) {%>
+                                                    <% if (invoice != null) {%>
                                                     <p class="mb-none">
                                                         <span class="text-dark">Status: </span>
                                                         <span class="value" style="min-width: 110px">
                                                             <select <%=formDisablerFlag%> id="status" name="status" class="form-control input-sm" required>
                                                                 <%
-                                                                    if ((deliveryOrder.getStatus() != null && !deliveryOrder.getStatus().isEmpty())) {
-                                                                        String selectedStatus = deliveryOrder.getStatus();
+                                                                    if ((invoice.getStatus() != null && !invoice.getStatus().isEmpty())) {
+                                                                        String selectedStatus = invoice.getStatus();
 
                                                                         if (selectedStatus.equals("Created")) {
                                                                             out.print("<option value='Created' selected>Created</option>");
@@ -375,9 +375,9 @@
                                                     <td class="text-center">
                                                         <%
                                                             if (!editingLineItem.equals("")) {
-                                                                out.print("<button class='btn btn-default btn-block' onclick='javascript:addLineItemToNewDO()' disabled>Add Item</button>");
+                                                                out.print("<button class='btn btn-default btn-block' onclick='javascript:addLineItemToNewInvoice()' disabled>Add Item</button>");
                                                             } else {
-                                                                out.print("<button class='btn btn-default btn-block' onclick='javascript:addLineItemToExistingDO(" + deliveryOrder.getId() + ")'>Add Item</button>");
+                                                                out.print("<button class='btn btn-default btn-block' onclick='javascript:addLineItemToExistingInvoice(" + invoice.getId() + ")'>Add Item</button>");
                                                             }
                                                         %>
                                                     </td>
@@ -385,31 +385,31 @@
 
                                                 <!-- loop line item page -->
                                                 <%
-                                                    if (deliveryOrder != null && deliveryOrder.getItems() != null) {
+                                                    if (invoice != null && invoice.getItems() != null) {
                                                         NumberFormat formatter = NumberFormat.getCurrencyInstance();
-                                                        for (int i = 0; i < deliveryOrder.getItems().size(); i++) {
-                                                            if (!editingLineItem.isEmpty() && editingLineItem.equals(deliveryOrder.getItems().get(i).getId() + "")) {
+                                                        for (int i = 0; i < invoice.getItems().size(); i++) {
+                                                            if (!editingLineItem.isEmpty() && editingLineItem.equals(invoice.getItems().get(i).getId() + "")) {
                                                                 //Print editable fields
-                                                                double price = deliveryOrder.getItems().get(i).getItemUnitPrice();
+                                                                double price = invoice.getItems().get(i).getItemUnitPrice();
 
                                                 %>
                                                 <tr>
                                                     <td>
-                                                        <input type='text' class='form-control' name='itemName' id='itemName<%=deliveryOrder.getItems().get(i).getId()%>' value='<%=deliveryOrder.getItems().get(i).getItemName()%>'/>
+                                                        <input type='text' class='form-control' name='itemName' id='itemName<%=invoice.getItems().get(i).getId()%>' value='<%=invoice.getItems().get(i).getItemName()%>'/>
                                                     </td>
                                                     <td>
-                                                        <input type='text' class='form-control' name='itemDescription' id='itemDescription<%=deliveryOrder.getItems().get(i).getId()%>' value='<%=deliveryOrder.getItems().get(i).getItemDescription()%>'/>
+                                                        <input type='text' class='form-control' name='itemDescription' id='itemDescription<%=invoice.getItems().get(i).getId()%>' value='<%=invoice.getItems().get(i).getItemDescription()%>'/>
                                                     </td>
                                                     <td class="text-center">
                                                         <div class="input-group">
                                                             <span class="input-group-addon">
                                                                 <i class="fa fa-dollar"></i>
                                                             </span>
-                                                            <input type='number' class='form-control' id='itemUnitPrice<%=deliveryOrder.getItems().get(i).getId()%>' name='itemUnitPrice' min='0' step='any' value='<%=price%>'/>
+                                                            <input type='number' class='form-control' id='itemUnitPrice<%=invoice.getItems().get(i).getId()%>' name='itemUnitPrice' min='0' step='any' value='<%=price%>'/>
                                                         </div>
                                                     </td>
                                                     <td class="text-center">
-                                                        <input type='number' class='form-control' id='itemQty<%=deliveryOrder.getItems().get(i).getId()%>' min='0' name='itemQty' value='<%=deliveryOrder.getItems().get(i).getItemQty()%>'/>
+                                                        <input type='number' class='form-control' id='itemQty<%=invoice.getItems().get(i).getId()%>' min='0' name='itemQty' value='<%=invoice.getItems().get(i).getItemQty()%>'/>
                                                     </td>
                                                     <td class="text-center">
                                                         <div class="input-group">
@@ -420,7 +420,7 @@
                                                         </div>
                                                     </td>
                                                     <% //Print buttons for current editing line item
-                                                        out.print("<td class='text-center'><div class='btn-group'><button class='btn btn-default' type='button' onclick='javascript:saveEditLineItem(" + deliveryOrder.getItems().get(i).getId() + ")'>Save</button>&nbsp;");
+                                                        out.print("<td class='text-center'><div class='btn-group'><button class='btn btn-default' type='button' onclick='javascript:saveEditLineItem(" + invoice.getItems().get(i).getId() + ")'>Save</button>&nbsp;");
                                                         out.print("<button class='btn btn-default' type='button' onclick='javascript:back2()' >Back</button></div></td>");
                                                     %>
                                                 </tr> 
@@ -429,15 +429,15 @@
                                                                 //Print normal text
                                                                 double price = 0;
                                                                 out.print("<tr>");
-                                                                out.print("<td class='text-weight-semibold text-dark'>" + deliveryOrder.getItems().get(i).getItemName() + "</td>");
-                                                                out.print("<td>" + deliveryOrder.getItems().get(i).getItemDescription() + "</td>");
-                                                                price = deliveryOrder.getItems().get(i).getItemUnitPrice();
+                                                                out.print("<td class='text-weight-semibold text-dark'>" + invoice.getItems().get(i).getItemName() + "</td>");
+                                                                out.print("<td>" + invoice.getItems().get(i).getItemDescription() + "</td>");
+                                                                price = invoice.getItems().get(i).getItemUnitPrice();
                                                                 out.print("<td class='text-center'>" + formatter.format(price) + "</td>");
-                                                                out.print("<td class='text-center'>" + deliveryOrder.getItems().get(i).getItemQty() + "</td>");
-                                                                price = deliveryOrder.getItems().get(i).getItemUnitPrice() * deliveryOrder.getItems().get(i).getItemQty();
+                                                                out.print("<td class='text-center'>" + invoice.getItems().get(i).getItemQty() + "</td>");
+                                                                price = invoice.getItems().get(i).getItemUnitPrice() * invoice.getItems().get(i).getItemQty();
                                                                 out.print("<td class='text-center'>" + formatter.format(price) + "</td>");
-                                                                out.print("<td class='text-center'><div class='btn-group'><button " + formDisablerFlag + " class='btn btn-default' type='button' onclick='javascript:editLineItem(" + deliveryOrder.getItems().get(i).getId() + ")'>Edit</button>&nbsp;");
-                                                                out.print("<button " + formDisablerFlag + " class='btn btn-default' onclick='javascript:removeLineItem(" + deliveryOrder.getItems().get(i).getId() + ")'>Del</button></div></td>");
+                                                                out.print("<td class='text-center'><div class='btn-group'><button " + formDisablerFlag + " class='btn btn-default' type='button' onclick='javascript:editLineItem(" + invoice.getItems().get(i).getId() + ")'>Edit</button>&nbsp;");
+                                                                out.print("<button " + formDisablerFlag + " class='btn btn-default' onclick='javascript:removeLineItem(" + invoice.getItems().get(i).getId() + ")'>Del</button></div></td>");
                                                                 out.print("</div>");
                                                                 out.print("</tr>");
                                                             }
@@ -458,10 +458,10 @@
                                                     <li>All Goods Delivered Are Non Returnable / Refundable</li>
                                                 </ul>
                                                 <%
-                                                    if (deliveryOrder != null && deliveryOrder.getRemarks() != null && !deliveryOrder.getRemarks().isEmpty()) {
+                                                    if (invoice != null && invoice.getRemarks() != null && !invoice.getRemarks().isEmpty()) {
                                                         out.print("Remarks:");
-                                                        String repl = deliveryOrder.getRemarks().replaceAll("(\\r|\\n|\\r\\n)+", "<br>");
-                                                        out.print("Remarks: " + deliveryOrder.getRemarks());
+                                                        String repl = invoice.getRemarks().replaceAll("(\\r|\\n|\\r\\n)+", "<br>");
+                                                        out.print("Remarks: " + invoice.getRemarks());
                                                     }
                                                 %>
                                             </div>
@@ -475,12 +475,12 @@
                                                                 <%
                                                                     double formatedPrice = 0;
                                                                     NumberFormat formatter = NumberFormat.getCurrencyInstance();
-                                                                    if (deliveryOrder == null) {
+                                                                    if (invoice == null) {
                                                                         out.print("<span id='output_subtotal'>$0.00</span>");
                                                                     } else {
-                                                                        formatedPrice = deliveryOrder.getTotalPrice() / (deliveryOrder.getTaxRate() / 100 + 1);
+                                                                        formatedPrice = invoice.getTotalPrice() / (invoice.getTaxRate() / 100 + 1);
                                                                         out.print("<span id='output_subtotal'>" + formatter.format(formatedPrice) + "</span>");
-                                                                        out.print("<input type='hidden' value='" + (deliveryOrder.getTotalPrice() / (deliveryOrder.getTaxRate() / 100 + 1)) + "' id='subtotal'>");
+                                                                        out.print("<input type='hidden' value='" + (invoice.getTotalPrice() / (invoice.getTaxRate() / 100 + 1)) + "' id='subtotal'>");
                                                                     }
                                                                 %>
                                                             </td>
@@ -488,21 +488,21 @@
                                                         <tr>
                                                             <td colspan="2">
                                                                 <%
-                                                                    if (deliveryOrder == null) {
+                                                                    if (invoice == null) {
                                                                         out.print("7.0% GST");
                                                                     } else {
-                                                                        out.print("" + deliveryOrder.getTaxRate() + "% GST");
+                                                                        out.print("" + invoice.getTaxRate() + "% GST");
                                                                     }
                                                                 %>
                                                             </td>
                                                             <td class="text-left">
                                                                 <%
-                                                                    if (deliveryOrder == null) {
+                                                                    if (invoice == null) {
                                                                         out.print("<span id='output_gst'>$0.00</span>");
                                                                     } else {
-                                                                        formatedPrice = deliveryOrder.getTotalTax();
+                                                                        formatedPrice = invoice.getTotalTax();
                                                                         out.print("<span id='output_gst'>" + formatter.format(formatedPrice) + "</span>");
-                                                                        out.print("<input type='hidden' value='" + deliveryOrder.getTotalTax() + "' id='gst'>");
+                                                                        out.print("<input type='hidden' value='" + invoice.getTotalTax() + "' id='gst'>");
                                                                     }
                                                                 %>
                                                             </td>
@@ -511,12 +511,12 @@
                                                             <td colspan="2">Total (SGD)</td>
                                                             <td class="text-left">
                                                                 <%
-                                                                    if (deliveryOrder == null) {
+                                                                    if (invoice == null) {
                                                                         out.print("<span id='output_totalPrice'>$0.00</span>");
                                                                     } else {
-                                                                        formatedPrice = deliveryOrder.getTotalPrice();
+                                                                        formatedPrice = invoice.getTotalPrice();
                                                                         out.print("<span id='output_totalPrice'>" + formatter.format(formatedPrice) + "</span>");
-                                                                        out.print("<input type='hidden' value='" + deliveryOrder.getTotalPrice() + "' id='totalPrice'>");
+                                                                        out.print("<input type='hidden' value='" + invoice.getTotalPrice() + "' id='totalPrice'>");
                                                                     }
                                                                 %>
                                                             </td>
@@ -532,16 +532,16 @@
                                     <div class="col-sm-6 mt-md">
                                         <div class="btn-group">
                                             <%
-                                                if (deliveryOrder != null) {
-                                                    if (deliveryOrder.getItems().size() > 0) {
-                                                        out.print("<a href='../OrderManagementController?target=PrintPDF&id=" + deliveryOrder.getId() + "' target='_blank' class='btn btn-default'><i class='fa fa-print'></i> Print PDF</a>");
+                                                if (invoice != null) {
+                                                    if (invoice.getItems().size() > 0) {
+                                                        out.print("<a href='../OrderManagementController?target=PrintPDF&id=" + invoice.getId() + "' target='_blank' class='btn btn-default'><i class='fa fa-print'></i> Print PDF</a>");
                                                     }
-                                                    if (deliveryOrder.getNotes() != null && !deliveryOrder.getNotes().isEmpty()) {
+                                                    if (invoice.getNotes() != null && !invoice.getNotes().isEmpty()) {
                                                         out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalNotes'><i class='fa fa-exclamation'></i> Notes</button>");
                                                     } else {
                                                         out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalNotes'>Notes</button>");
                                                     }
-                                                    out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalRemarks' data-toggle='tooltip' data-placement='top' title='*Remarks will be reflected in the DO'>Remarks</button>");
+                                                    out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalRemarks' data-toggle='tooltip' data-placement='top' title='*Remarks will be reflected in the Invoice'>Remarks</button>");
                                                 }
                                             %> 
                                         </div>
@@ -550,12 +550,12 @@
                                     <div class="col-sm-6 text-right mt-md mb-md">
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-default" onclick="javascript:back()">Back</button>
-                                            <%              if (deliveryOrder != null) {
+                                            <%              if (invoice != null) {
                                                     out.print("<button type='button' class='modal-with-move-anim btn btn-danger' href='#modalRemove'>Delete</button>");
-                                                    if (deliveryOrder.getItems().size() > 0) {
+                                                    if (invoice.getItems().size() > 0) {
                                                         out.print("<button " + formDisablerFlag + " class='btn btn-primary' onclick='javascript:generateInvoice()'>Generate Invoice</button>");
                                                     }
-                                                    out.print("<button " + formDisablerFlag + " class='btn btn-success' onclick='javascript:updateDO();'>Save</button>");
+                                                    out.print("<button " + formDisablerFlag + " class='btn btn-success' onclick='javascript:updateInvoice();'>Save</button>");
                                                 } else {
                                                     out.print("<button " + formDisablerFlag + " class='btn btn-success' type='submit'>Save</button>");
                                                 }
@@ -567,21 +567,21 @@
                         </section>
 
                         <%
-                            if (deliveryOrder != null) {
-                                out.print("<input type='hidden' name='customerID' value='" + deliveryOrder.getSalesConfirmationOrder().getCustomer().getId() + "'>");
+                            if (invoice != null) {
+                                out.print("<input type='hidden' name='customerID' value='" + invoice.getSalesConfirmationOrder().getCustomer().getId() + "'>");
                             }
                         %>
                         <input type="hidden" name="lineItemID" value="">   
-                        <input type="hidden" name="target" value="SaveDO">    
+                        <input type="hidden" name="target" value="SaveInvoice">    
                         <input type="hidden" name="source" value="">    
                         <input type="hidden" name="id" value="">    
                     </form>
                     <!-- end: page -->
 
-                    <%if (deliveryOrder != null) {%>
+                    <%if (invoice != null) {%>
                     <div id="modalEditForm" class="modal-block modal-block-primary mfp-hide">
                         <section class="panel">
-                            <form name="editContactForm" action="../DeliveryOrderManagementController" class="form-horizontal mb-lg">
+                            <form name="editContactForm" action="../InvoiceManagementController" class="form-horizontal mb-lg">
                                 <header class="panel-heading">
                                     <h2 class="panel-title">Edit Contact</h2>
                                 </header>
@@ -589,45 +589,45 @@
                                     <div class="form-group">
                                         <label class="col-sm-3 control-label">Company <span class="required">*</span></label>
                                         <div class="col-sm-9">
-                                            <input type="text" name="company" class="form-control" value="<%=deliveryOrder.getCustomerName()%>" required/>
+                                            <input type="text" name="company" class="form-control" value="<%=invoice.getCustomerName()%>" required/>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-md-3 control-label">Address <span class="required">*</span></label>
                                         <div class="col-md-9">
-                                            <textarea class="form-control" rows="3" name="address" required><%=deliveryOrder.getContactAddress()%></textarea>
+                                            <textarea class="form-control" rows="3" name="address" required><%=invoice.getContactAddress()%></textarea>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-sm-3 control-label">Telephone <span class="required">*</span></label>
                                         <div class="col-sm-9">
-                                            <input type="text" name="officeNo" class="form-control" value="<%=deliveryOrder.getContactOfficeNo()%>" required/>
+                                            <input type="text" name="officeNo" class="form-control" value="<%=invoice.getContactOfficeNo()%>" required/>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-sm-3 control-label">Fasimile</label>
                                         <div class="col-sm-9">
-                                            <input type="text" name="faxNo" class="form-control" value="<%=deliveryOrder.getContactFaxNo()%>"/>
+                                            <input type="text" name="faxNo" class="form-control" value="<%=invoice.getContactFaxNo()%>"/>
                                         </div>
                                     </div>
                                     <hr>
                                     <div class="form-group mt-lg">
                                         <label class="col-sm-3 control-label">Name <span class="required">*</span></label>
                                         <div class="col-sm-9">
-                                            <input type="text" name="name" class="form-control" value="<%=deliveryOrder.getContactName()%>" required/>
+                                            <input type="text" name="name" class="form-control" value="<%=invoice.getContactName()%>" required/>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-sm-3 control-label">Mobile</label>
                                         <div class="col-sm-9">
-                                            <input type="text" name="mobileNo" class="form-control" value="<%=deliveryOrder.getContactMobileNo()%>"/>
+                                            <input type="text" name="mobileNo" class="form-control" value="<%=invoice.getContactMobileNo()%>"/>
                                         </div>
                                     </div>
 
                                     <div class="form-group">
                                         <label class="col-sm-3 control-label">Email <span class="required">*</span></label>
                                         <div class="col-sm-9">
-                                            <input type="email" name="email" class="form-control" value="<%=deliveryOrder.getContactEmail()%>" required/>
+                                            <input type="email" name="email" class="form-control" value="<%=invoice.getContactEmail()%>" required/>
                                         </div>
                                     </div>
                                     <br>
@@ -648,7 +648,7 @@
 
                     <div id="modalNotes" class="modal-block modal-block-primary mfp-hide">
                         <section class="panel">
-                            <form name="editNotesForm" action="../DeliveryOrderManagementController" class="form-horizontal mb-lg">
+                            <form name="editNotesForm" action="../InvoiceManagementController" class="form-horizontal mb-lg">
                                 <header class="panel-heading">
                                     <h2 class="panel-title">Notes</h2>
                                 </header>
@@ -656,8 +656,8 @@
                                     <div class="form-group">
                                         <label class="col-sm-3 control-label">Notes</label>
                                         <div class="col-sm-9">
-                                            <textarea class="form-control" rows="5" name="notes"><%if (deliveryOrder.getNotes() != null) {
-                                                    out.print(deliveryOrder.getNotes());
+                                            <textarea class="form-control" rows="5" name="notes"><%if (invoice.getNotes() != null) {
+                                                    out.print(invoice.getNotes());
                                                 }%></textarea>
                                         </div>
                                     </div>
@@ -686,12 +686,12 @@
                                     <div class="form-group">
                                         <label class="col-sm-3 control-label">Remarks</label>
                                         <div class="col-sm-9">
-                                            <textarea class="form-control" rows="5" name="remarks"><%if (deliveryOrder.getRemarks() != null) {
-                                                    out.print(deliveryOrder.getRemarks());
+                                            <textarea class="form-control" rows="5" name="remarks"><%if (invoice.getRemarks() != null) {
+                                                    out.print(invoice.getRemarks());
                                                 }%></textarea>
                                         </div>
                                     </div>
-                                    <input type="hidden" name="target" value="UpdateDORemarks">    
+                                    <input type="hidden" name="target" value="UpdateInvoiceRemarks">    
                                 </div>
                                 <footer class="panel-footer">
                                     <div class="row">
@@ -717,14 +717,14 @@
                                         <i class="fa fa-question-circle"></i>
                                     </div>
                                     <div class="modal-text">
-                                        <p>Are you sure that you want to delete this Delivery Order?<br> All associated Invoice/Payment records will also be deleted together!</p>
+                                        <p>Are you sure that you want to delete this Invoice?<br> All associated Payment records will also be deleted together!</p>
                                     </div>
                                 </div>
                             </div>
                             <footer class="panel-footer">
                                 <div class="row">
                                     <div class="col-md-12 text-right">
-                                        <button class="btn btn-primary modal-confirm" onclick="javascript:deleteDO();">Confirm</button>
+                                        <button class="btn btn-primary modal-confirm" onclick="javascript:deleteInvoice();">Confirm</button>
                                         <button class="btn btn-default modal-dismiss">Cancel</button>
                                     </div>
                                 </div>

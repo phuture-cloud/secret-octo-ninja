@@ -373,13 +373,7 @@
                                                         </div>
                                                     </td>
                                                     <td class="text-center">
-                                                        <%
-                                                            if (!editingLineItem.equals("")) {
-                                                                out.print("<button class='btn btn-default btn-block' onclick='javascript:addLineItemToNewDO()' disabled>Add Item</button>");
-                                                            } else {
-                                                                out.print("<button class='btn btn-default btn-block' onclick='javascript:addLineItemToExistingDO(" + deliveryOrder.getId() + ")'>Add Item</button>");
-                                                            }
-                                                        %>
+                                                        <button class='btn btn-default btn-block' onclick='javascript:addLineItemToExistingDO(<%=deliveryOrder.getId()%>)'>Add Item</button>
                                                     </td>
                                                 </tr>
 
@@ -572,7 +566,6 @@
                             }
                         %>
                         <input type="hidden" name="lineItemID" value="">   
-                        <input type="hidden" name="target" value="SaveDO">    
                         <input type="hidden" name="source" value="">    
                         <input type="hidden" name="id" value="">    
                     </form>

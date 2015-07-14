@@ -125,13 +125,13 @@ public class DeliveryOrderManagementController extends HttpServlet {
                                     deliveryOrder = deliveryOrderManagementBean.getDeliveryOrder(doID);
                                     if (returnHelper.getResult() && deliveryOrder != null) {
                                         session.setAttribute("do", deliveryOrder);
-                                        nextPage = "OrderManagement/doManagement.jsp?goodMsg=" + returnHelper.getDescription() + "&doNumber=" + doNumber;
+                                        nextPage = "OrderManagement/doManagement.jsp?goodMsg=" + returnHelper.getDescription();
                                     } else {
-                                        nextPage = "OrderManagement/doManagement.jsp?errMsg=" + returnHelper.getDescription() + "&doNumber=" + doNumber;
+                                        nextPage = "OrderManagement/doManagement.jsp?errMsg=" + returnHelper.getDescription();
                                     }
                                 }
                             } else {
-                                nextPage = "OrderManagement/doManagement.jsp?doNumber=" + doNumber + "&doDate=" + doDate + "&errMsg=" + returnHelper.getDescription();
+                                nextPage = "OrderManagement/doManagement.jsp?errMsg=" + returnHelper.getDescription();
                                 break;
                             }
                         }
