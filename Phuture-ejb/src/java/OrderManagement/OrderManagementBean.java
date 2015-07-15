@@ -754,17 +754,5 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             ex.printStackTrace();
             return null;
         }
-    }
-
-    @Override
-    public Integer getNumOfDO(Long salesConfirmationOrderID) {
-        return dombl.listDeliveryOrdersTiedToSCO(salesConfirmationOrderID).size();
-    }
-
-    @Override
-    public Integer getNumOfPO(Long salesConfirmationOrderID) {
-        return pombl.listPurchaseOrdersTiedToSCO(salesConfirmationOrderID).size();
-    }
-    
-    
+    } 
 }

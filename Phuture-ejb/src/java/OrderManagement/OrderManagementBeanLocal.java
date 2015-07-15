@@ -30,8 +30,5 @@ public interface OrderManagementBeanLocal {
     public ReturnHelper deleteSCOlineItem(Long salesConfirmationOrderID, Long lineItemID, Boolean adminOverwrite);
     public ReturnHelper deleteSCOallLineItem(Long salesConfirmationOrderID, Boolean adminOverwrite);
     public List<LineItem> listSCOlineItems(Long salesConfirmationOrderID);
-    
-    public Integer getNumOfDO(Long salesConfirmationOrderID);
-    public Integer getNumOfPO(Long salesConfirmationOrderID);
 }
 
