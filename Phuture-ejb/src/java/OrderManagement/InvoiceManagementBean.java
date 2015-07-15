@@ -72,7 +72,7 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             List<Invoice> invoices = sco.getInvoices();
             invoices.add(invoice);
             sco.setInvoices(invoices);
-            sco.setNumOfInvoices(sco.getNumOfDeliveryOrders() + 1);
+            sco.setNumOfInvoices(sco.getNumOfInvoices()+ 1);
             em.merge(sco);
             result.setID(invoice.getId());
             result.setResult(true);
