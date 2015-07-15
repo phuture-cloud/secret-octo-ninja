@@ -81,15 +81,15 @@
 
                 function addLineItemToExistingPO() {
                     window.onbeforeunload = null;
-                    poManagement.target.value = "UpdateDO";
+                    poManagement.target.value = "UpdatePO";
                     poManagement.source.value = "AddLineItemToExistingPO";
                     document.poManagement.action = "../PurchaseOrderManagementController";
                     document.poManagement.submit();
                 }
 
-                function updateDO() {
+                function updatePO() {
                     window.onbeforeunload = null;
-                    poManagement.target.value = "UpdateDO";
+                    poManagement.target.value = "UpdatePO";
                     document.poManagement.action = "../PurchaseOrderManagementController";
                     document.poManagement.submit();
                 }
@@ -122,7 +122,7 @@
 
                 function deletePO() {
                     window.onbeforeunload = null;
-                    window.location.href = "../PurchaseOrderManagementController?target=DeleteDO";
+                    window.location.href = "../PurchaseOrderManagementController?target=DeletePO";
                 }
 
                 function addressBook() {
@@ -165,17 +165,17 @@
                     </header>
 
                     <!-- start: page -->
-                    <form name="poManagement" action="../OrderManagementController">
+                    <form name="poManagement" action="../PurchaseOrderManagementController">
                         <section class="panel">
                             <div class="panel-body">
                                 <div class="invoice">
                                     <header class="clearfix">
                                         <div class="row">
                                             <div class="col-sm-6 mt-md">
-                                                <h2 class="h2 mt-none mb-sm text-dark text-weight-bold">Delivery Order</h2>
+                                                <h2 class="h2 mt-none mb-sm text-dark text-weight-bold">Purchase Order</h2>
                                                 <%
                                                     if (purchaseOrder != null) {
-                                                        out.print("<input type='text' " + formDisablerFlag + " class='form-control' id='doNumber' name='doNumber' value='" + purchaseOrder.getPurchaseOrderNumber() + "' style='max-width: 300px' required/>");
+                                                        out.print("<input type='text' " + formDisablerFlag + " class='form-control' id='poNumber' name='poNumber' value='" + purchaseOrder.getPurchaseOrderNumber() + "' style='max-width: 300px' required/>");
                                                     }
                                                 %>
                                             </div>
@@ -206,9 +206,46 @@
                                                         <div class="col-md-6" style="padding-left: 0px;">
                                                             <%
                                                                 if (purchaseOrder != null) {
-                                                                    out.print("display textbox hereeee");
+                                                                    String s_name = purchaseOrder.getSupplierName();
+                                                                    String s_email = purchaseOrder.getSupplierEmail();
+                                                                    String s_officeNo = purchaseOrder.getSupplierOfficeNo();
+                                                                    String s_mobileNo = purchaseOrder.getSupplierMobileNo();
+                                                                    String s_faxNo = purchaseOrder.getSupplierFaxNo();
+                                                                    String s_address = purchaseOrder.getSupplierAddress();
+
+                                                                    if (s_name == null) {
+                                                                        s_name = "";
+                                                                    }
+                                                                    if (s_email == null) {
+                                                                        s_email = "";
+                                                                    }
+                                                                    if (s_officeNo == null) {
+                                                                        s_officeNo = "";
+                                                                    }
+                                                                    if (s_mobileNo == null) {
+                                                                        s_mobileNo = "";
+                                                                    }
+                                                                    if (s_faxNo == null) {
+                                                                        s_faxNo = "";
+                                                                    }
+                                                                    if (s_address == null) {
+                                                                        s_address = "";
+                                                                    }
+
+                                                                    out.print("<input type='text' " + formDisablerFlag + " class='form-control' id='supplierName' name='supplierName' value='" + s_name + "' placeholder='Supplier Name'/>");
+                                                                    out.print("<input type='text' " + formDisablerFlag + " class='form-control' id='supplierEmail' name='supplierEmail' value='" + s_email + "' placeholder='Supplier Email' />");
+                                                                    out.print("<input type='text' " + formDisablerFlag + " class='form-control' id='supplierOfficeNo' name='supplierOfficeNo' value='" + s_officeNo + "' placeholder='Supplier Office No' />");
+                                                                    out.print("<input type='text' " + formDisablerFlag + " class='form-control' id='supplierMobileNo' name='supplierMobileNo' value='" + s_mobileNo + "' placeholder='Supplier Mobile No' />");
+                                                                    out.print("<input type='text' " + formDisablerFlag + " class='form-control' id='supplierFaxNo' name='supplierFaxNo' value='" + s_faxNo + "' placeholder='Supplier Fax No' />");
+                                                                    if (!s_address.equals("")) {
+                                                                        out.print("<textarea " + formDisablerFlag + "  placeholder='Supplier Address' class='form-control' rows='3' name='supplierAddress' id='supplierAddress'>" + s_address + " </textarea>");
+                                                                    } else {
+                                                                        out.print("<textarea " + formDisablerFlag + "  placeholder='Supplier Address' class='form-control' rows='3' name='supplierAddress' id='supplierAddress'></textarea>");
+                                                                    }
+                                                                    out.print("<br>");
                                                                 }
                                                             %>
+
                                                         </div>
                                                         <br/><br/>
                                                     </address>
@@ -235,9 +272,9 @@
                                                                 if (purchaseOrder != null) {
                                                                     SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
                                                                     String date = DATE_FORMAT.format(purchaseOrder.getPurchaseOrderDate());
-                                                                    out.print("<input " + formDisablerFlag + " id='doDate' name='doDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "' required>");
+                                                                    out.print("<input " + formDisablerFlag + " id='poDate' name='poDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "' required>");
                                                                 } else {
-                                                                    out.print("<input " + formDisablerFlag + " id='doDate' name='doDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' required placeholder='dd/mm/yyyy'>");
+                                                                    out.print("<input " + formDisablerFlag + " id='poDate' name='poDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' required placeholder='dd/mm/yyyy'>");
                                                                 }
                                                             %>
                                                         </span>
@@ -253,21 +290,14 @@
                                                                         String selectedStatus = purchaseOrder.getStatus();
 
                                                                         if (selectedStatus.equals("Created")) {
-                                                                            out.print("<option value='Created' selected>Created</option>");
-                                                                            out.print("<option value='Shipped'>Shipped</option>");
-                                                                            out.print("<option value='Delivered'>Delivered</option>");
-                                                                        } else if (selectedStatus.equals("Shipped")) {
-                                                                            out.print("<option value='Created'>Created</option>");
-                                                                            out.print("<option value='Shipped' selected>Shipped</option>");
-                                                                            out.print("<option value='Delivered'>Delivered</option>");
-                                                                        } else if (selectedStatus.equals("Delivered")) {
-                                                                            out.print("<option value='Created'>Created</option>");
-                                                                            out.print("<option value='Shipped'>Shipped</option>");
-                                                                            out.print("<option value='Delivered' selected>Delivered</option>");
+                                                                            out.print("<option value='Pending' selected>Pending</option>");
+                                                                            out.print("<option value='Completed'>Completed</option>");
+                                                                        } else if (selectedStatus.equals("Completed")) {
+                                                                            out.print("<option value='Pending'>Pending</option>");
+                                                                            out.print("<option value='Completed' selected>Completed</option>");
                                                                         } else {
-                                                                            out.print("<option value='Created'>Created</option>");
-                                                                            out.print("<option value='Shipped'>Shipped</option>");
-                                                                            out.print("<option value='Delivered'>Delivered</option>");
+                                                                            out.print("<option value='Pending'>Pending</option>");
+                                                                            out.print("<option value='Completed'>Completed</option>");
                                                                         }
                                                                     }
                                                                 %>
@@ -472,7 +502,7 @@
                                                     if (purchaseOrder.getItems().size() > 0) {
                                                         out.print("<button " + formDisablerFlag + " class='btn btn-primary' onclick='javascript:generateInvoice()'>Generate Invoice</button>");
                                                     }
-                                                    out.print("<button " + formDisablerFlag + " class='btn btn-success' onclick='javascript:updateDO();'>Save</button>");
+                                                    out.print("<button " + formDisablerFlag + " class='btn btn-success' onclick='javascript:updatePO();'>Save</button>");
                                                 } else {
                                                     out.print("<button " + formDisablerFlag + " class='btn btn-success' type='submit'>Save</button>");
                                                 }
@@ -548,7 +578,7 @@
                                         </div>
                                     </div>
                                     <br>
-                                    <input type="hidden" name="target" value="UpdateDOContact">    
+                                    <input type="hidden" name="target" value="UpdatePOContact">    
                                     <input type="hidden" name="id" value="<%=purchaseOrder.getId()%>">  
                                     <input type="hidden" name="source" value="addressBook"> 
                                 </div>
@@ -580,7 +610,7 @@
                                                 }%></textarea>
                                         </div>
                                     </div>
-                                    <input type="hidden" name="target" value="UpdateDONotes">    
+                                    <input type="hidden" name="target" value="UpdatePONotes">    
                                 </div>
                                 <footer class="panel-footer">
                                     <div class="row">

@@ -82,7 +82,7 @@
                 function addLineItemToExistingInvoice() {
                     window.onbeforeunload = null;
                     invoiceManagement.target.value = "UpdateInvoice";
-                    invoiceManagement.source.value = "AddLineItemToExistingDO";
+                    invoiceManagement.source.value = "AddLineItemToExistingInvoice";
                     document.invoiceManagement.action = "../InvoiceManagementController";
                     document.invoiceManagement.submit();
                 }
@@ -148,7 +148,7 @@
                 <jsp:include page="../jspIncludePages/sidebar.jsp" />
                 <section role="main" class="content-body">
                     <header class="page-header">
-                        <h2>Invoice <%if (invoice != null && invoice.getInvoiceNumber()!= null) {
+                        <h2>Invoice <%if (invoice != null && invoice.getInvoiceNumber() != null) {
                                 out.print(invoice.getInvoiceNumber());
                             }%></h2>
                         <div class="right-wrapper pull-right">
@@ -250,13 +250,13 @@
                                                         <span class="text-dark">Date:</span>
                                                         <span class="value" style="min-width: 110px">
                                                             <%
-                                                               /* if (invoice != null) {
-                                                                    SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
-                                                                    String date = DATE_FORMAT.format(invoice.getDateDue());
-                                                                    out.print("<input " + formDisablerFlag + " id='doDate' name='doDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "' required>");
-                                                                } else {
-                                                                    out.print("<input " + formDisablerFlag + " id='doDate' name='doDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' required placeholder='dd/mm/yyyy'>");
-                                                                }*/
+                                                                /* if (invoice != null) {
+                                                                 SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
+                                                                 String date = DATE_FORMAT.format(invoice.getDateDue());
+                                                                 out.print("<input " + formDisablerFlag + " id='doDate' name='doDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "' required>");
+                                                                 } else {
+                                                                 out.print("<input " + formDisablerFlag + " id='doDate' name='doDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' required placeholder='dd/mm/yyyy'>");
+                                                                 }*/
                                                             %>
                                                         </span>
                                                     </p>
@@ -265,8 +265,7 @@
                                                     <p class="mb-none">
                                                         <span class="text-dark">PO Number:</span>
                                                         <span class="value" style="min-width: 110px">
-                                                            <%
-                                                                if (invoice != null && invoice.getCustomerPurchaseOrderNumber() != null && !invoice.getCustomerPurchaseOrderNumber().isEmpty()) {
+                                                            <%                                                                if (invoice != null && invoice.getCustomerPurchaseOrderNumber() != null && !invoice.getCustomerPurchaseOrderNumber().isEmpty()) {
                                                                     out.print("<input " + formDisablerFlag + " id='poNumber' name='poNumber' type='text' class='form-control' value='" + invoice.getCustomerPurchaseOrderNumber() + "'>");
                                                                 } else {
                                                                     out.print("<input " + formDisablerFlag + " id='poNumber' name='poNumber' type='text' class='form-control' placeholder='PO Number'>");
@@ -280,31 +279,11 @@
                                                     <p class="mb-none">
                                                         <span class="text-dark">Status: </span>
                                                         <span class="value" style="min-width: 110px">
-                                                            <select <%=formDisablerFlag%> id="status" name="status" class="form-control input-sm" required>
-                                                                <%
-                                                                    if ((invoice.getStatus() != null && !invoice.getStatus().isEmpty())) {
-                                                                        String selectedStatus = invoice.getStatus();
-
-                                                                        if (selectedStatus.equals("Created")) {
-                                                                            out.print("<option value='Created' selected>Created</option>");
-                                                                            out.print("<option value='Shipped'>Shipped</option>");
-                                                                            out.print("<option value='Delivered'>Delivered</option>");
-                                                                        } else if (selectedStatus.equals("Shipped")) {
-                                                                            out.print("<option value='Created'>Created</option>");
-                                                                            out.print("<option value='Shipped' selected>Shipped</option>");
-                                                                            out.print("<option value='Delivered'>Delivered</option>");
-                                                                        } else if (selectedStatus.equals("Delivered")) {
-                                                                            out.print("<option value='Created'>Created</option>");
-                                                                            out.print("<option value='Shipped'>Shipped</option>");
-                                                                            out.print("<option value='Delivered' selected>Delivered</option>");
-                                                                        } else {
-                                                                            out.print("<option value='Created'>Created</option>");
-                                                                            out.print("<option value='Shipped'>Shipped</option>");
-                                                                            out.print("<option value='Delivered'>Delivered</option>");
-                                                                        }
-                                                                    }
-                                                                %>
-                                                            </select>
+                                                            <%
+                                                                if ((invoice.getStatus() != null && !invoice.getStatus().isEmpty())) {
+                                                                    out.print(invoice.getStatus());
+                                                                }
+                                                            %>
                                                         </span>
                                                     </p>
                                                     <%}%>
@@ -631,7 +610,7 @@
                                         </div>
                                     </div>
                                     <br>
-                                    <input type="hidden" name="target" value="UpdateDOContact">    
+                                    <input type="hidden" name="target" value="UpdateInvoiceContact">    
                                 </div>
                                 <footer class="panel-footer">
                                     <div class="row">
@@ -661,7 +640,7 @@
                                                 }%></textarea>
                                         </div>
                                     </div>
-                                    <input type="hidden" name="target" value="UpdateDONotes">    
+                                    <input type="hidden" name="target" value="UpdateInvoiceNotes">    
                                 </div>
                                 <footer class="panel-footer">
                                     <div class="row">

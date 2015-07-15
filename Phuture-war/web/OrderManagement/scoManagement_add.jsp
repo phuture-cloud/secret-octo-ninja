@@ -205,11 +205,6 @@
                     document.editContactForm.submit();
                 }
 
-                function listAllInvoices(id) {
-                    window.onbeforeunload = null;
-                    window.location.href = "../OrderManagementController?target=RetrieveSCO&source=listAllInvoices&id=" + id;
-                }
-
                 function listAllPO(id) {
                     window.onbeforeunload = null;
                     window.location.href = "../OrderManagementController?target=RetrieveSCO&source=listAllPO&id=" + id;
@@ -760,7 +755,7 @@
                                                     if (sco.getNotes() != null && !sco.getNotes().isEmpty()) {
                                                         out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalNotes'><i class='fa fa-exclamation'></i> Notes</button>");
                                                     } else {
-                                                        out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalNotes'>Notes</button>");
+                                                        out.print("<button type='button' class='btn btnfdefault modal-with-form' href='#modalNotes'>Notes</button>");
                                                     }
                                                     out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalRemarks' data-toggle='tooltip' data-placement='top' title='*Remarks will be reflected in the SCO'>Remarks</button>");
                                                 }
@@ -772,13 +767,10 @@
                                                 if (sco != null && scoID != null && !scoID.isEmpty()) {
                                                     if (sco.getItems().size() > 0) {
                                                         if (sco.getPurchaseOrders().size() > 0) {
-                                                            out.print("<button type='button' class='btn btn-default' onclick='javascript:listAllPO(" + sco.getId() + ")'>Purchase Orders <span class='badge' style='background-color:#0088CC'>" + sco.getPurchaseOrders().size() + "</span></button>");
+                                                            out.print("<button type='button' class='btn btn-default' onclick='javascript:listAllPO(" + sco.getId() + ")'>Purchase Orders <span class='badge' style='background-color:#0088CC'>" + sco.getNumOfPurchaseOrders() + "</span></button>");
                                                         }
                                                         if (sco.getDeliveryOrders().size() > 0) {
-                                                            out.print("<button type='button' class='btn btn-default' onclick='javascript:listAllDO(" + sco.getId() + ")'>Delivery Orders <span class='badge' style='background-color:#0088CC'>" + sco.getDeliveryOrders().size() + "</span></button>");
-                                                        }
-                                                        if (sco.getInvoices().size() > 0) {
-                                                            out.print("<button type='button' class='btn btn-default' onclick='javascript:listAllInvoices(" + sco.getId() + ")'>Invoices <span class='badge' style='background-color:#0088CC'>" + sco.getInvoices().size() + "</span></button>");
+                                                            out.print("<button type='button' class='btn btn-default' onclick='javascript:listAllDO(" + sco.getId() + ")'>Delivery Orders <span class='badge' style='background-color:#0088CC'>" + sco.getNumOfDeliveryOrders() + "</span></button>");
                                                         }
                                                     }
                                                 }

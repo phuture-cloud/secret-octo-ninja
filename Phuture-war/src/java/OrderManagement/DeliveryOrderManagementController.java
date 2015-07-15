@@ -21,6 +21,9 @@ import javax.servlet.http.HttpSession;
 public class DeliveryOrderManagementController extends HttpServlet {
 
     @EJB
+    private InvoiceManagementBeanLocal invoiceManagementBean;
+
+    @EJB
     private OrderManagementBeanLocal orderManagementBean;
 
     @EJB
@@ -117,7 +120,7 @@ public class DeliveryOrderManagementController extends HttpServlet {
                                 Long doID = returnHelper.getID();
                                 deliveryOrder = deliveryOrderManagementBean.getDeliveryOrder(doID);
                                 session.setAttribute("do", deliveryOrder);
-                                nextPage = "OrderManagement/doManagement.jsp?goodMsg=" + returnHelper.getDescription() + "&doNumber=" + doNumber;
+                                nextPage = "OrderManagement/doManagement.jsp?goodMsg=" + returnHelper.getDescription();
 
                                 //Update line item if there is any
                                 if (itemName != null && !itemName.isEmpty() && itemDescription != null && !itemDescription.isEmpty() && itemQty != null && !itemQty.isEmpty() && itemUnitPrice != null && !itemUnitPrice.isEmpty()) {
@@ -244,6 +247,19 @@ public class DeliveryOrderManagementController extends HttpServlet {
                             if (source != null && source.equals("addressBook")) {
                                 nextPage = "OrderManagement/updateContact.jsp?selectedCustomerID=" + customerID;
                             }
+                        }
+                        break;
+
+                    case "GenerateInvoice":
+                        id = request.getParameter("id");
+                        String invoiceNumber = request.getParameter("invoiceNumber");
+                        returnHelper = invoiceManagementBean.createInvoice(Long.parseLong(id), invoiceNumber);
+                        if (returnHelper.getResult()) {
+                            SalesConfirmationOrder sco = orderManagementBean.getSalesConfirmationOrder(Long.parseLong(id));
+                            session.setAttribute("sco", sco);
+                            nextPage = "OrderManagement/doManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                        } else {
+                            nextPage = "OrderManagement/doManagement.jsp?errMsg=" + returnHelper.getDescription();
                         }
                         break;
 
