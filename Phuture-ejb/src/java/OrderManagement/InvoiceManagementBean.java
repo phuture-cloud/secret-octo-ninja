@@ -90,7 +90,7 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
     }
 
     @Override
-    public ReturnHelper updateInvoice(Long invoiceID, String newInvoiceNumber, Date invoiceSent, Date invoicePaid, String estimatedDeliveryDate, Integer terms, String customerPurchaseOrderNumber, Boolean adminOverwrite) {
+    public ReturnHelper updateInvoice(Long invoiceID, String newInvoiceNumber, Date invoiceCreated, Date invoiceSent, Date invoicePaid, String estimatedDeliveryDate, Integer terms, String customerPurchaseOrderNumber, Boolean adminOverwrite) {
         System.out.println("InvoiceManagementBean: updateInvoice() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -114,6 +114,7 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             }
             //Update fields 
             invoice.setInvoiceNumber(newInvoiceNumber);
+            invoice.setDateCreated(invoiceCreated);
             invoice.setDateSent(invoiceSent);
             invoice.setTerms(terms);
             invoice.setEstimatedDeliveryDate(estimatedDeliveryDate);
