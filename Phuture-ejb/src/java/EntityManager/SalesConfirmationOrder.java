@@ -49,8 +49,10 @@ public class SalesConfirmationOrder implements Serializable {
     private Integer terms;
     @OneToMany
     private List<DeliveryOrder> deliveryOrders;
+    private Integer numOfDeliveryOrders;
     @OneToMany
     private List<PurchaseOrder> purchaseOrders;
+    private Integer numOfPurchaseOrders;
     @OneToMany
     private List<Invoice> invoices;
     @OneToMany
@@ -76,6 +78,8 @@ public class SalesConfirmationOrder implements Serializable {
         this.notes = "";
         this.totalPrice = 0.0;
         this.totalTax = 0.0;
+        this.numOfDeliveryOrders = 0;
+        this.numOfPurchaseOrders = 0;
     }
 
     public SalesConfirmationOrder(String salesConfirmationOrderNumber, Date salesConfirmationOrderDate, String customerName, Staff salesPerson, Integer term, Double taxRate) {
@@ -95,6 +99,8 @@ public class SalesConfirmationOrder implements Serializable {
         this.notes = "";
         this.totalPrice = 0.0;
         this.totalTax = 0.0;
+        this.numOfDeliveryOrders = 0;
+        this.numOfPurchaseOrders = 0;
     }
 
     public Long getId() {
@@ -103,6 +109,22 @@ public class SalesConfirmationOrder implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Integer getNumOfDeliveryOrders() {
+        return numOfDeliveryOrders;
+    }
+
+    public void setNumOfDeliveryOrders(Integer numOfDeliveryOrders) {
+        this.numOfDeliveryOrders = numOfDeliveryOrders;
+    }
+
+    public Integer getNumOfPurchaseOrders() {
+        return numOfPurchaseOrders;
+    }
+
+    public void setNumOfPurchaseOrders(Integer numOfPurchaseOrders) {
+        this.numOfPurchaseOrders = numOfPurchaseOrders;
     }
 
     public Date getDateCreated() {

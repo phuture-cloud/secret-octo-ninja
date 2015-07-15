@@ -69,6 +69,7 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             List<DeliveryOrder> deliveryOrders = sco.getDeliveryOrders();
             deliveryOrders.add(deliveryOrder);
             sco.setDeliveryOrders(deliveryOrders);
+            sco.setNumOfDeliveryOrders(sco.getNumOfDeliveryOrders() + 1);
             em.merge(sco);
             result.setID(deliveryOrder.getId());
             result.setResult(true);
@@ -336,8 +337,13 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
                 result.setDescription(checkResult.getDescription());
                 return result;
             }
-            deliveryOrder.setIsDeleted(true);
-            em.merge(deliveryOrder);
+            if (!deliveryOrder.getIsDeleted()) {
+                deliveryOrder.setIsDeleted(true);
+                em.merge(deliveryOrder);
+                SalesConfirmationOrder sco = deliveryOrder.getSalesConfirmationOrder();
+                sco.setNumOfDeliveryOrders(sco.getNumOfDeliveryOrders() - 1);
+                em.merge(sco);
+            }
             result.setResult(true);
             result.setDescription("DO deleted successfully.");
         } catch (Exception ex) {

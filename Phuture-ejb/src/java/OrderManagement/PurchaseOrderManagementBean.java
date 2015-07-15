@@ -21,10 +21,10 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
 
     public PurchaseOrderManagementBean() {
     }
-    
+
     @PersistenceContext
     private EntityManager em;
-    
+
     private static final Double gstRate = 7.0;//7%
 
     @Override
@@ -41,7 +41,7 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
                 return result;
             }
             ReturnHelper uniqueResult = checkIfPOnumberIsUnique(purchaseOrderNumber);
-            if(!uniqueResult.getResult()) {
+            if (!uniqueResult.getResult()) {
                 uniqueResult.setDescription("Failed to save the PO as the PO number is already in use.");
                 return uniqueResult;
             }
@@ -52,11 +52,12 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
             po.setPurchaseOrderDate(purchaseOrderDate);
             em.persist(po);
             //Copy line items from SCO
-            replacePOlineItemWithSCOitems(sco.getId(),po.getId());
+            replacePOlineItemWithSCOitems(sco.getId(), po.getId());
             //Update SCO list of POs
             List<PurchaseOrder> purchaseOrders = sco.getPurchaseOrders();
             purchaseOrders.add(po);
             sco.setPurchaseOrders(purchaseOrders);
+            sco.setNumOfPurchaseOrders(sco.getNumOfPurchaseOrders() + 1);
             em.merge(sco);
             result.setID(po.getId());
             result.setResult(true);
@@ -87,7 +88,7 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
                 return result;
             }
             ReturnHelper uniqueResult = checkIfPOnumberIsUnique(purchaseOrderNumber);
-            if(!uniqueResult.getResult() && !purchaseOrderNumber.equals(po.getPurchaseOrderNumber())) {
+            if (!uniqueResult.getResult() && !purchaseOrderNumber.equals(po.getPurchaseOrderNumber())) {
                 uniqueResult.setDescription("Failed to save the PO as the PO number is already in use.");
                 return uniqueResult;
             }
@@ -195,8 +196,13 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
             Query q = em.createQuery("SELECT s FROM PurchaseOrder s WHERE s.id=:id");
             q.setParameter("id", purchaseOrderID);
             PurchaseOrder po = (PurchaseOrder) q.getSingleResult();
-            po.setIsDeleted(true);
-            em.merge(po);
+            if (!po.getIsDeleted()) {
+                po.setIsDeleted(true);
+                em.merge(po);
+                SalesConfirmationOrder sco = po.getSalesConfirmationOrder();
+                sco.setNumOfPurchaseOrders(sco.getNumOfPurchaseOrders() - 1);
+                em.merge(sco);
+            }
             result.setResult(true);
             result.setDescription("PO deleted successfully.");
         } catch (Exception ex) {
@@ -206,8 +212,8 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
         }
         return result;
     }
-    
-     @Override
+
+    @Override
     public ReturnHelper checkIfPOnumberIsUnique(String purchaseOrderNumber) {
         System.out.println("PurchaseOrderManagementBean: checkIfPOnumberIsUnique() called");
         ReturnHelper result = new ReturnHelper();
@@ -329,14 +335,14 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
                 //Add the line item to the PO
                 poLineItems.add(item);
             }
-            po.setItems(poLineItems);         
+            po.setItems(poLineItems);
             //Update PO total price & tax
             Double totalPrice = 0.0;
             Double totalTax = 0.0;
             for (LineItem curLineItem : poLineItems) {
                 Double currLineItemTotalPriceBeforeTax = curLineItem.getItemUnitPrice() * curLineItem.getItemQty();
                 totalPrice = totalPrice + (currLineItemTotalPriceBeforeTax * ((gstRate / 100) + 1));
-                totalTax = totalTax + (currLineItemTotalPriceBeforeTax * gstRate/100);
+                totalTax = totalTax + (currLineItemTotalPriceBeforeTax * gstRate / 100);
             }
             po.setTotalPrice(totalPrice);
             em.merge(po);
@@ -353,7 +359,7 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
         }
         return result;
     }
-    
+
     @Override
     public ReturnHelper addPOlineItem(Long purchaseOrderID, String itemName, String itemDescription, Integer itemQty, Double itemUnitPrice) {
         System.out.println("PurchaseOrderManagementBean: addPOlineItem() called");
@@ -382,7 +388,7 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
             for (LineItem curLineItem : lineItems) {
                 Double currLineItemTotalPriceBeforeTax = curLineItem.getItemUnitPrice() * curLineItem.getItemQty();
                 totalPrice = totalPrice + (currLineItemTotalPriceBeforeTax * ((gstRate / 100) + 1));
-                totalTax = totalTax + (currLineItemTotalPriceBeforeTax * gstRate/100);
+                totalTax = totalTax + (currLineItemTotalPriceBeforeTax * gstRate / 100);
             }
             po.setTotalPrice(totalPrice);
             em.merge(po);
@@ -427,7 +433,7 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
             for (LineItem curLineItem : lineItems) {
                 Double currLineItemTotalPriceBeforeTax = curLineItem.getItemUnitPrice() * curLineItem.getItemQty();
                 totalPrice = totalPrice + (currLineItemTotalPriceBeforeTax * ((gstRate / 100) + 1));
-                totalTax = totalTax + (currLineItemTotalPriceBeforeTax * gstRate/100);
+                totalTax = totalTax + (currLineItemTotalPriceBeforeTax * gstRate / 100);
             }
             sco.setTotalPrice(totalPrice);
             em.merge(sco);
@@ -470,7 +476,7 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
             for (LineItem curLineItem : lineItems) {
                 Double currLineItemTotalPriceBeforeTax = curLineItem.getItemUnitPrice() * curLineItem.getItemQty();
                 totalPrice = totalPrice + (currLineItemTotalPriceBeforeTax * ((gstRate / 100) + 1));
-                totalTax = totalTax + (currLineItemTotalPriceBeforeTax * gstRate/100);
+                totalTax = totalTax + (currLineItemTotalPriceBeforeTax * gstRate / 100);
             }
             po.setTotalPrice(totalPrice);
             em.merge(po);
@@ -488,7 +494,7 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
         }
         return result;
     }
-    
+
     @Override
     public ReturnHelper deleteallPOlineItem(Long purchaseOrderID) {
         System.out.println("PurchaseOrderManagementBean: deleteallPOlineItem() called");
