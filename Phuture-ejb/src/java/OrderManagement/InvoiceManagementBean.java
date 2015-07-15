@@ -362,7 +362,7 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
         try {
-            Query q = em.createQuery("SELECT s FROM Invoice s WHERE s.invoiceNumber=:number");
+            Query q = em.createQuery("SELECT s FROM Invoice s WHERE s.invoiceNumber=:number AND s.isDeleted=false");
             q.setParameter("number", invoiceNumber);
             List<Invoice> invoices = q.getResultList();
             if (invoices.size() == 0) {

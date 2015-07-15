@@ -462,7 +462,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
         try {
-            Query q = em.createQuery("SELECT s FROM SalesConfirmationOrder s WHERE s.salesConfirmationOrderNumber=:number");
+            Query q = em.createQuery("SELECT s FROM SalesConfirmationOrder s WHERE s.salesConfirmationOrderNumber=:number AND s.isDeleted=false");
             q.setParameter("number", salesConfirmationOrderNumber);
             List<SalesConfirmationOrder> scos = q.getResultList();
             if (scos.size() == 0) {

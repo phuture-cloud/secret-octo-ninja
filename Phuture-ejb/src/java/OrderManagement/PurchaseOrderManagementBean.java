@@ -212,7 +212,7 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
         try {
-            Query q = em.createQuery("SELECT s FROM PurchaseOrder s WHERE s.purchaseOrderNumber=:number");
+            Query q = em.createQuery("SELECT s FROM PurchaseOrder s WHERE s.purchaseOrderNumber=:number AND s.isDeleted=false");
             q.setParameter("number", purchaseOrderNumber);
             List<PurchaseOrder> purchaseOrders = q.getResultList();
             if (purchaseOrders.size() == 0) {

@@ -387,7 +387,7 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
         try {
-            Query q = em.createQuery("SELECT s FROM DeliveryOrder s WHERE s.deliveryOrderNumber=:number");
+            Query q = em.createQuery("SELECT s FROM DeliveryOrder s WHERE s.deliveryOrderNumber=:number AND s.isDeleted=false");
             q.setParameter("number", deliveryOrderNumber);
             List<DeliveryOrder> deliveryOrders = q.getResultList();
             if (deliveryOrders.size() == 0) {
