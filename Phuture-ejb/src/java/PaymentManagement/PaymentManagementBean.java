@@ -14,13 +14,13 @@ import javax.persistence.Query;
 
 @Stateless
 public class PaymentManagementBean implements PaymentManagementBeanLocal {
-
+    
     @PersistenceContext
     private EntityManager em;
-
+    
     public PaymentManagementBean() {
     }
-
+    
     @Override
     public ReturnHelper addPayment(Long invoiceID, Double amount, Date date, String paymentMethod, String paymentReferenceNumber) {
         System.out.println("PaymentManagementBean: addPayment() called");
@@ -50,6 +50,7 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
             paymentRecords = invoice.getPaymentRecords();
             paymentRecords.add(paymentRecord);
             invoice.setPaymentRecords(paymentRecords);
+            invoice.setNumOfPaymentRecords(invoice.getNumOfPaymentRecords() + 1);
             em.merge(invoice);
             result.setResult(true);
             result.setDescription("Payment record added.");
@@ -63,7 +64,7 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
         }
         return result;
     }
-
+    
     @Override
     public ReturnHelper updatePayment(Long paymentID, Double amount, Date date, String paymentMethod, String paymentReferenceNumber) {
         System.out.println("PaymentManagementBean: updatePayment() called");
@@ -92,7 +93,7 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
         }
         return result;
     }
-
+    
     @Override
     public ReturnHelper deletePayment(Long paymentID) {
         System.out.println("PaymentManagementBean: deletePayment() called");
@@ -100,8 +101,12 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
         result.setResult(false);
         try {
             PaymentRecord paymentRecord = em.getReference(PaymentRecord.class, paymentID);
-            paymentRecord.setIsDeleted(true);
-            em.merge(paymentRecord);
+            if (!paymentRecord.getIsDeleted()) {
+                paymentRecord.setIsDeleted(true);
+                em.merge(paymentRecord);
+                Invoice invoice = paymentRecord.getInvoice();
+                invoice.setNumOfPaymentRecords(invoice.getNumOfPaymentRecords() - 1);
+            }
             result.setResult(true);
             result.setDescription("Payment record deleted.");
         } catch (EntityNotFoundException ex) {
@@ -114,7 +119,7 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
         }
         return result;
     }
-
+    
     @Override
     public PaymentRecord getPayment(Long paymentID) {
         System.out.println("PaymentManagementBean: getPayment() called");
@@ -134,7 +139,7 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
             return null;
         }
     }
-
+    
     @Override
     public List<PaymentRecord> listPaymentByCustomer(Long customerID) {
         System.out.println("PaymentManagementBean: listPaymentByCustomer() called");
@@ -151,7 +156,7 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
             return null;
         }
     }
-
+    
     @Override
     public List<PaymentRecord> listPaymentByInvoice(Long invoiceID) {
         System.out.println("PaymentManagementBean: listPaymentByInvoice() called");
@@ -168,7 +173,7 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
             return null;
         }
     }
-
+    
     @Override
     public List<PaymentRecord> listAllInvoice() {
         System.out.println("PaymentManagementBean: listAllInvoice() called");
@@ -184,5 +189,5 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
             return null;
         }
     }
-
+    
 }

@@ -26,6 +26,7 @@ public class Invoice implements Serializable {
     private SalesConfirmationOrder salesConfirmationOrder;
     @OneToMany
     private List<PaymentRecord> paymentRecords;
+    private Integer numOfPaymentRecords;
     @OneToMany
     private List<LineItem> items;
     private Double taxRate;//in %
@@ -71,6 +72,7 @@ public class Invoice implements Serializable {
         this.totalPrice = 0.0;
         this.totalTax = 0.0;
         setStatusAsCreated();
+        this.numOfPaymentRecords=0;
     }
 
     public Invoice(String invoiceNumber) {
@@ -84,6 +86,7 @@ public class Invoice implements Serializable {
         this.totalPrice = 0.0;
         this.totalTax = 0.0;
         setStatusAsCreated();
+        this.numOfPaymentRecords=0;
     }
 
     public Long getId() {
@@ -92,6 +95,14 @@ public class Invoice implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Integer getNumOfPaymentRecords() {
+        return numOfPaymentRecords;
+    }
+
+    public void setNumOfPaymentRecords(Integer numOfPaymentRecords) {
+        this.numOfPaymentRecords = numOfPaymentRecords;
     }
  
     public Date getDateDue() {

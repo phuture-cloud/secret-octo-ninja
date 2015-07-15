@@ -29,7 +29,7 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
     private EntityManager em;
 
     private static final Double gstRate = 7.0;//7%
-    
+
     @Override
     public ReturnHelper createInvoice(Long salesConfirmationOrderID, String invoiceNumber) {
         System.out.println("InvoiceManagementBean: createInvoice() called");
@@ -44,7 +44,7 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
                 return result;
             }
             ReturnHelper uniqueResult = checkIfInvoiceNumberIsUnique(invoiceNumber);
-            if(!uniqueResult.getResult()) {
+            if (!uniqueResult.getResult()) {
                 uniqueResult.setDescription("Failed to save the invoice as the invoice number is already in use.");
                 return uniqueResult;
             }
@@ -67,11 +67,12 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             invoice.setContactFaxNo(sco.getContactFaxNo());
             em.persist(invoice);
             //Copy line items from SCO
-            replaceInvoiceLineItemWithSCOitems(sco.getId(),invoice.getId(),false);
+            replaceInvoiceLineItemWithSCOitems(sco.getId(), invoice.getId(), false);
             //Update SCO list of invoice
             List<Invoice> invoices = sco.getInvoices();
             invoices.add(invoice);
             sco.setInvoices(invoices);
+            sco.setNumOfInvoices(sco.getNumOfDeliveryOrders() + 1);
             em.merge(sco);
             result.setID(invoice.getId());
             result.setResult(true);
@@ -107,7 +108,7 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
                 return result;
             }
             ReturnHelper uniqueResult = checkIfInvoiceNumberIsUnique(newInvoiceNumber);
-            if(!uniqueResult.getResult() && !newInvoiceNumber.equals(invoice.getInvoiceNumber())) {
+            if (!uniqueResult.getResult() && !newInvoiceNumber.equals(invoice.getInvoiceNumber())) {
                 uniqueResult.setDescription("Failed to save the invoice as the invoice number is already in use.");
                 return uniqueResult;
             }
@@ -117,11 +118,11 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             invoice.setTerms(terms);
             invoice.setEstimatedDeliveryDate(estimatedDeliveryDate);
             invoice.setCustomerPurchaseOrderNumber(customerPurchaseOrderNumber);
-            if (invoiceSent!=null) {
+            if (invoiceSent != null) {
                 invoice.setStatusAsSent();
             }
             invoice.setDatePaid(invoicePaid);
-            if (invoicePaid!=null) {
+            if (invoicePaid != null) {
                 invoice.setStatusAsPaid();
                 //Update due date based on terms
                 Calendar c = new GregorianCalendar();
@@ -188,7 +189,7 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
 
     @Override
     public ReturnHelper updateInvoiceCustomerContactDetails(Long invoiceID, Long customerID, Long contactID, Boolean adminOverwrite) {
-         System.out.println("InvoiceManagementBean: updateInvoiceCustomerContactDetails() called");
+        System.out.println("InvoiceManagementBean: updateInvoiceCustomerContactDetails() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
         try {
@@ -311,8 +312,12 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
                 result.setDescription(checkResult.getDescription());
                 return result;
             }
-            invoice.setIsDeleted(true);
-            em.merge(invoice);
+            if (!invoice.getIsDeleted()) {
+                invoice.setIsDeleted(true);
+                em.merge(invoice);
+                SalesConfirmationOrder sco = invoice.getSalesConfirmationOrder();
+                sco.setNumOfInvoices(sco.getNumOfInvoices() - 1);
+            }
             result.setResult(true);
             result.setDescription("Invoice deleted successfully.");
         } catch (Exception ex) {
@@ -355,8 +360,8 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
         }
         return result;
     }
-    
-     @Override
+
+    @Override
     public ReturnHelper checkIfInvoiceNumberIsUnique(String invoiceNumber) {
         System.out.println("InvoiceManagementBean: checkIfInvoiceNumberIsUnique() called");
         ReturnHelper result = new ReturnHelper();
@@ -446,8 +451,8 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             return null;
         }
     }
-    
-        @Override
+
+    @Override
     public List<Invoice> listInvoicesTiedToCustomer(Long customerID) {
         System.out.println("InvoiceManagementBean: listInvoicesTiedToCustomer() called");
         ReturnHelper result = new ReturnHelper();
@@ -709,7 +714,7 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
 
     @Override
     public List<LineItem> listInvoiceLineItems(Long invoiceID) {
-                System.out.println("InvoiceManagementBean: listInvoiceLineItems() called");
+        System.out.println("InvoiceManagementBean: listInvoiceLineItems() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
         try {
@@ -724,5 +729,5 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             return null;
         }
     }
-    
+
 }
