@@ -47,7 +47,7 @@ public class PurchaseOrder implements Serializable {
     private boolean isDeleted;
 
     public PurchaseOrder() {
-        this.status = "Unfulfilled";
+        this.status = "Pending";
         this.dateCreated = new Date();
         this.notes = "";
         this.items = new ArrayList<>();
