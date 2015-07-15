@@ -257,6 +257,7 @@ public class DeliveryOrderManagementController extends HttpServlet {
                         if (returnHelper.getResult()) {
                             SalesConfirmationOrder sco = orderManagementBean.getSalesConfirmationOrder(Long.parseLong(id));
                             session.setAttribute("sco", sco);
+                            session.setAttribute("do", deliveryOrderManagementBean.getDeliveryOrder(deliveryOrder.getId()));
                             nextPage = "OrderManagement/doManagement.jsp?goodMsg=" + returnHelper.getDescription();
                         } else {
                             nextPage = "OrderManagement/doManagement.jsp?errMsg=" + returnHelper.getDescription();

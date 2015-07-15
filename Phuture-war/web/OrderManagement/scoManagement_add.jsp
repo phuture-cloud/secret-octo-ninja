@@ -755,7 +755,7 @@
                                                     if (sco.getNotes() != null && !sco.getNotes().isEmpty()) {
                                                         out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalNotes'><i class='fa fa-exclamation'></i> Notes</button>");
                                                     } else {
-                                                        out.print("<button type='button' class='btn btnfdefault modal-with-form' href='#modalNotes'>Notes</button>");
+                                                        out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalNotes'>Notes</button>");
                                                     }
                                                     out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalRemarks' data-toggle='tooltip' data-placement='top' title='*Remarks will be reflected in the SCO'>Remarks</button>");
                                                 }

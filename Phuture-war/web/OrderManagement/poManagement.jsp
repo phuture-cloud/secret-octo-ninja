@@ -1,3 +1,4 @@
+<%@page import="EntityManager.SalesConfirmationOrder"%>
 <%@page import="EntityManager.PurchaseOrder"%>
 <%@page import="java.text.NumberFormat"%>
 <%@page import="java.text.SimpleDateFormat"%>
@@ -8,10 +9,13 @@
 <%
     Staff staff = (Staff) (session.getAttribute("staff"));
     PurchaseOrder purchaseOrder = (PurchaseOrder) (session.getAttribute("po"));
+    SalesConfirmationOrder sco = (SalesConfirmationOrder) (session.getAttribute("sco"));
     if (session.isNew()) {
         response.sendRedirect("../index.jsp?errMsg=Invalid Request. Please login.");
     } else if (staff == null) {
         response.sendRedirect("../index.jsp?errMsg=Session Expired.");
+    } else if (sco == null) {
+        response.sendRedirect("scoManagement.jsp?errMsg=An Error has occured.");
     } else {
         String editingLineItem = request.getParameter("editingLineItem");
         String formDisablerFlag = "";
@@ -158,7 +162,9 @@
                                         <i class="fa fa-home"></i>
                                     </a>
                                 </li>
-                                <li><span><a href= "../OrderManagementController?target=ListAllSCO">PO Management</a></span></li>
+                                <li><span><a href= "../OrderManagementController?target=ListAllSCO">SCO Management</a></span></li>
+                                <li><span><a href= "../OrderManagementController?target=RetrieveSCO&id=<%=purchaseOrder.getSalesConfirmationOrder().getId()%>">SCO No. <%=purchaseOrder.getSalesConfirmationOrder().getSalesConfirmationOrderNumber()%></a></span></li>
+                                <li><span><a href= "scoManagement_PO.jsp">POs</a></span></li>
                                 <li><span>PO &nbsp;&nbsp</span></li>
                             </ol>
                         </div>

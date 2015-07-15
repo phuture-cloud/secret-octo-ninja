@@ -47,9 +47,9 @@
                                         <i class="fa fa-home"></i>
                                     </a>
                                 </li>
-                                <li><span><a href= "../OrderManagementController?target=ListAllSCO">Sales Confirmation Order Management</a></span></li>
+                                <li><span><a href= "../OrderManagementController?target=ListAllSCO">SCO Management</a></span></li>
                                 <li><span><a href= "../OrderManagementController?target=RetrieveSCO&id=<%=sco.getId()%>">SCO No. <%=sco.getSalesConfirmationOrderNumber()%></a></span></li>
-                                <li><span>Deliver Order &nbsp;&nbsp</span></li>
+                                <li><span>DOs &nbsp;&nbsp</span></li>
                             </ol>
                         </div>
                     </header>

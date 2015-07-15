@@ -164,7 +164,9 @@
                                         <i class="fa fa-home"></i>
                                     </a>
                                 </li>
-                                <li><span><a href= "../OrderManagementController?target=ListAllSCO">DO Management</a></span></li>
+                                <li><span><a href= "../OrderManagementController?target=ListAllSCO">SCO Management</a></span></li>
+                                <li><span><a href= "../OrderManagementController?target=RetrieveSCO&id=<%=deliveryOrder.getSalesConfirmationOrder().getId()%>">SCO No. <%=deliveryOrder.getSalesConfirmationOrder().getSalesConfirmationOrderNumber()%></a></span></li>
+                                <li><span><a href= "scoManagement_DO.jsp">DOs</a></span></li>
                                 <li><span>DO &nbsp;&nbsp</span></li>
                             </ol>
                         </div>
@@ -550,7 +552,6 @@
                                             <%
                                                 if (deliveryOrder != null) {
                                                     SalesConfirmationOrder sco = deliveryOrder.getSalesConfirmationOrder();
-                                                    System.out.print(">>>>>>>>>>>>>>>> " + sco.getNumOfInvoices());
                                                     if (sco.getNumOfInvoices() > 0) {
                                                         out.print("<button type='button' class='btn btn-default' onclick='javascript:listAllInvoices(" + sco.getId() + ")'>Invoices <span class='badge' style='background-color:#0088CC'>" + sco.getNumOfInvoices() + "</span></button>");
                                                     }

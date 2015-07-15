@@ -1,3 +1,5 @@
+<%@page import="EntityManager.DeliveryOrder"%>
+<%@page import="EntityManager.SalesConfirmationOrder"%>
 <%@page import="EntityManager.Invoice"%>
 <%@page import="java.text.NumberFormat"%>
 <%@page import="java.text.SimpleDateFormat"%>
@@ -8,6 +10,7 @@
 <%
     Staff staff = (Staff) (session.getAttribute("staff"));
     Invoice invoice = (Invoice) (session.getAttribute("invoice"));
+    DeliveryOrder deliveryOrder = (DeliveryOrder) (session.getAttribute("do"));
     if (session.isNew()) {
         response.sendRedirect("../index.jsp?errMsg=Invalid Request. Please login.");
     } else if (staff == null) {
@@ -158,7 +161,10 @@
                                         <i class="fa fa-home"></i>
                                     </a>
                                 </li>
-                                <li><span><a href= "../OrderManagementController?target=ListAllSCO">Invoice Management</a></span></li>
+                                <li><span><a href= "../OrderManagementController?target=ListAllSCO">SCO Management</a></span></li>
+                                <li><span><a href= "../OrderManagementController?target=RetrieveSCO&id=<%=invoice.getSalesConfirmationOrder().getId()%>">SCO No. <%=invoice.getSalesConfirmationOrder().getSalesConfirmationOrderNumber()%></a></span></li>
+                                <li><span><a href= "doManagement.jsp">Delivery Order <%=deliveryOrder.getDeliveryOrderNumber()%></a></span></li>
+                                <li><span><a href= "scoManagement_invoice.jsp">Invoices</a></span></li>
                                 <li><span>Invoice &nbsp;&nbsp</span></li>
                             </ol>
                         </div>
@@ -246,18 +252,78 @@
                                                             %>
                                                         </span>
                                                     </p>
+
                                                     <p class="mb-none">
-                                                        <span class="text-dark">Date:</span>
+                                                        <span class="text-dark">Date Created:</span>
                                                         <span class="value" style="min-width: 110px">
                                                             <%
-                                                                /* if (invoice != null) {
-                                                                 SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
-                                                                 String date = DATE_FORMAT.format(invoice.getDateDue());
-                                                                 out.print("<input " + formDisablerFlag + " id='doDate' name='doDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "' required>");
-                                                                 } else {
-                                                                 out.print("<input " + formDisablerFlag + " id='doDate' name='doDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' required placeholder='dd/mm/yyyy'>");
-                                                                 }*/
+                                                                if (invoice != null && invoice.getDateCreated() != null) {
+                                                                    SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
+                                                                    String date = DATE_FORMAT.format(invoice.getDateCreated());
+                                                                    out.print("<input " + formDisablerFlag + " id='doDate' name='doDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "' required>");
+                                                                } else {
+                                                                    out.print("<input " + formDisablerFlag + " id='doDate' name='doDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' required placeholder='dd/mm/yyyy'>");
+                                                                }
                                                             %>
+                                                        </span>
+                                                    </p>
+
+                                                    <p class="mb-none">
+                                                        <span class="text-dark">Date Sent</span>
+                                                        <span class="value" style="min-width: 110px">
+                                                            <%
+                                                                if (invoice != null && invoice.getDateSent() != null) {
+                                                                    SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
+                                                                    String date = DATE_FORMAT.format(invoice.getDateSent());
+                                                                    out.print("<input " + formDisablerFlag + " id='doDate' name='doDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "' required>");
+                                                                } else {
+                                                                    out.print("<input " + formDisablerFlag + " id='doDate' name='doDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' required placeholder='dd/mm/yyyy'>");
+                                                                }
+                                                            %>
+                                                        </span>
+                                                    </p>
+
+                                                    <p class="mb-none">
+                                                        <span class="text-dark">Date Paid:</span>
+                                                        <span class="value" style="min-width: 110px">
+                                                            <%
+                                                                if (invoice != null && invoice.getDatePaid() != null) {
+                                                                    SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
+                                                                    String date = DATE_FORMAT.format(invoice.getDatePaid());
+                                                                    out.print("<input " + formDisablerFlag + " id='doDate' name='doDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "' required>");
+                                                                } else {
+                                                                    out.print("<input " + formDisablerFlag + " id='doDate' name='doDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' required placeholder='dd/mm/yyyy'>");
+                                                                }
+                                                            %>
+                                                        </span>
+                                                    </p>
+
+                                                    <p class="mb-none">
+                                                        <span class="text-dark">Terms:</span>
+                                                        <span class="value" style="min-width: 110px">
+                                                            <select <%=formDisablerFlag%> id="terms" name="terms" class="form-control input-sm" required>
+                                                                <%
+                                                                    if (invoice.getTerms() != null) {
+                                                                        if (invoice.getTerms() == 0) {
+                                                                            out.print("<option value='0' selected>COD</option>");
+                                                                            out.print("<option value='14'>14 Days</option>");
+                                                                            out.print("<option value='30'>30 Days</option>");
+                                                                        } else if (invoice.getTerms() == 14) {
+                                                                            out.print("<option value='0'>COD</option>");
+                                                                            out.print("<option value='14' selected>14 Days</op  tion>");
+                                                                            out.print("<option value='30'>30 Days</option>");
+                                                                        } else if (invoice.getTerms() == 30) {
+                                                                            out.print("<option value='0'>COD</option>");
+                                                                            out.print("<option value='14'>14 Days</option>");
+                                                                            out.print("<option value='30' selected>30 Days</option>");
+                                                                        }
+                                                                    } else {
+                                                                        out.print("<option value='0'>COD</option>");
+                                                                        out.print("<option value='14'>14 Days</option>");
+                                                                        out.print("<option value='30'>30 Days</option>");
+                                                                    }
+                                                                %>
+                                                            </select>
                                                         </span>
                                                     </p>
 
@@ -278,7 +344,7 @@
                                                     <% if (invoice != null) {%>
                                                     <p class="mb-none">
                                                         <span class="text-dark">Status: </span>
-                                                        <span class="value" style="min-width: 110px">
+                                                        <span class="value" style="min-width: 110px; font-size: 10.5pt; text-align: left;">
                                                             <%
                                                                 if ((invoice.getStatus() != null && !invoice.getStatus().isEmpty())) {
                                                                     out.print(invoice.getStatus());
@@ -532,7 +598,7 @@
                                             <%              if (invoice != null) {
                                                     out.print("<button type='button' class='modal-with-move-anim btn btn-danger' href='#modalRemove'>Delete</button>");
                                                     if (invoice.getItems().size() > 0) {
-                                                        out.print("<button " + formDisablerFlag + " class='btn btn-primary' onclick='javascript:generateInvoice()'>Generate Invoice</button>");
+                                                        out.print("<button " + formDisablerFlag + " class='btn btn-primary' onclick='javascript:viewPayment'>View Payment</button>");
                                                     }
                                                     out.print("<button " + formDisablerFlag + " class='btn btn-success' onclick='javascript:updateInvoice();'>Save</button>");
                                                 } else {

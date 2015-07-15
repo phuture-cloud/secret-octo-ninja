@@ -11,8 +11,6 @@
         response.sendRedirect("../index.jsp?errMsg=Invalid Request. Please login.");
     } else if (staff == null) {
         response.sendRedirect("../index.jsp?errMsg=Session Expired.");
-    } else if (sco == null) {
-        response.sendRedirect("scoManagement.jsp?errMsg=An Error has occured.");
     } else {
 %>
 <!doctype html>
@@ -47,9 +45,9 @@
                                         <i class="fa fa-home"></i>
                                     </a>
                                 </li>
-                                <li><span><a href= "../OrderManagementController?target=ListAllSCO">Purchase Order Management</a></span></li>
+                                <li><span><a href= "../OrderManagementController?target=ListAllSCO">PO Management</a></span></li>
                                 <li><span><a href= "../OrderManagementController?target=RetrieveSCO&id=<%=sco.getId()%>">SCO No. <%=sco.getSalesConfirmationOrderNumber()%></a></span></li>
-                                <li><span>Purchase Order &nbsp;&nbsp</span></li>
+                                <li><span>POs &nbsp;&nbsp</span></li>
                             </ol>
                         </div>
                     </header>
