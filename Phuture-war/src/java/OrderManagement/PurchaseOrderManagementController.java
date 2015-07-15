@@ -39,16 +39,16 @@ public class PurchaseOrderManagementController extends HttpServlet {
         String itemQty = request.getParameter("itemQty");
         String itemUnitPrice = request.getParameter("itemUnitPrice");
 
-//        String doNumber = request.getParameter("doNumber");
-//        String poNumber = request.getParameter("poNumber");
-//        String doDate = request.getParameter("doDate");
-//        if (doDate == null) {
-//            doDate = "";
-//        }
-//        String status = request.getParameter("status");
-//        if (status == null) {
-//            status = "";
-//        }
+        String poNumber = request.getParameter("poNumber");
+        String poDate = request.getParameter("poDate");
+        if (poDate == null) {
+            poDate = "";
+        }
+        String status = request.getParameter("status");
+        if (status == null) {
+            status = "";
+        }
+
         String id;
         String lineItemID = request.getParameter("lineItemID");
 
@@ -87,6 +87,51 @@ public class PurchaseOrderManagementController extends HttpServlet {
                             }
                         } else {
                             nextPage = "OrderManagement/scoManagement_PO.jsp?errMsg=Delete Delivery Order failed. An error has occured.";
+                        }
+                        break;
+
+                    case "UpdatePO":
+                        if (source.equals("AddLineItemToExistingPO")) {
+                            if (itemName == null || itemName.isEmpty() || itemDescription == null || itemDescription.isEmpty() || itemQty == null || itemQty.isEmpty() || itemUnitPrice == null || itemUnitPrice.isEmpty()) {
+                                nextPage = "OrderManagement/poManagement.jsp?poNumber=" + poNumber + "&poDate=" + poDate + "&errMsg=Please fill in all the fields for the item.";
+                                break;
+                            }
+                        }
+                        if (poNumber == null || poNumber.isEmpty() || poDate == null || poDate.isEmpty()) {
+                            nextPage = "OrderManagement/poManagement.jsp?poNumber=" + poNumber + "&poDate=" + poDate + "&errMsg=Please fill in all the fields for the PO.";
+                        } else {
+                            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+                            Date poDateDate = formatter.parse(poDate);
+                            String supplierName = request.getParameter("supplierName");
+                            String supplierEmail = request.getParameter("supplierEmail");
+                            String supplierOfficeNo = request.getParameter("supplierOfficeNo");
+                            String supplierMobileNo = request.getParameter("supplierMobileNo");
+                            String supplierFaxNo = request.getParameter("supplierFaxNo");
+                            String supplierAddress = request.getParameter("supplierAddress");
+
+                            //Update PO
+                            returnHelper = purchaseOrderManagementBean.updatePurchaseOrder(purchaseOrder.getId(), poNumber, poDateDate, status, supplierName, supplierEmail, supplierOfficeNo, supplierMobileNo, supplierFaxNo, supplierAddress);
+                            if (returnHelper.getResult()) {
+                                Long poID = returnHelper.getID();
+                                purchaseOrder = purchaseOrderManagementBean.getPurchaseOrder(poID);
+                                session.setAttribute("po", purchaseOrder);
+                                nextPage = "OrderManagement/poManagement.jsp?goodMsg=" + returnHelper.getDescription();
+
+                                //Update line item if there is any
+                                if (itemName != null && !itemName.isEmpty() && itemDescription != null && !itemDescription.isEmpty() && itemQty != null && !itemQty.isEmpty() && itemUnitPrice != null && !itemUnitPrice.isEmpty()) {
+                                    returnHelper = purchaseOrderManagementBean.addPOlineItem(poID, itemName, itemDescription, Integer.parseInt(itemQty), Double.parseDouble(itemUnitPrice));
+                                    purchaseOrder = purchaseOrderManagementBean.getPurchaseOrder(poID);
+                                    if (returnHelper.getResult() && purchaseOrder != null) {
+                                        session.setAttribute("po", purchaseOrder);
+                                        nextPage = "OrderManagement/poManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                                    } else {
+                                        nextPage = "OrderManagement/poManagement.jsp?errMsg=" + returnHelper.getDescription();
+                                    }
+                                }
+                            } else {
+                                nextPage = "OrderManagement/poManagement.jsp?errMsg=" + returnHelper.getDescription();
+                                break;
+                            }
                         }
                         break;
 
@@ -141,7 +186,7 @@ public class PurchaseOrderManagementController extends HttpServlet {
                 return;
             }
         } catch (Exception ex) {
-            response.sendRedirect("OrderManagement/scoManagement_DO.jsp?errMsg=An error has occured");
+            response.sendRedirect("OrderManagement/scoManagement_PO.jsp?errMsg=An error has occured");
             ex.printStackTrace();
             return;
         }

@@ -1,3 +1,4 @@
+<%@page import="EntityManager.SalesConfirmationOrder"%>
 <%@page import="EntityManager.DeliveryOrder"%>
 <%@page import="java.text.NumberFormat"%>
 <%@page import="java.text.SimpleDateFormat"%>
@@ -130,6 +131,11 @@
                     editContactForm.target.value = "ListAllCustomer";
                     document.editContactForm.action = "../DeliveryOrderManagementController";
                     document.editContactForm.submit();
+                }
+
+                function listAllInvoices(id) {
+                    window.onbeforeunload = null;
+                    window.location.href = "../OrderManagementController?target=RetrieveSCO&source=listAllInvoices&id=" + id;
                 }
 
                 window.onbeforeunload = function () {
@@ -539,6 +545,18 @@
                                                 }
                                             %> 
                                         </div>
+                                        &nbsp;
+                                        <div class="btn-group">
+                                            <%
+                                                if (deliveryOrder != null) {
+                                                    SalesConfirmationOrder sco = deliveryOrder.getSalesConfirmationOrder();
+                                                    System.out.print(">>>>>>>>>>>>>>>> " + sco.getNumOfInvoices());
+                                                    if (sco.getNumOfInvoices() > 0) {
+                                                        out.print("<button type='button' class='btn btn-default' onclick='javascript:listAllInvoices(" + sco.getId() + ")'>Invoices <span class='badge' style='background-color:#0088CC'>" + sco.getNumOfInvoices() + "</span></button>");
+                                                    }
+                                                }
+                                            %>         
+                                        </div>
                                     </div>
 
                                     <div class="col-sm-6 text-right mt-md mb-md">
@@ -547,7 +565,7 @@
                                             <%              if (deliveryOrder != null) {
                                                     out.print("<button type='button' class='modal-with-move-anim btn btn-danger' href='#modalRemove'>Delete</button>");
                                                     if (deliveryOrder.getItems().size() > 0) {
-                                                        out.print("<button " + formDisablerFlag + " class='btn btn-primary' onclick='javascript:generateInvoice()'>Generate Invoice</button>");
+                                                        out.print("<button " + formDisablerFlag + " type='button' class='btn btn-primary modal-with-form' href='#modalGenerateInvoice'>Generate Invoice</button>");
                                                     }
                                                     out.print("<button " + formDisablerFlag + " class='btn btn-success' onclick='javascript:updateDO();'>Save</button>");
                                                 } else {
@@ -572,6 +590,35 @@
                     <!-- end: page -->
 
                     <%if (deliveryOrder != null) {%>
+                    <div id="modalGenerateInvoice" class="modal-block modal-block-primary mfp-hide">
+                        <section class="panel">
+                            <form action="../DeliveryOrderManagementController" class="form-horizontal mb-lg">
+                                <header class="panel-heading">
+                                    <h2 class="panel-title">Generate Invoice</h2>
+                                </header>
+                                <div class="panel-body">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Invoice No <span class="required">*</span></label>
+                                        <div class="col-sm-9">
+                                            <input type="text" name="invoiceNumber" class="form-control" required/>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <input type="hidden" name="target" value="GenerateInvoice">    
+                                    <input type="hidden" name="id" value="<%=deliveryOrder.getSalesConfirmationOrder().getId()%>">  
+                                </div>
+                                <footer class="panel-footer">
+                                    <div class="row">
+                                        <div class="col-md-12 text-right">
+                                            <button class="btn btn-success" type="submit">Generate</button>
+                                            <button class="btn btn-default modal-dismiss">Cancel</button>
+                                        </div>
+                                    </div>
+                                </footer>
+                            </form>
+                        </section>
+                    </div>
+
                     <div id="modalEditForm" class="modal-block modal-block-primary mfp-hide">
                         <section class="panel">
                             <form name="editContactForm" action="../DeliveryOrderManagementController" class="form-horizontal mb-lg">

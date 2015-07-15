@@ -1,3 +1,4 @@
+<%@page import="java.text.SimpleDateFormat"%>
 <%@page import="EntityManager.SalesConfirmationOrder"%>
 <%@page import="EntityManager.Customer"%>
 <%@page import="java.util.List"%>
@@ -23,7 +24,7 @@
         <jsp:include page="../displayNotification.jsp" />
         <script>
             function viewInvoice(id) {
-
+                window.location.href = "../InvoiceManagementController?target=RetrieveInvoice&id=" + id;
             }
 
             function back(id) {
@@ -46,6 +47,8 @@
                                         <i class="fa fa-home"></i>
                                     </a>
                                 </li>
+                                <li><span><a href= "../OrderManagementController?target=ListAllSCO">Sales Confirmation Order Management</a></span></li>
+                                <li><span><a href= "../OrderManagementController?target=RetrieveSCO&id=<%=sco.getId()%>">SCO No. <%=sco.getSalesConfirmationOrderNumber()%></a></span></li>
                                 <li><span>Invoices &nbsp;&nbsp</span></li>
                             </ol>
                         </div>
@@ -70,30 +73,32 @@
                                     </thead>
                                     <tbody>
                                         <%
-                                            System.out.println("<<<<<<<<<<<<<<<<<<< " + sco.getInvoices() );
-                                            if (sco != null && sco.getInvoices() != null) {
+                                            if (sco != null) {
                                                 for (int i = 0; i < sco.getInvoices().size(); i++) {
+                                                    if (!sco.getInvoices().get(i).getIsDeleted()) {
                                         %>
                                         <tr>        
                                             <td><%=sco.getInvoices().get(i).getInvoiceNumber()%></td>
-                                            <td><%=sco.getInvoices().get(i).getDateCreated()%></td>
-                                            <td><%=sco.getInvoices().get(i).getStatus()%></td>
                                             <td>
-                                                <div class="btn-group" role="group" aria-label="...">
-                                                    <button  class="btn btn-default" onclick="javascript:viewInvoice('<%=sco.getInvoices().get(i).getId()%>')">View</button>
-                                                </div>
+                                                <%
+                                                    SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("d MMM yyyy hh:mm:ss");
+                                                    String date = DATE_FORMAT.format(sco.getInvoices().get(i).getDateCreated());
+                                                    out.print(date);
+                                                %>
                                             </td>
+                                            <td><%=sco.getInvoices().get(i).getStatus()%></td>
+                                            <td><button type="button" class="btn btn-default btn-block" onclick="javascript:viewInvoice('<%=sco.getInvoices().get(i).getId()%>')">View</button></td>
                                         </tr>
                                         <%
+                                                    }
                                                 }
                                             }
                                         %>
 
                                     </tbody>
                                 </table>
-                                <div class="col-sm-12 text-right mt-md mb-md">
-                                    <button type="button" class="btn btn-default" onclick="javascript:back(<%=sco.getId()%>)">Back</button>   
-                                </div>
+                                <br>
+                                <button type="button" class="btn btn-default" onclick="javascript:back(<%=sco.getId()%>)">Back</button>   
                             </form>
                         </div>
 
