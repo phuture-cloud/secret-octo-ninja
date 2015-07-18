@@ -169,7 +169,7 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             }
             invoice.setCustomerName(customerName);
             invoice.setContactAddress(address);
-            invoice.setContactName(email);
+            invoice.setContactEmail(email);
             invoice.setContactOfficeNo(officeNo);
             invoice.setContactFaxNo(faxNo);
             invoice.setContactMobileNo(mobileNo);
