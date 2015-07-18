@@ -461,9 +461,9 @@
                                                 </ul>
                                                 <%
                                                     if (deliveryOrder != null && deliveryOrder.getRemarks() != null && !deliveryOrder.getRemarks().isEmpty()) {
-                                                        out.print("Remarks:");
+                                                        out.print("Remarks: ");
                                                         String repl = deliveryOrder.getRemarks().replaceAll("(\\r|\\n|\\r\\n)+", "<br>");
-                                                        out.print("Remarks: " + deliveryOrder.getRemarks());
+                                                        out.print(deliveryOrder.getRemarks());
                                                     }
                                                 %>
                                             </div>
@@ -752,10 +752,10 @@
                             <header class="panel-heading">
                                 <h2 class="panel-title">Are you sure?</h2>
                             </header>
-                            <div class="panel-body">
+                            <div class="panel-body" style="padding-top: 0px;">
                                 <div class="modal-wrapper">
                                     <div class="modal-icon">
-                                        <i class="fa fa-question-circle"></i>
+                                        <i class="fa fa-question-circle" style="top: 0px;"></i>
                                     </div>
                                     <div class="modal-text">
                                         <p>Are you sure that you want to delete this Delivery Order?<br> All associated Invoice/Payment records will also be deleted together!</p>

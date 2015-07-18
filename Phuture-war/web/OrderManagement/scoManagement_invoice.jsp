@@ -1,3 +1,4 @@
+<%@page import="EntityManager.DeliveryOrder"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="EntityManager.SalesConfirmationOrder"%>
 <%@page import="EntityManager.Customer"%>
@@ -7,11 +8,12 @@
 <%
     Staff staff = (Staff) (session.getAttribute("staff"));
     SalesConfirmationOrder sco = (SalesConfirmationOrder) (session.getAttribute("sco"));
+    DeliveryOrder deliveryOrder = (DeliveryOrder) (session.getAttribute("do"));
     if (session.isNew()) {
         response.sendRedirect("../index.jsp?errMsg=Invalid Request. Please login.");
     } else if (staff == null) {
         response.sendRedirect("../index.jsp?errMsg=Session Expired.");
-    } else if (sco == null) {
+    } else if (sco == null || deliveryOrder == null) {
         response.sendRedirect("scoManagement.jsp?errMsg=An Error has occured.");
     } else {
 %>
@@ -28,7 +30,7 @@
             }
 
             function back(id) {
-                window.location.href = "../OrderManagementController?target=RetrieveSCO&id=" + id;
+                window.location.href = "../DeliveryOrderManagementController?target=RetrieveDO&id=" + id;
             }
         </script>
 
@@ -49,6 +51,8 @@
                                 </li>
                                 <li><span><a href= "../OrderManagementController?target=ListAllSCO">SCO Management</a></span></li>
                                 <li><span><a href= "../OrderManagementController?target=RetrieveSCO&id=<%=sco.getId()%>">SCO No. <%=sco.getSalesConfirmationOrderNumber()%></a></span></li>
+                                <li><span><a href= "scoManagement_DO.jsp">DOs</a></span></li>
+                                <li><span><a href= "doManagement.jsp">DO No. <%=deliveryOrder.getDeliveryOrderNumber()%> </a></span></li>
                                 <li><span>Invoices &nbsp;&nbsp</span></li>
                             </ol>
                         </div>
@@ -98,7 +102,7 @@
                                     </tbody>
                                 </table>
                                 <br>
-                                <button type="button" class="btn btn-default" onclick="javascript:back(<%=sco.getId()%>)">Back</button>   
+                                <button type="button" class="btn btn-default" onclick="javascript:back(<%=deliveryOrder.getId()%>);">Back</button>   
                             </form>
                         </div>
 

@@ -80,7 +80,7 @@
                                             <td><%=sco.getDeliveryOrders().get(i).getDeliveryOrderNumber()%></td>
                                             <td>
                                                 <%
-                                                    SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("d MMM yyyy hh:mm:ss");
+                                                    SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("d MMM yyyy");
                                                     String date = DATE_FORMAT.format(sco.getDeliveryOrders().get(i).getDeliveryOrderDate());
                                                     out.print(date);
                                                 %>

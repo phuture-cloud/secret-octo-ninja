@@ -1,3 +1,4 @@
+<%@page import="EntityManager.Invoice"%>
 <%@page import="EntityManager.DeliveryOrder"%>
 <%@page import="EntityManager.Customer"%>
 <%@page import="EntityManager.Contact"%>
@@ -13,6 +14,7 @@
     } else {
         String scoID = request.getParameter("id");
         DeliveryOrder deliveryOrder = (DeliveryOrder) (session.getAttribute("do"));
+        Invoice invoice = (Invoice) (session.getAttribute("invoice"));
         List<Contact> contacts = (List<Contact>) (session.getAttribute("contacts"));
         List<Customer> customers = (List<Customer>) session.getAttribute("customers");
         String selectedCustomerID = request.getParameter("selectedCustomerID");
@@ -63,6 +65,12 @@
                 document.UpdateContactForm.submit();
             }
 
+            function save3() {
+                window.onbeforeunload = null;
+                document.UpdateContactForm.action = "../InvoiceManagementController";
+                document.UpdateContactForm.submit();
+            }
+
             function back1(id) {
                 window.onbeforeunload = null;
                 window.location.href = "scoManagement_add.jsp?id=" + id;
@@ -71,6 +79,11 @@
             function back2() {
                 window.onbeforeunload = null;
                 window.location.href = "doManagement.jsp";
+            }
+
+            function back3() {
+                window.onbeforeunload = null;
+                window.location.href = "invoiceManagement.jsp";
             }
         </script>
         <section class="body">
@@ -152,6 +165,9 @@
                                                 <%if (scoID != null) {%>
                                                 <button type="button" class="btn btn-success" type="submit" onclick="javascript:save1();">Save</button>
                                                 <button type="button" class="btn btn-default" onclick="javascript:back1(<%=scoID%>);">Cancel</button>
+                                                <%} else if (invoice != null) {%>
+                                                <button type="button" class="btn btn-success" type="submit" onclick="javascript:save3();">Save</button>
+                                                <button type="button" class="btn btn-default" onclick="javascript:back3();">Cancel</button>
                                                 <%} else if (deliveryOrder != null) {%>
                                                 <button type="button" class="btn btn-success" type="submit" onclick="javascript:save2();">Save</button>
                                                 <button type="button" class="btn btn-default" onclick="javascript:back2();">Cancel</button>
@@ -163,12 +179,14 @@
 
                                 <%if (scoID != null) {%>
                                 <input type="hidden" name="id" id="scoID" value="<%=scoID%>">   
-                                <input type="hidden" name="source" value="UpdateContact">   
                                 <input type="hidden" name="target" value="UpdateSCOContact">   
-
-                                <%} else if (deliveryOrder != null) {%>
                                 <input type="hidden" name="source" value="UpdateContact">   
+                                <%} else if (invoice != null) {%>
+                                <input type="hidden" name="target" value="UpdateInvoiceContact">   
+                                <input type="hidden" name="source" value="UpdateContact">   
+                                <%} else if (deliveryOrder != null) {%>
                                 <input type="hidden" name="target" value="UpdateDOContact">   
+                                <input type="hidden" name="source" value="UpdateContact">   
                                 <%}%>
                             </form>
                         </div>

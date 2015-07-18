@@ -212,7 +212,6 @@ public class DeliveryOrderManagementController extends HttpServlet {
                             String mobileNo = request.getParameter("mobileNo");
                             String faxNo = request.getParameter("faxNo");
                             String address = request.getParameter("address");
-                            System.out.println("email " + email);
 
                             if (company != null && !company.isEmpty() && name != null && !name.isEmpty() && address != null && !address.isEmpty() && officeNo != null && !officeNo.isEmpty() && email != null && !email.isEmpty()) {
                                 returnHelper = deliveryOrderManagementBean.updateDeliveryOrderCustomerContactDetails(deliveryOrder.getId(), company, name, email, officeNo, mobileNo, faxNo, address, isAdmin);

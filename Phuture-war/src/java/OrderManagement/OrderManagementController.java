@@ -37,7 +37,6 @@ public class OrderManagementController extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String target = request.getParameter("target");
-        System.out.println("target " + target);
         String id = request.getParameter("id");
         String scoNumber = request.getParameter("scoNumber");
 
@@ -107,6 +106,9 @@ public class OrderManagementController extends HttpServlet {
                             }
                             session.removeAttribute("contacts");
                             session.removeAttribute("sco");
+                            session.removeAttribute("do");
+                            session.removeAttribute("po");
+                            session.removeAttribute("invoice");
                         }
                         break;
 
@@ -314,7 +316,6 @@ public class OrderManagementController extends HttpServlet {
 
                     case "EditLineItem":
                         if (true) {
-                            System.out.println(itemName + itemDescription + itemQty + itemUnitPrice);
                             //Check for empty fields
                             if (itemName == null || itemName.isEmpty() || itemDescription == null || itemDescription.isEmpty() || itemQty == null || itemQty.isEmpty() || itemUnitPrice == null || itemUnitPrice.isEmpty()) {
                                 nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&selectedCustomerID=" + customerID + "&scoNumber=" + scoNumber + "&terms=" + terms + "&editingLineItem=" + lineItemID + "&scoDate=" + scoDate + "&errMsg=Please fill in all the fields for the item.";

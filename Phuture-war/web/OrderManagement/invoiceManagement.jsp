@@ -16,6 +16,7 @@
     } else if (staff == null) {
         response.sendRedirect("../index.jsp?errMsg=Session Expired.");
     } else {
+        String estimatedDeliveryDate = request.getParameter("estimatedDeliveryDate");
         String editingLineItem = request.getParameter("editingLineItem");
         String formDisablerFlag = "";
         if (editingLineItem == null) {
@@ -74,7 +75,7 @@
 
                 function back() {
                     window.onbeforeunload = null;
-                    window.location.href = "scoManagement_DO.jsp";
+                    window.location.href = "scoManagement_invoice.jsp";
                 }
 
                 function back2() {
@@ -163,7 +164,8 @@
                                 </li>
                                 <li><span><a href= "../OrderManagementController?target=ListAllSCO">SCO Management</a></span></li>
                                 <li><span><a href= "../OrderManagementController?target=RetrieveSCO&id=<%=invoice.getSalesConfirmationOrder().getId()%>">SCO No. <%=invoice.getSalesConfirmationOrder().getSalesConfirmationOrderNumber()%></a></span></li>
-                                <li><span><a href= "doManagement.jsp">Delivery Order <%=deliveryOrder.getDeliveryOrderNumber()%></a></span></li>
+                                <li><span><a href= "scoManagement_DO.jsp">DOs</a></span></li>
+                                <li><span><a href= "doManagement.jsp">DO No. <%=deliveryOrder.getDeliveryOrderNumber()%></a></span></li>
                                 <li><span><a href= "scoManagement_invoice.jsp">Invoices</a></span></li>
                                 <li><span>Invoice &nbsp;&nbsp</span></li>
                             </ol>
@@ -260,9 +262,9 @@
                                                                 if (invoice != null && invoice.getDateCreated() != null) {
                                                                     SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
                                                                     String date = DATE_FORMAT.format(invoice.getDateCreated());
-                                                                    out.print("<input " + formDisablerFlag + " id='doDate' name='doDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "' required>");
+                                                                    out.print("<input " + formDisablerFlag + " id='invoiceCreated' name='invoiceCreated' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "' required>");
                                                                 } else {
-                                                                    out.print("<input " + formDisablerFlag + " id='doDate' name='doDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' required placeholder='dd/mm/yyyy'>");
+                                                                    out.print("<input " + formDisablerFlag + " id='invoiceCreated' name='invoiceCreated' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' required placeholder='dd/mm/yyyy'>");
                                                                 }
                                                             %>
                                                         </span>
@@ -275,9 +277,9 @@
                                                                 if (invoice != null && invoice.getDateSent() != null) {
                                                                     SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
                                                                     String date = DATE_FORMAT.format(invoice.getDateSent());
-                                                                    out.print("<input " + formDisablerFlag + " id='doDate' name='doDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "' required>");
+                                                                    out.print("<input " + formDisablerFlag + " id='invoiceSent' name='invoiceSent' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "'>");
                                                                 } else {
-                                                                    out.print("<input " + formDisablerFlag + " id='doDate' name='doDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' required placeholder='dd/mm/yyyy'>");
+                                                                    out.print("<input " + formDisablerFlag + " id='invoiceSent' name='invoiceSent' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' required placeholder='dd/mm/yyyy'>");
                                                                 }
                                                             %>
                                                         </span>
@@ -290,9 +292,9 @@
                                                                 if (invoice != null && invoice.getDatePaid() != null) {
                                                                     SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
                                                                     String date = DATE_FORMAT.format(invoice.getDatePaid());
-                                                                    out.print("<input " + formDisablerFlag + " id='doDate' name='doDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "' required>");
+                                                                    out.print("<input " + formDisablerFlag + " id='invoicePaid' name='invoicePaid' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "'>");
                                                                 } else {
-                                                                    out.print("<input " + formDisablerFlag + " id='doDate' name='doDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' required placeholder='dd/mm/yyyy'>");
+                                                                    out.print("<input " + formDisablerFlag + " id='invoicePaid' name='invoicePaid' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' required placeholder='dd/mm/yyyy'>");
                                                                 }
                                                             %>
                                                         </span>
@@ -335,6 +337,21 @@
                                                                     out.print("<input " + formDisablerFlag + " id='poNumber' name='poNumber' type='text' class='form-control' value='" + invoice.getCustomerPurchaseOrderNumber() + "'>");
                                                                 } else {
                                                                     out.print("<input " + formDisablerFlag + " id='poNumber' name='poNumber' type='text' class='form-control' placeholder='PO Number'>");
+                                                                }
+                                                            %>
+                                                        </span>
+                                                    </p>
+
+                                                    <p class="mb-none">
+                                                        <span class="text-dark">Estimated Delivery Date:</span>
+                                                        <span class="value" style="min-width: 200px">
+                                                            <%
+                                                                if (estimatedDeliveryDate != null && !estimatedDeliveryDate.isEmpty()) {
+                                                                    out.print("<input " + formDisablerFlag + " id='estimatedDeliveryDate' name='estimatedDeliveryDate' type='text' class='form-control' value='" + estimatedDeliveryDate + "'>");
+                                                                } else if (invoice != null && invoice.getEstimatedDeliveryDate() != null && !invoice.getEstimatedDeliveryDate().isEmpty()) {
+                                                                    out.print("<input " + formDisablerFlag + " id='estimatedDeliveryDate' name='estimatedDeliveryDate' type='text' class='form-control' value='" + invoice.getEstimatedDeliveryDate() + "'>");
+                                                                } else {
+                                                                    out.print("<input " + formDisablerFlag + " id='estimatedDeliveryDate' name='estimatedDeliveryDate' type='text' class='form-control' placeholder='Estimated date'>");
                                                                 }
                                                             %>
                                                         </span>
@@ -504,9 +521,9 @@
                                                 </ul>
                                                 <%
                                                     if (invoice != null && invoice.getRemarks() != null && !invoice.getRemarks().isEmpty()) {
-                                                        out.print("Remarks:");
+                                                        out.print("Remarks: ");
                                                         String repl = invoice.getRemarks().replaceAll("(\\r|\\n|\\r\\n)+", "<br>");
-                                                        out.print("Remarks: " + invoice.getRemarks());
+                                                        out.print(invoice.getRemarks());
                                                     }
                                                 %>
                                             </div>
@@ -723,7 +740,7 @@
 
                     <div id="modalRemarks" class="modal-block modal-block-primary mfp-hide">
                         <section class="panel">
-                            <form name="editRemarksForm" action="../OrderManagementController" class="form-horizontal mb-lg">
+                            <form name="editRemarksForm" action="../InvoiceManagementController" class="form-horizontal mb-lg">
                                 <header class="panel-heading">
                                     <h2 class="panel-title">Remarks</h2>
                                 </header>
@@ -756,10 +773,10 @@
                             <header class="panel-heading">
                                 <h2 class="panel-title">Are you sure?</h2>
                             </header>
-                            <div class="panel-body">
+                            <div class="panel-body" style="padding-top: 0px;">
                                 <div class="modal-wrapper">
                                     <div class="modal-icon">
-                                        <i class="fa fa-question-circle"></i>
+                                        <i class="fa fa-question-circle" style="top: 0px;"></i>
                                     </div>
                                     <div class="modal-text">
                                         <p>Are you sure that you want to delete this Invoice?<br> All associated Payment records will also be deleted together!</p>

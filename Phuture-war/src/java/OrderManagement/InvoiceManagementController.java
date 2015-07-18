@@ -96,39 +96,38 @@ public class InvoiceManagementController extends HttpServlet {
 
                     case "UpdateInvoice":
                         String invoiceCreated = request.getParameter("invoiceCreated");
-                        if (invoiceCreated == null) {
-                            invoiceCreated = "";
-                        }
                         String invoiceSent = request.getParameter("invoiceSent");
-                        if (invoiceSent == null) {
-                            invoiceSent = "";
-                        }
                         String invoicePaid = request.getParameter("invoicePaid");
-                        if (invoicePaid == null) {
-                            invoicePaid = "";
-                        }
-                        String terms = request.getParameter("terms");
-                        Integer intTerms = 0;
-                        if (terms != null) {
-                            intTerms = Integer.parseInt(terms);
-                        }
+                        String estimatedDeliveryDate = request.getParameter("estimatedDeliveryDate");
 
                         if (source.equals("AddLineItemToExistingInvoice")) {
                             if (itemName == null || itemName.isEmpty() || itemDescription == null || itemDescription.isEmpty() || itemQty == null || itemQty.isEmpty() || itemUnitPrice == null || itemUnitPrice.isEmpty()) {
-                                nextPage = "OrderManagement/invoiceManagement.jsp?invoiceNumber=" + invoiceNumber + "&invoiceCreated=" + invoiceCreated + "&invoiceSent=" + invoiceSent + "&invoicePaid=" + invoicePaid + "&errMsg=Please fill in all the fields for the item.";
+                                nextPage = "OrderManagement/invoiceManagement.jsp?invoiceNumber=" + invoiceNumber + "&invoiceCreated=" + invoiceCreated + "&invoiceSent=" + invoiceSent + "&invoicePaid=" + invoicePaid + "&estimatedDeliveryDate=" + estimatedDeliveryDate + "&errMsg=Please fill in all the fields for the item.";
                                 break;
                             }
                         }
-                        if (invoiceNumber == null || invoiceNumber.isEmpty() || invoiceSent == null || invoiceSent.isEmpty()) {
-                            nextPage = "OrderManagement/invoiceManagement.jsp?invoiceNumber=" + invoiceNumber + "&invoiceCreated=" + invoiceCreated + "&invoiceSent=" + invoiceSent + "&invoicePaid=" + invoicePaid + "&errMsg=Please fill in all the fields for the DO.";
+                        if (invoiceNumber == null || invoiceNumber.isEmpty() || invoiceCreated == null || invoiceCreated.isEmpty()) {
+                            nextPage = "OrderManagement/invoiceManagement.jsp?invoiceNumber=" + invoiceNumber + "&invoiceCreated=" + invoiceCreated + "&invoiceSent=" + invoiceSent + "&invoicePaid=" + invoicePaid + "&estimatedDeliveryDate=" + estimatedDeliveryDate + "&errMsg=Please fill in all the fields for the Invoice.";
                         } else {
+                            String terms = request.getParameter("terms");
+                            Integer intTerms = null;
+                            if (terms != null) {
+                                intTerms = Integer.parseInt(terms);
+                            }
+
                             SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
                             Date invoiceCreatedDateDate = formatter.parse(invoiceCreated);
-                            Date invoiceSentDateDate = formatter.parse(invoiceSent);
-                            Date invoicePaidDateDate = formatter.parse(invoicePaid);
+                            Date invoiceSentDateDate = null;
+                            if (invoiceSent != null && !invoiceSent.isEmpty()) {
+                                invoiceSentDateDate = formatter.parse(invoiceSent);
+                            }
+                            Date invoicePaidDateDate = null;
+                            if (invoicePaid != null && !invoicePaid.isEmpty()) {
+                                invoicePaidDateDate = formatter.parse(invoicePaid);
+                            }
 
                             //Update Invoice
-                            returnHelper = invoiceManagementBean.updateInvoice(invoice.getId(), invoiceNumber, invoiceCreatedDateDate, invoiceSentDateDate, invoicePaidDateDate, "a", intTerms, poNumber, isAdmin);
+                            returnHelper = invoiceManagementBean.updateInvoice(invoice.getId(), invoiceNumber, invoiceCreatedDateDate, invoiceSentDateDate, invoicePaidDateDate, estimatedDeliveryDate, intTerms, poNumber, isAdmin);
                             if (returnHelper.getResult()) {
                                 Long invoiceID = returnHelper.getID();
                                 invoice = invoiceManagementBean.getInvoice(invoiceID);
@@ -153,7 +152,7 @@ public class InvoiceManagementController extends HttpServlet {
                         }
                         break;
 
-                    case "UpdateInoviceNotes":
+                    case "UpdateInvoiceNotes":
                         returnHelper = invoiceManagementBean.updateInvoiceNotes(invoice.getId(), notes, isAdmin);
                         invoice = invoiceManagementBean.getInvoice(invoice.getId());
                         if (returnHelper.getResult() && invoice != null) {
@@ -164,7 +163,7 @@ public class InvoiceManagementController extends HttpServlet {
                         }
                         break;
 
-                    case "UpdateInoviceRemarks":
+                    case "UpdateInvoiceRemarks":
                         returnHelper = invoiceManagementBean.updateInvoiceRemarks(invoice.getId(), remarks, isAdmin);
                         invoice = invoiceManagementBean.getInvoice(invoice.getId());
                         if (returnHelper.getResult() && invoice != null) {
@@ -204,7 +203,7 @@ public class InvoiceManagementController extends HttpServlet {
                         }
                         break;
 
-                    case "UpdateInoviceContact":
+                    case "UpdateInvoiceContact":
                         if (source != null && source.equals("UpdateContact")) {
                             customerID = request.getParameter("customerID");
                             String contactID = request.getParameter("contactID");
@@ -225,7 +224,6 @@ public class InvoiceManagementController extends HttpServlet {
                             String mobileNo = request.getParameter("mobileNo");
                             String faxNo = request.getParameter("faxNo");
                             String address = request.getParameter("address");
-                            System.out.println("email " + email);
 
                             if (company != null && !company.isEmpty() && name != null && !name.isEmpty() && address != null && !address.isEmpty() && officeNo != null && !officeNo.isEmpty() && email != null && !email.isEmpty()) {
                                 returnHelper = invoiceManagementBean.updateInvoiceCustomerContactDetails(invoice.getId(), company, name, email, officeNo, mobileNo, faxNo, address, isAdmin);

@@ -450,10 +450,6 @@
                                     <div class="invoice-summary" style="margin-top: 10px;">
                                         <div class="row">
                                             <div class="col-sm-5">
-                                                Terms & Conditions
-                                                <ul>
-                                                    <li>All Goods Delivered Are Non Returnable / Refundable</li>
-                                                </ul>
                                             </div>
                                             <div class="col-sm-3"></div>
                                             <div class="col-sm-4">
@@ -636,10 +632,10 @@
                             <header class="panel-heading">
                                 <h2 class="panel-title">Are you sure?</h2>
                             </header>
-                            <div class="panel-body">
+                            <div class="panel-body" style="padding-top: 0px;">
                                 <div class="modal-wrapper">
                                     <div class="modal-icon">
-                                        <i class="fa fa-question-circle"></i>
+                                        <i class="fa fa-question-circle" style="top: 0px;"></i>
                                     </div>
                                     <div class="modal-text">
                                         <p>Are you sure that you want to delete this Purchase Order?</p>
