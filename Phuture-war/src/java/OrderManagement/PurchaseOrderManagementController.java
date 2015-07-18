@@ -86,7 +86,7 @@ public class PurchaseOrderManagementController extends HttpServlet {
                                 nextPage = "OrderManagement/scoManagement_PO.jsp?errMsg=" + returnHelper.getDescription();
                             }
                         } else {
-                            nextPage = "OrderManagement/scoManagement_PO.jsp?errMsg=Delete Delivery Order failed. An error has occured.";
+                            nextPage = "OrderManagement/scoManagement_PO.jsp?errMsg=Delete Purchase Order failed. An error has occured.";
                         }
                         break;
 

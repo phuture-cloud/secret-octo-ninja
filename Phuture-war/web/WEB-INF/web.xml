@@ -24,6 +24,10 @@
         <servlet-name>InvoiceManagementController</servlet-name>
         <servlet-class>OrderManagement.InvoiceManagementController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>PaymentManagementController</servlet-name>
+        <servlet-class>OrderManagement.PaymentManagementController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>AccountManagementController</servlet-name>
         <url-pattern>/AccountManagementController</url-pattern>
@@ -47,6 +51,10 @@
     <servlet-mapping>
         <servlet-name>InvoiceManagementController</servlet-name>
         <url-pattern>/InvoiceManagementController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>PaymentManagementController</servlet-name>
+        <url-pattern>/PaymentManagementController</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
