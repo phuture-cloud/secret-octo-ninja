@@ -9,8 +9,8 @@ import javax.ejb.Local;
 @Local
 public interface PaymentManagementBeanLocal {
     
-    public ReturnHelper addPayment(Long invoiceID, Double amount, Date date, String paymentMethod, String paymentReferenceNumber);
-    public ReturnHelper updatePayment(Long paymentID, Double amount, Date date, String paymentMethod, String paymentReferenceNumber);
+    public ReturnHelper addPayment(Long invoiceID, Double amount, Date date, String paymentMethod, String paymentReferenceNumber, String notes);
+    public ReturnHelper updatePayment(Long paymentID, Double amount, Date date, String paymentMethod, String paymentReferenceNumber, String notes);
     public ReturnHelper deletePayment(Long paymentID);
     public PaymentRecord getPayment(Long paymentID);
     public List<PaymentRecord> listPaymentByCustomer(Long customerID);

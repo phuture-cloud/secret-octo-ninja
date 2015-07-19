@@ -22,7 +22,7 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
     }
     
     @Override
-    public ReturnHelper addPayment(Long invoiceID, Double amount, Date date, String paymentMethod, String paymentReferenceNumber) {
+    public ReturnHelper addPayment(Long invoiceID, Double amount, Date date, String paymentMethod, String paymentReferenceNumber, String notes) {
         System.out.println("PaymentManagementBean: addPayment() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -38,8 +38,12 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
             paymentRecord.setInvoice(invoice);
             paymentRecord.setAmount(amount);
             paymentRecord.setPaymentDate(date);
+            if (paymentMethod==null) paymentMethod="";
             paymentRecord.setPaymentMethod(paymentMethod);
+            if (paymentReferenceNumber==null) paymentReferenceNumber="";
             paymentRecord.setPaymentReferenceNumber(paymentReferenceNumber);
+            if (notes==null) notes="";
+            paymentRecord.setNotes(notes);
             em.persist(paymentRecord);
             //Update customer records
             List<PaymentRecord> paymentRecords = customer.getPaymentRecords();
@@ -66,7 +70,7 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
     }
     
     @Override
-    public ReturnHelper updatePayment(Long paymentID, Double amount, Date date, String paymentMethod, String paymentReferenceNumber) {
+    public ReturnHelper updatePayment(Long paymentID, Double amount, Date date, String paymentMethod, String paymentReferenceNumber, String notes) {
         System.out.println("PaymentManagementBean: updatePayment() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -78,8 +82,12 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
             }
             paymentRecord.setAmount(amount);
             paymentRecord.setPaymentDate(date);
+            if (paymentMethod==null) paymentMethod="";
             paymentRecord.setPaymentMethod(paymentMethod);
+            if (paymentReferenceNumber==null) paymentReferenceNumber="";
             paymentRecord.setPaymentReferenceNumber(paymentReferenceNumber);
+            if (notes==null) notes="";
+            paymentRecord.setNotes(notes);
             em.merge(paymentRecord);
             result.setResult(true);
             result.setDescription("Payment record updated.");
