@@ -563,11 +563,9 @@
                                     <div class="col-sm-6 text-right mt-md mb-md">
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-default" onclick="javascript:back()">Back</button>
-                                            <%              if (deliveryOrder != null) {
+                                            <%
+                                                if (deliveryOrder != null) {
                                                     out.print("<button type='button' class='modal-with-move-anim btn btn-danger' href='#modalRemove'>Delete</button>");
-                                                    if (deliveryOrder.getItems().size() > 0) {
-                                                        out.print("<button " + formDisablerFlag + " type='button' class='btn btn-primary modal-with-form' href='#modalGenerateInvoice'>Generate Invoice</button>");
-                                                    }
                                                     out.print("<button " + formDisablerFlag + " class='btn btn-success' onclick='javascript:updateDO();'>Save</button>");
                                                 } else {
                                                     out.print("<button " + formDisablerFlag + " class='btn btn-success' type='submit'>Save</button>");
@@ -591,35 +589,6 @@
                     <!-- end: page -->
 
                     <%if (deliveryOrder != null) {%>
-                    <div id="modalGenerateInvoice" class="modal-block modal-block-primary mfp-hide">
-                        <section class="panel">
-                            <form action="../DeliveryOrderManagementController" class="form-horizontal mb-lg">
-                                <header class="panel-heading">
-                                    <h2 class="panel-title">Generate Invoice</h2>
-                                </header>
-                                <div class="panel-body">
-                                    <div class="form-group">
-                                        <label class="col-sm-3 control-label">Invoice No <span class="required">*</span></label>
-                                        <div class="col-sm-9">
-                                            <input type="text" name="invoiceNumber" class="form-control" required/>
-                                        </div>
-                                    </div>
-                                    <br>
-                                    <input type="hidden" name="target" value="GenerateInvoice">    
-                                    <input type="hidden" name="id" value="<%=deliveryOrder.getSalesConfirmationOrder().getId()%>">  
-                                </div>
-                                <footer class="panel-footer">
-                                    <div class="row">
-                                        <div class="col-md-12 text-right">
-                                            <button class="btn btn-success" type="submit">Generate</button>
-                                            <button class="btn btn-default modal-dismiss">Cancel</button>
-                                        </div>
-                                    </div>
-                                </footer>
-                            </form>
-                        </section>
-                    </div>
-
                     <div id="modalEditForm" class="modal-block modal-block-primary mfp-hide">
                         <section class="panel">
                             <form name="editContactForm" action="../DeliveryOrderManagementController" class="form-horizontal mb-lg">

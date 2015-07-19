@@ -163,9 +163,7 @@
                                     </a>
                                 </li>
                                 <li><span><a href= "../OrderManagementController?target=ListAllSCO">SCO Management</a></span></li>
-                                <li><span><a href= "../OrderManagementController?target=RetrieveSCO&id=<%=invoice.getSalesConfirmationOrder().getId()%>">SCO No. <%=invoice.getSalesConfirmationOrder().getSalesConfirmationOrderNumber()%></a></span></li>
-                                <li><span><a href= "scoManagement_DO.jsp">DOs</a></span></li>
-                                <li><span><a href= "doManagement.jsp">DO No. <%=deliveryOrder.getDeliveryOrderNumber()%></a></span></li>
+                                <li><span><a href= "../OrderManagementController?target=RetrieveSCO&id=<%=invoice.getSalesConfirmationOrder().getId()%>"><%=invoice.getSalesConfirmationOrder().getSalesConfirmationOrderNumber()%></a></span></li>
                                 <li><span><a href= "scoManagement_invoice.jsp">Invoices</a></span></li>
                                 <li><span>Invoice &nbsp;&nbsp</span></li>
                             </ol>

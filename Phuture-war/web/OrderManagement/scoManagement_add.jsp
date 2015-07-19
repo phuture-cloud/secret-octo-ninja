@@ -216,6 +216,11 @@
                     window.location.href = "../OrderManagementController?target=RetrieveSCO&source=listAllDO&id=" + id;
                 }
 
+                function listAllInvoice(id) {
+                    window.onbeforeunload = null;
+                    window.location.href = "../OrderManagementController?target=RetrieveSCO&source=listAllInvoice&id=" + id;
+                }
+
                 window.onbeforeunload = function () {
                     return 'There may be unsaved changes to this page. If you continue, you will lose them.';
                 };
@@ -773,6 +778,9 @@
                                                         if (sco.getDeliveryOrders().size() > 0) {
                                                             out.print("<button type='button' class='btn btn-default' onclick='javascript:listAllDO(" + sco.getId() + ")'>Delivery Orders <span class='badge' style='background-color:#0088CC'>" + sco.getNumOfDeliveryOrders() + "</span></button>");
                                                         }
+                                                        if (sco.getInvoices().size() > 0) {
+                                                            out.print("<button type='button' class='btn btn-default' onclick='javascript:listAllInvoice(" + sco.getId() + ")'>Invoices <span class='badge' style='background-color:#0088CC'>" + sco.getNumOfInvoices() + "</span></button>");
+                                                        }
                                                     }
                                                 }
                                             %>         
@@ -787,6 +795,7 @@
                                                     if (sco.getItems().size() > 0) {
                                                         out.print("<button " + formDisablerFlag + " class='btn btn-primary modal-with-form' href='#modalGeneratePO'>Generate PO</button>");
                                                         out.print("<button " + formDisablerFlag + " class='btn btn-primary modal-with-form' href='#modalGenerateDO' >Generate DO</button>");
+                                                        out.print("<button " + formDisablerFlag + " class='btn btn-primary modal-with-form' href='#modalGenerateInvoice' >Generate Invoice</button>");
                                                     }
                                                     out.print("<button " + formDisablerFlag + " class='btn btn-success' onclick='javascript:updateSCO(" + scoID + ")'>Save</button>");
                                                 } else {
@@ -812,6 +821,35 @@
                     <!-- end: page -->
 
                     <%if (sco != null && scoID != null && !scoID.isEmpty()) {%>
+                    <div id="modalGenerateInvoice" class="modal-block modal-block-primary mfp-hide">
+                        <section class="panel">
+                            <form action="../OrderManagementController" class="form-horizontal mb-lg">
+                                <header class="panel-heading">
+                                    <h2 class="panel-title">Generate Invoice</h2>
+                                </header>
+                                <div class="panel-body">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Invoice No <span class="required">*</span></label>
+                                        <div class="col-sm-9">
+                                            <input type="text" name="invoiceNumber" class="form-control" required/>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <input type="hidden" name="target" value="GenerateInvoice">    
+                                    <input type="hidden" name="id" value="<%=scoID%>">  
+                                </div>
+                                <footer class="panel-footer">
+                                    <div class="row">
+                                        <div class="col-md-12 text-right">
+                                            <button class="btn btn-success" type="submit">Generate</button>
+                                            <button class="btn btn-default modal-dismiss">Cancel</button>
+                                        </div>
+                                    </div>
+                                </footer>
+                            </form>
+                        </section>
+                    </div>
+
                     <div id="modalGeneratePO" class="modal-block modal-block-primary mfp-hide">
                         <section class="panel">
                             <form action="../OrderManagementController" class="form-horizontal mb-lg">

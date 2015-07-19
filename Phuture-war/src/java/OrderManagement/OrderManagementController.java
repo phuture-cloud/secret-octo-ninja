@@ -21,6 +21,9 @@ import javax.servlet.http.HttpSession;
 public class OrderManagementController extends HttpServlet {
 
     @EJB
+    private InvoiceManagementBeanLocal invoiceManagementBean;
+
+    @EJB
     private PurchaseOrderManagementBeanLocal purchaseOrderManagementBean;
 
     @EJB
@@ -289,7 +292,7 @@ public class OrderManagementController extends HttpServlet {
                             } else {
                                 session.setAttribute("customers", customers);
                                 session.setAttribute("sco", sco);
-                                if (source != null && source.equals("listAllInvoices")) {
+                                if (source != null && source.equals("listAllInvoice")) {
                                     nextPage = "OrderManagement/scoManagement_invoice.jsp";
                                 } else if (source != null && source.equals("listAllDO")) {
                                     nextPage = "OrderManagement/scoManagement_DO.jsp";
@@ -376,7 +379,7 @@ public class OrderManagementController extends HttpServlet {
                             if (returnHelper.getResult()) {
                                 SalesConfirmationOrder sco = orderManagementBean.getSalesConfirmationOrder(Long.parseLong(id));
                                 session.setAttribute("sco", sco);
-                                session.setAttribute("do", deliveryOrderManagementBean.getDeliveryOrder(returnHelper.getID()));
+                                //session.setAttribute("do", deliveryOrderManagementBean.getDeliveryOrder(returnHelper.getID()));
                                 nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&goodMsg=" + returnHelper.getDescription();
                             } else {
                                 nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&errMsg=" + returnHelper.getDescription();
@@ -394,7 +397,21 @@ public class OrderManagementController extends HttpServlet {
                             if (returnHelper.getResult()) {
                                 SalesConfirmationOrder sco = orderManagementBean.getSalesConfirmationOrder(Long.parseLong(id));
                                 session.setAttribute("sco", sco);
-                                session.setAttribute("po", purchaseOrderManagementBean.getPurchaseOrder(returnHelper.getID()));
+                                //session.setAttribute("po", purchaseOrderManagementBean.getPurchaseOrder(returnHelper.getID()));
+                                nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&goodMsg=" + returnHelper.getDescription();
+                            } else {
+                                nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&errMsg=" + returnHelper.getDescription();
+                            }
+                        }
+                        break;
+
+                    case "GenerateInvoice":
+                        if (true) {
+                            String invoiceNumber = request.getParameter("invoiceNumber");
+                            returnHelper = invoiceManagementBean.createInvoice(Long.parseLong(id), invoiceNumber);
+                            if (returnHelper.getResult()) {
+                                SalesConfirmationOrder sco = orderManagementBean.getSalesConfirmationOrder(Long.parseLong(id));
+                                session.setAttribute("sco", sco);
                                 nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&goodMsg=" + returnHelper.getDescription();
                             } else {
                                 nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&errMsg=" + returnHelper.getDescription();
