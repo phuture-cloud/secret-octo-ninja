@@ -21,9 +21,6 @@ import javax.servlet.http.HttpSession;
 public class DeliveryOrderManagementController extends HttpServlet {
 
     @EJB
-    private InvoiceManagementBeanLocal invoiceManagementBean;
-
-    @EJB
     private OrderManagementBeanLocal orderManagementBean;
 
     @EJB
@@ -248,21 +245,6 @@ public class DeliveryOrderManagementController extends HttpServlet {
                             }
                         }
                         break;
-
-                    case "GenerateInvoice":
-                        id = request.getParameter("id");
-                        String invoiceNumber = request.getParameter("invoiceNumber");
-                        returnHelper = invoiceManagementBean.createInvoice(Long.parseLong(id), invoiceNumber);
-                        if (returnHelper.getResult()) {
-                            SalesConfirmationOrder sco = orderManagementBean.getSalesConfirmationOrder(Long.parseLong(id));
-                            session.setAttribute("sco", sco);
-                            session.setAttribute("do", deliveryOrderManagementBean.getDeliveryOrder(deliveryOrder.getId()));
-                            nextPage = "OrderManagement/doManagement.jsp?goodMsg=" + returnHelper.getDescription();
-                        } else {
-                            nextPage = "OrderManagement/doManagement.jsp?errMsg=" + returnHelper.getDescription();
-                        }
-                        break;
-
                 }//end switch
             }//end checkLogin
 
