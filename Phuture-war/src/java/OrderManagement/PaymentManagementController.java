@@ -1,17 +1,14 @@
 package OrderManagement;
 
-import CustomerManagement.CustomerManagementBeanLocal;
-import EntityManager.Contact;
-import EntityManager.Customer;
+import EntityManager.Invoice;
 import EntityManager.PaymentRecord;
 import EntityManager.ReturnHelper;
-import EntityManager.SalesConfirmationOrder;
 import EntityManager.Staff;
 import PaymentManagement.PaymentManagementBeanLocal;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -25,10 +22,7 @@ public class PaymentManagementController extends HttpServlet {
     private PaymentManagementBeanLocal paymentManagementBean;
 
     @EJB
-    private OrderManagementBeanLocal orderManagementBean;
-
-    @EJB
-    private CustomerManagementBeanLocal customerManagementBean;
+    private InvoiceManagementBeanLocal invoiceManagementBean;
 
     String nextPage = "", goodMsg = "", errMsg = "";
     HttpSession session;
@@ -39,47 +33,52 @@ public class PaymentManagementController extends HttpServlet {
         System.out.println("Welcome to PaymentManagementController");
         String target = request.getParameter("target");
         String source = request.getParameter("source");
+        String id = request.getParameter("id");
 
-        String remarks = request.getParameter("remarks");
+        String amount = request.getParameter("amount");
+        String paymentMethod = request.getParameter("paymentMethod");
+        String paymentDate = request.getParameter("paymentDate");
+        String paymentReferenceNumber = request.getParameter("paymentReferenceNumber");
         String notes = request.getParameter("notes");
-        String itemName = request.getParameter("itemName");
-        String itemDescription = request.getParameter("itemDescription");
-        String itemQty = request.getParameter("itemQty");
-        String itemUnitPrice = request.getParameter("itemUnitPrice");
-
-        String doNumber = request.getParameter("doNumber");
-        String poNumber = request.getParameter("poNumber");
-        String doDate = request.getParameter("doDate");
-        if (doDate == null) {
-            doDate = "";
+        if (paymentDate == null) {
+            paymentDate = "";
         }
-        String status = request.getParameter("status");
-        if (status == null) {
-            status = "";
-        }
-
-        String customerID = "";
-        String lineItemID = request.getParameter("lineItemID");
 
         session = request.getSession();
         ReturnHelper returnHelper = null;
-        PaymentRecord paymentRecord = (PaymentRecord) (session.getAttribute("paymentRecord"));
+        PaymentRecord paymentRecord = null;
+        Invoice invoice = (Invoice) (session.getAttribute("invoice"));
 
         try {
             if (checkLogin()) {
                 switch (target) {
-                    case "RetrievePayment":
-                        String id = request.getParameter("id");
-                        if (id != null) {
-                            session.setAttribute("paymentRecord", paymentManagementBean.getPayment(Long.parseLong(id)));
-                            nextPage = "OrderManagement/paymentManagement.jsp";
+                    case "AddPayment":
+                        DateFormat sourceFormat = new SimpleDateFormat("dd/MM/yyyy");
+                        Date paymentDateDate = sourceFormat.parse(paymentDate);
+
+                        returnHelper = paymentManagementBean.addPayment(invoice.getId(), Double.parseDouble(amount), paymentDateDate, paymentMethod, paymentReferenceNumber, notes);
+                        invoice = invoiceManagementBean.getInvoice(invoice.getId());
+
+                        if (returnHelper.getResult() && invoice != null) {
+                            session.setAttribute("invoice", invoice);
+                            session.setAttribute("paymentRecord", paymentManagementBean.getPayment(invoice.getId()));
+                            nextPage = "OrderManagement/invoiceManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                        } else {
+                            nextPage = "OrderManagement/invoiceManagement.jsp?errMsg=" + returnHelper.getDescription();
                         }
+                        break;
+
+                    case "listAllPayment":
+
                         break;
 
                 }//end switch
             }//end checkLogin
 
-            if (nextPage.equals("")) {
+            if (invoice == null) {
+                response.sendRedirect("OrderManagement/invoiceManagement.jsp?errMsg=An Error has occured");
+                return;
+            } else if (nextPage.equals("")) {
                 response.sendRedirect("index.jsp?errMsg=Session Expired.");
                 return;
             } else {

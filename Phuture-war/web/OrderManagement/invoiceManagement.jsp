@@ -10,7 +10,6 @@
 <%
     Staff staff = (Staff) (session.getAttribute("staff"));
     Invoice invoice = (Invoice) (session.getAttribute("invoice"));
-    DeliveryOrder deliveryOrder = (DeliveryOrder) (session.getAttribute("do"));
     if (session.isNew()) {
         response.sendRedirect("../index.jsp?errMsg=Invalid Request. Please login.");
     } else if (staff == null) {
@@ -134,6 +133,11 @@
                     editContactForm.target.value = "ListAllCustomer";
                     document.editContactForm.action = "../InvoiceManagementController";
                     document.editContactForm.submit();
+                }
+
+                function listAllPayment() {
+                    window.onbeforeunload = null;
+                    window.location.href = "../PaymentManagementController?target=listAllPayment";
                 }
 
                 window.onbeforeunload = function () {
@@ -610,10 +614,11 @@
                                     <div class="col-sm-6 text-right mt-md mb-md">
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-default" onclick="javascript:back()">Back</button>
-                                            <%              if (invoice != null) {
+                                            <%
+                                                if (invoice != null) {
                                                     out.print("<button type='button' class='modal-with-move-anim btn btn-danger' href='#modalRemove'>Delete</button>");
                                                     if (invoice.getItems().size() > 0) {
-                                                        out.print("<button " + formDisablerFlag + " class='btn btn-primary' onclick='javascript:viewPayment'>View Payment</button>");
+                                                        out.print("<button type='button' class='btn btn-primary modal-with-form' href='#modalAddPayment'>Add Payment</button>");
                                                     }
                                                     out.print("<button " + formDisablerFlag + " class='btn btn-success' onclick='javascript:updateInvoice();'>Save</button>");
                                                 } else {
@@ -639,6 +644,63 @@
                     <!-- end: page -->
 
                     <%if (invoice != null) {%>
+                    <div id="modalAddPayment" class="modal-block modal-block-primary mfp-hide">
+                        <section class="panel">
+                            <form name="addPaymentForm" action="../PaymentManagementController" class="form-horizontal mb-lg">
+                                <header class="panel-heading">
+                                    <h2 class="panel-title">Add Payment to <%=invoice.getInvoiceNumber()%></h2>
+                                </header>
+                                <div class="panel-body">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Amount <span class="required">*</span></label>
+                                        <div class="col-sm-9">
+                                            <input type="number" class="form-control" id="price" name="amount" min="0" step="0.01" size="4" title="CDA Currency Format - no dollar sign and no comma(s) - cents (.##) are optional" required/>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Payment Date <span class="required">*</span></label>
+                                        <div class="col-md-9">
+                                            <input type="text" name="paymentDate" data-plugin-datepicker data-date-format="dd/mm/yyyy" class="form-control" placeholder="dd/mm/yyyy" required/>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Payment Method</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" name="paymentMethod" class="form-control"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Payment Reference Number</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" name="paymentReferenceNumber" class="form-control"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Notes</label>
+                                        <div class="col-sm-9">
+                                            <textarea class="form-control" rows="5" name="notes"></textarea>
+                                        </div>
+                                    </div>
+
+                                    <br>
+                                    <input type="hidden" name="target" value="AddPayment">    
+                                </div>
+                                <footer class="panel-footer">
+                                    <div class="row">
+                                        <div class="col-md-12 text-right">
+                                            <button class="btn btn-success" type="submit">Add Payment</button>
+                                            <button class="btn btn-default modal-dismiss">Cancel</button>
+                                        </div>
+                                    </div>
+                                </footer>
+                            </form>
+                        </section>
+                    </div>
+
                     <div id="modalEditForm" class="modal-block modal-block-primary mfp-hide">
                         <section class="panel">
                             <form name="editContactForm" action="../InvoiceManagementController" class="form-horizontal mb-lg">
