@@ -67,8 +67,15 @@ public class DeliveryOrderManagementController extends HttpServlet {
         try {
             if (checkLogin()) {
                 switch (target) {
-                    case "RetrieveDO":
+                    case "ListDoTiedToSCO":
                         String id = request.getParameter("id");
+                        if (id != null) {
+                            session.setAttribute("listOfDO", deliveryOrderManagementBean.listDeliveryOrdersTiedToSCO(Long.parseLong(id)));
+                            nextPage = "OrderManagement/scoManagement_DO.jsp";
+                        }
+                        break;
+                    case "RetrieveDO":
+                        id = request.getParameter("id");
                         if (id != null) {
                             session.setAttribute("do", deliveryOrderManagementBean.getDeliveryOrder(Long.parseLong(id)));
                             nextPage = "OrderManagement/doManagement.jsp";

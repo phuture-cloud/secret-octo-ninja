@@ -59,6 +59,13 @@ public class PurchaseOrderManagementController extends HttpServlet {
         try {
             if (checkLogin()) {
                 switch (target) {
+                    case "ListPoTiedToSCO":
+                        id = request.getParameter("id");
+                        if (id != null) {
+                            session.setAttribute("listOfPO", purchaseOrderManagementBean.listPurchaseOrdersTiedToSCO(Long.parseLong(id)));
+                            nextPage = "OrderManagement/scoManagement_PO.jsp";
+                        }
+                        break;
                     case "RetrievePO":
                         id = request.getParameter("id");
                         if (id != null) {

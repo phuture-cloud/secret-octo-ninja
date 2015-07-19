@@ -1,3 +1,4 @@
+<%@page import="EntityManager.PurchaseOrder"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="EntityManager.SalesConfirmationOrder"%>
 <%@page import="EntityManager.Customer"%>
@@ -7,6 +8,7 @@
 <%
     Staff staff = (Staff) (session.getAttribute("staff"));
     SalesConfirmationOrder sco = (SalesConfirmationOrder) (session.getAttribute("sco"));
+    List<PurchaseOrder> purchaseOrders = (List<PurchaseOrder>) (session.getAttribute("listOfPO"));
     if (session.isNew()) {
         response.sendRedirect("../index.jsp?errMsg=Invalid Request. Please login.");
     } else if (staff == null) {
@@ -71,24 +73,23 @@
                                     </thead>
                                     <tbody>
                                         <%
-                                            if (sco != null) {
-                                                for (int i = 0; i < sco.getPurchaseOrders().size(); i++) {
-                                                    if (!sco.getPurchaseOrders().get(i).getIsDeleted()) {
+                                            if (purchaseOrders != null) {
+                                                for (int i = 0; i < purchaseOrders.size(); i++) {
                                         %>
                                         <tr>        
-                                            <td><%=sco.getPurchaseOrders().get(i).getPurchaseOrderNumber()%></td>
+                                            <td><%=purchaseOrders.get(i).getPurchaseOrderNumber()%></td>
                                             <td>
                                                 <%
                                                     SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("d MMM yyyy hh:mm:ss");
-                                                    String date = DATE_FORMAT.format(sco.getPurchaseOrders().get(i).getPurchaseOrderDate());
+                                                    String date = DATE_FORMAT.format(purchaseOrders.get(i).getPurchaseOrderDate());
                                                     out.print(date);
                                                 %>
                                             </td>
-                                            <td><%=sco.getPurchaseOrders().get(i).getStatus()%></td>
-                                            <td><button type="button" class="btn btn-default btn-block" onclick="javascript:viewPO('<%=sco.getPurchaseOrders().get(i).getId()%>')">View</button></td>
+                                            <td><%=purchaseOrders.get(i).getStatus()%></td>
+                                            <td><button type="button" class="btn btn-default btn-block" onclick="javascript:viewPO('<%=purchaseOrders.get(i).getId()%>')">View</button></td>
                                         </tr>
                                         <%
-                                                    }
+
                                                 }
                                             }
                                         %>

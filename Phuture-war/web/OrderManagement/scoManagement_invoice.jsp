@@ -1,3 +1,4 @@
+<%@page import="EntityManager.Invoice"%>
 <%@page import="EntityManager.DeliveryOrder"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="EntityManager.SalesConfirmationOrder"%>
@@ -8,6 +9,7 @@
 <%
     Staff staff = (Staff) (session.getAttribute("staff"));
     SalesConfirmationOrder sco = (SalesConfirmationOrder) (session.getAttribute("sco"));
+    List<Invoice> invoices = (List<Invoice>) (session.getAttribute("listOfInvoice"));
     if (session.isNew()) {
         response.sendRedirect("../index.jsp?errMsg=Invalid Request. Please login.");
     } else if (staff == null) {
@@ -75,23 +77,21 @@
                                     <tbody>
                                         <%
                                             if (sco != null) {
-                                                for (int i = 0; i < sco.getInvoices().size(); i++) {
-                                                    if (!sco.getInvoices().get(i).getIsDeleted()) {
+                                                for (int i = 0; i < invoices.size(); i++) {
                                         %>
                                         <tr>        
-                                            <td><%=sco.getInvoices().get(i).getInvoiceNumber()%></td>
+                                            <td><%=invoices.get(i).getInvoiceNumber()%></td>
                                             <td>
                                                 <%
                                                     SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("d MMM yyyy hh:mm:ss");
-                                                    String date = DATE_FORMAT.format(sco.getInvoices().get(i).getDateCreated());
+                                                    String date = DATE_FORMAT.format(invoices.get(i).getDateCreated());
                                                     out.print(date);
                                                 %>
                                             </td>
-                                            <td><%=sco.getInvoices().get(i).getStatus()%></td>
-                                            <td><button type="button" class="btn btn-default btn-block" onclick="javascript:viewInvoice('<%=sco.getInvoices().get(i).getId()%>')">View</button></td>
+                                            <td><%=invoices.get(i).getStatus()%></td>
+                                            <td><button type="button" class="btn btn-default btn-block" onclick="javascript:viewInvoice('<%=invoices.get(i).getId()%>')">View</button></td>
                                         </tr>
                                         <%
-                                                    }
                                                 }
                                             }
                                         %>

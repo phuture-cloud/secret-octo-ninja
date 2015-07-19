@@ -63,8 +63,15 @@ public class InvoiceManagementController extends HttpServlet {
         try {
             if (checkLogin()) {
                 switch (target) {
-                    case "RetrieveInvoice":
+                    case "ListInvoiceTiedToSCO":
                         String id = request.getParameter("id");
+                        if (id != null) {
+                            session.setAttribute("listOfInvoice", invoiceManagementBean.listInvoicesTiedToSCO(Long.parseLong(id)));
+                            nextPage = "OrderManagement/scoManagement_invoice.jsp";
+                        }
+                        break;
+                    case "RetrieveInvoice":
+                        id = request.getParameter("id");
                         if (id != null) {
                             session.setAttribute("invoice", invoiceManagementBean.getInvoice(Long.parseLong(id)));
                             nextPage = "OrderManagement/invoiceManagement.jsp";

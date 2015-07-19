@@ -208,17 +208,17 @@
 
                 function listAllPO(id) {
                     window.onbeforeunload = null;
-                    window.location.href = "../OrderManagementController?target=RetrieveSCO&source=listAllPO&id=" + id;
+                    window.location.href = "../PurchaseOrderManagementController?target=ListPoTiedToSCO&id=" + id;
                 }
 
                 function listAllDO(id) {
                     window.onbeforeunload = null;
-                    window.location.href = "../OrderManagementController?target=RetrieveSCO&source=listAllDO&id=" + id;
+                    window.location.href = "../DeliveryOrderManagementController?target=ListDoTiedToSCO&id=" + id;
                 }
 
                 function listAllInvoice(id) {
                     window.onbeforeunload = null;
-                    window.location.href = "../OrderManagementController?target=RetrieveSCO&source=listAllInvoice&id=" + id;
+                    window.location.href = "../InvoiceManagementController?target=ListInvoiceTiedToSCO&id=" + id;
                 }
 
                 window.onbeforeunload = function () {

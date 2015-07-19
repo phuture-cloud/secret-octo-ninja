@@ -1,3 +1,4 @@
+<%@page import="EntityManager.DeliveryOrder"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="EntityManager.SalesConfirmationOrder"%>
 <%@page import="EntityManager.Customer"%>
@@ -7,6 +8,7 @@
 <%
     Staff staff = (Staff) (session.getAttribute("staff"));
     SalesConfirmationOrder sco = (SalesConfirmationOrder) (session.getAttribute("sco"));
+    List<DeliveryOrder> deliveryOrders = (List<DeliveryOrder>) (session.getAttribute("listOfDO"));
     if (session.isNew()) {
         response.sendRedirect("../index.jsp?errMsg=Invalid Request. Please login.");
     } else if (staff == null) {
@@ -73,23 +75,21 @@
                                     <tbody>
                                         <%
                                             if (sco != null) {
-                                                for (int i = 0; i < sco.getDeliveryOrders().size(); i++) {
-                                                    if (!sco.getDeliveryOrders().get(i).getIsDeleted()) {
+                                                for (int i = 0; i < deliveryOrders.size(); i++) {
                                         %>
                                         <tr>        
-                                            <td><%=sco.getDeliveryOrders().get(i).getDeliveryOrderNumber()%></td>
+                                            <td><%=deliveryOrders.get(i).getDeliveryOrderNumber()%></td>
                                             <td>
                                                 <%
                                                     SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("d MMM yyyy");
-                                                    String date = DATE_FORMAT.format(sco.getDeliveryOrders().get(i).getDeliveryOrderDate());
+                                                    String date = DATE_FORMAT.format(deliveryOrders.get(i).getDeliveryOrderDate());
                                                     out.print(date);
                                                 %>
                                             </td>
-                                            <td><%=sco.getDeliveryOrders().get(i).getStatus()%></td>
-                                            <td><button type="button" class="btn btn-default btn-block" onclick="javascript:viewDO('<%=sco.getDeliveryOrders().get(i).getId()%>')">View</button></td>
+                                            <td><%=deliveryOrders.get(i).getStatus()%></td>
+                                            <td><button type="button" class="btn btn-default btn-block" onclick="javascript:viewDO('<%=deliveryOrders.get(i).getId()%>')">View</button></td>
                                         </tr>
                                         <%
-                                                    }
                                                 }
                                             }
                                         %>

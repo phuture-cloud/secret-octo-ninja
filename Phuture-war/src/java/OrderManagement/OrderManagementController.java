@@ -297,6 +297,7 @@ public class OrderManagementController extends HttpServlet {
                                 } else if (source != null && source.equals("listAllDO")) {
                                     nextPage = "OrderManagement/scoManagement_DO.jsp";
                                 } else if (source != null && source.equals("listAllPO")) {
+                                    //remove
                                     nextPage = "OrderManagement/scoManagement_PO.jsp";
                                 } else {
                                     nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id;
