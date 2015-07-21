@@ -171,7 +171,7 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
         try {
-            Query q = em.createQuery("SELECT e FROM PaymentRecord e WHERE e.invoice=:invoiceID AND e.isDeleted=false");
+            Query q = em.createQuery("SELECT e FROM PaymentRecord e WHERE e.invoice.id=:invoiceID AND e.isDeleted=false");
             q.setParameter("invoiceID", invoiceID);
             return q.getResultList();
         } catch (Exception ex) {
