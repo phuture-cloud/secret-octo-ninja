@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -44,17 +45,18 @@ public class PaymentManagementController extends HttpServlet {
             paymentDate = "";
         }
 
+        DateFormat sourceFormat = new SimpleDateFormat("dd/MM/yyyy");
+        Date paymentDateDate = null;
         session = request.getSession();
         ReturnHelper returnHelper = null;
-        PaymentRecord paymentRecord = null;
+        List<PaymentRecord> paymentRecords;
         Invoice invoice = (Invoice) (session.getAttribute("invoice"));
 
         try {
             if (checkLogin()) {
                 switch (target) {
                     case "AddPayment":
-                        DateFormat sourceFormat = new SimpleDateFormat("dd/MM/yyyy");
-                        Date paymentDateDate = sourceFormat.parse(paymentDate);
+                        paymentDateDate = sourceFormat.parse(paymentDate);
 
                         returnHelper = paymentManagementBean.addPayment(invoice.getId(), Double.parseDouble(amount), paymentDateDate, paymentMethod, paymentReferenceNumber, notes);
                         invoice = invoiceManagementBean.getInvoice(invoice.getId());
@@ -68,7 +70,46 @@ public class PaymentManagementController extends HttpServlet {
                         }
                         break;
 
-                    case "listAllPayment":
+                    case "ListPaymentTiedToInvoice":
+                        paymentRecords = paymentManagementBean.listPaymentByInvoice(invoice.getId());
+                        if (paymentRecords == null) {
+                            nextPage = "error500.html";
+                        } else {
+                            session.setAttribute("paymentRecords", paymentRecords);
+                        }
+                        nextPage = "OrderManagement/scoManagement_payment.jsp";
+                        break;
+
+                    case "DeletePaymentRecord":
+                        returnHelper = paymentManagementBean.deletePayment(Long.parseLong(id));
+                        if (returnHelper.getResult()) {
+                            paymentRecords = paymentManagementBean.listPaymentByInvoice(invoice.getId());
+                            if (paymentRecords == null) {
+                                nextPage = "error500.html";
+                            } else {
+                                session.setAttribute("paymentRecords", paymentRecords);
+                            }
+                            nextPage = "OrderManagement/scoManagement_payment.jsp?goodMsg=" + returnHelper.getDescription();
+                        } else {
+                            nextPage = "OrderManagement/scoManagement_payment.jsp?errMsg=" + returnHelper.getDescription();
+                        }
+                        break;
+
+                    case "UpdatePaymentRecord":
+                        paymentDateDate = sourceFormat.parse(paymentDate);
+
+                        returnHelper = paymentManagementBean.updatePayment(Long.parseLong(id), Double.parseDouble(amount), paymentDateDate, paymentMethod, paymentReferenceNumber, notes);
+                        if (returnHelper.getResult()) {
+                            paymentRecords = paymentManagementBean.listPaymentByInvoice(invoice.getId());
+                            if (paymentRecords == null) {
+                                nextPage = "error500.html";
+                            } else {
+                                session.setAttribute("paymentRecords", paymentRecords);
+                            }
+                            nextPage = "OrderManagement/scoManagement_payment.jsp?goodMsg=" + returnHelper.getDescription();
+                        } else {
+                            nextPage = "OrderManagement/scoManagement_payment.jsp?errMsg=" + returnHelper.getDescription();
+                        }
 
                         break;
 

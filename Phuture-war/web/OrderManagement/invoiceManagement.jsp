@@ -137,7 +137,7 @@
 
                 function listAllPayment() {
                     window.onbeforeunload = null;
-                    window.location.href = "../PaymentManagementController?target=listAllPayment";
+                    window.location.href = "../PaymentManagementController?target=ListPaymentTiedToInvoice";
                 }
 
                 window.onbeforeunload = function () {
@@ -609,6 +609,18 @@
                                                 }
                                             %> 
                                         </div>
+                                        &nbsp;
+                                        <div class="btn-group">
+                                            <%
+                                                if (invoice != null) {
+                                                    if (invoice.getItems().size() > 0) {
+                                                        if (invoice.getNumOfPaymentRecords() > 0) {
+                                                            out.print("<button type='button' class='btn btn-default' onclick='javascript:listAllPayment(" + invoice.getId() + ")'>Payments <span class='badge' style='background-color:#0088CC'>" + invoice.getNumOfPaymentRecords() + "</span></button>");
+                                                        }
+                                                    }
+                                                }
+                                            %>         
+                                        </div>
                                     </div>
 
                                     <div class="col-sm-6 text-right mt-md mb-md">
@@ -628,6 +640,7 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
                             </div>
                         </section>
 
