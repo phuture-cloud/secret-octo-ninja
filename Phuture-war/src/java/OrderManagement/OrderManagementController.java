@@ -123,7 +123,7 @@ public class OrderManagementController extends HttpServlet {
                             } else {
                                 session.setAttribute("customers", customers);
                                 if (source != null && source.equals("addressBook")) {
-                                    nextPage = "OrderManagement/updateContact.jsp?id=" + id;
+                                    nextPage = "OrderManagement/updateContact.jsp?previousPage=sco&id=" + id;
                                 } else {
                                     nextPage = "OrderManagement/scoManagement_add.jsp";
                                 }
@@ -139,7 +139,7 @@ public class OrderManagementController extends HttpServlet {
                             } else {
                                 session.setAttribute("contacts", contacts);
                                 if (source != null && source.equals("addressBook")) {
-                                    nextPage = "OrderManagement/updateContact.jsp?id=" + id + "&selectedCustomerID=" + customerID;
+                                    nextPage = "OrderManagement/updateContact.jsp?previousPage=sco&id=" + id + "&selectedCustomerID=" + customerID;
                                 } else {
                                     nextPage = "OrderManagement/scoManagement_add.jsp?selectedCustomerID=" + customerID + "&scoNumber=" + scoNumber + "&terms=" + terms + "&scoDate=" + scoDate + "&estimatedDeliveryDate=" + estimatedDeliveryDate + "&poNumber=" + poNumber;
                                 }

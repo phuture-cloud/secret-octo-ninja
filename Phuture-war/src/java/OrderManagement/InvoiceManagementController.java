@@ -256,7 +256,7 @@ public class InvoiceManagementController extends HttpServlet {
                             nextPage = "error500.html";
                         } else {
                             session.setAttribute("customers", customers);
-                            nextPage = "OrderManagement/updateContact.jsp";
+                            nextPage = "OrderManagement/updateContact.jsp?previousPage=invoice";
                         }
                         break;
 
@@ -268,7 +268,7 @@ public class InvoiceManagementController extends HttpServlet {
                         } else {
                             session.setAttribute("contacts", contacts);
                             if (source != null && source.equals("addressBook")) {
-                                nextPage = "OrderManagement/updateContact.jsp?selectedCustomerID=" + customerID;
+                                nextPage = "OrderManagement/updateContact.jsp?previousPage=invoice&selectedCustomerID=" + customerID;
                             }
                         }
                         break;
