@@ -12,6 +12,7 @@
     } else if (staff == null) {
         response.sendRedirect("../index.jsp?errMsg=Session Expired.");
     } else {
+        String previousPage = request.getParameter("previousPage");
         String scoID = request.getParameter("id");
         DeliveryOrder deliveryOrder = (DeliveryOrder) (session.getAttribute("do"));
         Invoice invoice = (Invoice) (session.getAttribute("invoice"));
@@ -49,41 +50,35 @@
                 window.onbeforeunload = null;
                 var customerID = document.getElementById("customerList").value;
                 if (customerID !== "") {
+            <%if (previousPage.equals("delivery")) {%>
                     window.location.href = "../DeliveryOrderManagementController?target=ListCustomerContacts&customerID=" + customerID + "&source=addressBook";
+            <%} else if (previousPage.equals("invoice")) {%>
+                    window.location.href = "../InvoiceManagementController?target=ListCustomerContacts&customerID=" + customerID + "&source=addressBook";
+            <%}%>
                 }
             }
 
-            function save1() {
+            function save() {
                 window.onbeforeunload = null;
+            <% if (previousPage.equals("sco")) {%>
                 document.UpdateContactForm.action = "../OrderManagementController";
-                document.UpdateContactForm.submit();
-            }
-
-            function save2() {
-                window.onbeforeunload = null;
+            <%} else if (previousPage.equals("delivery")) {%>
                 document.UpdateContactForm.action = "../DeliveryOrderManagementController";
-                document.UpdateContactForm.submit();
-            }
-
-            function save3() {
-                window.onbeforeunload = null;
+            <%} else if (previousPage.equals("invoice")) {%>
                 document.UpdateContactForm.action = "../InvoiceManagementController";
+            <%}%>
                 document.UpdateContactForm.submit();
             }
 
-            function back1(id) {
+            function back() {
                 window.onbeforeunload = null;
-                window.location.href = "scoManagement_add.jsp?id=" + id;
-            }
-
-            function back2() {
-                window.onbeforeunload = null;
+            <% if (previousPage.equals("sco")) {%>
+                window.location.href = "scoManagement_add.jsp?id=" + <%=scoID%>;
+            <%} else if (previousPage.equals("delivery")) {%>
                 window.location.href = "doManagement.jsp";
-            }
-
-            function back3() {
-                window.onbeforeunload = null;
+            <%} else if (previousPage.equals("invoice")) {%>
                 window.location.href = "invoiceManagement.jsp";
+            <%}%>
             }
         </script>
         <section class="body">
@@ -144,7 +139,7 @@
                                         <div class="form-group">
                                             <label class="col-md-3 control-label">Contact Person</label>
                                             <div class="col-md-6">
-                                                <select id="customerContactid" name="contactID" data-plugin-selectTwo class="form-control populate"  onchange="javascript:selectCustomerContact()" required>
+                                                <select id="customerContactid" name="contactID" data-plugin-selectTwo class="form-control populate" required>
                                                     <option value="">Select a contact</option>
                                                     <%
                                                         if (contacts != null && contacts.size() > 0) {
@@ -162,29 +157,21 @@
                                     <footer class="panel-footer">
                                         <div class="row">
                                             <div class="col-sm-9 col-sm-offset-3">
-                                                <%if (scoID != null) {%>
-                                                <button type="button" class="btn btn-success" type="submit" onclick="javascript:save1();">Save</button>
-                                                <button type="button" class="btn btn-default" onclick="javascript:back1(<%=scoID%>);">Cancel</button>
-                                                <%} else if (invoice != null) {%>
-                                                <button type="button" class="btn btn-success" type="submit" onclick="javascript:save3();">Save</button>
-                                                <button type="button" class="btn btn-default" onclick="javascript:back3();">Cancel</button>
-                                                <%} else if (deliveryOrder != null) {%>
-                                                <button type="button" class="btn btn-success" type="submit" onclick="javascript:save2();">Save</button>
-                                                <button type="button" class="btn btn-default" onclick="javascript:back2();">Cancel</button>
-                                                <%}%>
+                                                <button type="button" class="btn btn-success" type="submit" onclick="javascript:save();">Save</button>
+                                                <button type="button" class="btn btn-default" onclick="javascript:back();">Cancel</button>
                                             </div>
                                         </div>
                                     </footer>
                                 </section>
 
-                                <%if (scoID != null) {%>
+                                <%if (previousPage.equals("sco")) {%>
                                 <input type="hidden" name="id" id="scoID" value="<%=scoID%>">   
                                 <input type="hidden" name="target" value="UpdateSCOContact">   
                                 <input type="hidden" name="source" value="UpdateContact">   
-                                <%} else if (invoice != null) {%>
+                                <%} else if (previousPage.equals("invoice")) {%>
                                 <input type="hidden" name="target" value="UpdateInvoiceContact">   
                                 <input type="hidden" name="source" value="UpdateContact">   
-                                <%} else if (deliveryOrder != null) {%>
+                                <%} else if (previousPage.equals("delivery")) {%>
                                 <input type="hidden" name="target" value="UpdateDOContact">   
                                 <input type="hidden" name="source" value="UpdateContact">   
                                 <%}%>

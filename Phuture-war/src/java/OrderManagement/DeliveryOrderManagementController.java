@@ -236,7 +236,7 @@ public class DeliveryOrderManagementController extends HttpServlet {
                             nextPage = "error500.html";
                         } else {
                             session.setAttribute("customers", customers);
-                            nextPage = "OrderManagement/updateContact.jsp";
+                            nextPage = "OrderManagement/updateContact.jsp?previousPage=delivery";
                         }
                         break;
 
@@ -248,7 +248,7 @@ public class DeliveryOrderManagementController extends HttpServlet {
                         } else {
                             session.setAttribute("contacts", contacts);
                             if (source != null && source.equals("addressBook")) {
-                                nextPage = "OrderManagement/updateContact.jsp?selectedCustomerID=" + customerID;
+                                nextPage = "OrderManagement/updateContact.jsp?previousPage=delivery&selectedCustomerID=" + customerID;
                             }
                         }
                         break;
