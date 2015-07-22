@@ -7,6 +7,7 @@ import EntityManager.Invoice;
 import EntityManager.ReturnHelper;
 import EntityManager.SalesConfirmationOrder;
 import EntityManager.Staff;
+import PaymentManagement.PaymentManagementBeanLocal;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -28,6 +29,9 @@ public class InvoiceManagementController extends HttpServlet {
 
     @EJB
     private CustomerManagementBeanLocal customerManagementBean;
+
+    @EJB
+    private PaymentManagementBeanLocal paymentManagementBeanLocal;
 
     String nextPage = "", goodMsg = "", errMsg = "";
     HttpSession session;
@@ -74,6 +78,7 @@ public class InvoiceManagementController extends HttpServlet {
                         id = request.getParameter("id");
                         if (id != null) {
                             session.setAttribute("invoice", invoiceManagementBean.getInvoice(Long.parseLong(id)));
+                            session.setAttribute("invoicePayments", paymentManagementBeanLocal.listPaymentByInvoice(Long.parseLong(id)));
                             nextPage = "OrderManagement/invoiceManagement.jsp";
                         }
                         break;

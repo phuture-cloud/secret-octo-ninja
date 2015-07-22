@@ -1,3 +1,4 @@
+<%@page import="EntityManager.PaymentRecord"%>
 <%@page import="EntityManager.DeliveryOrder"%>
 <%@page import="EntityManager.SalesConfirmationOrder"%>
 <%@page import="EntityManager.Invoice"%>
@@ -10,6 +11,7 @@
 <%
     Staff staff = (Staff) (session.getAttribute("staff"));
     Invoice invoice = (Invoice) (session.getAttribute("invoice"));
+    List<PaymentRecord> invoicePayments = (List<PaymentRecord>) (session.getAttribute("invoicePayments"));
     if (session.isNew()) {
         response.sendRedirect("../index.jsp?errMsg=Invalid Request. Please login.");
     } else if (staff == null) {
@@ -612,11 +614,9 @@
                                         &nbsp;
                                         <div class="btn-group">
                                             <%
-                                                if (invoice != null) {
-                                                    if (invoice.getItems().size() > 0) {
-                                                        if (invoice.getNumOfPaymentRecords() > 0) {
-                                                            out.print("<button type='button' class='btn btn-default' onclick='javascript:listAllPayment(" + invoice.getId() + ")'>Payments <span class='badge' style='background-color:#0088CC'>" + invoice.getNumOfPaymentRecords() + "</span></button>");
-                                                        }
+                                                if (invoicePayments != null) {
+                                                    if (invoicePayments.size() > 0) {
+                                                        out.print("<button type='button' class='btn btn-default' onclick='javascript:listAllPayment(" + invoice.getId() + ")'>Payments <span class='badge' style='background-color:#0088CC'>" + invoice.getNumOfPaymentRecords() + "</span></button>");
                                                     }
                                                 }
                                             %>         
