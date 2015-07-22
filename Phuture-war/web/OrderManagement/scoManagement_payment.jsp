@@ -102,8 +102,8 @@
                                         <td><%=paymentRecord.getPaymentMethod()%></td>
                                         <td><%=paymentRecord.getPaymentReferenceNumber()%></td>
                                         <td>
-                                            <a class="modal-with-move-anim btn btn-default btn-block" href="#modalNotes">View</a>
-                                            <div id="modalNotes" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+                                            <a class="modal-with-move-anim btn btn-default btn-block" href="#modalNotes<%=paymentRecord.getId()%>">View</a>
+                                            <div id="modalNotes<%=paymentRecord.getId()%>" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
                                                 <section class="panel">
                                                     <header class="panel-heading">
                                                         <h2 class="panel-title">Notes</h2>
@@ -127,8 +127,8 @@
                                         </td>
                                         <td>
                                             <div class="btn-group" role="group" aria-label="...">
-                                                <button class="btn btn-default modal-with-form" href="#modalEditForm">Edit Payment Record</button>
-                                                <div id="modalEditForm" class="modal-block modal-block-primary mfp-hide">
+                                                <button class="btn btn-default modal-with-form" href="#modalEditForm<%=paymentRecord.getId()%>">Edit Payment Record</button>
+                                                <div id="modalEditForm<%=paymentRecord.getId()%>" class="modal-block modal-block-primary mfp-hide">
                                                     <section class="panel">
                                                         <form name="editContactForm" action="../PaymentManagementController" class="form-horizontal mb-lg">
                                                             <header class="panel-heading">
