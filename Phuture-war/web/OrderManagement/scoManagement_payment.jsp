@@ -197,8 +197,8 @@
                                                     </section>
                                                 </div>
 
-                                                <button class="modal-with-move-anim btn btn-default" href="#modalRemove">Remove</button>
-                                                <div id="modalRemove" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+                                                <button class="modal-with-move-anim btn btn-default" href="#modalRemove<%=paymentRecord.getId()%>">Remove</button>
+                                                <div id="modalRemove<%=paymentRecord.getId()%>" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
                                                     <section class="panel">
                                                         <header class="panel-heading">
                                                             <h2 class="panel-title">Are you sure?</h2>
