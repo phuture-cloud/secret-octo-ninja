@@ -547,17 +547,6 @@
                                                 }
                                             %> 
                                         </div>
-                                        &nbsp;
-                                        <div class="btn-group">
-                                            <%
-                                                if (deliveryOrder != null) {
-                                                    SalesConfirmationOrder sco = deliveryOrder.getSalesConfirmationOrder();
-                                                    if (sco.getNumOfInvoices() > 0) {
-                                                        out.print("<button type='button' class='btn btn-default' onclick='javascript:listAllInvoices(" + sco.getId() + ")'>Invoices <span class='badge' style='background-color:#0088CC'>" + sco.getNumOfInvoices() + "</span></button>");
-                                                    }
-                                                }
-                                            %>         
-                                        </div>
                                     </div>
 
                                     <div class="col-sm-6 text-right mt-md mb-md">
