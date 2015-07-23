@@ -56,7 +56,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="StatementOfAccountManagementController?target=ListAllSOA">
                             <i class="fa fa-book" aria-hidden="true"></i>
                             <span>Statement of Account</span>
                         </a>

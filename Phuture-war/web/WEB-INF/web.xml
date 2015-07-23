@@ -28,6 +28,10 @@
         <servlet-name>PaymentManagementController</servlet-name>
         <servlet-class>OrderManagement.PaymentManagementController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>StatementOfAccountManagementController</servlet-name>
+        <servlet-class>OrderManagement.StatementOfAccountManagementController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>AccountManagementController</servlet-name>
         <url-pattern>/AccountManagementController</url-pattern>
@@ -55,6 +59,10 @@
     <servlet-mapping>
         <servlet-name>PaymentManagementController</servlet-name>
         <url-pattern>/PaymentManagementController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>StatementOfAccountManagementController</servlet-name>
+        <url-pattern>/StatementOfAccountManagementController</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

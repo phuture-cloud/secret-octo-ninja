@@ -32,7 +32,6 @@ public class PurchaseOrderManagementController extends HttpServlet {
         String target = request.getParameter("target");
         String source = request.getParameter("source");
 
-        String remarks = request.getParameter("remarks");
         String notes = request.getParameter("notes");
         String itemName = request.getParameter("itemName");
         String itemDescription = request.getParameter("itemDescription");

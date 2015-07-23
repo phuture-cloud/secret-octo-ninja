@@ -14,8 +14,6 @@
     } else {
         String previousPage = request.getParameter("previousPage");
         String scoID = request.getParameter("id");
-        DeliveryOrder deliveryOrder = (DeliveryOrder) (session.getAttribute("do"));
-        Invoice invoice = (Invoice) (session.getAttribute("invoice"));
         List<Contact> contacts = (List<Contact>) (session.getAttribute("contacts"));
         List<Customer> customers = (List<Customer>) session.getAttribute("customers");
         String selectedCustomerID = request.getParameter("selectedCustomerID");
