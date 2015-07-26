@@ -163,6 +163,7 @@
                                                             %>
                                                         </span>
                                                     </p>
+                                                    <button class="btn btn-default" onclick="javascript:viewOverdueInvoice(<%=statementOfAccount.getId()%>);">View Overdue Invoices</button>
                                                 </div>
                                             </div>
                                         </div>
