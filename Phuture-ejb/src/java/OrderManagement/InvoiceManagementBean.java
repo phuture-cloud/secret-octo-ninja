@@ -72,7 +72,7 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             List<Invoice> invoices = sco.getInvoices();
             invoices.add(invoice);
             sco.setInvoices(invoices);
-            sco.setNumOfInvoices(sco.getNumOfInvoices()+ 1);
+            sco.setNumOfInvoices(sco.getNumOfInvoices() + 1);
             em.merge(sco);
             result.setID(invoice.getId());
             result.setResult(true);
@@ -114,24 +114,25 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             }
             //Update fields 
             invoice.setInvoiceNumber(newInvoiceNumber);
-            invoice.setDateCreated(invoiceCreated);
-            invoice.setDateSent(invoiceSent);
+            if (invoiceCreated != null) {
+                invoice.setDateCreated(invoiceCreated);
+            }
             invoice.setTerms(terms);
             invoice.setEstimatedDeliveryDate(estimatedDeliveryDate);
             invoice.setCustomerPurchaseOrderNumber(customerPurchaseOrderNumber);
             if (invoiceSent != null) {
                 invoice.setStatusAsSent();
-            }
-            invoice.setDatePaid(invoicePaid);
-            if (invoicePaid != null) {
-                invoice.setStatusAsPaid();
+                invoice.setDateSent(invoiceSent);
                 //Update due date based on terms
                 Calendar c = new GregorianCalendar();
-                c.add(Calendar.DATE, terms);
+                c.setTime(invoiceSent);
+                c.add(Calendar.DAY_OF_YEAR, terms);
                 Date dateDue = c.getTime();
                 invoice.setDateDue(dateDue);
-            } else {
-                invoice.setDateDue(null);
+            }
+            if (invoicePaid != null) {
+                invoice.setStatusAsPaid();
+                invoice.setDatePaid(invoicePaid);
             }
             em.merge(invoice);
             result.setID(invoice.getId());
