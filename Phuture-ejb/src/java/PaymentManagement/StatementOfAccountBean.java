@@ -219,7 +219,7 @@ public class StatementOfAccountBean implements StatementOfAccountBeanLocal {
                 //only if payment is less then amount invoiced
                 if (invoice.getTotalPrice() > totalAmountPaidForThisInvoice) {
                     if (invoice.getDateDue() != null && invoice.getDateDue().before(todayDate)) {
-                        Long dayDifference = getDifferenceDays(todayDate, invoice.getDateDue());
+                        Long dayDifference = getDifferenceDays(invoice.getDateDue(), todayDate);
                         Double amountOwedForThisInvoice = invoice.getTotalPrice() - totalAmountPaidForThisInvoice;
                         if (dayDifference > 91) {
                             amountOverDueOver91Days = amountOverDueOver91Days + amountOwedForThisInvoice;
