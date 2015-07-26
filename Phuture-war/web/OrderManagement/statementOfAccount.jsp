@@ -90,7 +90,11 @@
                                                 <%=formatter.format(statementOfAccounts.get(i).getTotalAmountPaid())%>
                                             </td>
                                             <td>
-                                                <button class="btn btn-default btn-block" onclick="javascript:viewSCO(<%=statementOfAccounts.get(i).getId()%>)">View</button>
+                                                <div class="btn-group" role="group" aria-label="...">
+                                                    <button class="btn btn-default btn-block" onclick="javascript:viewSCO(<%=statementOfAccounts.get(i).getId()%>);">View Statement of Account</button>
+                                                    <button class="btn btn-default btn-block" onclick="javascript:viewAllInvoice(<%=statementOfAccounts.get(i).getId()%>);">View All Invoices</button>
+                                                    <button class="btn btn-default btn-block" onclick="javascript:viewOverdueInvoice(<%=statementOfAccounts.get(i).getId()%>);">View Overdue Invoices</button>
+                                                </div>
                                             </td>
                                         </tr>
                                         <%
