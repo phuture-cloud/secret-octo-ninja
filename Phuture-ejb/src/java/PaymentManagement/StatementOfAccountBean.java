@@ -96,7 +96,7 @@ public class StatementOfAccountBean implements StatementOfAccountBeanLocal {
             if (someFailed) {
                 result.setDescription("Failed to generate statements for some customers due to inconsistent records.");
             } else {
-                result.setDescription("All customer's statements refreshed");
+                result.setDescription("All customers statements refreshed");
                 result.setResult(true);
             }
         } catch (Exception ex) {
@@ -144,6 +144,8 @@ public class StatementOfAccountBean implements StatementOfAccountBeanLocal {
             soa = new StatementOfAccount();
             soa.setCustomer(customer);
             em.persist(soa);
+            customer.setStatementOfAccount(soa);
+            em.merge(customer);
 
             //Create the SOALineItem list and at the same time calculate the total amounts
             soalis = new ArrayList();
@@ -158,7 +160,8 @@ public class StatementOfAccountBean implements StatementOfAccountBeanLocal {
             Double amountOverDueOver91Days = 0.0;
 
             //Loop thru the SCO to calculate total amount ordered
-            q = em.createQuery("SELECT e FROM SalesConfirmationOrder e where e.customerLink.id=:customerID");
+            //Only loop if SCO not writen off
+            q = em.createQuery("SELECT e FROM SalesConfirmationOrder e WHERE e.status!='Write-Off' AND e.customerLink.id=:customerID");
             q.setParameter("customerID", customerID);
             List<SalesConfirmationOrder> scos = q.getResultList();
             for (SalesConfirmationOrder sco : scos) {
@@ -166,7 +169,8 @@ public class StatementOfAccountBean implements StatementOfAccountBeanLocal {
             }
 
             //Loop thru the customer invoice and create it as an SOALineItem
-            q = em.createQuery("SELECT e FROM Invoice e where e.salesConfirmationOrder.customerLink.id=:customerID");
+            //Only loop if the parent SCO is not written off
+            q = em.createQuery("SELECT e FROM Invoice e WHERE e.salesConfirmationOrder.status!='Write-Off' AND e.salesConfirmationOrder.customerLink.id=:customerID");
             q.setParameter("customerID", customerID);
             List<Invoice> invoices = q.getResultList();
             soalis = new ArrayList();
@@ -213,7 +217,6 @@ public class StatementOfAccountBean implements StatementOfAccountBeanLocal {
                 }
                 //Calculate amount overdue for each invoice
                 //only if payment is less then amount invoiced
-                //TODO only mark as overdue if invoice is not writen off
                 if (invoice.getTotalPrice() > totalAmountPaidForThisInvoice) {
                     if (invoice.getDateDue() != null && invoice.getDateDue().before(todayDate)) {
                         Long dayDifference = getDifferenceDays(todayDate, invoice.getDateDue());
