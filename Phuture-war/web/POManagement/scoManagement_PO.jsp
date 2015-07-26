@@ -1,5 +1,5 @@
-<%@page import="EntityManager.Invoice"%>
-<%@page import="EntityManager.DeliveryOrder"%>
+<%@page import="EntityManager.StatementOfAccount"%>
+<%@page import="EntityManager.PurchaseOrder"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="EntityManager.SalesConfirmationOrder"%>
 <%@page import="EntityManager.Customer"%>
@@ -8,14 +8,24 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
     Staff staff = (Staff) (session.getAttribute("staff"));
-    SalesConfirmationOrder sco = (SalesConfirmationOrder) (session.getAttribute("sco"));
-    List<Invoice> invoices = (List<Invoice>) (session.getAttribute("listOfInvoice"));
+
+    String previousMgtPage = (String) session.getAttribute("previousManagementPage");
+    if (previousMgtPage == null) {
+        previousMgtPage = "";
+    }
+    SalesConfirmationOrder sco = null;
+    StatementOfAccount soa = null;
+    if (previousMgtPage.equals("sco")) {
+        sco = (SalesConfirmationOrder) (session.getAttribute("sco"));
+    } else if (previousMgtPage.equals("soa")) {
+        soa = (StatementOfAccount) (session.getAttribute("soa"));
+    }
+
+    List<PurchaseOrder> purchaseOrders = (List<PurchaseOrder>) (session.getAttribute("listOfPO"));
     if (session.isNew()) {
         response.sendRedirect("../index.jsp?errMsg=Invalid Request. Please login.");
     } else if (staff == null) {
         response.sendRedirect("../index.jsp?errMsg=Session Expired.");
-    } else if (sco == null) {
-        response.sendRedirect("scoManagement.jsp?errMsg=An Error has occured.");
     } else {
 %>
 <!doctype html>
@@ -26,12 +36,16 @@
     <body onload="alertFunc()">
         <jsp:include page="../displayNotification.jsp" />
         <script>
-            function viewInvoice(id) {
-                window.location.href = "../InvoiceManagementController?target=RetrieveInvoice&id=" + id;
+            function viewPO(id) {
+                window.location.href = "../PurchaseOrderManagementController?target=RetrievePO&id=" + id;
             }
 
-            function back(id) {
-                window.location.href = "../OrderManagementController?target=RetrieveSCO&id=" + id;
+            function back() {
+            <% if (previousMgtPage.equals("sco")) {%>
+                window.location.href = "../OrderManagementController?target=RetrieveSCO&id=<%=sco.getId()%>";
+            <% } else if (previousMgtPage.equals("soa")) {%>
+                window.location.href = "todo";
+            <%}%>
             }
         </script>
 
@@ -42,7 +56,7 @@
                 <jsp:include page="../jspIncludePages/sidebar.jsp" />
                 <section role="main" class="content-body">
                     <header class="page-header">
-                        <h2>SCO #<%=sco.getSalesConfirmationOrderNumber()%> - Invoices</h2>
+                        <h2>Purchase Orders</h2>
                         <div class="right-wrapper pull-right">
                             <ol class="breadcrumbs">
                                 <li>
@@ -50,9 +64,15 @@
                                         <i class="fa fa-home"></i>
                                     </a>
                                 </li>
-                                <li><span><a href= "../OrderManagementController?target=ListAllSCO">SCO Management</a></span></li>
+                                <% if (previousMgtPage.equals("sco")) { %>
+                                <li><span><a href= "../OrderManagementController?target=ListAllSCO">PO Management</a></span></li>
                                 <li><span><a href= "../OrderManagementController?target=RetrieveSCO&id=<%=sco.getId()%>"><%=sco.getSalesConfirmationOrderNumber()%></a></span></li>
-                                <li><span>Invoices &nbsp;&nbsp</span></li>
+                                            <%
+                                            } else if (previousMgtPage.equals("soa")) {
+
+                                            %>
+                                            <%}%>
+                                <li><span>Purchase Orders &nbsp;&nbsp</span></li>
                             </ol>
                         </div>
                     </header>
@@ -61,45 +81,55 @@
 
                     <section class="panel">
                         <header class="panel-heading">
-                            <h2 class="panel-title">SCO #<%=sco.getSalesConfirmationOrderNumber()%> - Invoices</h2>
+                            <%
+                                if (previousMgtPage.equals("sco")) {
+                            %>
+                            <h2 class="panel-title">SCO No. <%=sco.getSalesConfirmationOrderNumber()%> - Purchase Orders</h2>
+                            <%} else {%>
+                            <h2 class="panel-title">Purchase Orders</h2>
+                            <%}%>
                         </header>
                         <div class="panel-body">
-                            <form name="scoManagement_invoice">
+                            <form name="scoManagement_PO">
                                 <table class="table table-bordered table-striped mb-none" id="datatable-default">
                                     <thead>
                                         <tr>
-                                            <th>Invoice #</th>
-                                            <th>Invoice Date</th>
-                                            <th>Invoice Status</th>
+                                            <th>Purchase Order No.</th>
+                                            <th>Purchase Date</th>
+                                            <th>Purchase Status</th>
                                             <th style="width: 400px;">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <%
-                                            if (sco != null) {
-                                                for (int i = 0; i < invoices.size(); i++) {
+                                            if (purchaseOrders != null) {
+                                                for (int i = 0; i < purchaseOrders.size(); i++) {
                                         %>
                                         <tr>        
-                                            <td><%=invoices.get(i).getInvoiceNumber()%></td>
+                                            <td><%=purchaseOrders.get(i).getPurchaseOrderNumber()%></td>
                                             <td>
                                                 <%
                                                     SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("d MMM yyyy hh:mm:ss");
-                                                    String date = DATE_FORMAT.format(invoices.get(i).getDateCreated());
+                                                    String date = DATE_FORMAT.format(purchaseOrders.get(i).getPurchaseOrderDate());
                                                     out.print(date);
                                                 %>
                                             </td>
-                                            <td><%=invoices.get(i).getStatus()%></td>
-                                            <td><button type="button" class="btn btn-default btn-block" onclick="javascript:viewInvoice('<%=invoices.get(i).getId()%>')">View</button></td>
+                                            <td><%=purchaseOrders.get(i).getStatus()%></td>
+                                            <td><button type="button" class="btn btn-default btn-block" onclick="javascript:viewPO('<%=purchaseOrders.get(i).getId()%>')">View</button></td>
                                         </tr>
                                         <%
+
                                                 }
                                             }
                                         %>
 
                                     </tbody>
                                 </table>
+
                                 <br>
-                                <button type="button" class="btn btn-default" onclick="javascript:back(<%=sco.getId()%>)">Back</button>  
+                                <%if (!previousMgtPage.equals("purchaseOrders")) {%>
+                                <button type="button" class="btn btn-default" onclick="javascript:back()">Back</button>   
+                                <%}%>
                             </form>
                         </div>
 

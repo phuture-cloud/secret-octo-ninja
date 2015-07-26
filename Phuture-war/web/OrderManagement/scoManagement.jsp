@@ -6,6 +6,11 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
     List<SalesConfirmationOrder> salesConfirmationOrders = (List<SalesConfirmationOrder>) (session.getAttribute("salesConfirmationOrders"));
+    String previousMgtPage = (String) session.getAttribute("previousManagementPage");
+    if (previousMgtPage == null) {
+        previousMgtPage = "";
+    }
+
     Staff staff = (Staff) (session.getAttribute("staff"));
     if (session.isNew()) {
         response.sendRedirect("../index.jsp?errMsg=Invalid Request. Please login.");
@@ -47,7 +52,14 @@
                                         <i class="fa fa-home"></i>
                                     </a>
                                 </li>
+                                <% if (previousMgtPage.equals("sco")) { %>
                                 <li><span>SCO Management &nbsp;&nbsp</span></li>
+                                    <%
+                                    } else if (previousMgtPage.equals("soa")) {
+                                    %>
+
+                                <% }%>
+
                             </ol>
                         </div>
                     </header>

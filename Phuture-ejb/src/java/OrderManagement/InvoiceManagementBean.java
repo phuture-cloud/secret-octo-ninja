@@ -129,10 +129,21 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
                 c.add(Calendar.DAY_OF_YEAR, terms);
                 Date dateDue = c.getTime();
                 invoice.setDateDue(dateDue);
+            } else {
+                invoice.setStatusAsCreated();
+                invoice.setDateSent(null);
+                invoice.setDateDue(null);
             }
             if (invoicePaid != null) {
                 invoice.setStatusAsPaid();
                 invoice.setDatePaid(invoicePaid);
+            } else {
+                invoice.setDatePaid(null);
+                if (invoice.getDateSent()!=null) {
+                    invoice.setStatusAsSent();
+                } else {
+                    invoice.setStatusAsCreated();
+                }
             }
             em.merge(invoice);
             result.setID(invoice.getId());

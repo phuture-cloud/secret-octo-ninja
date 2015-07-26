@@ -1,3 +1,5 @@
+<%@page import="java.util.ArrayList"%>
+<%@page import="EntityManager.PaymentRecord"%>
 <%@page import="EntityManager.SOALineItem"%>
 <%@page import="EntityManager.StatementOfAccount"%>
 <%@page import="EntityManager.SalesConfirmationOrder"%>
@@ -11,6 +13,10 @@
 <%
     Staff staff = (Staff) (session.getAttribute("staff"));
     StatementOfAccount statementOfAccount = (StatementOfAccount) (session.getAttribute("statementOfAccount"));
+    List<PaymentRecord> paymentRecords = (List<PaymentRecord>) (session.getAttribute("statementOfAccountPayments"));
+    if (paymentRecords == null) {
+        paymentRecords = new ArrayList();
+    }
     if (session.isNew()) {
         response.sendRedirect("../index.jsp?errMsg=Invalid Request. Please login.");
     } else if (staff == null) {
@@ -18,6 +24,7 @@
     } else if (statementOfAccount == null) {
         response.sendRedirect("../PaymentManagement/statementOfAccounts.jsp?errMsg=An Error has occured.");
     } else {
+        NumberFormat formatter = NumberFormat.getCurrencyInstance();
 %>
 <!doctype html>
 <html class="fixed">
@@ -28,122 +35,20 @@
         <jsp:include page="../displayNotification.jsp" />
         <section class="body">
             <script>
-                $(document).ready(function () {
-                    $('#input_itemQty, #input_itemUnitPrice').change(function () {
-                        var itemUnitPrice = parseFloat($('#input_itemUnitPrice').val());
-                        var itemQty = parseInt($('#input_itemQty').val());
-                        var itemAmount = itemUnitPrice * itemQty;
-                        var subtotal = parseFloat($('#subtotal').val());
-                        var gst = parseFloat($('#gst').val());
-                        var totalPrice = parseFloat($('#totalPrice').val());
-
-                        if (!isNaN(itemAmount)) {
-                            if (isNaN(subtotal)) {
-                                subtotal = 0;
-                            }
-                            if (isNaN(gst)) {
-                                gst = 0;
-                            }
-                            if (isNaN(totalPrice)) {
-                                totalPrice = 0;
-                            }
-
-                            var newSubtotal = subtotal + itemAmount;
-                            var newGst = newSubtotal * 0.07;
-                            var newTotalPrice = newSubtotal + newGst;
-
-                            $('#input_itemAmount').val(itemAmount.toFixed(2));
-                            $('#output_subtotal').text("$" + newSubtotal.toFixed(2));
-                            $('#output_gst').text("$" + newGst.toFixed(2));
-                            $('#output_totalPrice').text("$" + newTotalPrice.toFixed(2));
-                        }
-
-                        if (isNaN(itemUnitPrice) || isNaN(itemQty)) {
-                            $('#input_itemAmount').val("");
-                            $('#output_subtotal').text("$" + subtotal.toFixed(2));
-                            $('#output_gst').text("$" + gst.toFixed(2));
-                            $('#output_totalPrice').text("$" + totalPrice.toFixed(2));
-                        }
-                    });
-                });
-
                 function back() {
                     window.onbeforeunload = null;
-                    window.location.href = "scoManagement_DO.jsp";
+                    window.location.href = "../StatementOfAccountManagementController?target=ListAllSOA";
                 }
-
-                function back2() {
-                    window.onbeforeunload = null;
-                    window.location.href = "doManagement.jsp";
+                function viewSCO(id) {
+                    window.location.href = "../OrderManagementController?previousManagementPage=soa&target=RetrieveSCO&id=" + id;
                 }
-
-                function addLineItemToExistingDO() {
-                    window.onbeforeunload = null;
-                    doManagement.target.value = "UpdateDO";
-                    doManagement.source.value = "AddLineItemToExistingDO";
-                    document.doManagement.action = "../DeliveryOrderManagementController";
-                    document.doManagement.submit();
+                function viewInvoice(id) {
+                    window.location.href = "../InvoiceManagementController?previousManagementPage=soa&target=RetrieveInvoice&id=" + id;
                 }
-
-                function updateDO() {
-                    window.onbeforeunload = null;
-                    doManagement.target.value = "UpdateDO";
-                    document.doManagement.action = "../DeliveryOrderManagementController";
-                    document.doManagement.submit();
+                function viewPayment(id) {
+                    //todo            
+//                    window.location.href = "../?????previousManagementPage=soa&target=????&id=" + id;
                 }
-
-                function editLineItem(lineItemID) {
-                    window.onbeforeunload = null;
-                    doManagement.lineItemID.value = lineItemID;
-                    window.location.href = "doManagement.jsp?editingLineItem=" + lineItemID;
-                }
-
-                function saveEditLineItem(lineItemID) {
-                    window.onbeforeunload = null;
-                    doManagement.lineItemID.value = lineItemID;
-                    doManagement.itemName.value = document.getElementById("itemName" + lineItemID).value;
-                    doManagement.itemDescription.value = document.getElementById("itemDescription" + lineItemID).value;
-                    doManagement.itemUnitPrice.value = document.getElementById("itemUnitPrice" + lineItemID).value;
-                    doManagement.itemQty.value = document.getElementById("itemQty" + lineItemID).value;
-                    doManagement.target.value = "EditLineItem";
-                    document.doManagement.action = "../DeliveryOrderManagementController?editingLineItem=" + lineItemID;
-                    document.doManagement.submit();
-                }
-
-                function removeLineItem(lineItemID) {
-                    window.onbeforeunload = null;
-                    doManagement.lineItemID.value = lineItemID;
-                    doManagement.target.value = "RemoveLineItem";
-                    document.doManagement.action = "../DeliveryOrderManagementController";
-                    document.doManagement.submit();
-                }
-
-                function deleteDO() {
-                    window.onbeforeunload = null;
-                    window.location.href = "../DeliveryOrderManagementController?target=DeleteDO";
-                }
-
-                function addressBook() {
-                    window.onbeforeunload = null;
-                    editContactForm.target.value = "ListAllCustomer";
-                    document.editContactForm.action = "../DeliveryOrderManagementController";
-                    document.editContactForm.submit();
-                }
-
-                function listAllInvoices(id) {
-                    window.onbeforeunload = null;
-                    window.location.href = "../OrderManagementController?target=RetrieveSCO&source=listAllInvoices&id=" + id;
-                }
-
-                window.onbeforeunload = function () {
-                    return 'There may be unsaved changes to this page. If you continue, you will lose them.';
-                };
-
-                $(function () {
-                    $('button[type=submit]').click(function (e) {
-                        window.onbeforeunload = null;
-                    });
-                });
             </script>
             <jsp:include page="../jspIncludePages/header.jsp" />
 
@@ -159,7 +64,7 @@
                                         <i class="fa fa-home"></i>
                                     </a>
                                 </li>
-                                <li><span><a href= "../PaymentManagement?target=ListAllSOA">Statement of Accounts</a></span></li>
+                                <li><span><a href= "../StatementOfAccountManagementController?target=ListAllSOA">Statement of Accounts</a></span></li>
                                 <li><span>SOA &nbsp;&nbsp</span></li>
                             </ol>
                         </div>
@@ -198,7 +103,7 @@
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="bill-to">
-                                                    <p class="h5 mb-xs text-dark text-weight-semibold">To:</p>
+                                                    <!--<p class="h5 mb-xs text-dark text-weight-semibold">To:</p>-->
                                                     <address>
                                                         <div class="col-md-6" style="padding-left: 0px;">
                                                         </div>
@@ -209,52 +114,51 @@
                                             <div class="col-md-6">
                                                 <div class="bill-data text-right">
                                                     <p class="mb-none">
-                                                        <span class="text-dark">Total Overdue </span>
-                                                        <span class="value" style="min-width: 110px; font-size: 10.5pt; text-align: left;">
-                                                            <%
-                                                                if (statementOfAccount != null && statementOfAccount.getTotalAmountOverDue() != null) {
-                                                                    out.print(statementOfAccount.getTotalAmountOverDue());
-                                                                }
-                                                            %>
-                                                        </span>
-                                                    </p>
-
-                                                    <p class="mb-none">
-                                                        <span class="text-dark">0 to 30 days</span>
+                                                        <span class="">0 to 30 days</span>
                                                         <span class="value" style="min-width: 110px; font-size: 10.5pt; text-align: left;">
                                                             <%
                                                                 if (statementOfAccount != null && statementOfAccount.getAmountOverDueFrom0to30Days() != null) {
-                                                                    out.print(statementOfAccount.getAmountOverDueFrom0to30Days());
+                                                                    out.print(formatter.format(statementOfAccount.getAmountOverDueFrom0to30Days()));
                                                                 }
                                                             %>
                                                         </span>
                                                     </p>
                                                     <p class="mb-none">
-                                                        <span class="text-dark">31 to 60 days</span>
+                                                        <span class="">31 to 60 days</span>
                                                         <span class="value" style="min-width: 110px; font-size: 10.5pt; text-align: left;">
                                                             <%
                                                                 if (statementOfAccount != null && statementOfAccount.getAmountOverDueFrom31to60Days() != null) {
-                                                                    out.print(statementOfAccount.getAmountOverDueFrom31to60Days());
+                                                                    out.print(formatter.format(statementOfAccount.getAmountOverDueFrom31to60Days()));
                                                                 }
                                                             %>
                                                         </span>
                                                     </p>
                                                     <p class="mb-none">
-                                                        <span class="text-dark">61 to 90 days</span>
+                                                        <span class="">61 to 90 days</span>
                                                         <span class="value" style="min-width: 110px; font-size: 10.5pt; text-align: left;">
                                                             <%
                                                                 if (statementOfAccount != null && statementOfAccount.getAmountOverDueFrom61to90Days() != null) {
-                                                                    out.print(statementOfAccount.getAmountOverDueFrom61to90Days());
+                                                                    out.print(formatter.format(statementOfAccount.getAmountOverDueFrom61to90Days()));
                                                                 }
                                                             %>
                                                         </span>
                                                     </p>
                                                     <p class="mb-none">
-                                                        <span class="text-dark">Above 90 days</span>
+                                                        <span class="">Above 90 days</span>
                                                         <span class="value" style="min-width: 110px; font-size: 10.5pt; text-align: left;">
                                                             <%
                                                                 if (statementOfAccount != null && statementOfAccount.getAmountOverDueOver91Days() != null) {
-                                                                    out.print(statementOfAccount.getAmountOverDueOver91Days());
+                                                                    out.print(formatter.format(statementOfAccount.getAmountOverDueOver91Days()));
+                                                                }
+                                                            %>
+                                                        </span>
+                                                    </p>
+                                                    <p class="mb-none">
+                                                        <span class="text-dark">Total Overdue </span>
+                                                        <span class="value text-dark" style="min-width: 110px; font-size: 10.5pt; text-align: left;">
+                                                            <%
+                                                                if (statementOfAccount != null && statementOfAccount.getTotalAmountOverDue() != null) {
+                                                                    out.print(formatter.format(statementOfAccount.getTotalAmountOverDue()));
                                                                 }
                                                             %>
                                                         </span>
@@ -268,21 +172,20 @@
                                         <table class="table invoice-items">
                                             <thead>
                                                 <tr class="h4 text-dark">
-                                                    <th id="cell-item" class="text-weight-semibold">Entry Date</th>
-                                                    <th class="text-weight-semibold">Reference No</th>
-                                                    <th class="text-center text-weight-semibold">Payment Method</th>
-                                                    <th class="text-center text-weight-semibold">Description</th>
-                                                    <th class="text-center text-weight-semibold">Due Date</th>
-                                                    <th id="cell-price" class="text-center text-weight-semibold">Debit</th>
-                                                    <th id="cell-price" class="text-center text-weight-semibold">Credit</th>
-                                                    <th class="text-center text-weight-semibold">Balance</th>
-                                                    <th></th>
+                                                    <th class="text-weight-semibold">Entry Date</th>
+                                                    <th class="text-weight-semibold">Ref. No</th>
+                                                    <th class="text-weight-semibold">Method</th>
+                                                    <th style="width:200px;" class="text-weight-semibold">Desc.</th>
+                                                    <th class="text-weight-semibold">Due Date</th>
+                                                    <th id="cell-price" class="text-weight-semibold">Debit</th>
+                                                    <th id="cell-price" class="text-weight-semibold">Credit</th>
+                                                    <th class="text-weight-semibold">Balance</th>
+                                                    <th class="text-weight-semibold" style="width: 240px; text-align: center">Details</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <%
                                                     List<SOALineItem> soali = statementOfAccount.getLineItem();
-                                                    NumberFormat formatter = NumberFormat.getCurrencyInstance();
                                                     if (soali != null) {
                                                         for (int i = 0; i < soali.size(); i++) {
                                                 %>
@@ -290,9 +193,11 @@
 
                                                     <td>
                                                         <%
-                                                            SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("d MMM yyyy");
-                                                            String date = DATE_FORMAT.format(soali.get(i).getEntryDate());
-                                                            out.print(date);
+                                                            if (soali.get(i).getEntryDate() != null) {
+                                                                SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("d MMM yyyy");
+                                                                String date = DATE_FORMAT.format(soali.get(i).getEntryDate());
+                                                                out.print(date);
+                                                            }
                                                         %>
                                                     </td>
                                                     <td><%=soali.get(i).getReferenceNo()%></td>
@@ -300,21 +205,27 @@
                                                     <td><%=soali.get(i).getDescription()%></td>
                                                     <td>
                                                         <%
-                                                            DATE_FORMAT = new SimpleDateFormat("d MMM yyyy");
-                                                            date = DATE_FORMAT.format(soali.get(i).getDueDate());
-                                                            out.print(date);
+                                                            if (soali.get(i).getDueDate() != null) {
+                                                                SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("d MMM yyyy");
+                                                                String date = DATE_FORMAT.format(soali.get(i).getDueDate());
+                                                                out.print(date);
+                                                            }
                                                         %>
                                                     </td>
                                                     <td><%=formatter.format(soali.get(i).getDebit())%></td>
                                                     <td><%=formatter.format(soali.get(i).getCredit())%></td>
                                                     <td><%=formatter.format(soali.get(i).getBalance())%></td>
-                                                    <%if (soali.get(i).getScoID() != null) {%>
-                                                    <td><button type="button" class="btn btn-default btn-block" onclick="javascript:viewSCO('<%=soali.get(i).getScoID()%>');">View SCO</button></td>
-                                                    <%} else if (soali.get(i).getInvoiceID() != null) {%>
-                                                    <td><button type="button" class="btn btn-default btn-block" onclick="javascript:viewInvoice('<%=soali.get(i).getInvoiceID()%>');">View Invoice</button></td>
-                                                    <%} else if (soali.get(i).getPaymentID() != null) {%>
-                                                    <td><button type="button" class="btn btn-default btn-block" onclick="javascript:viewPayment('<%=soali.get(i).getPaymentID()%>');">View Payment</button></td>
-                                                    <%}%>
+                                                    <td>
+                                                        <%if (soali.get(i).getScoID() != null) {%>
+                                                        <button type="button" class="btn btn-default" onclick="javascript:viewSCO('<%=soali.get(i).getScoID()%>');">SCO</button>
+                                                        <%}
+                                                            if (soali.get(i).getInvoiceID() != null) {%>
+                                                        <button type="button" class="btn btn-default" onclick="javascript:viewInvoice('<%=soali.get(i).getInvoiceID()%>');">Invoice</button>
+                                                        <%}
+                                                            if (soali.get(i).getPaymentID() != null) {%>
+                                                        <button type="button" class="btn btn-default modal-with-form" href="#modalPayment<%=soali.get(i).getPaymentID()%>">Payment</button>
+                                                        <%}%>
+                                                    </td>
                                                 </tr>
                                                 <%
                                                         }
@@ -348,6 +259,74 @@
                             </div>
                         </section>
                     </form>
+                    <%
+                        for (PaymentRecord payment : paymentRecords) {
+                    %>
+                    <div id="modalPayment<%=payment.getId()%>" class="modal-block modal-block-primary mfp-hide">
+                        <section class="panel">
+                            <header class="panel-heading">
+                                <h2 class="panel-title">View Payment Record</h2>
+                            </header>
+                            <div class="panel-body">
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Amount</label>
+                                    <div class="col-sm-9">
+                                        <%=formatter.format(payment.getAmount())%>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Payment Date</label>
+                                    <div class="col-md-9">
+                                        <%
+                                            SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("d MMM yyyy");
+                                            String date = DATE_FORMAT.format(payment.getPaymentDate());
+                                            out.println(date);
+                                        %>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Method</label>
+                                    <div class="col-sm-9">
+                                        <%if (payment.getPaymentMethod() != null) {
+                                                out.print(payment.getPaymentMethod());
+                                            }%>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Reference No.</label>
+                                    <div class="col-sm-9">
+                                        <%if (payment.getPaymentReferenceNumber() != null) {
+                                                out.print(payment.getPaymentReferenceNumber());
+                                            }%>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Notes</label>
+                                    <div class="col-sm-9">
+                                        <%if (payment.getNotes() != null) {
+                                                out.print(payment.getNotes());
+                                            }%>
+                                    </div>
+                                </div>
+
+                                <br>
+                            </div>
+                            <footer class="panel-footer">
+                                <div class="row">
+                                    <div class="col-md-12 text-right">
+                                        <button class="btn btn-success" onclick="viewInvoice(<%=payment.getInvoice().getId()%>)">View Related Invoice</button>
+                                        <button class="btn btn-default modal-dismiss">Close</button>
+                                    </div>
+                                </div>
+                            </footer>
+                            <%}%>
+                        </section>
+                    </div>
                     <!-- end: page -->
                 </section>
             </div>

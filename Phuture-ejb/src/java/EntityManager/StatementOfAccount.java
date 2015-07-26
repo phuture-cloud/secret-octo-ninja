@@ -22,7 +22,7 @@ public class StatementOfAccount implements Serializable {
     private Double totalAmountInvoiced;
     private Double totalAmountPaid;
 
-    @OneToMany
+    @OneToMany(orphanRemoval = true, mappedBy = "statementOfAccount")
     private List<SOALineItem> lineItem;
 
     @OneToMany
