@@ -30,28 +30,50 @@ public class StatementOfAccountManagementController extends HttpServlet {
 
         session = request.getSession();
         ReturnHelper returnHelper = null;
-        StatementOfAccount statementOfAccount;
+        List<StatementOfAccount> statementOfAccounts;
 
         try {
             if (checkLogin()) {
                 switch (target) {
                     case "ListAllSOA":
-                        List<StatementOfAccount> statementOfAccounts = statementOfAccountBean.listAllStatementOfAccounts();
+                        statementOfAccounts = statementOfAccountBean.listAllStatementOfAccounts();
                         if (statementOfAccounts == null) {
                             nextPage = "error500.html";
                         } else {
                             session.setAttribute("statementOfAccounts", statementOfAccounts);
-                            nextPage = "OrderManagement/statementOfAccount.jsp";
+                            nextPage = "PaymentManagement/statementOfAccounts.jsp";
+                        }
+                        break;
+
+                    case "RefreshSOA":
+                        returnHelper = statementOfAccountBean.refreshAllSOA();
+                        if (returnHelper.getResult()) {
+                            statementOfAccounts = statementOfAccountBean.listAllStatementOfAccounts();
+                            if (statementOfAccounts == null) {
+                                nextPage = "error500.html";
+                            } else {
+                                session.setAttribute("statementOfAccounts", statementOfAccounts);
+                                nextPage = "PaymentManagement/statementOfAccounts.jsp?goodMsg=" + returnHelper.getDescription();
+                            }
+                        } else {
+                            nextPage = "PaymentManagement/statementOfAccounts.jsp?errMsg=" + returnHelper.getDescription();
                         }
                         break;
 
                     case "RetrieveSOA":
                         if (id != null) {
-                            session.setAttribute("statementOfAccounts", statementOfAccountBean.getCustomerSOA(Long.parseLong(id)));
-                            nextPage = "OrderManagement/statementOfAccount.jsp";
+                            session.setAttribute("statementOfAccount", statementOfAccountBean.getCustomerSOA(Long.parseLong(id)));
+                            nextPage = "PaymentManagement/statementOfAccount.jsp";
                         }
                         break;
                 }
+            }
+            if (nextPage.equals("")) {
+                response.sendRedirect("index.jsp?errMsg=Session Expired.");
+                return;
+            } else {
+                response.sendRedirect(nextPage);
+                return;
             }
         } catch (Exception ex) {
             response.sendRedirect("AccountManagement/workspace.jsp?errMsg=An error has occured");

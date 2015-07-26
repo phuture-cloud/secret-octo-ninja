@@ -30,6 +30,10 @@
                 document.soaManagement.action = "../StatementOfAccountManagementController";
                 document.soaManagement.submit();
             }
+
+            function refreshSOA() {
+                window.location.href = "../StatementOfAccountManagementController?target=RefreshSOA"
+            }
         </script>
 
         <section class="body">
@@ -57,18 +61,26 @@
                         <header class="panel-heading">
                             <h2 class="panel-title">Statement of Account Management</h2>
                         </header>
+
                         <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-12"> 
+                                    <button class="btn btn-default" onclick="refreshSOA()"><i class="fa fa-refresh"></i> Refresh Accounts</button>
+                                </div>
+                            </div>
+                            <br/>
+
+
                             <form name="soaManagement">
                                 <table class="table table-bordered table-striped mb-none" id="datatable-default">
                                     <thead>
                                         <tr> 
-                                            <th></th>
                                             <th>Customer</th>
                                             <th>Total Amount Ordered</th>
                                             <th>Total Amount Invoiced</th>
                                             <th>Total Amount Paid</th>
-                                            <th>Status</th>
-                                            <th style="width: 300px; text-align: center">Action</th>
+                                            <th>Total Overdue</th>
+                                            <th style="width: 600px; text-align: center">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -78,7 +90,6 @@
                                                 for (int i = 0; i < statementOfAccounts.size(); i++) {
                                         %>
                                         <tr>
-                                            <td><%=statementOfAccounts.get(i).getId()%></td>
                                             <td><a href="../CustomerManagementController?target=ListCustomerContacts&id=<%=statementOfAccounts.get(i).getCustomer().getId()%>"><%=statementOfAccounts.get(i).getCustomer().getCustomerName()%></a></td>
                                             <td>
                                                 <%=formatter.format(statementOfAccounts.get(i).getTotalAmountOrdered())%>
@@ -90,10 +101,13 @@
                                                 <%=formatter.format(statementOfAccounts.get(i).getTotalAmountPaid())%>
                                             </td>
                                             <td>
+                                                <%=formatter.format(statementOfAccounts.get(i).getTotalAmountOverDue())%>
+                                            </td>
+                                            <td>
                                                 <div class="btn-group" role="group" aria-label="...">
-                                                    <button class="btn btn-default btn-block" onclick="javascript:viewSCO(<%=statementOfAccounts.get(i).getId()%>);">View Statement of Account</button>
-                                                    <button class="btn btn-default btn-block" onclick="javascript:viewAllInvoice(<%=statementOfAccounts.get(i).getId()%>);">View All Invoices</button>
-                                                    <button class="btn btn-default btn-block" onclick="javascript:viewOverdueInvoice(<%=statementOfAccounts.get(i).getId()%>);">View Overdue Invoices</button>
+                                                    <button class="btn btn-default" onclick="javascript:viewSOA(<%=statementOfAccounts.get(i).getCustomer().getId()%>);">View Statement of Account</button>
+                                                    <button class="btn btn-default" onclick="javascript:viewAllInvoice(<%=statementOfAccounts.get(i).getId()%>);">View All Invoices</button>
+                                                    <button class="btn btn-default" onclick="javascript:viewOverdueInvoice(<%=statementOfAccounts.get(i).getId()%>);">View Overdue Invoices</button>
                                                 </div>
                                             </td>
                                         </tr>
