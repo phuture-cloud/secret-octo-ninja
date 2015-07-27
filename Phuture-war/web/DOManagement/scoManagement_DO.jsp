@@ -111,7 +111,17 @@
                                                     out.print(date);
                                                 %>
                                             </td>
-                                            <td><%=deliveryOrders.get(i).getStatus()%></td>
+                                            <td>
+                                                <%
+                                                    if (deliveryOrders.get(i).getStatus().equals("Created")) {
+                                                        out.print("<td>Created</td>");
+                                                    } else if (deliveryOrders.get(i).getStatus().equals("Shipped")) {
+                                                        out.print("<td class='info'>Shipped</td>");
+                                                    } else if (deliveryOrders.get(i).getStatus().equals("Delivered")) {
+                                                        out.print("<td class='success'>Delivered</td>");
+                                                    }
+                                                %>
+                                            </td>
                                             <td><button type="button" class="btn btn-default btn-block" onclick="javascript:viewDO('<%=deliveryOrders.get(i).getId()%>')">View</button></td>
                                         </tr>
                                         <%

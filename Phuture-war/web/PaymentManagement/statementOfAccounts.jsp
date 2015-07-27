@@ -86,6 +86,7 @@
                                             for (int i = 0; i < statementOfAccounts.size(); i++) {
                                     %>
                                     <tr>
+                                        <%System.out.print("aaaaaaaaaaaaa");%>
                                         <td><a href="../CustomerManagementController?target=ListCustomerContacts&id=<%=statementOfAccounts.get(i).getCustomer().getId()%>"><%=statementOfAccounts.get(i).getCustomer().getCustomerName()%></a></td>
                                         <td>
                                             <%=formatter.format(statementOfAccounts.get(i).getTotalAmountOrdered())%>

@@ -64,7 +64,7 @@
                                         <i class="fa fa-home"></i>
                                     </a>
                                 </li>
-                                <% if (previousMgtPage.equals("sco")) { %>
+                                <% if (previousMgtPage.equals("sco")) {%>
                                 <li><span><a href= "../OrderManagementController?target=ListAllSCO">PO Management</a></span></li>
                                 <li><span><a href= "../OrderManagementController?target=RetrieveSCO&id=<%=sco.getId()%>"><%=sco.getSalesConfirmationOrderNumber()%></a></span></li>
                                             <%
@@ -114,7 +114,17 @@
                                                     out.print(date);
                                                 %>
                                             </td>
-                                            <td><%=purchaseOrders.get(i).getStatus()%></td>
+                                            <td>
+                                                <%
+                                                    if (purchaseOrders.get(i).getStatus().equals("Created")) {
+                                                        out.print("<td>Created</td>");
+                                                    } else if (purchaseOrders.get(i).getStatus().equals("Pending")) {
+                                                        out.print("<td class='info'>Pending</td>");
+                                                    } else if (purchaseOrders.get(i).getStatus().equals("Completed")) {
+                                                        out.print("<td class='success'>Completed</td>");
+                                                    }
+                                                %>
+                                            </td>
                                             <td><button type="button" class="btn btn-default btn-block" onclick="javascript:viewPO('<%=purchaseOrders.get(i).getId()%>')">View</button></td>
                                         </tr>
                                         <%

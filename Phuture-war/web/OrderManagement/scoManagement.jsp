@@ -119,7 +119,17 @@
                                                     out.print(formatter.format(salesConfirmationOrders.get(i).getTotalPrice()));
                                                 %>
                                             </td>
-                                            <td><%=salesConfirmationOrders.get(i).getStatus()%></td>
+                                            <%
+                                                if (salesConfirmationOrders.get(i).getStatus().equals("Unfulfilled")) {
+                                                    out.print("<td>Unfulfilled</td>");
+                                                } else if (salesConfirmationOrders.get(i).getStatus().equals("Fulfilled")) {
+                                                    out.print("<td class='info'>Fulfilled</td>");
+                                                } else if (salesConfirmationOrders.get(i).getStatus().equals("Completed")) {
+                                                    out.print("<td class='success'>Completed</td>");
+                                                } else if (salesConfirmationOrders.get(i).getStatus().equals("Write-Off")) {
+                                                    out.print("<td class='warning'>Write-Off</td>");
+                                                }
+                                            %>
                                             <td>
                                                 <button class="btn btn-default btn-block" onclick="javascript:viewSCO(<%=salesConfirmationOrders.get(i).getId()%>)">View</button>
                                             </td>
