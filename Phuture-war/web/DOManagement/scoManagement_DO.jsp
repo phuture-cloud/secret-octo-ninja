@@ -22,7 +22,7 @@
             response.sendRedirect("../workspace.jsp?errMsg=An Error has occured.");
         }
     } else if (previousMgtPage.equals("soa")) {
-        soa = (StatementOfAccount) (session.getAttribute("soa"));
+        soa = (StatementOfAccount) (session.getAttribute("statementOfAccount"));
     }
 
     List<DeliveryOrder> deliveryOrders = (List<DeliveryOrder>) (session.getAttribute("listOfDO"));

@@ -28,6 +28,12 @@
         function viewSOA(id) {
             window.location.href = "../StatementOfAccountManagementController?target=RetrieveSOA&id=" + id;
         }
+        function viewAllInvoice(id) {
+            window.location.href = "../StatementOfAccountManagementController?target=ViewInvoiceTiedToCustomer&id=" + id;
+        }
+        function viewOverdueInvoice(id) {
+            window.location.href = "../StatementOfAccountManagementController?target=ViewOverDueInvoiceTiedToCustomer&id=" + id;
+        }
 
         function refreshSOA() {
             NProgress.start();
@@ -86,7 +92,6 @@
                                             for (int i = 0; i < statementOfAccounts.size(); i++) {
                                     %>
                                     <tr>
-                                        <%System.out.print("aaaaaaaaaaaaa");%>
                                         <td><a href="../CustomerManagementController?target=ListCustomerContacts&id=<%=statementOfAccounts.get(i).getCustomer().getId()%>"><%=statementOfAccounts.get(i).getCustomer().getCustomerName()%></a></td>
                                         <td>
                                             <%=formatter.format(statementOfAccounts.get(i).getTotalAmountOrdered())%>
@@ -103,8 +108,8 @@
                                         <td>
                                             <div class="btn-group" role="group" aria-label="...">
                                                 <button class="btn btn-default" onclick="javascript:viewSOA(<%=statementOfAccounts.get(i).getCustomer().getId()%>);">View Statement of Account</button>
-                                                <button class="btn btn-default" onclick="javascript:viewAllInvoice(<%=statementOfAccounts.get(i).getId()%>);">View All Invoices</button>
-                                                <button class="btn btn-default" onclick="javascript:viewOverdueInvoice(<%=statementOfAccounts.get(i).getId()%>);">View Overdue Invoices</button>
+                                                <button class="btn btn-default" onclick="javascript:viewAllInvoice(<%=statementOfAccounts.get(i).getCustomer().getId()%>);">View All Invoices</button>
+                                                <button class="btn btn-default" onclick="javascript:viewOverdueInvoice(<%=statementOfAccounts.get(i).getCustomer().getId()%>);">View Overdue Invoices</button>
                                             </div>
                                         </td>
                                     </tr>

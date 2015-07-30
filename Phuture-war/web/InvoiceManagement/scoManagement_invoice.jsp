@@ -22,7 +22,7 @@
                 response.sendRedirect("../workspace.jsp?errMsg=An Error has occured.");
             }
         } else if (previousMgtPage.equals("soa")) {
-            soa = (StatementOfAccount) (session.getAttribute("soa"));
+            soa = (StatementOfAccount) (session.getAttribute("statementOfAccount"));
         }
     }
 
@@ -49,7 +49,7 @@
             <% if (previousMgtPage.equals("sco")) {%>
                 window.location.href = "../OrderManagementController?target=RetrieveSCO&id=<%=sco.getId()%>";
             <% } else if (previousMgtPage.equals("soa")) {%>
-                window.location.href = "todo";
+                window.location.href = "../StatementOfAccountManagementController?target=RetrieveSOA&id=<%=soa.getCustomer().getId()%>";
             <%}%>
             }
         </script>
@@ -74,7 +74,9 @@
                                 <li><span><a href= "../OrderManagementController?target=ListAllSCO">SCO Management</a></span></li>
                                 <li><span><a href= "../OrderManagementController?target=RetrieveSCO&id=<%=sco.getId()%>"><%=sco.getSalesConfirmationOrderNumber()%></a></span></li>
                                             <%} else if (previousMgtPage.equals("soa")) { %>
-                                            <%}%>
+                                <li><span><a href= "../StatementOfAccountManagementController?target=ListAllSOA">Statement of Accounts</a></span></li>
+                                <li><span><a href="../StatementOfAccountManagementController?target=RetrieveSOA&id=<%=soa.getCustomer().getId()%>">SOA</a></span></li>
+                                    <%}%>
 
                                 <li><span>Invoices &nbsp;&nbsp</span></li>
                             </ol>
@@ -86,7 +88,7 @@
                     <section class="panel">
                         <header class="panel-heading">
                             <%
-                                if (previousMgtPage != null && previousMgtPage.equals("sco")) {
+                                if (previousMgtPage.equals("sco")) {
                             %>
                             <h2 class="panel-title">SCO No. <%=sco.getSalesConfirmationOrderNumber()%> - Invoices</h2>
                             <%} else {%>

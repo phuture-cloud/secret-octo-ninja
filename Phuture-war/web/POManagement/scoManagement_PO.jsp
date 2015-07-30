@@ -18,7 +18,7 @@
     if (previousMgtPage.equals("sco")) {
         sco = (SalesConfirmationOrder) (session.getAttribute("sco"));
     } else if (previousMgtPage.equals("soa")) {
-        soa = (StatementOfAccount) (session.getAttribute("soa"));
+        soa = (StatementOfAccount) (session.getAttribute("statementOfAccount"));
     }
 
     List<PurchaseOrder> purchaseOrders = (List<PurchaseOrder>) (session.getAttribute("listOfPO"));

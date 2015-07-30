@@ -79,22 +79,25 @@ public class InvoiceManagementController extends HttpServlet {
                         nextPage = "InvoiceManagement/scoManagement_invoice.jsp";
                         break;
                     case "ListInvoiceTiedToSCO":
-                        String id = request.getParameter("id");
-                        if (id != null) {
-                            session.setAttribute("listOfInvoice", invoiceManagementBean.listInvoicesTiedToSCO(Long.parseLong(id)));
-                            session.setAttribute("previousManagementPage", "sco");
-                            nextPage = "InvoiceManagement/scoManagement_invoice.jsp";
+                        if (true) {
+                            String id = request.getParameter("id");
+                            if (id != null) {
+                                session.setAttribute("listOfInvoice", invoiceManagementBean.listInvoicesTiedToSCO(Long.parseLong(id)));
+                                session.setAttribute("previousManagementPage", "sco");
+                                nextPage = "InvoiceManagement/scoManagement_invoice.jsp";
+                            }
+                            break;
                         }
-                        break;
                     case "RetrieveInvoice":
-                        id = request.getParameter("id");
-                        if (id != null) {
-                            session.setAttribute("invoice", invoiceManagementBean.getInvoice(Long.parseLong(id)));
-                            session.setAttribute("invoicePayments", paymentManagementBeanLocal.listPaymentByInvoice(Long.parseLong(id)));
-                            nextPage = "InvoiceManagement/invoiceManagement.jsp";
+                        if (true) {
+                            String id = request.getParameter("id");
+                            if (id != null) {
+                                session.setAttribute("invoice", invoiceManagementBean.getInvoice(Long.parseLong(id)));
+                                session.setAttribute("invoicePayments", paymentManagementBeanLocal.listPaymentByInvoice(Long.parseLong(id)));
+                                nextPage = "InvoiceManagement/invoiceManagement.jsp";
+                            }
+                            break;
                         }
-                        break;
-
                     case "DeleteInvoice":
                         if (invoice != null) {
                             returnHelper = invoiceManagementBean.deleteInvoice(invoice.getId(), isAdmin);
