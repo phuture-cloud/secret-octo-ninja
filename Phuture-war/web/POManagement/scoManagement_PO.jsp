@@ -114,17 +114,17 @@
                                                     out.print(date);
                                                 %>
                                             </td>
-                                            <td>
-                                                <%
-                                                    if (purchaseOrders.get(i).getStatus().equals("Created")) {
-                                                        out.print("<td>Created</td>");
-                                                    } else if (purchaseOrders.get(i).getStatus().equals("Pending")) {
-                                                        out.print("<td class='info'>Pending</td>");
-                                                    } else if (purchaseOrders.get(i).getStatus().equals("Completed")) {
-                                                        out.print("<td class='success'>Completed</td>");
-                                                    }
-                                                %>
-                                            </td>
+                                            <%
+                                                if (purchaseOrders.get(i).getStatus().equals("Created")) {
+                                                    out.print("<td>Created</td>");
+                                                } else if (purchaseOrders.get(i).getStatus().equals("Pending")) {
+                                                    out.print("<td class='info'>Pending</td>");
+                                                } else if (purchaseOrders.get(i).getStatus().equals("Completed")) {
+                                                    out.print("<td class='success'>Completed</td>");
+                                                } else {
+                                                    out.print("<td>" + purchaseOrders.get(i).getStatus() + "</td>");
+                                                }
+                                            %>
                                             <td><button type="button" class="btn btn-default btn-block" onclick="javascript:viewPO('<%=purchaseOrders.get(i).getId()%>')">View</button></td>
                                         </tr>
                                         <%
