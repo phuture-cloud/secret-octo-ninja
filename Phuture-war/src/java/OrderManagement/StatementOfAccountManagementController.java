@@ -1,10 +1,13 @@
 package OrderManagement;
 
+import EntityManager.Invoice;
 import EntityManager.ReturnHelper;
 import EntityManager.Staff;
 import EntityManager.StatementOfAccount;
+import PaymentManagement.PaymentManagementBeanLocal;
 import PaymentManagement.StatementOfAccountBeanLocal;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
@@ -16,7 +19,11 @@ import javax.servlet.http.HttpSession;
 public class StatementOfAccountManagementController extends HttpServlet {
 
     @EJB
-    private StatementOfAccountBeanLocal statementOfAccountBean;
+    private StatementOfAccountBeanLocal soabl;
+    @EJB
+    private PaymentManagementBeanLocal pmbl;
+    @EJB
+    private InvoiceManagementBeanLocal imbl;
 
     String nextPage = "", goodMsg = "", errMsg = "";
     HttpSession session;
@@ -26,7 +33,6 @@ public class StatementOfAccountManagementController extends HttpServlet {
         System.out.println("Welcome to StatementOfAccountManagementController");
         String target = request.getParameter("target");
         String source = request.getParameter("source");
-        String id = request.getParameter("id");
 
         session = request.getSession();
         ReturnHelper returnHelper = null;
@@ -36,7 +42,7 @@ public class StatementOfAccountManagementController extends HttpServlet {
             if (checkLogin()) {
                 switch (target) {
                     case "ListAllSOA":
-                        statementOfAccounts = statementOfAccountBean.listAllStatementOfAccounts();
+                        statementOfAccounts = soabl.listAllStatementOfAccounts();
                         if (statementOfAccounts == null) {
                             nextPage = "error500.html";
                         } else {
@@ -46,9 +52,9 @@ public class StatementOfAccountManagementController extends HttpServlet {
                         break;
 
                     case "RefreshSOA":
-                        returnHelper = statementOfAccountBean.refreshAllSOA();
+                        returnHelper = soabl.refreshAllSOA();
                         if (returnHelper.getResult()) {
-                            statementOfAccounts = statementOfAccountBean.listAllStatementOfAccounts();
+                            statementOfAccounts = soabl.listAllStatementOfAccounts();
                             if (statementOfAccounts == null) {
                                 nextPage = "error500.html";
                             } else {
@@ -61,11 +67,44 @@ public class StatementOfAccountManagementController extends HttpServlet {
                         break;
 
                     case "RetrieveSOA":
-                        if (id != null) {
-                            session.setAttribute("statementOfAccount", statementOfAccountBean.getCustomerSOA(Long.parseLong(id)));
-                            nextPage = "PaymentManagement/statementOfAccount.jsp";
+                        if (true) {
+                            String id = request.getParameter("id");
+                            if (id != null) {
+                                session.setAttribute("statementOfAccount", soabl.getCustomerSOA(Long.parseLong(id)));
+                                session.setAttribute("statementOfAccountPayments", pmbl.listPaymentByCustomer(Long.parseLong(id)));
+                                nextPage = "PaymentManagement/statementOfAccount.jsp";
+                            }
+                            break;
                         }
-                        break;
+                    case "ViewInvoiceTiedToCustomer":
+                        if (true) {
+                            String id = request.getParameter("id");
+                            if (id != null) {
+                                session.setAttribute("statementOfAccount", soabl.getCustomerSOA(Long.parseLong(id)));
+                                session.setAttribute("listOfInvoice", imbl.listInvoicesTiedToCustomer(Long.parseLong(id)));
+                                session.setAttribute("previousManagementPage", "soa");
+                                nextPage = "InvoiceManagement/scoManagement_invoice.jsp";
+                            }
+                            break;
+                        }
+                    case "ViewOverDueInvoiceTiedToCustomer":
+                        if (true) {
+                            String id = request.getParameter("id");
+                            if (id != null) {
+                                StatementOfAccount soa = soabl.getCustomerSOA(Long.parseLong(id));
+                                List<Invoice> invoices = new ArrayList();
+                                if (soa == null) {
+                                    nextPage = "PaymentManagement/statementOfAccounts.jsp?errMsg=Customer's record could not be found, try refreshing the accounts.";
+                                } else {
+                                    invoices = soa.getOverDueInvoices();
+                                }
+                                session.setAttribute("statementOfAccount", soa);
+                                session.setAttribute("listOfInvoice", invoices);
+                                session.setAttribute("previousManagementPage", "soa");
+                                nextPage = "InvoiceManagement/scoManagement_invoice.jsp";
+                            }
+                            break;
+                        }
                 }
             }
             if (nextPage.equals("")) {

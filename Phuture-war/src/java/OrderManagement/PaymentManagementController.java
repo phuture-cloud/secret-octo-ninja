@@ -47,10 +47,16 @@ public class PaymentManagementController extends HttpServlet {
 
         DateFormat sourceFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date paymentDateDate = null;
+
         session = request.getSession();
         ReturnHelper returnHelper = null;
         List<PaymentRecord> paymentRecords;
         Invoice invoice = (Invoice) (session.getAttribute("invoice"));
+        
+        String previousManagementPage = request.getParameter("previousManagementPage");
+        if (previousManagementPage != null && !previousManagementPage.isEmpty()) {
+            session.setAttribute("previousManagementPage", previousManagementPage);
+        }
 
         try {
             if (checkLogin()) {
@@ -65,9 +71,9 @@ public class PaymentManagementController extends HttpServlet {
                             session.setAttribute("invoice", invoice);
                             session.setAttribute("paymentRecord", paymentManagementBean.getPayment(invoice.getId()));
                             session.setAttribute("invoicePayments", paymentManagementBean.listPaymentByInvoice(invoice.getId()));
-                            nextPage = "OrderManagement/invoiceManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                            nextPage = "InvoiceManagement/invoiceManagement.jsp?goodMsg=" + returnHelper.getDescription();
                         } else {
-                            nextPage = "OrderManagement/invoiceManagement.jsp?errMsg=" + returnHelper.getDescription();
+                            nextPage = "InvoiceManagement/invoiceManagement.jsp?errMsg=" + returnHelper.getDescription();
                         }
                         break;
 
@@ -78,7 +84,7 @@ public class PaymentManagementController extends HttpServlet {
                         } else {
                             session.setAttribute("paymentRecords", paymentRecords);
                         }
-                        nextPage = "OrderManagement/scoManagement_payment.jsp";
+                        nextPage = "PaymentManagement/paymentManagement.jsp";
                         break;
 
                     case "DeletePaymentRecord":
@@ -90,9 +96,9 @@ public class PaymentManagementController extends HttpServlet {
                             } else {
                                 session.setAttribute("paymentRecords", paymentRecords);
                             }
-                            nextPage = "OrderManagement/scoManagement_payment.jsp?goodMsg=" + returnHelper.getDescription();
+                            nextPage = "PaymentManagement/paymentManagement.jsp?goodMsg=" + returnHelper.getDescription();
                         } else {
-                            nextPage = "OrderManagement/scoManagement_payment.jsp?errMsg=" + returnHelper.getDescription();
+                            nextPage = "PaymentManagement/paymentManagement.jsp?errMsg=" + returnHelper.getDescription();
                         }
                         break;
 
@@ -107,9 +113,9 @@ public class PaymentManagementController extends HttpServlet {
                             } else {
                                 session.setAttribute("paymentRecords", paymentRecords);
                             }
-                            nextPage = "OrderManagement/scoManagement_payment.jsp?goodMsg=" + returnHelper.getDescription();
+                            nextPage = "PaymentManagement/paymentManagement.jsp?goodMsg=" + returnHelper.getDescription();
                         } else {
-                            nextPage = "OrderManagement/scoManagement_payment.jsp?errMsg=" + returnHelper.getDescription();
+                            nextPage = "PaymentManagement/paymentManagement.jsp?errMsg=" + returnHelper.getDescription();
                         }
 
                         break;
@@ -118,7 +124,7 @@ public class PaymentManagementController extends HttpServlet {
             }//end checkLogin
 
             if (invoice == null) {
-                response.sendRedirect("OrderManagement/invoiceManagement.jsp?errMsg=An Error has occured");
+                response.sendRedirect("InvoiceManagement/paymentManagement.jsp?errMsg=An Error has occured");
                 return;
             } else if (nextPage.equals("")) {
                 response.sendRedirect("index.jsp?errMsg=Session Expired.");

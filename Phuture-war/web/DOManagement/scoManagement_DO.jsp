@@ -1,3 +1,4 @@
+<%@page import="EntityManager.StatementOfAccount"%>
 <%@page import="EntityManager.DeliveryOrder"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="EntityManager.SalesConfirmationOrder"%>
@@ -7,14 +8,28 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
     Staff staff = (Staff) (session.getAttribute("staff"));
-    SalesConfirmationOrder sco = (SalesConfirmationOrder) (session.getAttribute("sco"));
+
+    String previousMgtPage = (String) session.getAttribute("previousManagementPage");
+    if (previousMgtPage == null) {
+        previousMgtPage = "";
+    }
+    SalesConfirmationOrder sco = null;
+    StatementOfAccount soa = null;
+
+    if (previousMgtPage.equals("sco")) {
+        sco = (SalesConfirmationOrder) (session.getAttribute("sco"));
+        if (sco == null) {
+            response.sendRedirect("../workspace.jsp?errMsg=An Error has occured.");
+        }
+    } else if (previousMgtPage.equals("soa")) {
+        soa = (StatementOfAccount) (session.getAttribute("statementOfAccount"));
+    }
+
     List<DeliveryOrder> deliveryOrders = (List<DeliveryOrder>) (session.getAttribute("listOfDO"));
     if (session.isNew()) {
         response.sendRedirect("../index.jsp?errMsg=Invalid Request. Please login.");
     } else if (staff == null) {
         response.sendRedirect("../index.jsp?errMsg=Session Expired.");
-    } else if (sco == null) {
-        response.sendRedirect("scoManagement.jsp?errMsg=An Error has occured.");
     } else {
 %>
 <!doctype html>
@@ -28,9 +43,12 @@
             function viewDO(id) {
                 window.location.href = "../DeliveryOrderManagementController?target=RetrieveDO&id=" + id;
             }
-
-            function back(id) {
-                window.location.href = "../OrderManagementController?target=RetrieveSCO&id=" + id;
+            function back() {
+            <% if (previousMgtPage.equals("sco")) {%>
+                window.location.href = "../OrderManagementController?target=RetrieveSCO&id=<%=sco.getId()%>";
+            <% } else if (previousMgtPage.equals("soa")) {%>
+                window.location.href = "todo";
+            <%}%>
             }
         </script>
 
@@ -49,9 +67,13 @@
                                         <i class="fa fa-home"></i>
                                     </a>
                                 </li>
+                                <%if (previousMgtPage.equals("sco")) {%>
                                 <li><span><a href= "../OrderManagementController?target=ListAllSCO">SCO Management</a></span></li>
                                 <li><span><a href= "../OrderManagementController?target=RetrieveSCO&id=<%=sco.getId()%>"><%=sco.getSalesConfirmationOrderNumber()%></a></span></li>
-                                <li><span>DOs &nbsp;&nbsp</span></li>
+                                            <%} else if (previousMgtPage.equals("soa")) {%>
+                                            <%}%>
+
+                                <li><span>Delivery Orders &nbsp;&nbsp</span></li>
                             </ol>
                         </div>
                     </header>
@@ -59,7 +81,11 @@
                     <!-- start: page -->
                     <section class="panel">
                         <header class="panel-heading">
-                            <h2 class="panel-title">SCO No. <%=sco.getSalesConfirmationOrderNumber()%> - Delivery Orders</h2>
+                            <%if (previousMgtPage.equals("sco")) {%>
+                            <h2 class="panel-title">SCO No.<%=sco.getSalesConfirmationOrderNumber()%> - Delivery Orders</h2>
+                            <%} else {%>
+                            <h2 class="panel-title">Delivery Orders</h2>
+                            <%}%>
                         </header>
                         <div class="panel-body">
                             <form name="scoManagement_DO">
@@ -74,8 +100,7 @@
                                     </thead>
                                     <tbody>
                                         <%
-                                            if (sco != null) {
-                                                for (int i = 0; i < deliveryOrders.size(); i++) {
+                                            for (int i = 0; i < deliveryOrders.size(); i++) {
                                         %>
                                         <tr>        
                                             <td><%=deliveryOrders.get(i).getDeliveryOrderNumber()%></td>
@@ -86,11 +111,20 @@
                                                     out.print(date);
                                                 %>
                                             </td>
-                                            <td><%=deliveryOrders.get(i).getStatus()%></td>
+                                            <%
+                                                if (deliveryOrders.get(i).getStatus().equals("Created")) {
+                                                    out.print("<td>Created</td>");
+                                                } else if (deliveryOrders.get(i).getStatus().equals("Shipped")) {
+                                                    out.print("<td class='info'>Shipped</td>");
+                                                } else if (deliveryOrders.get(i).getStatus().equals("Delivered")) {
+                                                    out.print("<td class='success'>Delivered</td>");
+                                                } else {
+                                                    out.print("<td>" + deliveryOrders.get(i).getStatus() + "</td>");
+                                                }
+                                            %>
                                             <td><button type="button" class="btn btn-default btn-block" onclick="javascript:viewDO('<%=deliveryOrders.get(i).getId()%>')">View</button></td>
                                         </tr>
                                         <%
-                                                }
                                             }
                                         %>
 
@@ -98,8 +132,9 @@
                                 </table>
 
                                 <br>
-                                <button type="button" class="btn btn-default" onclick="javascript:back(<%=sco.getId()%>)">Back</button>   
-
+                                <%if (!previousMgtPage.equals("deliveryOrders")) {%>
+                                <button type="button" class="btn btn-default" onclick="javascript:back()">Back</button>   
+                                <%}%>
                             </form>
                         </div>
 

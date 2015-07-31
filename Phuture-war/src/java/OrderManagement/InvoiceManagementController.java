@@ -64,25 +64,40 @@ public class InvoiceManagementController extends HttpServlet {
         ReturnHelper returnHelper = null;
         Invoice invoice = (Invoice) (session.getAttribute("invoice"));
 
+        String previousManagementPage = request.getParameter("previousManagementPage");
+        if (previousManagementPage != null && !previousManagementPage.isEmpty()) {
+            session.setAttribute("previousManagementPage", previousManagementPage);
+        }
+
         try {
             if (checkLogin()) {
                 switch (target) {
+                    case "ListAllInvoice":
+                        List<Invoice> invoices = invoiceManagementBean.listAllInvoice(loggedInStaffID);
+                        session.setAttribute("listOfInvoice", invoices);
+                        session.setAttribute("previousManagementPage", "invoices");
+                        nextPage = "InvoiceManagement/scoManagement_invoice.jsp";
+                        break;
                     case "ListInvoiceTiedToSCO":
-                        String id = request.getParameter("id");
-                        if (id != null) {
-                            session.setAttribute("listOfInvoice", invoiceManagementBean.listInvoicesTiedToSCO(Long.parseLong(id)));
-                            nextPage = "OrderManagement/scoManagement_invoice.jsp";
+                        if (true) {
+                            String id = request.getParameter("id");
+                            if (id != null) {
+                                session.setAttribute("listOfInvoice", invoiceManagementBean.listInvoicesTiedToSCO(Long.parseLong(id)));
+                                session.setAttribute("previousManagementPage", "sco");
+                                nextPage = "InvoiceManagement/scoManagement_invoice.jsp";
+                            }
+                            break;
                         }
-                        break;
                     case "RetrieveInvoice":
-                        id = request.getParameter("id");
-                        if (id != null) {
-                            session.setAttribute("invoice", invoiceManagementBean.getInvoice(Long.parseLong(id)));
-                            session.setAttribute("invoicePayments", paymentManagementBeanLocal.listPaymentByInvoice(Long.parseLong(id)));
-                            nextPage = "OrderManagement/invoiceManagement.jsp";
+                        if (true) {
+                            String id = request.getParameter("id");
+                            if (id != null) {
+                                session.setAttribute("invoice", invoiceManagementBean.getInvoice(Long.parseLong(id)));
+                                session.setAttribute("invoicePayments", paymentManagementBeanLocal.listPaymentByInvoice(Long.parseLong(id)));
+                                nextPage = "InvoiceManagement/invoiceManagement.jsp";
+                            }
+                            break;
                         }
-                        break;
-
                     case "DeleteInvoice":
                         if (invoice != null) {
                             returnHelper = invoiceManagementBean.deleteInvoice(invoice.getId(), isAdmin);
@@ -97,12 +112,12 @@ public class InvoiceManagementController extends HttpServlet {
                                 session.setAttribute("sco", orderManagementBean.getSalesConfirmationOrder(sco.getId()));
                                 session.removeAttribute("invoice");
 
-                                nextPage = "OrderManagement/scoManagement_invoice.jsp?goodMsg=" + returnHelper.getDescription();
+                                nextPage = "InvoiceManagement/scoManagement_invoice.jsp?goodMsg=" + returnHelper.getDescription();
                             } else {
-                                nextPage = "OrderManagement/scoManagement_invoice.jsp?errMsg=" + returnHelper.getDescription();
+                                nextPage = "InvoiceManagement/scoManagement_invoice.jsp?errMsg=" + returnHelper.getDescription();
                             }
                         } else {
-                            nextPage = "OrderManagement/scoManagement_invoice.jsp?errMsg=Delete Delivery Invoice failed. An error has occured.";
+                            nextPage = "InvoiceManagement/scoManagement_invoice.jsp?errMsg=Delete Delivery Invoice failed. An error has occured.";
                         }
                         break;
 
@@ -111,15 +126,14 @@ public class InvoiceManagementController extends HttpServlet {
                         String invoiceSent = request.getParameter("invoiceSent");
                         String invoicePaid = request.getParameter("invoicePaid");
                         String estimatedDeliveryDate = request.getParameter("estimatedDeliveryDate");
-
                         if (source.equals("AddLineItemToExistingInvoice")) {
                             if (itemName == null || itemName.isEmpty() || itemDescription == null || itemDescription.isEmpty() || itemQty == null || itemQty.isEmpty() || itemUnitPrice == null || itemUnitPrice.isEmpty()) {
-                                nextPage = "OrderManagement/invoiceManagement.jsp?invoiceNumber=" + invoiceNumber + "&invoiceCreated=" + invoiceCreated + "&invoiceSent=" + invoiceSent + "&invoicePaid=" + invoicePaid + "&estimatedDeliveryDate=" + estimatedDeliveryDate + "&errMsg=Please fill in all the fields for the item.";
+                                nextPage = "InvoiceManagement/invoiceManagement.jsp?invoiceNumber=" + invoiceNumber + "&invoiceCreated=" + invoiceCreated + "&invoiceSent=" + invoiceSent + "&invoicePaid=" + invoicePaid + "&estimatedDeliveryDate=" + estimatedDeliveryDate + "&errMsg=Please fill in all the fields for the item.";
                                 break;
                             }
                         }
                         if (invoiceNumber == null || invoiceNumber.isEmpty() || invoiceCreated == null || invoiceCreated.isEmpty()) {
-                            nextPage = "OrderManagement/invoiceManagement.jsp?invoiceNumber=" + invoiceNumber + "&invoiceCreated=" + invoiceCreated + "&invoiceSent=" + invoiceSent + "&invoicePaid=" + invoicePaid + "&estimatedDeliveryDate=" + estimatedDeliveryDate + "&errMsg=Please fill in all the fields for the Invoice.";
+                            nextPage = "InvoiceManagement/invoiceManagement.jsp?invoiceNumber=" + invoiceNumber + "&invoiceCreated=" + invoiceCreated + "&invoiceSent=" + invoiceSent + "&invoicePaid=" + invoicePaid + "&estimatedDeliveryDate=" + estimatedDeliveryDate + "&errMsg=Please fill in all the fields for the Invoice.";
                         } else {
                             String terms = request.getParameter("terms");
                             Integer intTerms = null;
@@ -132,10 +146,15 @@ public class InvoiceManagementController extends HttpServlet {
                             Date invoiceSentDateDate = null;
                             if (invoiceSent != null && !invoiceSent.isEmpty()) {
                                 invoiceSentDateDate = formatter.parse(invoiceSent);
+                            } else {
+                                invoiceSentDateDate = null;
                             }
+
                             Date invoicePaidDateDate = null;
                             if (invoicePaid != null && !invoicePaid.isEmpty()) {
                                 invoicePaidDateDate = formatter.parse(invoicePaid);
+                            } else {
+                                invoicePaidDateDate = null;
                             }
 
                             //Update Invoice
@@ -144,7 +163,7 @@ public class InvoiceManagementController extends HttpServlet {
                                 Long invoiceID = returnHelper.getID();
                                 invoice = invoiceManagementBean.getInvoice(invoiceID);
                                 session.setAttribute("invoice", invoice);
-                                nextPage = "OrderManagement/invoiceManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                                nextPage = "InvoiceManagement/invoiceManagement.jsp?goodMsg=" + returnHelper.getDescription();
 
                                 //Update line item if there is any
                                 if (itemName != null && !itemName.isEmpty() && itemDescription != null && !itemDescription.isEmpty() && itemQty != null && !itemQty.isEmpty() && itemUnitPrice != null && !itemUnitPrice.isEmpty()) {
@@ -152,13 +171,13 @@ public class InvoiceManagementController extends HttpServlet {
                                     invoice = invoiceManagementBean.getInvoice(invoiceID);
                                     if (returnHelper.getResult() && invoice != null) {
                                         session.setAttribute("invoice", invoice);
-                                        nextPage = "OrderManagement/invoiceManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                                        nextPage = "InvoiceManagement/invoiceManagement.jsp?goodMsg=" + returnHelper.getDescription();
                                     } else {
-                                        nextPage = "OrderManagement/invoiceManagement.jsp?errMsg=" + returnHelper.getDescription();
+                                        nextPage = "InvoiceManagement/invoiceManagement.jsp?errMsg=" + returnHelper.getDescription();
                                     }
                                 }
                             } else {
-                                nextPage = "OrderManagement/invoiceManagement.jsp?errMsg=" + returnHelper.getDescription();
+                                nextPage = "InvoiceManagement/invoiceManagement.jsp?errMsg=" + returnHelper.getDescription();
                                 break;
                             }
                         }
@@ -169,9 +188,9 @@ public class InvoiceManagementController extends HttpServlet {
                         invoice = invoiceManagementBean.getInvoice(invoice.getId());
                         if (returnHelper.getResult() && invoice != null) {
                             session.setAttribute("invoice", invoice);
-                            nextPage = "OrderManagement/invoiceManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                            nextPage = "InvoiceManagement/invoiceManagement.jsp?goodMsg=" + returnHelper.getDescription();
                         } else {
-                            nextPage = "OrderManagement/invoiceManagement.jsp?errMsg=" + returnHelper.getDescription();
+                            nextPage = "InvoiceManagement/invoiceManagement.jsp?errMsg=" + returnHelper.getDescription();
                         }
                         break;
 
@@ -180,9 +199,9 @@ public class InvoiceManagementController extends HttpServlet {
                         invoice = invoiceManagementBean.getInvoice(invoice.getId());
                         if (returnHelper.getResult() && invoice != null) {
                             session.setAttribute("invoice", invoice);
-                            nextPage = "OrderManagement/invoiceManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                            nextPage = "InvoiceManagement/invoiceManagement.jsp?goodMsg=" + returnHelper.getDescription();
                         } else {
-                            nextPage = "OrderManagement/invoiceManagement.jsp?errMsg=" + returnHelper.getDescription();
+                            nextPage = "InvoiceManagement/invoiceManagement.jsp?errMsg=" + returnHelper.getDescription();
                         }
                         break;
 
@@ -191,16 +210,16 @@ public class InvoiceManagementController extends HttpServlet {
                         invoice = invoiceManagementBean.getInvoice(invoice.getId());
                         if (returnHelper.getResult() && invoice != null) {
                             session.setAttribute("invoice", invoice);
-                            nextPage = "OrderManagement/invoiceManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                            nextPage = "InvoiceManagement/invoiceManagement.jsp?goodMsg=" + returnHelper.getDescription();
                         } else {
-                            nextPage = "OrderManagement/invoiceManagement.jsp?errMsg=" + returnHelper.getDescription();
+                            nextPage = "InvoiceManagement/invoiceManagement.jsp?errMsg=" + returnHelper.getDescription();
                         }
                         break;
 
                     case "EditLineItem":
                         //Check for empty fields
                         if (itemName == null || itemName.isEmpty() || itemDescription == null || itemDescription.isEmpty() || itemQty == null || itemQty.isEmpty() || itemUnitPrice == null || itemUnitPrice.isEmpty()) {
-                            nextPage = "OrderManagement/invoiceManagement.jsp?errMsg=Please fill in all the fields for the item.";
+                            nextPage = "InvoiceManagement/invoiceManagement.jsp?errMsg=Please fill in all the fields for the item.";
                             break;
                         }
 
@@ -209,9 +228,9 @@ public class InvoiceManagementController extends HttpServlet {
                         invoice = invoiceManagementBean.getInvoice(invoice.getId());
                         if (returnHelper.getResult() && invoice != null) {
                             session.setAttribute("invoice", invoice);
-                            nextPage = "OrderManagement/invoiceManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                            nextPage = "InvoiceManagement/invoiceManagement.jsp?goodMsg=" + returnHelper.getDescription();
                         } else {
-                            nextPage = "OrderManagement/invoiceManagement.jsp?errMsg=" + returnHelper.getDescription();
+                            nextPage = "InvoiceManagement/invoiceManagement.jsp?errMsg=" + returnHelper.getDescription();
                         }
                         break;
 
@@ -223,9 +242,9 @@ public class InvoiceManagementController extends HttpServlet {
                             invoice = invoiceManagementBean.getInvoice(invoice.getId());
                             if (returnHelper.getResult() && invoice != null) {
                                 session.setAttribute("invoice", invoice);
-                                nextPage = "OrderManagement/invoiceManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                                nextPage = "InvoiceManagement/invoiceManagement.jsp?goodMsg=" + returnHelper.getDescription();
                             } else {
-                                nextPage = "OrderManagement/invoiceManagement.jsp?errMsg=" + returnHelper.getDescription();
+                                nextPage = "InvoiceManagement/invoiceManagement.jsp?errMsg=" + returnHelper.getDescription();
                             }
                             //manual key in
                         } else if (source == null) {
@@ -242,9 +261,9 @@ public class InvoiceManagementController extends HttpServlet {
                                 invoice = invoiceManagementBean.getInvoice(invoice.getId());
                                 if (returnHelper.getResult() && invoice != null) {
                                     session.setAttribute("invoice", invoice);
-                                    nextPage = "OrderManagement/invoiceManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                                    nextPage = "InvoiceManagement/invoiceManagement.jsp?goodMsg=" + returnHelper.getDescription();
                                 } else {
-                                    nextPage = "OrderManagement/invoiceManagement.jsp?errMsg=" + returnHelper.getDescription();
+                                    nextPage = "InvoiceManagement/invoiceManagement.jsp?errMsg=" + returnHelper.getDescription();
                                 }
                             }
                         }
@@ -284,7 +303,7 @@ public class InvoiceManagementController extends HttpServlet {
                 return;
             }
         } catch (Exception ex) {
-            response.sendRedirect("OrderManagement/scoManagement_invoice.jsp?errMsg=An error has occured");
+            response.sendRedirect("InvoiceManagement/scoManagement_invoice.jsp?errMsg=An error has occured");
             ex.printStackTrace();
             return;
         }

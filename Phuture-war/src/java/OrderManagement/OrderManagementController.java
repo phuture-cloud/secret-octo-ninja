@@ -87,6 +87,11 @@ public class OrderManagementController extends HttpServlet {
         ReturnHelper returnHelper = null;
         Boolean isAdmin = false;
 
+        String previousManagementPage = request.getParameter("previousManagementPage");
+        if (previousManagementPage != null && !previousManagementPage.isEmpty()) {
+            session.setAttribute("previousManagementPage", previousManagementPage);
+        }
+
         try {
             //Following functions are only accessible if logged in
             if (checkLogin()) {
@@ -105,6 +110,7 @@ public class OrderManagementController extends HttpServlet {
                                 nextPage = "error500.html";
                             } else {
                                 session.setAttribute("salesConfirmationOrders", salesConfirmationOrders);
+                                session.setAttribute("previousManagementPage", "sco");
                                 nextPage = "OrderManagement/scoManagement.jsp";
                             }
                             session.removeAttribute("contacts");
@@ -292,16 +298,7 @@ public class OrderManagementController extends HttpServlet {
                             } else {
                                 session.setAttribute("customers", customers);
                                 session.setAttribute("sco", sco);
-                                if (source != null && source.equals("listAllInvoice")) {
-                                    nextPage = "OrderManagement/scoManagement_invoice.jsp";
-                                } else if (source != null && source.equals("listAllDO")) {
-                                    nextPage = "OrderManagement/scoManagement_DO.jsp";
-                                } else if (source != null && source.equals("listAllPO")) {
-                                    //remove
-                                    nextPage = "OrderManagement/scoManagement_PO.jsp";
-                                } else {
-                                    nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id;
-                                }
+                                nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id;
                             }
                         }
                         break;

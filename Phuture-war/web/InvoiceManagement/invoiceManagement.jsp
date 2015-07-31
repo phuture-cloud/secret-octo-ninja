@@ -10,6 +10,10 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
     Staff staff = (Staff) (session.getAttribute("staff"));
+    String previousMgtPage = (String) session.getAttribute("previousManagementPage");
+    if (previousMgtPage == null) {
+        previousMgtPage = "";
+    }
     Invoice invoice = (Invoice) (session.getAttribute("invoice"));
     List<PaymentRecord> invoicePayments = (List<PaymentRecord>) (session.getAttribute("invoicePayments"));
     if (session.isNew()) {
@@ -76,7 +80,11 @@
 
                 function back() {
                     window.onbeforeunload = null;
+                <% if (previousMgtPage.equals("soa")) {%>
+                    window.location.href = "../StatementOfAccountManagementController?target=RetrieveSOA&id=<%=invoice.getSalesConfirmationOrder().getCustomer().getId()%>";
+                <%} else {%>
                     window.location.href = "scoManagement_invoice.jsp";
+                <%}%>
                 }
 
                 function back2() {
@@ -168,9 +176,16 @@
                                         <i class="fa fa-home"></i>
                                     </a>
                                 </li>
+                                <%if (previousMgtPage.equals("sco")) {%>
                                 <li><span><a href= "../OrderManagementController?target=ListAllSCO">SCO Management</a></span></li>
                                 <li><span><a href= "../OrderManagementController?target=RetrieveSCO&id=<%=invoice.getSalesConfirmationOrder().getId()%>"><%=invoice.getSalesConfirmationOrder().getSalesConfirmationOrderNumber()%></a></span></li>
                                 <li><span><a href= "scoManagement_invoice.jsp">Invoices</a></span></li>
+                                <%} else if (previousMgtPage.equals("invoices")) {%>
+                                <li><span><a href= "../InvoiceManagementController?target=ListAllInvoice">Invoices</a></span></li>
+                                <%} else if (previousMgtPage.equals("soa")) {%>
+                                <li><span><a href= "../StatementOfAccountManagementController?target=ListAllSOA">Statement of Accounts</a></span></li>
+                                <li><span><a href= "../StatementOfAccountManagementController?target=RetrieveSOA&id=<%=invoice.getSalesConfirmationOrder().getCustomer().getId()%>"><%=invoice.getSalesConfirmationOrder().getCustomer().getCustomerName()%></a></span></span></li>
+                                <%}%>
                                 <li><span>Invoice &nbsp;&nbsp</span></li>
                             </ol>
                         </div>
@@ -283,7 +298,7 @@
                                                                     String date = DATE_FORMAT.format(invoice.getDateSent());
                                                                     out.print("<input " + formDisablerFlag + " id='invoiceSent' name='invoiceSent' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "'>");
                                                                 } else {
-                                                                    out.print("<input " + formDisablerFlag + " id='invoiceSent' name='invoiceSent' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' required placeholder='dd/mm/yyyy'>");
+                                                                    out.print("<input " + formDisablerFlag + " id='invoiceSent' name='invoiceSent' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' placeholder='dd/mm/yyyy'>");
                                                                 }
                                                             %>
                                                         </span>
@@ -298,7 +313,7 @@
                                                                     String date = DATE_FORMAT.format(invoice.getDatePaid());
                                                                     out.print("<input " + formDisablerFlag + " id='invoicePaid' name='invoicePaid' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "'>");
                                                                 } else {
-                                                                    out.print("<input " + formDisablerFlag + " id='invoicePaid' name='invoicePaid' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' required placeholder='dd/mm/yyyy'>");
+                                                                    out.print("<input " + formDisablerFlag + " id='invoicePaid' name='invoicePaid' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' placeholder='dd/mm/yyyy'>");
                                                                 }
                                                             %>
                                                         </span>
@@ -370,6 +385,19 @@
                                                                 if ((invoice.getStatus() != null && !invoice.getStatus().isEmpty())) {
                                                                     out.print(invoice.getStatus());
                                                                 }
+                                                            %>
+                                                        </span>
+                                                    </p>
+                                                    <%}%>
+
+                                                    <% if (invoice != null && invoice.getDateDue() != null) {%>
+                                                    <p class="mb-none">
+                                                        <span class="text-dark">Date Due: </span>
+                                                        <span class="value" style="min-width: 110px; font-size: 10.5pt; text-align: left;">
+                                                            <%
+                                                                SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
+                                                                String date = DATE_FORMAT.format(invoice.getDateDue());
+                                                                out.print(date);
                                                             %>
                                                         </span>
                                                     </p>

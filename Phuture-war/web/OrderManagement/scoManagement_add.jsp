@@ -8,6 +8,10 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
     Staff staff = (Staff) (session.getAttribute("staff"));
+    String previousMgtPage = (String) session.getAttribute("previousManagementPage");
+    if (previousMgtPage == null) {
+        previousMgtPage = "";
+    }
     List<Customer> customers = (List<Customer>) (session.getAttribute("customers"));
     List<Contact> contacts = (List<Contact>) (session.getAttribute("contacts"));
     SalesConfirmationOrder sco = (SalesConfirmationOrder) (session.getAttribute("sco"));
@@ -84,7 +88,11 @@
 
                 function back() {
                     window.onbeforeunload = null;
+                <% if (previousMgtPage.equals("soa")) {%>
+                    window.location.href = "../StatementOfAccountManagementController?target=RetrieveSOA&id=<%=sco.getCustomer().getId()%>";
+                <%} else {%>
                     window.location.href = "../OrderManagementController?target=ListAllSCO";
+                <%}%>
                 }
 
                 function back2(id) {
@@ -245,7 +253,12 @@
                                         <i class="fa fa-home"></i>
                                     </a>
                                 </li>
+                                <%if (previousMgtPage.equals("sco")) {%>
                                 <li><span><a href= "../OrderManagementController?target=ListAllSCO">SCO Management</a></span></li>
+                                <%} else if (previousMgtPage.equals("soa")) {%>
+                                <li><span><a href= "../StatementOfAccountManagementController?target=ListAllSOA">Statement of Accounts</a></span></li>
+                                <li><span><a href= "../StatementOfAccountManagementController?target=RetrieveSOA&id=<%=sco.getCustomer().getId()%>"><%=sco.getCustomer().getCustomerName()%></a></span></span></li>
+                                <%}%>
                                 <li><span>SCO &nbsp;&nbsp</span></li>
                             </ol>
                         </div>

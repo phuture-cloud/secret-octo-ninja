@@ -38,19 +38,19 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="../PurchaseOrderManagementController?target=ListAllPO">
                             <i class="fa fa-file" aria-hidden="true"></i>
                             <span>Purchase Order</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="../DeliveryOrderManagementController?target=ListAllDO">
                             <i class="fa fa-truck" aria-hidden="true"></i>
                             <span>Delivery Order</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="../InvoiceManagementController?target=ListAllInvoice">
                             <i class="fa fa-dollar" aria-hidden="true"></i>
                             <span>Invoice</span>
                         </a>

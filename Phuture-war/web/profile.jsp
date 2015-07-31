@@ -74,7 +74,7 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="col-md-3 control-label">Signature <br>(use only if updating existing signature)</label>
+                                            <label class="col-md-3 control-label">Signature <br>(select file only if updating signature)</label>
                                             <div class="col-md-6">
                                                 <div class="fileupload fileupload-new" data-provides="fileupload">
                                                     <div class="input-append">
@@ -89,12 +89,11 @@
                                                             <input type="file" id="picture" name="signature"> 
                                                         </span>
                                                         <a href="#" class="btn btn-default fileupload-exists" data-dismiss="fileupload">Remove</a>
+                                                        <%if (staff.getSignature() != null && staff.getSignature().length > 0) {%>
+                                                        <button type="button" href="#viewSign" class="btn btn-default modal-with-form">View Current Signature</button>
+                                                        <%}%>
                                                     </div>
                                                 </div>
-
-                                                <%if (staff.getSignature() != null) {%>
-                                                <button type="button" href="#viewSign" class="btn btn-default modal-with-form">View Signature</button>
-                                                <%}%>
 
                                                 <div id="viewSign" class="modal-block modal-block-primary mfp-hide">
                                                     <section class="panel">
@@ -104,7 +103,7 @@
                                                         <div class="panel-body">
                                                             <div class="form-group mt-lg">
                                                                 <div class="col-sm-12">
-                                                                    <img src="http://localhost:8080/Phuture-war/sig?id=<%=staff.getId()%>">
+                                                                    <center><img class="img-responsive" src="http://localhost:8080/Phuture-war/sig?id=<%=staff.getId()%>"></center>
                                                                 </div>
                                                             </div>
                                                         </div>

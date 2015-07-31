@@ -9,6 +9,10 @@
 <%
     Staff staff = (Staff) (session.getAttribute("staff"));
     DeliveryOrder deliveryOrder = (DeliveryOrder) (session.getAttribute("do"));
+    String previousMgtPage = (String) session.getAttribute("previousManagementPage");
+    if (previousMgtPage == null) {
+        previousMgtPage = "";
+    }
     if (session.isNew()) {
         response.sendRedirect("../index.jsp?errMsg=Invalid Request. Please login.");
     } else if (staff == null) {
@@ -72,7 +76,11 @@
 
                 function back() {
                     window.onbeforeunload = null;
+                <% if (previousMgtPage.equals("soa")) {%>
+                    window.location.href = "../StatementOfAccountManagementController?target=RetrieveSOA&id=<%=deliveryOrder.getSalesConfirmationOrder().getCustomer().getId()%>";
+                <%} else {%>
                     window.location.href = "scoManagement_DO.jsp";
+                <%}%>
                 }
 
                 function back2() {
@@ -133,11 +141,6 @@
                     document.editContactForm.submit();
                 }
 
-                function listAllInvoices(id) {
-                    window.onbeforeunload = null;
-                    window.location.href = "../OrderManagementController?target=RetrieveSCO&source=listAllInvoices&id=" + id;
-                }
-
                 window.onbeforeunload = function () {
                     return 'There may be unsaved changes to this page. If you continue, you will lose them.';
                 };
@@ -164,9 +167,16 @@
                                         <i class="fa fa-home"></i>
                                     </a>
                                 </li>
+                                <%if (previousMgtPage.equals("sco")) {%>
                                 <li><span><a href= "../OrderManagementController?target=ListAllSCO">SCO Management</a></span></li>
-                                <li><span><a href= "../OrderManagementController?target=RetrieveSCO&id=<%=deliveryOrder.getSalesConfirmationOrder().getId()%>">SCO No. <%=deliveryOrder.getSalesConfirmationOrder().getSalesConfirmationOrderNumber()%></a></span></li>
-                                <li><span><a href= "scoManagement_DO.jsp">DOs</a></span></li>
+                                <li><span><a href= "../OrderManagementController?target=RetrieveSCO&id=<%=deliveryOrder.getSalesConfirmationOrder().getId()%>"><%=deliveryOrder.getSalesConfirmationOrder().getSalesConfirmationOrderNumber()%></a></span></li>
+                                <li><span><a href= "scoManagement_DO.jsp">Delivery Orders</a></span></li>
+                                <%} else if (previousMgtPage.equals("deliveryOrders")) {%>
+                                <li><span><a href= "../DeliveryOrderManagementController?target=ListAllDO">Delivery Orders</a></span></li>  
+                                <%} else if (previousMgtPage.equals("soa")) {%>
+                                <li><span><a href= "../StatementOfAccountManagementController?target=ListAllSOA">Statement of Accounts</a></span></li>
+                                <li><span><a href= "../StatementOfAccountManagementController?target=RetrieveSOA&id=<%=deliveryOrder.getSalesConfirmationOrder().getCustomer().getId()%>"><%=deliveryOrder.getSalesConfirmationOrder().getCustomer().getCustomerName()%></a></span></span></li>
+                                <%}%>
                                 <li><span>DO &nbsp;&nbsp</span></li>
                             </ol>
                         </div>

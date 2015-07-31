@@ -180,7 +180,7 @@ public class StatementOfAccountBean implements StatementOfAccountBeanLocal {
                 soali.setEntryDate(invoice.getDateSent());
                 soali.setReferenceNo(invoice.getInvoiceNumber());
                 soali.setMethod("");
-                soali.setDescription("Invoice for order " + invoice.getSalesConfirmationOrder().getSalesConfirmationOrderNumber());
+                soali.setDescription("Invoice for " + invoice.getSalesConfirmationOrder().getSalesConfirmationOrderNumber());
                 soali.setDueDate(invoice.getDateDue());
                 soali.setScoID(invoice.getSalesConfirmationOrder().getId());
                 soali.setInvoiceID(invoice.getId());
@@ -188,7 +188,9 @@ public class StatementOfAccountBean implements StatementOfAccountBeanLocal {
                 soali.setCredit(0.0);
                 em.persist(soali);
                 soalis.add(soali);
-                totalAmountInvoiced = totalAmountInvoiced + invoice.getTotalPrice();
+                if (invoice.getDateSent() != null || invoice.getDatePaid() != null) {
+                    totalAmountInvoiced = totalAmountInvoiced + invoice.getTotalPrice();
+                }
                 //For each invoice
                 //Loop thru the customer payment and create it as an SOALineItem
                 //At the same time calculate the amount overdue for each invoice
@@ -203,7 +205,7 @@ public class StatementOfAccountBean implements StatementOfAccountBeanLocal {
                     soali2.setEntryDate(paymentRecord.getPaymentDate());
                     soali2.setReferenceNo(paymentRecord.getPaymentReferenceNumber());
                     soali2.setMethod(paymentRecord.getPaymentMethod());
-                    soali2.setDescription("Pymt for invoice " + paymentRecord.getInvoice().getInvoiceNumber());
+                    soali2.setDescription("Pymt for " + paymentRecord.getInvoice().getInvoiceNumber());
                     soali2.setDueDate(paymentRecord.getInvoice().getDateDue());
                     soali2.setScoID(paymentRecord.getInvoice().getSalesConfirmationOrder().getId());
                     soali2.setInvoiceID(paymentRecord.getInvoice().getId());
@@ -212,7 +214,10 @@ public class StatementOfAccountBean implements StatementOfAccountBeanLocal {
                     soali2.setDebit(0.0);
                     em.persist(soali2);
                     soalis.add(soali2);
-                    totalAmountPaidForThisCustomer = totalAmountPaidForThisCustomer + paymentRecord.getAmount();
+                    //If payment method is credit note, don't include in total
+                    if (!paymentRecord.getPaymentMethod().equals("Credit Note")) {
+                        totalAmountPaidForThisCustomer = totalAmountPaidForThisCustomer + paymentRecord.getAmount();
+                    }
                     totalAmountPaidForThisInvoice = totalAmountPaidForThisInvoice + paymentRecord.getAmount();
                 }
                 //Calculate amount overdue for each invoice
