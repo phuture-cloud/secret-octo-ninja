@@ -102,6 +102,7 @@
                                         <tr>
                                             <th>Invoice #</th>
                                             <th>Invoice Date</th>
+                                            <th>Invoice Amount</th>
                                             <th>Invoice Status</th>
                                             <th style="width: 400px;">Action</th>
                                         </tr>
@@ -119,6 +120,7 @@
                                                     out.print(date);
                                                 %>
                                             </td>
+                                            <td><%=invoices.get(i).getTotalPrice()%></td>
                                             <td><%=invoices.get(i).getStatus()%></td>
                                             <td><button type="button" class="btn btn-default btn-block" onclick="javascript:viewInvoice('<%=invoices.get(i).getId()%>')">View</button></td>
                                         </tr>
