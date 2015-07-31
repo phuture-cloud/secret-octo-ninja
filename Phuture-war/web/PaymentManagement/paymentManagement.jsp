@@ -70,10 +70,10 @@
                             <table class="table table-bordered table-striped mb-none" id="datatable-default">
                                 <thead>
                                     <tr>
-                                        <th>Amount</th>
                                         <th>Payment Date</th>
                                         <th>Payment Method</th>
                                         <th>Payment Reference Number</th>
+                                        <th>Amount</th>
                                         <th>Notes</th>
                                         <th style="width: 400px;">Action</th>
                                     </tr>
@@ -88,11 +88,6 @@
                                     %>
                                     <tr>        
                                         <td>
-                                            <%                                                    NumberFormat formatter = NumberFormat.getCurrencyInstance();
-                                                out.print(formatter.format(paymentRecord.getAmount()));
-                                            %>
-                                        </td>
-                                        <td>
                                             <%
                                                 SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("d MMM yyyy");
                                                 String date = DATE_FORMAT.format(paymentRecord.getPaymentDate());
@@ -101,6 +96,12 @@
                                         </td>
                                         <td><%=paymentRecord.getPaymentMethod()%></td>
                                         <td><%=paymentRecord.getPaymentReferenceNumber()%></td>
+                                        <td>
+                                            <%                                                   
+                                                NumberFormat formatter = NumberFormat.getCurrencyInstance();
+                                                out.print(formatter.format(paymentRecord.getAmount()));
+                                            %>
+                                        </td>
                                         <td>
                                             <a class="modal-with-move-anim btn btn-default btn-block" href="#modalNotes<%=paymentRecord.getId()%>">View</a>
                                             <div id="modalNotes<%=paymentRecord.getId()%>" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">

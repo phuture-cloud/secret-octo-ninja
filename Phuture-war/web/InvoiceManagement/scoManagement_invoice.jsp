@@ -1,3 +1,4 @@
+<%@page import="java.text.NumberFormat"%>
 <%@page import="EntityManager.StatementOfAccount"%>
 <%@page import="EntityManager.Invoice"%>
 <%@page import="EntityManager.DeliveryOrder"%>
@@ -32,6 +33,7 @@
     } else if (staff == null) {
         response.sendRedirect("../index.jsp?errMsg=Session Expired.");
     } else {
+        NumberFormat formatter = NumberFormat.getCurrencyInstance();
 %>
 <!doctype html>
 <html class="fixed">
@@ -120,7 +122,7 @@
                                                     out.print(date);
                                                 %>
                                             </td>
-                                            <td><%=invoices.get(i).getTotalPrice()%></td>
+                                            <td><%=formatter.format(invoices.get(i).getTotalPrice())%></td>
                                             <td><%=invoices.get(i).getStatus()%></td>
                                             <td><button type="button" class="btn btn-default btn-block" onclick="javascript:viewInvoice('<%=invoices.get(i).getId()%>')">View</button></td>
                                         </tr>
