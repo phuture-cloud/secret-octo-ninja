@@ -35,45 +35,6 @@
         <jsp:include page="../displayNotification.jsp" />
         <section class="body">
             <script>
-                $(document).ready(function () {
-                    $('#input_itemQty, #input_itemUnitPrice').change(function () {
-                        var itemUnitPrice = parseFloat($('#input_itemUnitPrice').val());
-                        var itemQty = parseInt($('#input_itemQty').val());
-                        var itemAmount = itemUnitPrice * itemQty;
-                        var subtotal = parseFloat($('#subtotal').val());
-                        var gst = parseFloat($('#gst').val());
-                        var totalPrice = parseFloat($('#totalPrice').val());
-
-                        if (!isNaN(itemAmount)) {
-                            if (isNaN(subtotal)) {
-                                subtotal = 0;
-                            }
-                            if (isNaN(gst)) {
-                                gst = 0;
-                            }
-                            if (isNaN(totalPrice)) {
-                                totalPrice = 0;
-                            }
-
-                            var newSubtotal = subtotal + itemAmount;
-                            var newGst = newSubtotal * 0.07;
-                            var newTotalPrice = newSubtotal + newGst;
-
-                            $('#input_itemAmount').val(itemAmount.toFixed(2));
-                            $('#output_subtotal').text("$" + newSubtotal.toFixed(2));
-                            $('#output_gst').text("$" + newGst.toFixed(2));
-                            $('#output_totalPrice').text("$" + newTotalPrice.toFixed(2));
-                        }
-
-                        if (isNaN(itemUnitPrice) || isNaN(itemQty)) {
-                            $('#input_itemAmount').val("");
-                            $('#output_subtotal').text("$" + subtotal.toFixed(2));
-                            $('#output_gst').text("$" + gst.toFixed(2));
-                            $('#output_totalPrice').text("$" + totalPrice.toFixed(2));
-                        }
-                    });
-                });
-
                 function back() {
                     window.onbeforeunload = null;
                 <% if (previousMgtPage.equals("soa")) {%>
@@ -114,7 +75,6 @@
                     doManagement.lineItemID.value = lineItemID;
                     doManagement.itemName.value = document.getElementById("itemName" + lineItemID).value;
                     doManagement.itemDescription.value = document.getElementById("itemDescription" + lineItemID).value;
-                    doManagement.itemUnitPrice.value = document.getElementById("itemUnitPrice" + lineItemID).value;
                     doManagement.itemQty.value = document.getElementById("itemQty" + lineItemID).value;
                     doManagement.target.value = "EditLineItem";
                     document.doManagement.action = "../DeliveryOrderManagementController?editingLineItem=" + lineItemID;
@@ -171,12 +131,12 @@
                                 <li><span><a href= "../OrderManagementController?target=ListAllSCO">SCO Management</a></span></li>
                                 <li><span><a href= "../OrderManagementController?target=RetrieveSCO&id=<%=deliveryOrder.getSalesConfirmationOrder().getId()%>"><%=deliveryOrder.getSalesConfirmationOrder().getSalesConfirmationOrderNumber()%></a></span></li>
                                 <li><span><a href= "scoManagement_DO.jsp">Delivery Orders</a></span></li>
-                                <%} else if (previousMgtPage.equals("deliveryOrders")) {%>
+                                            <%} else if (previousMgtPage.equals("deliveryOrders")) {%>
                                 <li><span><a href= "../DeliveryOrderManagementController?target=ListAllDO">Delivery Orders</a></span></li>  
-                                <%} else if (previousMgtPage.equals("soa")) {%>
+                                            <%} else if (previousMgtPage.equals("soa")) {%>
                                 <li><span><a href= "../StatementOfAccountManagementController?target=ListAllSOA">Statement of Accounts</a></span></li>
                                 <li><span><a href= "../StatementOfAccountManagementController?target=RetrieveSOA&id=<%=deliveryOrder.getSalesConfirmationOrder().getCustomer().getId()%>"><%=deliveryOrder.getSalesConfirmationOrder().getCustomer().getCustomerName()%></a></span></span></li>
-                                <%}%>
+                                            <%}%>
                                 <li><span>DO &nbsp;&nbsp</span></li>
                             </ol>
                         </div>
@@ -337,9 +297,7 @@
                                                 <tr class="h4 text-dark">
                                                     <th id="cell-item" class="text-weight-semibold">Item</th>
                                                     <th id="cell-desc" class="text-weight-semibold">Description</th>
-                                                    <th id="cell-price" class="text-center text-weight-semibold">Unit Price</th>
                                                     <th id="cell-qty" class="text-center text-weight-semibold">Quantity</th>
-                                                    <th id="cell-total" class="text-center text-weight-semibold">Amount</th>
                                                     <th id="cell-total" class="text-center text-weight-semibold"></th>
                                                 </tr>
                                             </thead>
@@ -362,19 +320,6 @@
                                                         %>
                                                     </td>
                                                     <td class="text-center">
-                                                        <div class="input-group">
-                                                            <span class="input-group-addon">
-                                                                <i class="fa fa-dollar"></i>
-                                                            </span>
-                                                            <%if (!editingLineItem.equals("")) {
-                                                                    out.println("<input type='number' class='form-control' id='input_itemUnitPrice' name='itemUnitPrice' min='0' step='any' disabled/>");
-                                                                } else {
-                                                                    out.println("<input type='number' class='form-control' id='input_itemUnitPrice' name='itemUnitPrice' min='0' step='any'/>");
-                                                                }
-                                                            %>
-                                                        </div>
-                                                    </td>
-                                                    <td class="text-center">
                                                         <%if (!editingLineItem.equals("")) {
                                                                 out.println("<input type='number' class='form-control' id='input_itemQty' min='0' name='itemQty' disabled/>");
                                                             } else {
@@ -383,53 +328,26 @@
                                                         %>
                                                     </td>
                                                     <td class="text-center">
-                                                        <div class="input-group">
-                                                            <span class="input-group-addon">
-                                                                <i class="fa fa-dollar"></i>
-                                                            </span>
-                                                            <input type="text" class="form-control" id="input_itemAmount" name="itemAmount" disabled/>
-                                                        </div>
-                                                    </td>
-                                                    <td class="text-center">
-                                                        <button class='btn btn-default btn-block' onclick='javascript:addLineItemToExistingDO(<%=deliveryOrder.getId()%>)'>Add Item</button>
+                                                        <button class='btn btn-default btn-block' <%=formDisablerFlag%> onclick='javascript:addLineItemToExistingDO(<%=deliveryOrder.getId()%>)'>Add Item</button>
                                                     </td>
                                                 </tr>
 
                                                 <!-- loop line item page -->
                                                 <%
                                                     if (deliveryOrder != null && deliveryOrder.getItems() != null) {
-                                                        NumberFormat formatter = NumberFormat.getCurrencyInstance();
                                                         for (int i = 0; i < deliveryOrder.getItems().size(); i++) {
                                                             if (!editingLineItem.isEmpty() && editingLineItem.equals(deliveryOrder.getItems().get(i).getId() + "")) {
                                                                 //Print editable fields
-                                                                double price = deliveryOrder.getItems().get(i).getItemUnitPrice();
-
                                                 %>
                                                 <tr>
                                                     <td>
                                                         <input type='text' class='form-control' name='itemName' id='itemName<%=deliveryOrder.getItems().get(i).getId()%>' value='<%=deliveryOrder.getItems().get(i).getItemName()%>'/>
                                                     </td>
                                                     <td>
-                                                        <input type='text' class='form-control' name='itemDescription' id='itemDescription<%=deliveryOrder.getItems().get(i).getId()%>' value='<%=deliveryOrder.getItems().get(i).getItemDescription()%>'/>
-                                                    </td>
-                                                    <td class="text-center">
-                                                        <div class="input-group">
-                                                            <span class="input-group-addon">
-                                                                <i class="fa fa-dollar"></i>
-                                                            </span>
-                                                            <input type='number' class='form-control' id='itemUnitPrice<%=deliveryOrder.getItems().get(i).getId()%>' name='itemUnitPrice' min='0' step='any' value='<%=price%>'/>
-                                                        </div>
+                                                        <textarea class='form-control' rows='5' name='itemDescription' id='itemDescription<%=deliveryOrder.getItems().get(i).getId()%>'><%=deliveryOrder.getItems().get(i).getItemDescription()%></textarea>
                                                     </td>
                                                     <td class="text-center">
                                                         <input type='number' class='form-control' id='itemQty<%=deliveryOrder.getItems().get(i).getId()%>' min='0' name='itemQty' value='<%=deliveryOrder.getItems().get(i).getItemQty()%>'/>
-                                                    </td>
-                                                    <td class="text-center">
-                                                        <div class="input-group">
-                                                            <span class="input-group-addon">
-                                                                <i class="fa fa-dollar"></i>
-                                                            </span>
-                                                            <input type="text" class="form-control" id="input_itemAmount" name="itemAmount" disabled="" value=""/>
-                                                        </div>
                                                     </td>
                                                     <% //Print buttons for current editing line item
                                                         out.print("<td class='text-center'><div class='btn-group'><button class='btn btn-default' type='button' onclick='javascript:saveEditLineItem(" + deliveryOrder.getItems().get(i).getId() + ")'>Save</button>&nbsp;");
@@ -439,15 +357,10 @@
                                                 <%
                                                             } else {
                                                                 //Print normal text
-                                                                double price = 0;
                                                                 out.print("<tr>");
                                                                 out.print("<td class='text-weight-semibold text-dark'>" + deliveryOrder.getItems().get(i).getItemName() + "</td>");
-                                                                out.print("<td>" + deliveryOrder.getItems().get(i).getItemDescription() + "</td>");
-                                                                price = deliveryOrder.getItems().get(i).getItemUnitPrice();
-                                                                out.print("<td class='text-center'>" + formatter.format(price) + "</td>");
+                                                                out.print("<td>" + deliveryOrder.getItems().get(i).getItemDescription().replaceAll("\\r", "<br>") + "</td>");
                                                                 out.print("<td class='text-center'>" + deliveryOrder.getItems().get(i).getItemQty() + "</td>");
-                                                                price = deliveryOrder.getItems().get(i).getItemUnitPrice() * deliveryOrder.getItems().get(i).getItemQty();
-                                                                out.print("<td class='text-center'>" + formatter.format(price) + "</td>");
                                                                 out.print("<td class='text-center'><div class='btn-group'><button " + formDisablerFlag + " class='btn btn-default' type='button' onclick='javascript:editLineItem(" + deliveryOrder.getItems().get(i).getId() + ")'>Edit</button>&nbsp;");
                                                                 out.print("<button " + formDisablerFlag + " class='btn btn-default' onclick='javascript:removeLineItem(" + deliveryOrder.getItems().get(i).getId() + ")'>Del</button></div></td>");
                                                                 out.print("</div>");
@@ -472,8 +385,7 @@
                                                 <%
                                                     if (deliveryOrder != null && deliveryOrder.getRemarks() != null && !deliveryOrder.getRemarks().isEmpty()) {
                                                         out.print("Remarks: ");
-                                                        String repl = deliveryOrder.getRemarks().replaceAll("(\\r|\\n|\\r\\n)+", "<br>");
-                                                        out.print(deliveryOrder.getRemarks());
+                                                        out.print(deliveryOrder.getRemarks().replaceAll("\\r", "<br>"));
                                                     }
                                                 %>
                                             </div>
@@ -481,58 +393,7 @@
                                             <div class="col-sm-4">
                                                 <table class="table h5 text-dark">
                                                     <tbody>
-                                                        <tr class="b-top-none">
-                                                            <td colspan="2">Subtotal</td>
-                                                            <td class="text-left">
-                                                                <%
-                                                                    double formatedPrice = 0;
-                                                                    NumberFormat formatter = NumberFormat.getCurrencyInstance();
-                                                                    if (deliveryOrder == null) {
-                                                                        out.print("<span id='output_subtotal'>$0.00</span>");
-                                                                    } else {
-                                                                        formatedPrice = deliveryOrder.getTotalPrice() / (deliveryOrder.getTaxRate() / 100 + 1);
-                                                                        out.print("<span id='output_subtotal'>" + formatter.format(formatedPrice) + "</span>");
-                                                                        out.print("<input type='hidden' value='" + (deliveryOrder.getTotalPrice() / (deliveryOrder.getTaxRate() / 100 + 1)) + "' id='subtotal'>");
-                                                                    }
-                                                                %>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td colspan="2">
-                                                                <%
-                                                                    if (deliveryOrder == null) {
-                                                                        out.print("7.0% GST");
-                                                                    } else {
-                                                                        out.print("" + deliveryOrder.getTaxRate() + "% GST");
-                                                                    }
-                                                                %>
-                                                            </td>
-                                                            <td class="text-left">
-                                                                <%
-                                                                    if (deliveryOrder == null) {
-                                                                        out.print("<span id='output_gst'>$0.00</span>");
-                                                                    } else {
-                                                                        formatedPrice = deliveryOrder.getTotalTax();
-                                                                        out.print("<span id='output_gst'>" + formatter.format(formatedPrice) + "</span>");
-                                                                        out.print("<input type='hidden' value='" + deliveryOrder.getTotalTax() + "' id='gst'>");
-                                                                    }
-                                                                %>
-                                                            </td>
-                                                        </tr>
-                                                        <tr class="h4">
-                                                            <td colspan="2">Total (SGD)</td>
-                                                            <td class="text-left">
-                                                                <%
-                                                                    if (deliveryOrder == null) {
-                                                                        out.print("<span id='output_totalPrice'>$0.00</span>");
-                                                                    } else {
-                                                                        formatedPrice = deliveryOrder.getTotalPrice();
-                                                                        out.print("<span id='output_totalPrice'>" + formatter.format(formatedPrice) + "</span>");
-                                                                        out.print("<input type='hidden' value='" + deliveryOrder.getTotalPrice() + "' id='totalPrice'>");
-                                                                    }
-                                                                %>
-                                                            </td>
-                                                        </tr>
+
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -726,7 +587,7 @@
                                         <i class="fa fa-question-circle" style="top: 0px;"></i>
                                     </div>
                                     <div class="modal-text">
-                                        <p>Are you sure that you want to delete this Delivery Order?<br> All associated Invoice/Payment records will also be deleted together!</p>
+                                        <p>Are you sure that you want to cancel this Delivery Order?<br> All associated Invoice/Payment records will also be cancelled together!</p>
                                     </div>
                                 </div>
                             </div>

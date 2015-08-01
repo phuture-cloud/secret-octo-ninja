@@ -255,10 +255,10 @@
                                 </li>
                                 <%if (previousMgtPage.equals("sco")) {%>
                                 <li><span><a href= "../OrderManagementController?target=ListAllSCO">SCO Management</a></span></li>
-                                <%} else if (previousMgtPage.equals("soa")) {%>
+                                            <%} else if (previousMgtPage.equals("soa")) {%>
                                 <li><span><a href= "../StatementOfAccountManagementController?target=ListAllSOA">Statement of Accounts</a></span></li>
                                 <li><span><a href= "../StatementOfAccountManagementController?target=RetrieveSOA&id=<%=sco.getCustomer().getId()%>"><%=sco.getCustomer().getCustomerName()%></a></span></span></li>
-                                <%}%>
+                                            <%}%>
                                 <li><span>SCO &nbsp;&nbsp</span></li>
                             </ol>
                         </div>
@@ -489,9 +489,6 @@
                                                         </span>
                                                     </p>
 
-
-
-
                                                     <% if (sco != null && scoID != null && !scoID.isEmpty()) {%>
                                                     <p class="mb-none">
                                                         <span class="text-dark">Status: </span>
@@ -625,14 +622,13 @@
                                                             if (!editingLineItem.isEmpty() && editingLineItem.equals(sco.getItems().get(i).getId() + "")) {
                                                                 //Print editable fields
                                                                 double price = sco.getItems().get(i).getItemUnitPrice();
-                                                                String repl = sco.getItems().get(i).getItemDescription().replaceAll("(\\r|\\n|\\r\\n)+", "<br>");
                                                 %>
                                                 <tr>
                                                     <td>
                                                         <input type='text' class='form-control' name='itemName' id='itemName<%=sco.getItems().get(i).getId()%>' value='<%=sco.getItems().get(i).getItemName()%>'/>
                                                     </td>
                                                     <td>              
-                                                        <input type='text' class='form-control' name='itemDescription' id='itemDescription<%=sco.getItems().get(i).getId()%>' value='<%=repl%>'/>
+                                                        <textarea class='form-control' rows='5' name='itemDescription' id='itemDescription<%=sco.getItems().get(i).getId()%>'><%=sco.getItems().get(i).getItemDescription()%></textarea>
                                                     </td>
                                                     <td class="text-center">
                                                         <div class="input-group">
@@ -664,7 +660,7 @@
                                                                 double price = 0;
                                                                 out.print("<tr>");
                                                                 out.print("<td class='text-weight-semibold text-dark'>" + sco.getItems().get(i).getItemName() + "</td>");
-                                                                out.print("<td>" + sco.getItems().get(i).getItemDescription() + "</td>");
+                                                                out.print("<td>" + sco.getItems().get(i).getItemDescription().replaceAll("\\r", "<br>") + "</td>");
                                                                 price = sco.getItems().get(i).getItemUnitPrice();
                                                                 out.print("<td class='text-center'>" + formatter.format(price) + "</td>");
                                                                 out.print("<td class='text-center'>" + sco.getItems().get(i).getItemQty() + "</td>");
@@ -679,7 +675,6 @@
                                                     }
                                                 %>
                                                 <!-- end loop line item page -->
-
                                             </tbody>
                                         </table>
                                     </div>
@@ -694,9 +689,8 @@
                                                 </ul>
                                                 <%
                                                     if (sco != null && scoID != null && !scoID.isEmpty() && sco.getRemarks() != null && !sco.getRemarks().isEmpty()) {
-                                                        out.print("Remarks: <br>");
-                                                        String repl = sco.getRemarks().replaceAll("\\r", "<br>");
-                                                        out.print(repl);
+                                                        out.print("Remarks: ");
+                                                        out.print(sco.getRemarks().replaceAll("\\r", "<br>"));
                                                     }
                                                 %>
                                             </div>
@@ -804,7 +798,7 @@
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-default" onclick="javascript:back()">Back</button>
                                             <% if (sco != null && scoID != null && !scoID.isEmpty()) {
-                                                    out.print("<button type='button' class='modal-with-move-anim btn btn-danger' href='#modalRemove'>Delete</button>");
+                                                    out.print("<button type='button' class='modal-with-move-anim btn btn-danger' href='#modalRemove'>Cancel</button>");
                                                     if (sco.getItems().size() > 0) {
                                                         out.print("<button " + formDisablerFlag + " class='btn btn-primary modal-with-form' href='#modalGeneratePO'>Generate PO</button>");
                                                         out.print("<button " + formDisablerFlag + " class='btn btn-primary modal-with-form' href='#modalGenerateDO' >Generate DO</button>");
@@ -1043,7 +1037,7 @@
                                     <div class="form-group">
                                         <label class="col-sm-3 control-label">Remarks</label>
                                         <div class="col-sm-9">
-                                            <textarea class="form-control" rows="5" name="remarks"><%if (sco.getRemarks() != null) {
+                                            <textarea class="form-control" name="remarks"><%if (sco.getRemarks() != null) {
                                                     out.print(sco.getRemarks());
                                                 }%></textarea>
                                         </div>
@@ -1075,7 +1069,7 @@
                                         <i class="fa fa-question-circle" style="top: 0px;"></i>
                                     </div>
                                     <div class="modal-text">
-                                        <p>Are you sure that you want to delete this Sales Confirmation Order?<br> All associated PO/DO/Invoice/Payment records will also be deleted together!</p>
+                                        <p>Are you sure that you want to cancel this Sales Confirmation Order?<br> All associated PO/DO/Invoice/Payment records will also be cancelled together!</p>
                                     </div>
                                 </div>
                             </div>
