@@ -6,6 +6,7 @@ import EntityManager.SalesConfirmationOrder;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.Local;
+import javax.ejb.TransactionAttribute;
 
 @Local
 public interface OrderManagementBeanLocal {
@@ -32,5 +33,7 @@ public interface OrderManagementBeanLocal {
     public List<LineItem> listSCOlineItems(Long salesConfirmationOrderID);
     
     public ReturnHelper refreshSCOs(Long staffID);
+    
+    public String getNewSalesConfirmationOrderNumber();
 }
 

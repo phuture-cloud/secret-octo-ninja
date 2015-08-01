@@ -4,6 +4,7 @@ import EntityManager.Contact;
 import EntityManager.Customer;
 import EntityManager.Invoice;
 import EntityManager.LineItem;
+import EntityManager.OrderNumbers;
 import EntityManager.ReturnHelper;
 import EntityManager.SalesConfirmationOrder;
 import EntityManager.Staff;
@@ -29,7 +30,7 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
 
     @PersistenceContext
     private EntityManager em;
-    
+
     @EJB
     private PaymentManagementBeanLocal pmbl;
 
@@ -840,5 +841,17 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             ex.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    public String getNewInvoiceNumber() {
+        System.out.println("InvoiceManagementBean: getNewInvoiceNumber() called");
+        Query q = em.createQuery("SELECT e FROM OrderNumbers e");
+        OrderNumbers orderNumbers = (OrderNumbers) q.getResultList().get(0);
+        Long nextOrderNumber = orderNumbers.getNextInvoice();
+        orderNumbers.setNextInvoice(nextOrderNumber + 1);
+        orderNumbers.setLastGeneratedInvoice(new Date());
+        em.merge(orderNumbers);
+        return nextOrderNumber.toString();
     }
 }

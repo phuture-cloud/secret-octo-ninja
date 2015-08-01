@@ -5,6 +5,7 @@ import EntityManager.Customer;
 import EntityManager.DeliveryOrder;
 import EntityManager.Invoice;
 import EntityManager.LineItem;
+import EntityManager.OrderNumbers;
 import EntityManager.PaymentRecord;
 import EntityManager.PurchaseOrder;
 import EntityManager.ReturnHelper;
@@ -806,4 +807,17 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             return null;
         }
     }
+
+    @Override
+    public String getNewSalesConfirmationOrderNumber() {
+        System.out.println("OrderManagementBean: getNewSalesConfirmationOrderNumber() called");
+        Query q = em.createQuery("SELECT e FROM OrderNumbers e");
+        OrderNumbers orderNumbers = (OrderNumbers) q.getResultList().get(0);
+        Long nextOrderNumber = orderNumbers.getNextSCO();
+        orderNumbers.setNextSCO(nextOrderNumber + 1);
+        orderNumbers.setLastGeneratedSCO(new Date());
+        em.merge(orderNumbers);
+        return nextOrderNumber.toString();
+    }
+
 }

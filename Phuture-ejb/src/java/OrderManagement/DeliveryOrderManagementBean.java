@@ -5,6 +5,7 @@ import EntityManager.Customer;
 import EntityManager.DeliveryOrder;
 import EntityManager.Invoice;
 import EntityManager.LineItem;
+import EntityManager.OrderNumbers;
 import EntityManager.ReturnHelper;
 import EntityManager.SalesConfirmationOrder;
 import EntityManager.Staff;
@@ -733,6 +734,18 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             ex.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    public String getNewDeliveryOrderNumber() {
+        System.out.println("DeliveryOrderManagementBean: getNewDeliveryOrderNumber() called");
+        Query q = em.createQuery("SELECT e FROM OrderNumbers e");
+        OrderNumbers orderNumbers = (OrderNumbers) q.getResultList().get(0);
+        Long nextOrderNumber = orderNumbers.getNextDO();
+        orderNumbers.setNextDO(nextOrderNumber + 1);
+        orderNumbers.setLastGeneratedDO(new Date());
+        em.merge(orderNumbers);
+        return nextOrderNumber.toString();
     }
 
 }

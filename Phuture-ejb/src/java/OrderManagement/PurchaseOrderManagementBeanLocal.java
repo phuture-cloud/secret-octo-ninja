@@ -25,6 +25,5 @@ public interface PurchaseOrderManagementBeanLocal {
     public ReturnHelper updatePOlineItem(Long purchaseOrderID, Long lineItemID, String newItemName, String newItemDescription, Integer newItemQty, Double newItemUnitPrice);
     public ReturnHelper deletePOlineItem(Long purchaseOrderID, Long lineItemID);
     public ReturnHelper deleteallPOlineItem(Long purchaseOrderID);
-    public List<LineItem> listPOlineItems(Long purchaseOrderID);
-    
+    public List<LineItem> listPOlineItems(Long purchaseOrderID);  
 }

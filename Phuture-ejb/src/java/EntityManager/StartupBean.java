@@ -61,6 +61,13 @@ public class StartupBean {
             cmbl.addContact(result.getID(), "Bravo", "bravo@test.com", "62222222", "62222222", "62222222", "Block 222 Bravo Road 2 #02-02 Singapore 222222", "Customer notes can be writen here");
             result = cmbl.addCustomer("Test Customer 2");
             cmbl.addContact(result.getID(), "Charlie", "charlie@test.com", "63333333", "63333333", "63333333", "Block 333 Charlie Road 3 #03-03 Singapore 333333", "Customer notes can be writen here");
+            //Intitate the order number running values
+            OrderNumbers orderNumbers = new OrderNumbers();
+            orderNumbers.setNextSCO(10000L);
+            orderNumbers.setNextPO(10000L);
+            orderNumbers.setNextDO(10000L);
+            orderNumbers.setNextInvoice(10000L);
+            em.merge(orderNumbers);
         } catch (Exception ex) {
             System.out.println("Error initating database");
             ex.printStackTrace();
