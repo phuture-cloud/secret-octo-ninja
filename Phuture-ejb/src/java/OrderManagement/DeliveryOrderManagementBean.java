@@ -542,7 +542,7 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
     }
 
     @Override
-    public ReturnHelper addDOlineItem(Long deliveryOrderID, String itemName, String itemDescription, Integer itemQty, Double itemUnitPrice, Boolean adminOverwrite) {
+    public ReturnHelper addDOlineItem(Long deliveryOrderID, String itemName, String itemDescription, Integer itemQty,Boolean adminOverwrite) {
         System.out.println("DeliveryOrderManagementBean: addDOlineItem() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -558,7 +558,7 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             lineItem.setItemName(itemName);
             lineItem.setItemDescription(itemDescription);
             lineItem.setItemQty(itemQty);
-            lineItem.setItemUnitPrice(itemUnitPrice);
+//            lineItem.setItemUnitPrice(itemUnitPrice);
             em.persist(lineItem);
             List<LineItem> lineItems = deliveryOrder.getItems();
             lineItems.add(lineItem);
@@ -588,7 +588,7 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
     }
 
     @Override
-    public ReturnHelper updateDOlineItem(Long deliveryOrderID, Long lineItemID, String newItemName, String newItemDescription, Integer newItemQty, Double newItemUnitPrice, Boolean adminOverwrite) {
+    public ReturnHelper updateDOlineItem(Long deliveryOrderID, Long lineItemID, String newItemName, String newItemDescription, Integer newItemQty, Boolean adminOverwrite) {
         System.out.println("DeliveryOrderManagementBean: updateDOlineItem() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -606,7 +606,7 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             lineItem.setItemName(newItemName);
             lineItem.setItemDescription(newItemDescription);
             lineItem.setItemQty(newItemQty);
-            lineItem.setItemUnitPrice(newItemUnitPrice);
+//            lineItem.setItemUnitPrice(newItemUnitPrice);
             em.merge(lineItem);
             //Update DO total price & tax
             Double totalPrice = 0.0;
