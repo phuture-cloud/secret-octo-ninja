@@ -56,6 +56,7 @@ public class SalesConfirmationOrder implements Serializable {
     @OneToMany
     private List<Invoice> invoices;
     private Integer numOfInvoices;
+    private Double totalInvoicedAmount;
     @OneToMany
     private List<LineItem> items;
     private Double taxRate;//in %
@@ -82,6 +83,7 @@ public class SalesConfirmationOrder implements Serializable {
         this.numOfDeliveryOrders = 0;
         this.numOfPurchaseOrders = 0;
         this.numOfInvoices = 0;
+        this.totalInvoicedAmount = 0.0;
     }
 
     public SalesConfirmationOrder(String salesConfirmationOrderNumber, Date salesConfirmationOrderDate, String customerName, Staff salesPerson, Integer term, Double taxRate) {
@@ -104,6 +106,7 @@ public class SalesConfirmationOrder implements Serializable {
         this.numOfDeliveryOrders = 0;
         this.numOfPurchaseOrders = 0;
         this.numOfInvoices = 0;
+        this.totalInvoicedAmount = 0.0;
     }
 
     public Long getId() {
@@ -363,6 +366,14 @@ public class SalesConfirmationOrder implements Serializable {
 
     public void setCustomerPurchaseOrderNumber(String customerPurchaseOrderNumber) {
         this.customerPurchaseOrderNumber = customerPurchaseOrderNumber;
+    }
+
+    public Double getTotalInvoicedAmount() {
+        return totalInvoicedAmount;
+    }
+
+    public void setTotalInvoicedAmount(Double totalInvoicedAmount) {
+        this.totalInvoicedAmount = totalInvoicedAmount;
     }
 
     @Override
