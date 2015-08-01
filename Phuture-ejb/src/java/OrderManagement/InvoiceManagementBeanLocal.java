@@ -23,6 +23,7 @@ public interface InvoiceManagementBeanLocal {
     public List<Invoice> listAllInvoice(Long staffID);
     public List<Invoice> listInvoicesTiedToSCO(Long salesConfirmationOrderID);
     public List<Invoice> listInvoicesTiedToCustomer(Long customerID);
+    public Double getSCOtotalInvoicedAmount(Long salesConfirmationOrderID);
     
     public ReturnHelper replaceInvoiceLineItemWithSCOitems(Long salesConfirmationOrderID, Long invoiceID, Boolean adminOverwrite);
     public ReturnHelper addInvoiceLineItem(Long invoiceID, String itemName, String itemDescription, Integer itemQty, Double itemUnitPrice, Boolean adminOverwrite);

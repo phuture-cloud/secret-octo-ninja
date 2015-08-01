@@ -75,6 +75,9 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             sco.setNumOfInvoices(sco.getNumOfInvoices() + 1);
             em.merge(sco);
             result.setID(invoice.getId());
+            //Update SCO total amount invoiced
+            sco.setTotalInvoicedAmount(getSCOtotalInvoicedAmount(salesConfirmationOrderID));
+            em.merge(sco);
             result.setResult(true);
             result.setDescription("Invoice created successfully.");
             return result;
@@ -139,7 +142,7 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
                 invoice.setDatePaid(invoicePaid);
             } else {
                 invoice.setDatePaid(null);
-                if (invoice.getDateSent()!=null) {
+                if (invoice.getDateSent() != null) {
                     invoice.setStatusAsSent();
                 } else {
                     invoice.setStatusAsCreated();
@@ -330,6 +333,9 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
                 em.merge(invoice);
                 SalesConfirmationOrder sco = invoice.getSalesConfirmationOrder();
                 sco.setNumOfInvoices(sco.getNumOfInvoices() - 1);
+                //Update SCO total amount invoiced
+                sco.setTotalInvoicedAmount(getSCOtotalInvoicedAmount(sco.getId()));
+                em.merge(sco);
             }
             result.setResult(true);
             result.setDescription("Invoice deleted successfully.");
@@ -484,6 +490,28 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
     }
 
     @Override
+    public Double getSCOtotalInvoicedAmount(Long salesConfirmationOrderID) {
+        System.out.println("InvoiceManagementBean: getSCOtotalInvoicedAmount() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        try {
+            Query q = em.createQuery("SELECT s FROM Invoice s WHERE s.isDeleted=false AND s.salesConfirmationOrder.id=:id");
+            q.setParameter("id", salesConfirmationOrderID);
+            List<Invoice> invoices = q.getResultList();
+            Double totalAmount = 0.0;
+            for (Invoice i : invoices) {
+                totalAmount += i.getTotalPrice();
+            }
+            return totalAmount;
+        } catch (Exception ex) {
+            System.out.println("InvoiceManagementBean: getSCOtotalInvoicedAmount() failed");
+            result.setDescription("Internal server error.");
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
     public ReturnHelper replaceInvoiceLineItemWithSCOitems(Long salesConfirmationOrderID, Long invoiceID, Boolean adminOverwrite) {
         System.out.println("InvoiceManagementBean: replaceInvoiceLineItemWithSCOitems() called");
         ReturnHelper result = new ReturnHelper();
@@ -536,6 +564,9 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             invoice.setTotalPrice(totalPrice);
             invoice.setTotalTax(totalTax);
             em.merge(invoice);
+            //Update SCO total amount invoiced
+            sco.setTotalInvoicedAmount(getSCOtotalInvoicedAmount(salesConfirmationOrderID));
+            em.merge(sco);
             result.setResult(true);
             result.setDescription("Items copied from SCO.");
         } catch (NoResultException ex) {
@@ -582,6 +613,10 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             invoice.setTotalPrice(totalPrice);
             invoice.setTotalTax(totalTax);
             em.merge(invoice);
+            //Update SCO total amount invoiced
+            SalesConfirmationOrder sco = invoice.getSalesConfirmationOrder();
+            sco.setTotalInvoicedAmount(getSCOtotalInvoicedAmount(sco.getId()));
+            em.merge(sco);
             result.setResult(true);
             result.setDescription("Item added.");
         } catch (NoResultException ex) {
@@ -628,6 +663,10 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             invoice.setTotalPrice(totalPrice);
             invoice.setTotalTax(totalTax);
             em.merge(invoice);
+            //Update SCO total amount invoiced
+            SalesConfirmationOrder sco = invoice.getSalesConfirmationOrder();
+            sco.setTotalInvoicedAmount(getSCOtotalInvoicedAmount(sco.getId()));
+            em.merge(sco);
             result.setResult(true);
             result.setDescription("Line item updated.");
         } catch (NoResultException ex) {
@@ -673,6 +712,10 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             invoice.setTotalTax(totalTax);
             em.merge(invoice);
             em.remove(lineItem);
+            //Update SCO total amount invoiced
+            SalesConfirmationOrder sco = invoice.getSalesConfirmationOrder();
+            sco.setTotalInvoicedAmount(getSCOtotalInvoicedAmount(sco.getId()));
+            em.merge(sco);
             result.setResult(true);
             result.setDescription("Item deleted.");
         } catch (NoResultException ex) {
@@ -714,6 +757,10 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             invoice.setTotalPrice(0.0);
             invoice.setTotalTax(0.0);
             em.merge(invoice);
+            //Update SCO total amount invoiced
+            SalesConfirmationOrder sco = invoice.getSalesConfirmationOrder();
+            sco.setTotalInvoicedAmount(getSCOtotalInvoicedAmount(sco.getId()));
+            em.merge(sco);
             result.setResult(true);
             result.setDescription("Line items deleted.");
         } catch (Exception ex) {
