@@ -416,6 +416,22 @@ public class OrderManagementController extends HttpServlet {
                             }
                         }
                         break;
+                    case "RefreshSCOs":
+                        if (true) {
+                            returnHelper = orderManagementBean.refreshSCOs(staff.getId());
+                            List<SalesConfirmationOrder> salesConfirmationOrders = orderManagementBean.listAllSalesConfirmationOrder(loggedInStaffID);
+                            if (salesConfirmationOrders == null) {
+                                nextPage = "error500.html";
+                            } else {
+                                session.setAttribute("salesConfirmationOrders", salesConfirmationOrders);
+                                if (returnHelper.getResult()) {
+                                    nextPage = "OrderManagement/scoManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                                } else {
+                                    nextPage = "OrderManagement/scoManagement.jsp?errMsg=" + returnHelper.getDescription();
+                                }
+                            }
+                        }
+                        break;
 
                     default:
                         System.out.println("OrderManagementController: Unknown target value.");

@@ -25,16 +25,21 @@
     </head>
     <body onload="alertFunc()">
         <jsp:include page="../displayNotification.jsp" />
+        <script src="../assets/vendor/nprogress/nprogress.js"></script>
         <script>
-            function createSCO() {
-                window.location.href = "../OrderManagementController?target=ListAllCustomer";
-            }
-            function viewSCO(id) {
-                scoManagement.id.value = id;
-                scoManagement.target.value = "RetrieveSCO";
-                document.scoManagement.action = "../OrderManagementController";
-                document.scoManagement.submit();
-            }
+        function createSCO() {
+            window.location.href = "../OrderManagementController?target=ListAllCustomer";
+        }
+        function viewSCO(id) {
+            scoManagement.id.value = id;
+            scoManagement.target.value = "RetrieveSCO";
+            document.scoManagement.action = "../OrderManagementController";
+            document.scoManagement.submit();
+        }
+        function refreshSCOs() {
+            NProgress.start();
+            window.location.href = "../OrderManagementController?target=RefreshSCOs"
+        }
         </script>
 
         <section class="body">
@@ -74,6 +79,7 @@
                             <div class="row">
                                 <div class="col-md-12"> 
                                     <button class="btn btn-primary" onclick="createSCO()">Create Sales Confirmation Order</button>
+                                    <button class="btn btn-default" onclick="refreshSCOs();"><i class="fa fa-refresh"></i> Refresh Orders</button>
                                 </div>
                             </div>
                             <br/>
@@ -82,11 +88,12 @@
                                 <table class="table table-bordered table-striped mb-none" id="datatable-default">
                                     <thead>
                                         <tr> 
+                                            <th></th>
                                             <th>SCO No.</th>
                                             <th>Customer</th>
                                             <th>SCO Date</th>
-                                            <th>SCO Creation Date</th>
                                             <th>Total Amount</th>
+                                            <th>Total Invoiced</th>
                                             <th>Status</th>
                                             <th style="width: 300px; text-align: center">Action</th>
                                         </tr>
@@ -97,6 +104,21 @@
                                                 for (int i = 0; i < salesConfirmationOrders.size(); i++) {
                                         %>
                                         <tr>
+                                            <td>
+                                                <% if (salesConfirmationOrders.get(i).getTotalInvoicedAmount() == null) {
+                                                        //If there was some errors calculating the invoiced amount
+                                                        out.println();
+                                                    } else if (salesConfirmationOrders.get(i).getTotalInvoicedAmount() < salesConfirmationOrders.get(i).getTotalPrice()) {
+                                                    //If total invoiced less than SCO amount
+                                                        //todo
+                                                        out.println();
+                                                    } else if (salesConfirmationOrders.get(i).getTotalInvoicedAmount() < salesConfirmationOrders.get(i).getTotalPrice()) {
+                                                        //If total invoiced more than SCO amount
+                                                        out.println();
+                                                    } else {
+                                                        //If total invoiced equal
+                                                    }%>
+                                            </td>
                                             <td><%=salesConfirmationOrders.get(i).getSalesConfirmationOrderNumber()%></td>
                                             <td><a href="../CustomerManagementController?target=ListCustomerContacts&id=<%=salesConfirmationOrders.get(i).getCustomer().getId()%>"><%=salesConfirmationOrders.get(i).getCustomerName()%></a></td>
                                             <td>
@@ -108,15 +130,17 @@
                                             </td>
                                             <td>
                                                 <%
-                                                    DATE_FORMAT = new SimpleDateFormat("d MMM yyyy hh:mm:ss");
-                                                    date = DATE_FORMAT.format(salesConfirmationOrders.get(i).getDateCreated());
-                                                    out.print(date);
+                                                    NumberFormat formatter = NumberFormat.getCurrencyInstance();
+                                                    out.print(formatter.format(salesConfirmationOrders.get(i).getTotalPrice()));
                                                 %>
                                             </td>
                                             <td>
                                                 <%
-                                                    NumberFormat formatter = NumberFormat.getCurrencyInstance();
-                                                    out.print(formatter.format(salesConfirmationOrders.get(i).getTotalPrice()));
+                                                    if (salesConfirmationOrders.get(i).getTotalInvoicedAmount() != null) {
+                                                        out.print(formatter.format(salesConfirmationOrders.get(i).getTotalInvoicedAmount()));
+                                                    } else {
+                                                        out.println("NA");
+                                                    }
                                                 %>
                                             </td>
                                             <%

@@ -22,18 +22,20 @@ import javax.persistence.Query;
 
 @Stateless
 public class OrderManagementBean implements OrderManagementBeanLocal {
-
+    
     public OrderManagementBean() {
     }
-
+    
     @PersistenceContext
     private EntityManager em;
     
     @EJB
+    private InvoiceManagementBeanLocal imbl;
+    @EJB
     private DeliveryOrderManagementBeanLocal dombl;
     @EJB
     private PurchaseOrderManagementBeanLocal pombl;
-
+    
     private static final Double gstRate = 7.0;//7%
 
     @Override
@@ -57,7 +59,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
                 return result;
             }
             ReturnHelper uniqueResult = checkIfSCOnumberIsUnique(salesConfirmationOrderNumber);
-            if(!uniqueResult.getResult()) {
+            if (!uniqueResult.getResult()) {
                 uniqueResult.setDescription("Failed to create a new SCO. The SCO number is already in use.");
                 return uniqueResult;
             }
@@ -95,7 +97,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
         }
         return result;
     }
-
+    
     @Override
     public ReturnHelper updateSalesConfirmationOrder(Long salesConfirmationOrderID, String newSalesConfirmationOrderNumber, Date newSalesConfirmationOrderDate, String newEstimatedDeliveryDate, String customerPurchaseOrderNumber, Long newCustomerID, String status, Integer newTerms, Boolean adminOverwrite) {
         System.out.println("OrderManagementBean: updateSalesConfirmationOrder() called");
@@ -115,7 +117,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
                 return result;
             }
             ReturnHelper uniqueResult = checkIfSCOnumberIsUnique(newSalesConfirmationOrderNumber);
-            if(!uniqueResult.getResult() && !newSalesConfirmationOrderNumber.equals(sco.getSalesConfirmationOrderNumber())) {
+            if (!uniqueResult.getResult() && !newSalesConfirmationOrderNumber.equals(sco.getSalesConfirmationOrderNumber())) {
                 uniqueResult.setDescription("Failed to save the SCO as the SCO number is already in use.");
                 return uniqueResult;
             }
@@ -169,7 +171,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
         }
         return result;
     }
-
+    
     @Override
     public ReturnHelper updateSalesConfirmationOrderCustomerContactDetails(Long salesConfirmationOrderID, String customerName, String contactName, String email, String officeNo, String mobileNo, String faxNo, String address, Boolean adminOverwrite) {
         System.out.println("OrderManagementBean: updateSalesConfirmationOrderContactDetails() called");
@@ -208,7 +210,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
         }
         return result;
     }
-
+    
     @Override
     public ReturnHelper updateSalesConfirmationOrderCustomerContactDetails(Long salesConfirmationOrderID, Long customerID, Long contactID, Boolean adminOverwrite) {
         System.out.println("OrderManagementBean: updateSalesConfirmationOrderContactDetails() called");
@@ -273,7 +275,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
         }
         return result;
     }
-
+    
     @Override
     public ReturnHelper updateSalesConfirmationOrderRemarks(Long salesConfirmationOrderID, String remarks, Boolean adminOverwrite) {
         System.out.println("OrderManagementBean: updateSalesConfirmationOrderRemarks() called");
@@ -306,7 +308,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
         }
         return result;
     }
-
+    
     @Override
     public ReturnHelper updateSalesConfirmationOrderNotes(Long salesConfirmationOrderID, String notes, Boolean adminOverwrite) {
         System.out.println("OrderManagementBean: updateSalesConfirmationOrderNotes() called");
@@ -339,7 +341,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
         }
         return result;
     }
-
+    
     @Override
     public ReturnHelper updateSalesConfirmationOrderStatus(Long salesConfirmationOrderID, String status) {
         System.out.println("OrderManagementBean: updateSalesConfirmationOrderStatus() called");
@@ -385,7 +387,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
         }
         return result;
     }
-
+    
     @Override
     public ReturnHelper deleteSalesConfirmationOrder(Long salesConfirmationOrderID, Boolean adminOverwrite) {
         System.out.println("OrderManagementBean: deleteSalesConfirmationOrder() called");
@@ -418,7 +420,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
         }
         return result;
     }
-
+    
     @Override
     public ReturnHelper checkIfSCOisEditable(Long salesConfirmationOrderID, Boolean adminOverwrite) {
         System.out.println("OrderManagementBean: checkIfSCOisEditable() called");
@@ -455,7 +457,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
         }
         return result;
     }
-
+    
     @Override
     public ReturnHelper checkIfSCOnumberIsUnique(String salesConfirmationOrderNumber) {
         System.out.println("OrderManagementBean: checkIfSCOnumberIsUnique() called");
@@ -480,7 +482,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
         }
         return result;
     }
-
+    
     @Override
     public SalesConfirmationOrder getSalesConfirmationOrder(Long salesConfirmationOrderID) {
         System.out.println("OrderManagementBean: getSalesConfirmationOrder() called");
@@ -501,7 +503,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             return null;
         }
     }
-
+    
     @Override
     public List<SalesConfirmationOrder> listAllSalesConfirmationOrder(Long staffID) {
         System.out.println("OrderManagementBean: listAllSalesConfirmationOrder() called");
@@ -528,7 +530,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             return null;
         }
     }
-
+    
     @Override
     public List<SalesConfirmationOrder> listCustomerSalesConfirmationOrder(Long customerID) {
         System.out.println("OrderManagementBean: listCustomerSalesConfirmationOrder() called");
@@ -546,7 +548,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             return null;
         }
     }
-
+    
     @Override
     public ReturnHelper addSCOlineItem(Long salesConfirmationOrderID, String itemName, String itemDescription, Integer itemQty, Double itemUnitPrice, Boolean adminOverwrite) {
         System.out.println("OrderManagementBean: addSCOlineItem() called");
@@ -597,7 +599,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
         }
         return result;
     }
-
+    
     @Override
     public ReturnHelper updateSCOlineItem(Long salesConfirmationOrderID, Long lineItemID, String newItemName, String newItemDescription, Integer newItemQty, Double newItemUnitPrice, Boolean adminOverwrite) {
         System.out.println("OrderManagementBean: updateSCOlineItem() called");
@@ -649,7 +651,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
         }
         return result;
     }
-
+    
     @Override
     public ReturnHelper deleteSCOlineItem(Long salesConfirmationOrderID, Long lineItemID, Boolean adminOverwrite) {
         System.out.println("OrderManagementBean: deleteSCOlineItem() called");
@@ -699,7 +701,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
         }
         return result;
     }
-
+    
     @Override
     public ReturnHelper deleteSCOallLineItem(Long salesConfirmationOrderID, Boolean adminOverwrite) {
         System.out.println("OrderManagementBean: deleteSCOallLineItem() called");
@@ -737,7 +739,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
         }
         return result;
     }
-
+    
     @Override
     public List<LineItem> listSCOlineItems(Long salesConfirmationOrderID) {
         System.out.println("OrderManagementBean: listSCOlineItems() called");
@@ -754,5 +756,50 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             ex.printStackTrace();
             return null;
         }
-    } 
+    }    
+    
+    @Override
+    public ReturnHelper refreshSCOs(Long staffID) {
+        System.out.println("OrderManagementBean: refreshSCOs() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        try {
+            Query q = em.createQuery("SELECT s FROM Staff s WHERE s.id=:staffID");
+            q.setParameter("staffID", staffID);
+            Staff staff = (Staff) q.getSingleResult();
+            if (staff.getIsAdmin()) {
+                //List all for admin
+                q = em.createQuery("SELECT s FROM SalesConfirmationOrder s WHERE s.isDeleted=false");
+            } else {
+                //List only those that they create for normal staff
+                q = em.createQuery("SELECT s FROM SalesConfirmationOrder s WHERE s.isDeleted=false and s.salesPerson.id=:staffID");
+                q.setParameter("staffID", staffID);
+            }
+            List<SalesConfirmationOrder> salesConfirmationOrders = q.getResultList();
+            Boolean someFailed = false;
+            for (SalesConfirmationOrder sco : salesConfirmationOrders) {
+                Double invoicedAmount = imbl.getSCOtotalInvoicedAmount(sco.getId());
+                if (invoicedAmount == null) {
+                    someFailed = true;
+                }
+                sco.setTotalInvoicedAmount(invoicedAmount);
+                sco.setNumOfInvoices(imbl.listInvoicesTiedToSCO(sco.getId()).size());
+                sco.setNumOfDeliveryOrders(dombl.listDeliveryOrdersTiedToSCO(sco.getId()).size());
+                sco.setNumOfPurchaseOrders(pombl.listPurchaseOrdersTiedToSCO(sco.getId()).size());
+                em.merge(sco);
+            }
+            if (someFailed) {
+                result.setDescription("Some orders could not be refreshed");
+            } else {
+                result.setDescription("Orders refreshed");
+                result.setResult(true);
+            }
+            return result;
+        } catch (Exception ex) {
+            System.out.println("OrderManagementBean: refreshSCOs() failed");
+            result.setDescription("Internal server error.");
+            ex.printStackTrace();
+            return null;
+        }
+    }
 }
