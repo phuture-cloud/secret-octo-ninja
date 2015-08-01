@@ -67,7 +67,7 @@ public class PurchaseOrderManagementController extends HttpServlet {
                         List<PurchaseOrder> purchaseOrders = purchaseOrderManagementBean.listAllPurchaseOrder(loggedInStaffID);
                         session.setAttribute("listOfPO", purchaseOrders);
                         session.setAttribute("previousManagementPage", "purchaseOrders");
-                        nextPage = "POManagement/scoManagement_PO.jsp";
+                        nextPage = "POManagement/purchaseOrders.jsp";
                         break;
 
                     case "ListPoTiedToSCO":
@@ -75,7 +75,7 @@ public class PurchaseOrderManagementController extends HttpServlet {
                         if (id != null) {
                             session.setAttribute("listOfPO", purchaseOrderManagementBean.listPurchaseOrdersTiedToSCO(Long.parseLong(id)));
                             session.setAttribute("previousManagementPage", "sco");
-                            nextPage = "POManagement/scoManagement_PO.jsp";
+                            nextPage = "POManagement/purchaseOrders.jsp";
                         }
                         break;
 
@@ -83,7 +83,7 @@ public class PurchaseOrderManagementController extends HttpServlet {
                         id = request.getParameter("id");
                         if (id != null) {
                             session.setAttribute("po", purchaseOrderManagementBean.getPurchaseOrder(Long.parseLong(id)));
-                            nextPage = "POManagement/poManagement.jsp";
+                            nextPage = "POManagement/purchaseOrder.jsp";
                         }
                         break;
 
@@ -101,24 +101,24 @@ public class PurchaseOrderManagementController extends HttpServlet {
                                 session.setAttribute("sco", orderManagementBean.getSalesConfirmationOrder(sco.getId()));
                                 session.removeAttribute("po");
 
-                                nextPage = "POManagement/scoManagement_PO.jsp?goodMsg=" + returnHelper.getDescription();
+                                nextPage = "POManagement/purchaseOrders.jsp?goodMsg=" + returnHelper.getDescription();
                             } else {
-                                nextPage = "POManagement/scoManagement_PO.jsp?errMsg=" + returnHelper.getDescription();
+                                nextPage = "POManagement/purchaseOrders.jsp?errMsg=" + returnHelper.getDescription();
                             }
                         } else {
-                            nextPage = "POManagement/scoManagement_PO.jsp?errMsg=Delete Purchase Order failed. An error has occured.";
+                            nextPage = "POManagement/purchaseOrders.jsp?errMsg=Delete Purchase Order failed. An error has occured.";
                         }
                         break;
 
                     case "UpdatePO":
                         if (source.equals("AddLineItemToExistingPO")) {
                             if (itemName == null || itemName.isEmpty() || itemDescription == null || itemDescription.isEmpty() || itemQty == null || itemQty.isEmpty() || itemUnitPrice == null || itemUnitPrice.isEmpty()) {
-                                nextPage = "POManagement/poManagement.jsp?poNumber=" + poNumber + "&poDate=" + poDate + "&errMsg=Please fill in all the fields for the item.";
+                                nextPage = "POManagement/purchaseOrder.jsp?poNumber=" + poNumber + "&poDate=" + poDate + "&errMsg=Please fill in all the fields for the item.";
                                 break;
                             }
                         }
                         if (poNumber == null || poNumber.isEmpty() || poDate == null || poDate.isEmpty()) {
-                            nextPage = "POManagement/poManagement.jsp?poNumber=" + poNumber + "&poDate=" + poDate + "&errMsg=Please fill in all the fields for the PO.";
+                            nextPage = "POManagement/purchaseOrder.jsp?poNumber=" + poNumber + "&poDate=" + poDate + "&errMsg=Please fill in all the fields for the PO.";
                         } else {
                             SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
                             Date poDateDate = formatter.parse(poDate);
@@ -135,7 +135,7 @@ public class PurchaseOrderManagementController extends HttpServlet {
                                 Long poID = returnHelper.getID();
                                 purchaseOrder = purchaseOrderManagementBean.getPurchaseOrder(poID);
                                 session.setAttribute("po", purchaseOrder);
-                                nextPage = "POManagement/poManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                                nextPage = "POManagement/purchaseOrder.jsp?goodMsg=" + returnHelper.getDescription();
 
                                 //Update line item if there is any
                                 if (itemName != null && !itemName.isEmpty() && itemDescription != null && !itemDescription.isEmpty() && itemQty != null && !itemQty.isEmpty() && itemUnitPrice != null && !itemUnitPrice.isEmpty()) {
@@ -143,13 +143,13 @@ public class PurchaseOrderManagementController extends HttpServlet {
                                     purchaseOrder = purchaseOrderManagementBean.getPurchaseOrder(poID);
                                     if (returnHelper.getResult() && purchaseOrder != null) {
                                         session.setAttribute("po", purchaseOrder);
-                                        nextPage = "POManagement/poManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                                        nextPage = "POManagement/purchaseOrder.jsp?goodMsg=" + returnHelper.getDescription();
                                     } else {
-                                        nextPage = "POManagement/poManagement.jsp?errMsg=" + returnHelper.getDescription();
+                                        nextPage = "POManagement/purchaseOrder.jsp?errMsg=" + returnHelper.getDescription();
                                     }
                                 }
                             } else {
-                                nextPage = "POManagement/poManagement.jsp?errMsg=" + returnHelper.getDescription();
+                                nextPage = "POManagement/purchaseOrder.jsp?errMsg=" + returnHelper.getDescription();
                                 break;
                             }
                         }
@@ -160,9 +160,9 @@ public class PurchaseOrderManagementController extends HttpServlet {
                         purchaseOrder = purchaseOrderManagementBean.getPurchaseOrder(purchaseOrder.getId());
                         if (returnHelper.getResult() && purchaseOrder != null) {
                             session.setAttribute("po", purchaseOrder);
-                            nextPage = "POManagement/poManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                            nextPage = "POManagement/purchaseOrder.jsp?goodMsg=" + returnHelper.getDescription();
                         } else {
-                            nextPage = "POManagement/poManagement.jsp?errMsg=" + returnHelper.getDescription();
+                            nextPage = "POManagement/purchaseOrder.jsp?errMsg=" + returnHelper.getDescription();
                         }
                         break;
 
@@ -171,16 +171,16 @@ public class PurchaseOrderManagementController extends HttpServlet {
                         purchaseOrder = purchaseOrderManagementBean.getPurchaseOrder(purchaseOrder.getId());
                         if (returnHelper.getResult() && purchaseOrder != null) {
                             session.setAttribute("po", purchaseOrder);
-                            nextPage = "POManagement/poManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                            nextPage = "POManagement/purchaseOrder.jsp?goodMsg=" + returnHelper.getDescription();
                         } else {
-                            nextPage = "POManagement/poManagement.jsp?errMsg=" + returnHelper.getDescription();
+                            nextPage = "POManagement/purchaseOrder.jsp?errMsg=" + returnHelper.getDescription();
                         }
                         break;
 
                     case "EditLineItem":
                         //Check for empty fields
                         if (itemName == null || itemName.isEmpty() || itemDescription == null || itemDescription.isEmpty() || itemQty == null || itemQty.isEmpty() || itemUnitPrice == null || itemUnitPrice.isEmpty()) {
-                            nextPage = "POManagement/poManagement.jsp?errMsg=Please fill in all the fields for the item.";
+                            nextPage = "POManagement/purchaseOrder.jsp?errMsg=Please fill in all the fields for the item.";
                             break;
                         }
 
@@ -189,9 +189,9 @@ public class PurchaseOrderManagementController extends HttpServlet {
                         purchaseOrder = purchaseOrderManagementBean.getPurchaseOrder(purchaseOrder.getId());
                         if (returnHelper.getResult() && purchaseOrder != null) {
                             session.setAttribute("po", purchaseOrder);
-                            nextPage = "POManagement/poManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                            nextPage = "POManagement/purchaseOrder.jsp?goodMsg=" + returnHelper.getDescription();
                         } else {
-                            nextPage = "POManagement/poManagement.jsp?errMsg=" + returnHelper.getDescription();
+                            nextPage = "POManagement/purchaseOrder.jsp?errMsg=" + returnHelper.getDescription();
                         }
                         break;
 
@@ -206,7 +206,7 @@ public class PurchaseOrderManagementController extends HttpServlet {
                 return;
             }
         } catch (Exception ex) {
-            response.sendRedirect("POManagement/scoManagement_PO.jsp?errMsg=An error has occured");
+            response.sendRedirect("POManagement/purchaseOrders.jsp?errMsg=An error has occured");
             ex.printStackTrace();
             return;
         }

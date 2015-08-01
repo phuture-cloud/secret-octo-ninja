@@ -17,7 +17,7 @@
     } else if (staff == null) {
         response.sendRedirect("../index.jsp?errMsg=Session Expired.");
     } else if (invoice == null) {
-        response.sendRedirect("invoiceManagement.jsp?errMsg=An Error has occured.");
+        response.sendRedirect("invoice.jsp?errMsg=An Error has occured.");
     } else {
 %>
 <!doctype html>
@@ -54,7 +54,7 @@
                                 </li>
                                 <li><span><a href= "../OrderManagementController?target=ListAllSCO">SCO Management</a></span></li>
                                 <li><span><a href= "../OrderManagementController?target=RetrieveSCO&id=<%=invoice.getSalesConfirmationOrder().getId()%>"><%=invoice.getSalesConfirmationOrder().getSalesConfirmationOrderNumber()%></a></span></li>
-                                <li><span><a href= "invoiceManagement.jsp"><%=invoice.getInvoiceNumber()%></a></span></li>
+                                <li><span><a href= "invoice.jsp"><%=invoice.getInvoiceNumber()%></a></span></li>
                                 <li><span>Invoices &nbsp;&nbsp</span></li>
                             </ol>
                         </div>

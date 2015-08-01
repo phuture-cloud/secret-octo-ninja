@@ -75,12 +75,12 @@
 
                 function back() {
                     window.onbeforeunload = null;
-                    window.location.href = "scoManagement_PO.jsp";
+                    window.location.href = "purchaseOrders.jsp";
                 }
 
                 function back2() {
                     window.onbeforeunload = null;
-                    window.location.href = "poManagement.jsp";
+                    window.location.href = "purchaseOrder.jsp";
                 }
 
                 function addLineItemToExistingPO() {
@@ -101,7 +101,7 @@
                 function editLineItem(lineItemID) {
                     window.onbeforeunload = null;
                     poManagement.lineItemID.value = lineItemID;
-                    window.location.href = "poManagement.jsp?editingLineItem=" + lineItemID;
+                    window.location.href = "purchaseOrder.jsp?editingLineItem=" + lineItemID;
                 }
 
                 function saveEditLineItem(lineItemID) {
@@ -164,7 +164,7 @@
                                 </li>
                                 <li><span><a href= "../OrderManagementController?target=ListAllSCO">SCO Management</a></span></li>
                                 <li><span><a href= "../OrderManagementController?target=RetrieveSCO&id=<%=purchaseOrder.getSalesConfirmationOrder().getId()%>"><%=purchaseOrder.getSalesConfirmationOrder().getSalesConfirmationOrderNumber()%></a></span></li>
-                                <li><span><a href= "scoManagement_PO.jsp">POs</a></span></li>
+                                <li><span><a href= "purchaseOrders.jsp">POs</a></span></li>
                                 <li><span>PO &nbsp;&nbsp</span></li>
                             </ol>
                         </div>

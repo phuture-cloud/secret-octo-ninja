@@ -71,9 +71,9 @@ public class PaymentManagementController extends HttpServlet {
                             session.setAttribute("invoice", invoice);
                             session.setAttribute("paymentRecord", paymentManagementBean.getPayment(invoice.getId()));
                             session.setAttribute("invoicePayments", paymentManagementBean.listPaymentByInvoice(invoice.getId()));
-                            nextPage = "InvoiceManagement/invoiceManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                            nextPage = "InvoiceManagement/invoice.jsp?goodMsg=" + returnHelper.getDescription();
                         } else {
-                            nextPage = "InvoiceManagement/invoiceManagement.jsp?errMsg=" + returnHelper.getDescription();
+                            nextPage = "InvoiceManagement/invoice.jsp?errMsg=" + returnHelper.getDescription();
                         }
                         break;
 

@@ -40,13 +40,13 @@
                 <% if (previousMgtPage.equals("soa")) {%>
                     window.location.href = "../StatementOfAccountManagementController?target=RetrieveSOA&id=<%=deliveryOrder.getSalesConfirmationOrder().getCustomer().getId()%>";
                 <%} else {%>
-                    window.location.href = "scoManagement_DO.jsp";
+                    window.location.href = "deliveryOrders.jsp";
                 <%}%>
                 }
 
                 function back2() {
                     window.onbeforeunload = null;
-                    window.location.href = "doManagement.jsp";
+                    window.location.href = "deliveryOrder.jsp";
                 }
 
                 function addLineItemToExistingDO() {
@@ -67,7 +67,7 @@
                 function editLineItem(lineItemID) {
                     window.onbeforeunload = null;
                     doManagement.lineItemID.value = lineItemID;
-                    window.location.href = "doManagement.jsp?editingLineItem=" + lineItemID;
+                    window.location.href = "deliveryOrder.jsp?editingLineItem=" + lineItemID;
                 }
 
                 function saveEditLineItem(lineItemID) {
@@ -130,7 +130,7 @@
                                 <%if (previousMgtPage.equals("sco")) {%>
                                 <li><span><a href= "../OrderManagementController?target=ListAllSCO">SCO Management</a></span></li>
                                 <li><span><a href= "../OrderManagementController?target=RetrieveSCO&id=<%=deliveryOrder.getSalesConfirmationOrder().getId()%>"><%=deliveryOrder.getSalesConfirmationOrder().getSalesConfirmationOrderNumber()%></a></span></li>
-                                <li><span><a href= "scoManagement_DO.jsp">Delivery Orders</a></span></li>
+                                <li><span><a href= "deliveryOrders.jsp">Delivery Orders</a></span></li>
                                             <%} else if (previousMgtPage.equals("deliveryOrders")) {%>
                                 <li><span><a href= "../DeliveryOrderManagementController?target=ListAllDO">Delivery Orders</a></span></li>  
                                             <%} else if (previousMgtPage.equals("soa")) {%>

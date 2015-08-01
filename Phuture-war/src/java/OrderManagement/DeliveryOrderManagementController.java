@@ -45,7 +45,6 @@ public class DeliveryOrderManagementController extends HttpServlet {
         String itemName = request.getParameter("itemName");
         String itemDescription = request.getParameter("itemDescription");
         String itemQty = request.getParameter("itemQty");
-        String itemUnitPrice = request.getParameter("itemUnitPrice");
 
         String doNumber = request.getParameter("doNumber");
         String poNumber = request.getParameter("poNumber");
@@ -69,7 +68,6 @@ public class DeliveryOrderManagementController extends HttpServlet {
 //        if (previousManagementPage != null && !previousManagementPage.isEmpty()) {
 //            session.setAttribute("previousManagementPage", previousManagementPage);
 //        }
-        
         try {
             if (checkLogin()) {
                 switch (target) {
@@ -77,21 +75,21 @@ public class DeliveryOrderManagementController extends HttpServlet {
                         List<DeliveryOrder> deliveryOrders = deliveryOrderManagementBean.listAllDeliveryOrder(loggedInStaffID);
                         session.setAttribute("listOfDO", deliveryOrders);
                         session.setAttribute("previousManagementPage", "deliveryOrders");
-                        nextPage = "DOManagement/scoManagement_DO.jsp";
+                        nextPage = "DOManagement/deliveryOrders.jsp";
                         break;
                     case "ListDoTiedToSCO":
                         String id = request.getParameter("id");
                         if (id != null) {
                             session.setAttribute("listOfDO", deliveryOrderManagementBean.listDeliveryOrdersTiedToSCO(Long.parseLong(id)));
                             session.setAttribute("previousManagementPage", "sco");
-                            nextPage = "DOManagement/scoManagement_DO.jsp";
+                            nextPage = "DOManagement/deliveryOrders.jsp";
                         }
                         break;
                     case "RetrieveDO":
                         id = request.getParameter("id");
                         if (id != null) {
                             session.setAttribute("do", deliveryOrderManagementBean.getDeliveryOrder(Long.parseLong(id)));
-                            nextPage = "DOManagement/doManagement.jsp";
+                            nextPage = "DOManagement/deliveryOrder.jsp";
                         }
                         break;
 
@@ -109,24 +107,24 @@ public class DeliveryOrderManagementController extends HttpServlet {
                                 session.setAttribute("sco", orderManagementBean.getSalesConfirmationOrder(sco.getId()));
                                 session.removeAttribute("do");
 
-                                nextPage = "DOManagement/scoManagement_DO.jsp?goodMsg=" + returnHelper.getDescription();
+                                nextPage = "DOManagement/deliveryOrders.jsp?goodMsg=" + returnHelper.getDescription();
                             } else {
-                                nextPage = "DOManagement/scoManagement_DO.jsp?errMsg=" + returnHelper.getDescription();
+                                nextPage = "DOManagement/deliveryOrders.jsp?errMsg=" + returnHelper.getDescription();
                             }
                         } else {
-                            nextPage = "DOManagement/scoManagement_DO.jsp?errMsg=Delete Delivery Order failed. An error has occured.";
+                            nextPage = "DOManagement/deliveryOrders.jsp?errMsg=Delete Delivery Order failed. An error has occured.";
                         }
                         break;
 
                     case "UpdateDO":
                         if (source.equals("AddLineItemToExistingDO")) {
-                            if (itemName == null || itemName.isEmpty() || itemDescription == null || itemDescription.isEmpty() || itemQty == null || itemQty.isEmpty() || itemUnitPrice == null || itemUnitPrice.isEmpty()) {
-                                nextPage = "DOManagement/doManagement.jsp?doNumber=" + doNumber + "&doDate=" + doDate + "&errMsg=Please fill in all the fields for the item.";
+                            if (itemName == null || itemName.isEmpty() || itemDescription == null || itemDescription.isEmpty() || itemQty == null || itemQty.isEmpty()) {
+                                nextPage = "DOManagement/deliveryOrder.jsp?doNumber=" + doNumber + "&doDate=" + doDate + "&errMsg=Please fill in all the fields for the item.";
                                 break;
                             }
                         }
                         if (doNumber == null || doNumber.isEmpty() || doDate == null || doDate.isEmpty()) {
-                            nextPage = "DOManagement/doManagement.jsp?doNumber=" + doNumber + "&doDate=" + doDate + "&errMsg=Please fill in all the fields for the DO.";
+                            nextPage = "DOManagement/deliveryOrder.jsp?doNumber=" + doNumber + "&doDate=" + doDate + "&errMsg=Please fill in all the fields for the DO.";
                         } else {
                             SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
                             Date doDateDate = formatter.parse(doDate);
@@ -137,21 +135,21 @@ public class DeliveryOrderManagementController extends HttpServlet {
                                 Long doID = returnHelper.getID();
                                 deliveryOrder = deliveryOrderManagementBean.getDeliveryOrder(doID);
                                 session.setAttribute("do", deliveryOrder);
-                                nextPage = "DOManagement/doManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                                nextPage = "DOManagement/deliveryOrder.jsp?goodMsg=" + returnHelper.getDescription();
 
                                 //Update line item if there is any
-                                if (itemName != null && !itemName.isEmpty() && itemDescription != null && !itemDescription.isEmpty() && itemQty != null && !itemQty.isEmpty() && itemUnitPrice != null && !itemUnitPrice.isEmpty()) {
-                                    returnHelper = deliveryOrderManagementBean.addDOlineItem(doID, itemName, itemDescription, Integer.parseInt(itemQty), Double.parseDouble(itemUnitPrice), isAdmin);
+                                if (itemName != null && !itemName.isEmpty() && itemDescription != null && !itemDescription.isEmpty() && itemQty != null && !itemQty.isEmpty()) {
+                                    returnHelper = deliveryOrderManagementBean.addDOlineItem(doID, itemName, itemDescription, Integer.parseInt(itemQty), isAdmin);
                                     deliveryOrder = deliveryOrderManagementBean.getDeliveryOrder(doID);
                                     if (returnHelper.getResult() && deliveryOrder != null) {
                                         session.setAttribute("do", deliveryOrder);
-                                        nextPage = "DOManagement/doManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                                        nextPage = "DOManagement/deliveryOrder.jsp?goodMsg=" + returnHelper.getDescription();
                                     } else {
-                                        nextPage = "DOManagement/doManagement.jsp?errMsg=" + returnHelper.getDescription();
+                                        nextPage = "DOManagement/deliveryOrder.jsp?errMsg=" + returnHelper.getDescription();
                                     }
                                 }
                             } else {
-                                nextPage = "DOManagement/doManagement.jsp?errMsg=" + returnHelper.getDescription();
+                                nextPage = "DOManagement/deliveryOrder.jsp?errMsg=" + returnHelper.getDescription();
                                 break;
                             }
                         }
@@ -162,9 +160,9 @@ public class DeliveryOrderManagementController extends HttpServlet {
                         deliveryOrder = deliveryOrderManagementBean.getDeliveryOrder(deliveryOrder.getId());
                         if (returnHelper.getResult() && deliveryOrder != null) {
                             session.setAttribute("do", deliveryOrder);
-                            nextPage = "DOManagement/doManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                            nextPage = "DOManagement/deliveryOrder.jsp?goodMsg=" + returnHelper.getDescription();
                         } else {
-                            nextPage = "DOManagement/doManagement.jsp?errMsg=" + returnHelper.getDescription();
+                            nextPage = "DOManagement/deliveryOrder.jsp?errMsg=" + returnHelper.getDescription();
                         }
                         break;
 
@@ -173,9 +171,9 @@ public class DeliveryOrderManagementController extends HttpServlet {
                         deliveryOrder = deliveryOrderManagementBean.getDeliveryOrder(deliveryOrder.getId());
                         if (returnHelper.getResult() && deliveryOrder != null) {
                             session.setAttribute("do", deliveryOrder);
-                            nextPage = "DOManagement/doManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                            nextPage = "DOManagement/deliveryOrder.jsp?goodMsg=" + returnHelper.getDescription();
                         } else {
-                            nextPage = "DOManagement/doManagement.jsp?errMsg=" + returnHelper.getDescription();
+                            nextPage = "DOManagement/deliveryOrder.jsp?errMsg=" + returnHelper.getDescription();
                         }
                         break;
 
@@ -184,27 +182,27 @@ public class DeliveryOrderManagementController extends HttpServlet {
                         deliveryOrder = deliveryOrderManagementBean.getDeliveryOrder(deliveryOrder.getId());
                         if (returnHelper.getResult() && deliveryOrder != null) {
                             session.setAttribute("do", deliveryOrder);
-                            nextPage = "DOManagement/doManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                            nextPage = "DOManagement/deliveryOrder.jsp?goodMsg=" + returnHelper.getDescription();
                         } else {
-                            nextPage = "DOManagement/doManagement.jsp?errMsg=" + returnHelper.getDescription();
+                            nextPage = "DOManagement/deliveryOrder.jsp?errMsg=" + returnHelper.getDescription();
                         }
                         break;
 
                     case "EditLineItem":
                         //Check for empty fields
-                        if (itemName == null || itemName.isEmpty() || itemDescription == null || itemDescription.isEmpty() || itemQty == null || itemQty.isEmpty() || itemUnitPrice == null || itemUnitPrice.isEmpty()) {
-                            nextPage = "DOManagement/doManagement.jsp?errMsg=Please fill in all the fields for the item.";
+                        if (itemName == null || itemName.isEmpty() || itemDescription == null || itemDescription.isEmpty() || itemQty == null || itemQty.isEmpty()) {
+                            nextPage = "DOManagement/deliveryOrder.jsp?errMsg=Please fill in all the fields for the item.";
                             break;
                         }
 
                         //Edit line item
-                        returnHelper = deliveryOrderManagementBean.updateDOlineItem(deliveryOrder.getId(), Long.parseLong(lineItemID), itemName, itemDescription, Integer.parseInt(itemQty), Double.parseDouble(itemUnitPrice), isAdmin);
+                        returnHelper = deliveryOrderManagementBean.updateDOlineItem(deliveryOrder.getId(), Long.parseLong(lineItemID), itemName, itemDescription, Integer.parseInt(itemQty), isAdmin);
                         deliveryOrder = deliveryOrderManagementBean.getDeliveryOrder(deliveryOrder.getId());
                         if (returnHelper.getResult() && deliveryOrder != null) {
                             session.setAttribute("do", deliveryOrder);
-                            nextPage = "DOManagement/doManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                            nextPage = "DOManagement/deliveryOrder.jsp?goodMsg=" + returnHelper.getDescription();
                         } else {
-                            nextPage = "DOManagement/doManagement.jsp?errMsg=" + returnHelper.getDescription();
+                            nextPage = "DOManagement/deliveryOrder.jsp?errMsg=" + returnHelper.getDescription();
                         }
                         break;
 
@@ -216,9 +214,9 @@ public class DeliveryOrderManagementController extends HttpServlet {
                             deliveryOrder = deliveryOrderManagementBean.getDeliveryOrder(deliveryOrder.getId());
                             if (returnHelper.getResult() && deliveryOrder != null) {
                                 session.setAttribute("do", deliveryOrder);
-                                nextPage = "DOManagement/doManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                                nextPage = "DOManagement/deliveryOrder.jsp?goodMsg=" + returnHelper.getDescription();
                             } else {
-                                nextPage = "DOManagement/doManagement.jsp?errMsg=" + returnHelper.getDescription();
+                                nextPage = "DOManagement/deliveryOrder.jsp?errMsg=" + returnHelper.getDescription();
                             }
                             //manual key in
                         } else if (source == null) {
@@ -235,9 +233,9 @@ public class DeliveryOrderManagementController extends HttpServlet {
                                 deliveryOrder = deliveryOrderManagementBean.getDeliveryOrder(deliveryOrder.getId());
                                 if (returnHelper.getResult() && deliveryOrder != null) {
                                     session.setAttribute("do", deliveryOrder);
-                                    nextPage = "DOManagement/doManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                                    nextPage = "DOManagement/deliveryOrder.jsp?goodMsg=" + returnHelper.getDescription();
                                 } else {
-                                    nextPage = "DOManagement/doManagement.jsp?errMsg=" + returnHelper.getDescription();
+                                    nextPage = "DOManagement/deliveryOrder.jsp?errMsg=" + returnHelper.getDescription();
                                 }
                             }
                         }
@@ -276,7 +274,7 @@ public class DeliveryOrderManagementController extends HttpServlet {
                 return;
             }
         } catch (Exception ex) {
-            response.sendRedirect("DOManagement/scoManagement_DO.jsp?errMsg=An error has occured");
+            response.sendRedirect("DOManagement/deliveryOrders.jsp?errMsg=An error has occured");
             ex.printStackTrace();
             return;
         }

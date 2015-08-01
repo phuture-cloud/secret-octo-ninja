@@ -83,13 +83,13 @@
                 <% if (previousMgtPage.equals("soa")) {%>
                     window.location.href = "../StatementOfAccountManagementController?target=RetrieveSOA&id=<%=invoice.getSalesConfirmationOrder().getCustomer().getId()%>";
                 <%} else {%>
-                    window.location.href = "scoManagement_invoice.jsp";
+                    window.location.href = "invoices.jsp";
                 <%}%>
                 }
 
                 function back2() {
                     window.onbeforeunload = null;
-                    window.location.href = "invoiceManagement.jsp";
+                    window.location.href = "invoice.jsp";
                 }
 
                 function addLineItemToExistingInvoice() {
@@ -110,7 +110,7 @@
                 function editLineItem(lineItemID) {
                     window.onbeforeunload = null;
                     invoiceManagement.lineItemID.value = lineItemID;
-                    window.location.href = "invoiceManagement.jsp?editingLineItem=" + lineItemID;
+                    window.location.href = "invoice.jsp?editingLineItem=" + lineItemID;
                 }
 
                 function saveEditLineItem(lineItemID) {
@@ -179,7 +179,7 @@
                                 <%if (previousMgtPage.equals("sco")) {%>
                                 <li><span><a href= "../OrderManagementController?target=ListAllSCO">SCO Management</a></span></li>
                                 <li><span><a href= "../OrderManagementController?target=RetrieveSCO&id=<%=invoice.getSalesConfirmationOrder().getId()%>"><%=invoice.getSalesConfirmationOrder().getSalesConfirmationOrderNumber()%></a></span></li>
-                                <li><span><a href= "scoManagement_invoice.jsp">Invoices</a></span></li>
+                                <li><span><a href= "invoices.jsp">Invoices</a></span></li>
                                             <%} else if (previousMgtPage.equals("invoices")) {%>
                                 <li><span><a href= "../InvoiceManagementController?target=ListAllInvoice">Invoices</a></span></li>
                                             <%} else if (previousMgtPage.equals("soa")) {%>

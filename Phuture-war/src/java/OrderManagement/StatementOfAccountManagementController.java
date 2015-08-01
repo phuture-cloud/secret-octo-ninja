@@ -83,7 +83,7 @@ public class StatementOfAccountManagementController extends HttpServlet {
                                 session.setAttribute("statementOfAccount", soabl.getCustomerSOA(Long.parseLong(id)));
                                 session.setAttribute("listOfInvoice", imbl.listInvoicesTiedToCustomer(Long.parseLong(id)));
                                 session.setAttribute("previousManagementPage", "soa");
-                                nextPage = "InvoiceManagement/scoManagement_invoice.jsp";
+                                nextPage = "InvoiceManagement/invoices.jsp";
                             }
                             break;
                         }
@@ -101,7 +101,7 @@ public class StatementOfAccountManagementController extends HttpServlet {
                                 session.setAttribute("statementOfAccount", soa);
                                 session.setAttribute("listOfInvoice", invoices);
                                 session.setAttribute("previousManagementPage", "soa");
-                                nextPage = "InvoiceManagement/scoManagement_invoice.jsp";
+                                nextPage = "InvoiceManagement/invoices.jsp";
                             }
                             break;
                         }

@@ -73,9 +73,9 @@
             <% if (previousPage.equals("sco")) {%>
                 window.location.href = "scoManagement_add.jsp?id=" + <%=scoID%>;
             <%} else if (previousPage.equals("delivery")) {%>
-                window.location.href = "doManagement.jsp";
+                window.location.href = "deliveryOrder.jsp";
             <%} else if (previousPage.equals("invoice")) {%>
-                window.location.href = "invoiceManagement.jsp";
+                window.location.href = "invoice.jsp";
             <%}%>
             }
         </script>
