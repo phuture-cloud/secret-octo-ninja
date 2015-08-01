@@ -15,5 +15,6 @@ public interface PaymentManagementBeanLocal {
     public PaymentRecord getPayment(Long paymentID);
     public List<PaymentRecord> listPaymentByCustomer(Long customerID);
     public List<PaymentRecord> listPaymentByInvoice(Long invoiceID);
-    public List<PaymentRecord> listAllInvoice();
+    public List<PaymentRecord> listAllPayment();
+    public Double getInvoiceTotalPaymentAmount(Long invoiceID);
 }

@@ -7,11 +7,13 @@ import EntityManager.LineItem;
 import EntityManager.ReturnHelper;
 import EntityManager.SalesConfirmationOrder;
 import EntityManager.Staff;
+import PaymentManagement.PaymentManagementBeanLocal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
@@ -27,6 +29,9 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
 
     @PersistenceContext
     private EntityManager em;
+    
+    @EJB
+    private PaymentManagementBeanLocal pmbl;
 
     private static final Double gstRate = 7.0;//7%
 
@@ -790,4 +795,50 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
         }
     }
 
+    @Override
+    public ReturnHelper refreshInvoices(Long staffID) {
+        System.out.println("InvoiceManagementBean: refreshInvoices() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        try {
+            Staff staff = new Staff();
+            Query q;
+            if (staffID != null) {
+                q = em.createQuery("SELECT s FROM Staff s WHERE s.id=:staffID");
+                q.setParameter("staffID", staffID);
+                staff = (Staff) q.getSingleResult();
+            }
+            if (staffID == null || staff.getIsAdmin()) {
+                //Refresh all for admin
+                q = em.createQuery("SELECT i FROM Invoice i WHERE i.isDeleted=false");
+            } else {
+                //Refresh only those that they create for normal staff
+                q = em.createQuery("SELECT i FROM Invoice i WHERE i.isDeleted=false and i.salesConfirmationOrder.salesPerson.id=:staffID");
+                q.setParameter("staffID", staffID);
+            }
+            List<Invoice> invoices = q.getResultList();
+            Boolean someFailed = false;
+            for (Invoice invoice : invoices) {
+                Double paymentAmount = pmbl.getInvoiceTotalPaymentAmount(invoice.getId());
+                if (paymentAmount == null) {
+                    someFailed = true;
+                }
+                invoice.setTotalAmountPaid(paymentAmount);
+                invoice.setNumOfPaymentRecords(pmbl.listPaymentByInvoice(invoice.getId()).size());
+                em.merge(invoice);
+            }
+            if (someFailed) {
+                result.setDescription("Some invoices could not be refreshed");
+            } else {
+                result.setDescription("Invoices refreshed");
+                result.setResult(true);
+            }
+            return result;
+        } catch (Exception ex) {
+            System.out.println("InvoiceManagementBean: refreshInvoices() failed");
+            result.setDescription("Internal server error.");
+            ex.printStackTrace();
+            return null;
+        }
+    }
 }

@@ -73,10 +73,16 @@ public class InvoiceManagementController extends HttpServlet {
             if (checkLogin()) {
                 switch (target) {
                     case "ListAllInvoice":
-                        List<Invoice> invoices = invoiceManagementBean.listAllInvoice(loggedInStaffID);
-                        session.setAttribute("listOfInvoice", invoices);
-                        session.setAttribute("previousManagementPage", "invoices");
-                        nextPage = "InvoiceManagement/invoices.jsp";
+                        if (true) {
+                            List<Invoice> invoices = invoiceManagementBean.listAllInvoice(loggedInStaffID);
+                            if (invoices == null) {
+                                nextPage = "error500.html";
+                            } else {
+                                session.setAttribute("listOfInvoice", invoices);
+                                session.setAttribute("previousManagementPage", "invoices");
+                                nextPage = "InvoiceManagement/invoices.jsp";
+                            }
+                        }
                         break;
                     case "ListInvoiceTiedToSCO":
                         if (true) {
@@ -288,6 +294,22 @@ public class InvoiceManagementController extends HttpServlet {
                             session.setAttribute("contacts", contacts);
                             if (source != null && source.equals("addressBook")) {
                                 nextPage = "OrderManagement/updateContact.jsp?previousPage=invoice&selectedCustomerID=" + customerID;
+                            }
+                        }
+                        break;
+                    case "RefreshInvoices":
+                        if (true) {
+                            returnHelper = invoiceManagementBean.refreshInvoices(loggedInStaffID);
+                            List<Invoice> invoices = invoiceManagementBean.listAllInvoice(loggedInStaffID);
+                            if (invoices == null) {
+                                nextPage = "error500.html";
+                            } else {
+                                session.setAttribute("listOfInvoice", invoices);
+                                if (returnHelper.getResult()) {
+                                    nextPage = "InvoiceManagement/invoices.jsp?goodMsg=" + returnHelper.getDescription();
+                                } else {
+                                    nextPage = "InvoiceManagement/invoices.jsp?errMsg=" + returnHelper.getDescription();
+                                }
                             }
                         }
                         break;

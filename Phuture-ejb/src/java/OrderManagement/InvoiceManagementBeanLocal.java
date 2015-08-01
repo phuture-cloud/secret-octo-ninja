@@ -31,4 +31,6 @@ public interface InvoiceManagementBeanLocal {
     public ReturnHelper deleteInvoiceLineItem(Long invoiceID, Long lineItemID, Boolean adminOverwrite);
     public ReturnHelper deleteallInvoiceLineItem(Long invoiceID, Boolean adminOverwrite);
     public List<LineItem> listInvoiceLineItems(Long invoiceID);
+    
+    public ReturnHelper refreshInvoices(Long staffID);
 }
