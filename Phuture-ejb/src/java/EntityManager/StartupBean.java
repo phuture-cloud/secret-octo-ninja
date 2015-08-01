@@ -1,5 +1,10 @@
 package EntityManager;
 
+import AccountManagement.AccountManagementBeanLocal;
+import CustomerManagement.CustomerManagementBeanLocal;
+import OrderManagement.InvoiceManagementBeanLocal;
+import OrderManagement.OrderManagementBeanLocal;
+import PaymentManagement.StatementOfAccountBeanLocal;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -16,18 +21,25 @@ import javax.persistence.Query;
 public class StartupBean {
 
     @EJB
-    private AccountManagement.AccountManagementBeanLocal ambl;
+    private AccountManagementBeanLocal ambl;
     @EJB
-    private CustomerManagement.CustomerManagementBeanLocal cmbl;
+    private CustomerManagementBeanLocal cmbl;
     @EJB
-    private PaymentManagement.StatementOfAccountBeanLocal soabl;
+    private StatementOfAccountBeanLocal soabl;
+    @EJB
+    private OrderManagementBeanLocal ombl;
+    @EJB
+    private InvoiceManagementBeanLocal imbl;
 
     @PersistenceContext
     private EntityManager em;
 
     @Schedule(hour = "0", minute = "0")
-    private void refreshSOA(){
+    private void refreshRecords(){
         soabl.refreshAllSOA();
+        ombl.refreshSCOs(null);
+        imbl.refreshInvoices(null);
+        
     }
 
     @PostConstruct
