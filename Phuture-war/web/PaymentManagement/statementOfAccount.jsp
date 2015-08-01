@@ -116,21 +116,11 @@
                                         <div class="col-md-6">
                                             <div class="bill-data text-right">
                                                 <p class="mb-none">
-                                                    <span class="">0 to 30 days</span>
+                                                    <span class="">Above 90 days</span>
                                                     <span class="value" style="min-width: 110px; font-size: 10.5pt; text-align: left;">
                                                         <%
-                                                            if (statementOfAccount != null && statementOfAccount.getAmountOverDueFrom0to30Days() != null) {
-                                                                out.print(formatter.format(statementOfAccount.getAmountOverDueFrom0to30Days()));
-                                                            }
-                                                        %>
-                                                    </span>
-                                                </p>
-                                                <p class="mb-none">
-                                                    <span class="">31 to 60 days</span>
-                                                    <span class="value" style="min-width: 110px; font-size: 10.5pt; text-align: left;">
-                                                        <%
-                                                            if (statementOfAccount != null && statementOfAccount.getAmountOverDueFrom31to60Days() != null) {
-                                                                out.print(formatter.format(statementOfAccount.getAmountOverDueFrom31to60Days()));
+                                                            if (statementOfAccount != null && statementOfAccount.getAmountOverDueOver91Days() != null) {
+                                                                out.print(formatter.format(statementOfAccount.getAmountOverDueOver91Days()));
                                                             }
                                                         %>
                                                     </span>
@@ -146,11 +136,21 @@
                                                     </span>
                                                 </p>
                                                 <p class="mb-none">
-                                                    <span class="">Above 90 days</span>
+                                                    <span class="">31 to 60 days</span>
                                                     <span class="value" style="min-width: 110px; font-size: 10.5pt; text-align: left;">
                                                         <%
-                                                            if (statementOfAccount != null && statementOfAccount.getAmountOverDueOver91Days() != null) {
-                                                                out.print(formatter.format(statementOfAccount.getAmountOverDueOver91Days()));
+                                                            if (statementOfAccount != null && statementOfAccount.getAmountOverDueFrom31to60Days() != null) {
+                                                                out.print(formatter.format(statementOfAccount.getAmountOverDueFrom31to60Days()));
+                                                            }
+                                                        %>
+                                                    </span>
+                                                </p>
+                                                <p class="mb-none">
+                                                    <span class="">0 to 30 days</span>
+                                                    <span class="value" style="min-width: 110px; font-size: 10.5pt; text-align: left;">
+                                                        <%
+                                                            if (statementOfAccount != null && statementOfAccount.getAmountOverDueFrom0to30Days() != null) {
+                                                                out.print(formatter.format(statementOfAccount.getAmountOverDueFrom0to30Days()));
                                                             }
                                                         %>
                                                     </span>
