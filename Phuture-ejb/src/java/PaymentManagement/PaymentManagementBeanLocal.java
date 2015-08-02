@@ -1,5 +1,6 @@
 package PaymentManagement;
 
+import EntityManager.CreditNote;
 import EntityManager.PaymentRecord;
 import EntityManager.ReturnHelper;
 import java.util.Date;
@@ -17,4 +18,14 @@ public interface PaymentManagementBeanLocal {
     public List<PaymentRecord> listPaymentByInvoice(Long invoiceID);
     public List<PaymentRecord> listAllPayment();
     public Double getInvoiceTotalPaymentAmount(Long invoiceID);
+    
+    public ReturnHelper addCreditNote(Double amount);
+    public ReturnHelper updateCreditNote(Long creditNoteID, Date creditNoteDate, Double amount);
+    public ReturnHelper deleteCreditNote(Long creditNoteID);
+    public ReturnHelper cancelCreditNote(Long creditNoteID);
+    public ReturnHelper applyCreditNote(Long creditNoteID, Long invoiceID);
+    
+    public List<CreditNote> getCreditNoteByCustomer(Long customerID);
+    public List<CreditNote> listAllCreditNote(Long staffID);
+    
 }
