@@ -23,6 +23,7 @@
     } else if (invoice == null) {
         response.sendRedirect("invoices.jsp?errMsg=An error has occured.");
     } else {
+        SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
         String estimatedDeliveryDate = request.getParameter("estimatedDeliveryDate");
         String editingLineItem = request.getParameter("editingLineItem");
         String formDisablerFlag = "";
@@ -137,7 +138,7 @@
 
                 function deleteInvoice() {
                     window.onbeforeunload = null;
-                    window.location.href = "../InvoiceManagementController?target=DeleteInvoice";
+                    window.location.href = "../InvoiceManagementController?target=VoidInvoice";
                 }
 
                 function addressBook() {
@@ -275,11 +276,8 @@
                                                         <span class="value" style="min-width: 110px">
                                                             <%
                                                                 if (invoice.getDateSent() != null) {
-                                                                    SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
                                                                     String date = DATE_FORMAT.format(invoice.getDateSent());
-                                                                    out.print("<input " + formDisablerFlag + " id='invoiceSent' name='invoiceSent' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "'>");
-                                                                } else {
-                                                                    out.print("<input " + formDisablerFlag + " id='invoiceSent' name='invoiceSent' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' placeholder='dd/mm/yyyy'>");
+                                                                    out.print("<input " + formDisablerFlag + " id='invoiceSent' name='invoiceSent' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "' required>");
                                                                 }
                                                             %>
                                                         </span>
@@ -290,7 +288,6 @@
                                                         <span class="value" style="min-width: 110px">
                                                             <%
                                                                 if (invoice.getDatePaid() != null) {
-                                                                    SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
                                                                     String date = DATE_FORMAT.format(invoice.getDatePaid());
                                                                     out.print("<input " + formDisablerFlag + " id='invoicePaid' name='invoicePaid' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "'>");
                                                                 } else {
@@ -373,11 +370,7 @@
                                                     <p class="mb-none">
                                                         <span class="text-dark">Date Due: </span>
                                                         <span class="value" style="min-width: 110px; font-size: 10.5pt; text-align: left;">
-                                                            <%
-                                                                SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
-                                                                String date = DATE_FORMAT.format(invoice.getDateDue());
-                                                                out.print(date);
-                                                            %>
+                                                            <%=DATE_FORMAT.format(invoice.getDateDue())%>
                                                         </span>
                                                     </p>
                                                     <%}%>
@@ -630,7 +623,7 @@
                                     <div class="col-sm-6 text-right mt-md mb-md">
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-default" onclick="javascript:back()">Back</button>
-                                            <button type='button' class='modal-with-move-anim btn btn-danger' href='#modalRemove'>Cancel</button>
+                                            <button type='button' class='modal-with-move-anim btn btn-danger' href='#modalRemove'>Void Invoice</button>
                                             <%
                                                 if (invoice.getItems().size() > 0) {
                                                     out.print("<button type='button' class='btn btn-primary modal-with-form' href='#modalAddPayment'>Add Payment</button>");

@@ -42,6 +42,12 @@
                 document.customerManagement.action = "../CustomerManagementController";
                 document.customerManagement.submit();
             }
+            function viewCreditNotes(id) {
+                customerManagement.id.value = id;
+                customerManagement.target.value = "ListCustomerCreditNotes";
+                document.customerManagement.action = "../PaymentManagementController";
+                document.customerManagement.submit();
+            }
         </script>
 
         <section class="body">
@@ -84,7 +90,7 @@
                                     <thead>
                                         <tr>
                                             <th>Company</th>
-                                            <th style="width: 400px;">Action</th>
+                                            <th style="width: 600px;">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -97,9 +103,10 @@
                                             <td><%=customers.get(i).getCustomerName()%></td>
                                             <td>
                                                 <div class="btn-group" role="group" aria-label="...">
-                                                    <button  class="btn btn-default" onclick="javascript:viewContact('<%=customers.get(i).getId()%>')" ">Contact Management</button>
-                                                    <button  class="btn btn-default" onclick="javascript:updateCustomer('<%=customers.get(i).getId()%>', '<%=customers.get(i).getCustomerName()%>')">Update</button>
-                                                    <button  class="modal-with-move-anim btn btn-default"  href="#modalRemove">Remove</button>
+                                                    <button class="btn btn-default" onclick="javascript:viewCreditNotes('<%=customers.get(i).getId()%>')">Credit Note Management</button>
+                                                    <button class="btn btn-default" onclick="javascript:viewContact('<%=customers.get(i).getId()%>')">Contact Management</button>
+                                                    <button class="btn btn-default" onclick="javascript:updateCustomer('<%=customers.get(i).getId()%>', '<%=customers.get(i).getCustomerName()%>')">Update</button>
+                                                    <button class="modal-with-move-anim btn btn-default"  href="#modalRemove">Remove</button>
                                                 </div>
 
                                                 <div id="modalRemove" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">

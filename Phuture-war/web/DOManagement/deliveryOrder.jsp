@@ -417,7 +417,7 @@
                                     <div class="col-sm-6 text-right mt-md mb-md">
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-default" onclick="javascript:back()">Back</button>
-                                            <button type='button' class='modal-with-move-anim btn btn-danger' href='#modalRemove'>Cancel</button>
+                                            <button type='button' class='modal-with-move-anim btn btn-danger' href='#modalRemove'>Void</button>
                                             <button <%=formDisablerFlag%> class='btn btn-success' onclick='javascript:updateDO();'>Save</button>
                                         </div>
                                     </div>
@@ -572,7 +572,7 @@
                                         <i class="fa fa-question-circle" style="top: 0px;"></i>
                                     </div>
                                     <div class="modal-text">
-                                        <p>Are you sure that you want to cancel this Delivery Order?<br> All associated Invoice/Payment records will also be cancelled together!</p>
+                                        <p>Are you sure that you want to void this Delivery Order?<br> All associated Invoice/Payment records will also be voided together!</p>
                                     </div>
                                 </div>
                             </div>

@@ -6,6 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -25,6 +27,14 @@ public class CreditNote implements Serializable {
     private Date dateUsed;
     @OneToOne
     private Invoice appliedToInvoice;
+
+    private String contactName;
+    private String contactEmail;
+    private String contactOfficeNo;
+    private String contactMobileNo;
+    private String contactFaxNo;
+    @Lob
+    private String contactAddress;
 
     public CreditNote() {
     }
@@ -56,6 +66,54 @@ public class CreditNote implements Serializable {
 
     public void setDateUsed(Date dateUsed) {
         this.dateUsed = dateUsed;
+    }
+
+    public String getContactName() {
+        return contactName;
+    }
+
+    public void setContactName(String contactName) {
+        this.contactName = contactName;
+    }
+
+    public String getContactEmail() {
+        return contactEmail;
+    }
+
+    public void setContactEmail(String contactEmail) {
+        this.contactEmail = contactEmail;
+    }
+
+    public String getContactOfficeNo() {
+        return contactOfficeNo;
+    }
+
+    public void setContactOfficeNo(String contactOfficeNo) {
+        this.contactOfficeNo = contactOfficeNo;
+    }
+
+    public String getContactMobileNo() {
+        return contactMobileNo;
+    }
+
+    public void setContactMobileNo(String contactMobileNo) {
+        this.contactMobileNo = contactMobileNo;
+    }
+
+    public String getContactFaxNo() {
+        return contactFaxNo;
+    }
+
+    public void setContactFaxNo(String contactFaxNo) {
+        this.contactFaxNo = contactFaxNo;
+    }
+
+    public String getContactAddress() {
+        return contactAddress;
+    }
+
+    public void setContactAddress(String contactAddress) {
+        this.contactAddress = contactAddress;
     }
 
     public Long getId() {

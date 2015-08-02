@@ -245,7 +245,7 @@
                     <b>Phuture International Pte Ltd</b>
                     <%
                         if (staff.getSignature() != null && staff.getSignature().length > 0) {
-                            out.write("<img class='img-responsive' src='http://localhost:8080/Phuture-war/sig?id=" + staff.getId() + ">'");
+                            out.write("<img class='img-responsive' src='http://localhost:8080/Phuture-war/sig?id=" + staff.getId() + "'>");
                         }
                     %>
                     <br>

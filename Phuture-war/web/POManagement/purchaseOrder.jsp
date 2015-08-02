@@ -503,7 +503,7 @@
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-default" onclick="javascript:back()">Back</button>
                                             <%              if (purchaseOrder != null) {
-                                                    out.print("<button type='button' class='modal-with-move-anim btn btn-danger' href='#modalRemove'>Cancel</button>");
+                                                    out.print("<button type='button' class='modal-with-move-anim btn btn-danger' href='#modalRemove'>Delete</button>");
                                                     if (purchaseOrder.getItems().size() > 0) {
                                                         out.print("<button " + formDisablerFlag + " class='btn btn-primary' onclick='javascript:generateInvoice()'>Generate Invoice</button>");
                                                     }
@@ -641,7 +641,7 @@
                                         <i class="fa fa-question-circle" style="top: 0px;"></i>
                                     </div>
                                     <div class="modal-text">
-                                        <p>Are you sure that you want to cancel this Purchase Order?</p>
+                                        <p>Are you sure that you want to delete this Purchase Order?</p>
                                     </div>
                                 </div>
                             </div>

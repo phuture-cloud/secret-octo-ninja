@@ -135,7 +135,7 @@
                                             <td>
                                                 <%
                                                     SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("d MMM yyyy");
-                                                    String date = DATE_FORMAT.format(invoices.get(i).getDateCreated());
+                                                    String date = DATE_FORMAT.format(invoices.get(i).getDateSent());
                                                     out.print(date);
                                                 %>
                                             </td>
