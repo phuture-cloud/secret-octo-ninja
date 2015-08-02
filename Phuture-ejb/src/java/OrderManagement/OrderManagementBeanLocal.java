@@ -11,8 +11,8 @@ import javax.ejb.TransactionAttribute;
 @Local
 public interface OrderManagementBeanLocal {
     //SCO
-    public ReturnHelper createSalesConfirmationOrder(String salesConfirmationOrderNumber, Date salesConfirmationOrderDate, String estimatedDeliveryDate, String customerPurchaseOrderNumber, Long customerID, Long contactID, Long salesStaffID, Integer terms);
-    public ReturnHelper updateSalesConfirmationOrder(Long salesConfirmationOrderID, String newSalesConfirmationOrderNumber, Date newSalesConfirmationOrderDate, String newEstimatedDeliveryDate, String customerPurchaseOrderNumber, Long newCustomerID, String status, Integer newTerms, Boolean adminOverwrite);
+    public ReturnHelper createSalesConfirmationOrder(Date salesConfirmationOrderDate, String estimatedDeliveryDate, String customerPurchaseOrderNumber, Long customerID, Long contactID, Long salesStaffID, Integer terms);
+    public ReturnHelper updateSalesConfirmationOrder(Long salesConfirmationOrderID, Date newSalesConfirmationOrderDate, String newEstimatedDeliveryDate, String customerPurchaseOrderNumber, Long newCustomerID, String status, Integer newTerms, Boolean adminOverwrite);
     public ReturnHelper updateSalesConfirmationOrderCustomerContactDetails(Long salesConfirmationOrderID, String customerName, String contactName, String email, String officeNo, String mobileNo, String faxNo, String address, Boolean adminOverwrite);
     public ReturnHelper updateSalesConfirmationOrderCustomerContactDetails(Long salesConfirmationOrderID, Long customerID, Long contactID, Boolean adminOverwrite);
     public ReturnHelper updateSalesConfirmationOrderRemarks(Long salesConfirmationOrderID, String remarks, Boolean adminOverwrite);

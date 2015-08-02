@@ -32,7 +32,7 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
     private static final Double gstRate = 7.0;//7%
 
     @Override
-    public ReturnHelper createDeliveryOrder(Long salesConfirmationOrderID, String deliveryOrderNumber, Date deliveryOrderDate) {
+    public ReturnHelper createDeliveryOrder(Long salesConfirmationOrderID, Date deliveryOrderDate) {
         System.out.println("DeliveryOrderManagementBean: createDeliveryOrder() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -44,15 +44,14 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
                 result.setDescription("Failed to create a new DO. The selected SCO may have been deleted while the DO is being created. Please try again.");
                 return result;
             }
-            ReturnHelper uniqueResult = checkIfDOnumberIsUnique(deliveryOrderNumber);
-            if (!uniqueResult.getResult()) {
-                uniqueResult.setDescription("Failed to save the DO as the DO number is already in use.");
-                return uniqueResult;
-            }
+//            ReturnHelper uniqueResult = checkIfDOnumberIsUnique(deliveryOrderNumber);
+//            if (!uniqueResult.getResult()) {
+//                uniqueResult.setDescription("Failed to save the DO as the DO number is already in use.");
+//                return uniqueResult;
+//            }
             //Create new DO
-            DeliveryOrder deliveryOrder = new DeliveryOrder(deliveryOrderNumber);
+            DeliveryOrder deliveryOrder = new DeliveryOrder(getNewDeliveryOrderNumber());
             deliveryOrder.setSalesConfirmationOrder(sco);
-            deliveryOrder.setDeliveryOrderNumber(deliveryOrderNumber);
             deliveryOrder.setDeliveryOrderDate(deliveryOrderDate);
             deliveryOrder.setTaxRate(gstRate);
             //Copy SCO details
@@ -90,7 +89,7 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
     }
 
     @Override
-    public ReturnHelper updateDeliveryOrder(Long deliveryOrderID, String newDeliveryOrderNumber, Date newDeliveryOrderDate, String customerPurchaseOrderNumber, String status, Boolean adminOverwrite) {
+    public ReturnHelper updateDeliveryOrder(Long deliveryOrderID, Date newDeliveryOrderDate, String customerPurchaseOrderNumber, String status, Boolean adminOverwrite) {
         System.out.println("DeliveryOrderManagementBean: updateDeliveryOrder() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -107,11 +106,11 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
                 result.setDescription(checkResult.getDescription());
                 return result;
             }
-            ReturnHelper uniqueResult = checkIfDOnumberIsUnique(newDeliveryOrderNumber);
-            if (!uniqueResult.getResult() && !newDeliveryOrderNumber.equals(deliveryOrder.getDeliveryOrderNumber())) {
-                uniqueResult.setDescription("Failed to save the DO as the DO number is already in use.");
-                return uniqueResult;
-            }
+//            ReturnHelper uniqueResult = checkIfDOnumberIsUnique(newDeliveryOrderNumber);
+//            if (!uniqueResult.getResult() && !newDeliveryOrderNumber.equals(deliveryOrder.getDeliveryOrderNumber())) {
+//                uniqueResult.setDescription("Failed to save the DO as the DO number is already in use.");
+//                return uniqueResult;
+//            }
             ReturnHelper updateStatusResult = updateDeliveryOrderStatus(deliveryOrderID, status, adminOverwrite);
             if (updateStatusResult.getResult() == false) {
                 result.setDescription(updateStatusResult.getDescription());
@@ -119,7 +118,7 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             }
             //Update fields 
             deliveryOrder.setDeliveryOrderDate(newDeliveryOrderDate);
-            deliveryOrder.setDeliveryOrderNumber(newDeliveryOrderNumber);
+//            deliveryOrder.setDeliveryOrderNumber(newDeliveryOrderNumber);
             deliveryOrder.setCustomerPurchaseOrderNumber(customerPurchaseOrderNumber);
             em.merge(deliveryOrder);
             result.setID(deliveryOrder.getId());
