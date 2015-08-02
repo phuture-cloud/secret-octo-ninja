@@ -1,5 +1,6 @@
 package PaymentManagement;
 
+import EntityManager.CreditNote;
 import EntityManager.Customer;
 import EntityManager.Invoice;
 import EntityManager.PaymentRecord;
@@ -243,4 +244,41 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
             return null;
         }
     }
+
+    @Override
+    public ReturnHelper addCreditNote(Double amount) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public ReturnHelper updateCreditNote(Long creditNoteID, Date creditNoteDate, Double amount) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public ReturnHelper deleteCreditNote(Long creditNoteID) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public ReturnHelper cancelCreditNote(Long creditNoteID) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public ReturnHelper applyCreditNote(Long creditNoteID, Long invoiceID) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<CreditNote> getCreditNoteByCustomer(Long customerID) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<CreditNote> listAllCreditNote(Long staffID) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    
 }
