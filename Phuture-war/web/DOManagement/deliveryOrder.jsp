@@ -17,6 +17,8 @@
         response.sendRedirect("../index.jsp?errMsg=Invalid Request. Please login.");
     } else if (staff == null) {
         response.sendRedirect("../index.jsp?errMsg=Session Expired.");
+    } else if (deliveryOrder == null) {
+        response.sendRedirect("deliveryOrders.jsp?errMsg=an error has occured");
     } else {
         String editingLineItem = request.getParameter("editingLineItem");
         String formDisablerFlag = "";
@@ -143,7 +145,7 @@
                     </header>
 
                     <!-- start: page -->
-                    <form name="doManagement" action="../DeliveryOrderManagementController">
+                    <form name="doManagement">
                         <section class="panel">
                             <div class="panel-body">
                                 <div class="invoice">
@@ -151,11 +153,7 @@
                                         <div class="row">
                                             <div class="col-sm-6 mt-md">
                                                 <h2 class="h2 mt-none mb-sm text-dark text-weight-bold">Delivery Order</h2>
-                                                <%
-                                                    if (deliveryOrder != null) {
-                                                        out.print("<input type='text' " + formDisablerFlag + " class='form-control' id='doNumber' name='doNumber' value='" + deliveryOrder.getDeliveryOrderNumber() + "' style='max-width: 300px' required/>");
-                                                    }
-                                                %>
+                                                <h3><%=deliveryOrder.getDeliveryOrderNumber()%></h3>
                                             </div>
                                             <br/>
                                             <div class="col-sm-6 text-right mt-md mb-md">
@@ -183,27 +181,25 @@
                                                     <address>
                                                         <div class="col-md-6" style="padding-left: 0px;">
                                                             <%
-                                                                if (deliveryOrder != null) {
-                                                                    out.print("<b>" + deliveryOrder.getCustomerName() + "</b>");
-                                                                    String repl = deliveryOrder.getContactAddress().replaceAll("(\\r|\\n|\\r\\n)+", "<br>");
-                                                                    out.print("<br>" + repl);
-                                                                    out.print("<br>" + deliveryOrder.getContactOfficeNo());
-                                                                    if (deliveryOrder.getContactFaxNo() != null && !deliveryOrder.getContactFaxNo().isEmpty()) {
-                                                                        out.print("<br>" + deliveryOrder.getContactFaxNo());
-                                                                    }
-                                                                    out.print("<p class='h5 mb-xs text-dark text-weight-semibold'>Attention:</p>");
-                                                                    out.print(deliveryOrder.getContactName() + " ");
-                                                                    if (deliveryOrder.getContactMobileNo() != null && !deliveryOrder.getContactMobileNo().isEmpty()) {
-                                                                        out.print("<br>" + deliveryOrder.getContactMobileNo());
-                                                                    }
-                                                                    if (deliveryOrder.getContactEmail() != null && !deliveryOrder.getContactEmail().isEmpty()) {
-                                                                        out.print("<br>" + deliveryOrder.getContactEmail() + "<br>");
-                                                                    }
-                                                                    if (!formDisablerFlag.equals("disabled")) {
-                                                                        out.print("<div class='text-right'><a href='#modalEditForm' class='modal-with-form'>edit</a></div>");
-                                                                    }
-                                                                    out.print("<br><br>");
+                                                                out.print("<b>" + deliveryOrder.getCustomerName() + "</b>");
+                                                                String repl = deliveryOrder.getContactAddress().replaceAll("(\\r|\\n|\\r\\n)+", "<br>");
+                                                                out.print("<br>" + repl);
+                                                                out.print("<br>" + deliveryOrder.getContactOfficeNo());
+                                                                if (deliveryOrder.getContactFaxNo() != null && !deliveryOrder.getContactFaxNo().isEmpty()) {
+                                                                    out.print("<br>" + deliveryOrder.getContactFaxNo());
                                                                 }
+                                                                out.print("<p class='h5 mb-xs text-dark text-weight-semibold'>Attention:</p>");
+                                                                out.print(deliveryOrder.getContactName() + " ");
+                                                                if (deliveryOrder.getContactMobileNo() != null && !deliveryOrder.getContactMobileNo().isEmpty()) {
+                                                                    out.print("<br>" + deliveryOrder.getContactMobileNo());
+                                                                }
+                                                                if (deliveryOrder.getContactEmail() != null && !deliveryOrder.getContactEmail().isEmpty()) {
+                                                                    out.print("<br>" + deliveryOrder.getContactEmail() + "<br>");
+                                                                }
+                                                                if (!formDisablerFlag.equals("disabled")) {
+                                                                    out.print("<div class='text-right'><a href='#modalEditForm' class='modal-with-form'>edit</a></div>");
+                                                                }
+                                                                out.print("<br><br>");
                                                             %>
                                                         </div>
                                                         <br/><br/>
@@ -228,7 +224,7 @@
                                                         <span class="text-dark">Date:</span>
                                                         <span class="value" style="min-width: 110px">
                                                             <%
-                                                                if (deliveryOrder != null) {
+                                                                if (deliveryOrder != null && deliveryOrder.getDeliveryOrderDate() != null) {
                                                                     SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
                                                                     String date = DATE_FORMAT.format(deliveryOrder.getDeliveryOrderDate());
                                                                     out.print("<input " + formDisablerFlag + " id='doDate' name='doDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "' required>");
@@ -253,8 +249,6 @@
                                                         </span>
                                                     </p>
 
-
-                                                    <% if (deliveryOrder != null) {%>
                                                     <p class="mb-none">
                                                         <span class="text-dark">Status: </span>
                                                         <span class="value" style="min-width: 110px">
@@ -285,7 +279,6 @@
                                                             </select>
                                                         </span>
                                                     </p>
-                                                    <%}%>
                                                 </div>
                                             </div>
                                         </div>
@@ -304,7 +297,8 @@
                                             <tbody>
                                                 <tr>
                                                     <td>
-                                                        <%if (!editingLineItem.equals("")) {
+                                                        <%
+                                                            if (!editingLineItem.equals("")) {
                                                                 out.println("<input type='text' class='form-control' name='itemName' disabled/>");
                                                             } else {
                                                                 out.println("<input type='text' class='form-control' name='itemName'/>");
@@ -312,15 +306,17 @@
                                                         %>
                                                     </td>
                                                     <td>
-                                                        <%if (!editingLineItem.equals("")) {
-                                                                out.println("<input type='text' class='form-control' name='itemDescription' disabled/>");
+                                                        <%
+                                                            if (!editingLineItem.equals("")) {
+                                                                out.println("<textarea class='form-control' rows='1' name='itemDescription' disabled></textarea>");
                                                             } else {
-                                                                out.println("<input type='text' class='form-control' name='itemDescription'/>");
+                                                                out.println("<textarea class='form-control' rows='1' name='itemDescription'></textarea>");
                                                             }
                                                         %>
                                                     </td>
                                                     <td class="text-center">
-                                                        <%if (!editingLineItem.equals("")) {
+                                                        <%
+                                                            if (!editingLineItem.equals("")) {
                                                                 out.println("<input type='number' class='form-control' id='input_itemQty' min='0' name='itemQty' disabled/>");
                                                             } else {
                                                                 out.println("<input type='number' class='form-control' id='input_itemQty' min='0' name='itemQty'/>");
@@ -405,17 +401,15 @@
                                     <div class="col-sm-6 mt-md">
                                         <div class="btn-group">
                                             <%
-                                                if (deliveryOrder != null) {
-                                                    if (deliveryOrder.getItems().size() > 0) {
-                                                        out.print("<a href='../OrderManagementController?target=PrintPDF&id=" + deliveryOrder.getId() + "' target='_blank' class='btn btn-default'><i class='fa fa-print'></i> Print PDF</a>");
-                                                    }
-                                                    if (deliveryOrder.getNotes() != null && !deliveryOrder.getNotes().isEmpty()) {
-                                                        out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalNotes'><i class='fa fa-exclamation'></i> Notes</button>");
-                                                    } else {
-                                                        out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalNotes'>Notes</button>");
-                                                    }
-                                                    out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalRemarks' data-toggle='tooltip' data-placement='top' title='*Remarks will be reflected in the DO'>Remarks</button>");
+                                                if (deliveryOrder.getItems().size() > 0) {
+                                                    out.print("<a href='../OrderManagementController?target=PrintPDF&id=" + deliveryOrder.getId() + "' target='_blank' class='btn btn-default'><i class='fa fa-print'></i> Print PDF</a>");
                                                 }
+                                                if (deliveryOrder.getNotes() != null && !deliveryOrder.getNotes().isEmpty()) {
+                                                    out.print("<button type='button' class='btn btn-info modal-with-form' href='#modalNotes'>Notes</button>");
+                                                } else {
+                                                    out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalNotes'>Notes</button>");
+                                                }
+                                                out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalRemarks' data-toggle='tooltip' data-placement='top' title='*Remarks will be reflected in the DO'>Remarks</button>");
                                             %> 
                                         </div>
                                     </div>
@@ -423,32 +417,23 @@
                                     <div class="col-sm-6 text-right mt-md mb-md">
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-default" onclick="javascript:back()">Back</button>
-                                            <%
-                                                if (deliveryOrder != null) {
-                                                    out.print("<button type='button' class='modal-with-move-anim btn btn-danger' href='#modalRemove'>Delete</button>");
-                                                    out.print("<button " + formDisablerFlag + " class='btn btn-success' onclick='javascript:updateDO();'>Save</button>");
-                                                } else {
-                                                    out.print("<button " + formDisablerFlag + " class='btn btn-success' type='submit'>Save</button>");
-                                                }
-                                            %>
+                                            <button type='button' class='modal-with-move-anim btn btn-danger' href='#modalRemove'>Cancel</button>
+                                            <button <%=formDisablerFlag%> class='btn btn-success' onclick='javascript:updateDO();'>Save</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </section>
 
-                        <%
-                            if (deliveryOrder != null) {
-                                out.print("<input type='hidden' name='customerID' value='" + deliveryOrder.getSalesConfirmationOrder().getCustomer().getId() + "'>");
-                            }
-                        %>
+                        <input type='hidden' name='customerID' value='<%=deliveryOrder.getSalesConfirmationOrder().getCustomer().getId()%>'>
                         <input type="hidden" name="lineItemID" value="">   
                         <input type="hidden" name="source" value="">    
                         <input type="hidden" name="id" value="">    
+                        <input type="hidden" name="target" value="">    
                     </form>
                     <!-- end: page -->
 
-                    <%if (deliveryOrder != null) {%>
+
                     <div id="modalEditForm" class="modal-block modal-block-primary mfp-hide">
                         <section class="panel">
                             <form name="editContactForm" action="../DeliveryOrderManagementController" class="form-horizontal mb-lg">
@@ -526,7 +511,7 @@
                                     <div class="form-group">
                                         <label class="col-sm-3 control-label">Notes</label>
                                         <div class="col-sm-9">
-                                            <textarea class="form-control" rows="5" name="notes"><%if (deliveryOrder.getNotes() != null) {
+                                            <textarea class="form-control" rows="5" name="notes" id="notes"><%if (deliveryOrder.getNotes() != null) {
                                                     out.print(deliveryOrder.getNotes());
                                                 }%></textarea>
                                         </div>
@@ -601,7 +586,7 @@
                             </footer>
                         </section>
                     </div>
-                    <%}%>
+
                 </section>
             </div>
         </section>

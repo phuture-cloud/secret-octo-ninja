@@ -53,8 +53,8 @@ public class StartupBean {
                 System.out.println("Skipping init of database, already initated.");
                 return;
             }
-            ambl.registerStaffAccount("Admin", "--", null, "admin", "admin", true);
-            ambl.registerStaffAccount("Test Staff", "--", null, "test", "test", false);
+            ambl.registerStaffAccount("Admin", "AD", null, "admin", "admin", true);
+            ambl.registerStaffAccount("Test Staff", "TS", null, "test", "test", false);
             ReturnHelper result;
             result = cmbl.addCustomer("Test Customer 1");
             cmbl.addContact(result.getID(), "Alpha", "alpha@test.com", "61111111", "61111111", "61111111", "Block 111 Alpha Avenue 1 #01-01 Singapore 111111", "Customer notes can be writen here");

@@ -44,21 +44,25 @@
         <jsp:include page="../displayNotification.jsp" />
         <script src="../assets/vendor/nprogress/nprogress.js"></script>
         <script>
-            function viewInvoice(id) {
-                window.location.href = "../InvoiceManagementController?target=RetrieveInvoice&id=" + id;
-            }
+        function viewInvoice(id) {
+            window.location.href = "../InvoiceManagementController?target=RetrieveInvoice&id=" + id;
+        }
 
-            function back() {
+        function back() {
             <% if (previousMgtPage.equals("sco")) {%>
-                window.location.href = "../OrderManagementController?target=RetrieveSCO&id=<%=sco.getId()%>";
+            window.location.href = "../OrderManagementController?target=RetrieveSCO&id=<%=sco.getId()%>";
             <% } else if (previousMgtPage.equals("soa")) {%>
-                window.location.href = "../StatementOfAccountManagementController?target=RetrieveSOA&id=<%=soa.getCustomer().getId()%>";
+            window.location.href = "../StatementOfAccountManagementController?target=RetrieveSOA&id=<%=soa.getCustomer().getId()%>";
             <%}%>
-            }
-            function refreshInvoices() {
-                NProgress.start();
-                window.location.href = "../InvoiceManagementController?target=RefreshInvoices"
-            }
+        }
+        function refreshInvoices() {
+            NProgress.start();
+            <% if (previousMgtPage.equals("sco")) {%>
+            window.location.href = "../InvoiceManagementController?target=RefreshSCOInvoices";
+            <%} else if (previousMgtPage.equals("invoices")) {%>
+            window.location.href = "../InvoiceManagementController?target=RefreshInvoices";
+            <%}%>
+        }
         </script>
 
         <section class="body">
@@ -79,7 +83,7 @@
 
                                 <%if (previousMgtPage.equals("sco")) {%>
                                 <li><span><a href= "../OrderManagementController?target=ListAllSCO">SCO Management</a></span></li>
-                                <li><span><a href= "../OrderManagementController?target=RetrieveSCO&id=<%=sco.getId()%>"><%=sco.getSalesConfirmationOrderNumber()%></a></span></li>
+                                <li><span><a href= "../OrderManagementController?target=RetrieveSCO&id=<%=sco.getId()%>"><%=staff.getStaffPrefix()%>-<%=sco.getSalesConfirmationOrderNumber()%></a></span></li>
                                             <%} else if (previousMgtPage.equals("soa")) {%>
                                 <li><span><a href= "../StatementOfAccountManagementController?target=ListAllSOA">Statement of Accounts</a></span></li>
                                 <li><span><a href="../StatementOfAccountManagementController?target=RetrieveSOA&id=<%=soa.getCustomer().getId()%>">SOA</a></span></li>
@@ -97,7 +101,7 @@
                             <%
                                 if (previousMgtPage.equals("sco")) {
                             %>
-                            <h2 class="panel-title">SCO No. <%=sco.getSalesConfirmationOrderNumber()%> - Invoices</h2>
+                            <h2 class="panel-title">SCO No. <%=staff.getStaffPrefix()%>-<%=sco.getSalesConfirmationOrderNumber()%> - Invoices</h2>
                             <%} else {%>
                             <h2 class="panel-title">Invoices</h2>
                             <%}%>
@@ -113,11 +117,11 @@
                                 <table class="table table-bordered table-striped mb-none" id="datatable-default">
                                     <thead>
                                         <tr>
-                                            <th></th>
                                             <th>Invoice #</th>
                                             <th>Invoice Date</th>
                                             <th>Invoiced Amount</th>
                                             <th>Amount Paid</th>
+                                            <th></th>
                                             <th>Invoice Status</th>
                                             <th style="width: 400px;">Action</th>
                                         </tr>
@@ -127,21 +131,6 @@
                                             for (int i = 0; i < invoices.size(); i++) {
                                         %>
                                         <tr>        
-                                            <td>
-                                                <% if (invoices.get(i).getTotalAmountPaid()== null) {
-                                                        //If there was some errors calculating the payment amount
-                                                        out.println();
-                                                    } else if (invoices.get(i).getTotalAmountPaid() < invoices.get(i).getTotalPrice()) {
-                                                    //If total paid less than invoiced amount
-                                                        //todo
-                                                        out.println();
-                                                    } else if (invoices.get(i).getTotalAmountPaid() < invoices.get(i).getTotalPrice()) {
-                                                        //If total paid more than invoiced amount
-                                                        out.println();
-                                                    } else {
-                                                        //If total paid equal invoiced
-                                                    }%>
-                                            </td>
                                             <td><%=invoices.get(i).getInvoiceNumber()%></td>
                                             <td>
                                                 <%
@@ -153,12 +142,27 @@
                                             <td><%=formatter.format(invoices.get(i).getTotalPrice())%></td>
                                             <td>
                                                 <%
-                                                    if (invoices.get(i).getTotalAmountPaid()!= null) {
+                                                    if (invoices.get(i).getTotalAmountPaid() != null) {
                                                         out.print(formatter.format(invoices.get(i).getTotalAmountPaid()));
                                                     } else {
                                                         out.println("NA");
                                                     }
                                                 %>
+                                            </td>
+                                            <td>
+                                                <% if (invoices.get(i).getTotalAmountPaid() == null) {
+                                                        //If there was some errors calculating the payment amount
+                                                        out.println("<i class='fa fa-exclamation-triangle' style='color:yellow' data-toggle='tooltip' data-placement='top' title='Unable to calculate payment amount'></i>");
+                                                    } else if (invoices.get(i).getTotalAmountPaid() < invoices.get(i).getTotalPrice()) {
+                                                        //If total paid less than invoiced amount
+                                                        out.println("<i class='fa fa-exclamation-circle' style='color:red' data-toggle='tooltip' data-placement='top' title='Payment not fully received'></i>");
+                                                        out.println();
+                                                    } else if (invoices.get(i).getTotalAmountPaid() > invoices.get(i).getTotalPrice()) {
+                                                        //If total paid more than invoiced amount
+                                                        out.println("<i class='fa fa-exclamation-circle' style='color:orange' data-toggle='tooltip' data-placement='top' title='Invoice overpaid'></i>");
+                                                    } else {
+                                                        //If total paid equal invoiced
+                                                    }%>
                                             </td>
                                             <td><%=invoices.get(i).getStatus()%></td>
                                             <td><button type="button" class="btn btn-default btn-block" onclick="javascript:viewInvoice('<%=invoices.get(i).getId()%>')">View</button></td>

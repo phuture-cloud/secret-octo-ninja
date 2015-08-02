@@ -4,7 +4,6 @@ import CustomerManagement.CustomerManagementBeanLocal;
 import EntityManager.Contact;
 import EntityManager.Customer;
 import EntityManager.DeliveryOrder;
-import EntityManager.PurchaseOrder;
 import EntityManager.ReturnHelper;
 import EntityManager.SalesConfirmationOrder;
 import EntityManager.Staff;
@@ -46,7 +45,6 @@ public class DeliveryOrderManagementController extends HttpServlet {
         String itemDescription = request.getParameter("itemDescription");
         String itemQty = request.getParameter("itemQty");
 
-        String doNumber = request.getParameter("doNumber");
         String poNumber = request.getParameter("poNumber");
         String doDate = request.getParameter("doDate");
         if (doDate == null) {
@@ -119,18 +117,18 @@ public class DeliveryOrderManagementController extends HttpServlet {
                     case "UpdateDO":
                         if (source.equals("AddLineItemToExistingDO")) {
                             if (itemName == null || itemName.isEmpty() || itemDescription == null || itemDescription.isEmpty() || itemQty == null || itemQty.isEmpty()) {
-                                nextPage = "DOManagement/deliveryOrder.jsp?doNumber=" + doNumber + "&doDate=" + doDate + "&errMsg=Please fill in all the fields for the item.";
+                                nextPage = "DOManagement/deliveryOrder.jsp?doDate=" + doDate + "&errMsg=Please fill in all the fields for the item.";
                                 break;
                             }
                         }
-                        if (doNumber == null || doNumber.isEmpty() || doDate == null || doDate.isEmpty()) {
-                            nextPage = "DOManagement/deliveryOrder.jsp?doNumber=" + doNumber + "&doDate=" + doDate + "&errMsg=Please fill in all the fields for the DO.";
+                        if (doDate.isEmpty()) {
+                            nextPage = "DOManagement/deliveryOrder.jsp?doDate=" + doDate + "&errMsg=Please fill in all the fields for the DO.";
                         } else {
                             SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
                             Date doDateDate = formatter.parse(doDate);
 
                             //Update DO
-                            returnHelper = deliveryOrderManagementBean.updateDeliveryOrder(deliveryOrder.getId(), doNumber, doDateDate, poNumber, status, isAdmin);
+                            returnHelper = deliveryOrderManagementBean.updateDeliveryOrder(deliveryOrder.getId(), doDateDate, poNumber, status, isAdmin);
                             if (returnHelper.getResult()) {
                                 Long doID = returnHelper.getID();
                                 deliveryOrder = deliveryOrderManagementBean.getDeliveryOrder(doID);
@@ -274,7 +272,7 @@ public class DeliveryOrderManagementController extends HttpServlet {
                 return;
             }
         } catch (Exception ex) {
-            response.sendRedirect("DOManagement/deliveryOrders.jsp?errMsg=An error has occured");
+            response.sendRedirect("DOManagement/deliveryOrder.jsp?errMsg=An error has occured");
             ex.printStackTrace();
             return;
         }

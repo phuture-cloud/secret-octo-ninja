@@ -50,7 +50,6 @@ public class InvoiceManagementController extends HttpServlet {
         String itemQty = request.getParameter("itemQty");
         String itemUnitPrice = request.getParameter("itemUnitPrice");
 
-        String invoiceNumber = request.getParameter("invoiceNumber");
         String poNumber = request.getParameter("poNumber");
         String status = request.getParameter("status");
         if (status == null) {
@@ -86,9 +85,9 @@ public class InvoiceManagementController extends HttpServlet {
                         break;
                     case "ListInvoiceTiedToSCO":
                         if (true) {
-                            String id = request.getParameter("id");
-                            if (id != null) {
-                                session.setAttribute("listOfInvoice", invoiceManagementBean.listInvoicesTiedToSCO(Long.parseLong(id)));
+                            SalesConfirmationOrder sco = (SalesConfirmationOrder) session.getAttribute("sco");
+                            if (sco != null) {
+                                session.setAttribute("listOfInvoice", invoiceManagementBean.listInvoicesTiedToSCO(sco.getId()));
                                 session.setAttribute("previousManagementPage", "sco");
                                 nextPage = "InvoiceManagement/invoices.jsp";
                             }
@@ -128,65 +127,62 @@ public class InvoiceManagementController extends HttpServlet {
                         break;
 
                     case "UpdateInvoice":
-                        String invoiceCreated = request.getParameter("invoiceCreated");
                         String invoiceSent = request.getParameter("invoiceSent");
                         String invoicePaid = request.getParameter("invoicePaid");
                         String estimatedDeliveryDate = request.getParameter("estimatedDeliveryDate");
                         if (source.equals("AddLineItemToExistingInvoice")) {
                             if (itemName == null || itemName.isEmpty() || itemDescription == null || itemDescription.isEmpty() || itemQty == null || itemQty.isEmpty() || itemUnitPrice == null || itemUnitPrice.isEmpty()) {
-                                nextPage = "InvoiceManagement/invoice.jsp?invoiceNumber=" + invoiceNumber + "&invoiceCreated=" + invoiceCreated + "&invoiceSent=" + invoiceSent + "&invoicePaid=" + invoicePaid + "&estimatedDeliveryDate=" + estimatedDeliveryDate + "&errMsg=Please fill in all the fields for the item.";
+                                nextPage = "InvoiceManagement/invoice.jspinvoiceSent=" + invoiceSent + "&invoicePaid=" + invoicePaid + "&estimatedDeliveryDate=" + estimatedDeliveryDate + "&errMsg=Please fill in all the fields for the item.";
                                 break;
                             }
                         }
-                        if (invoiceNumber == null || invoiceNumber.isEmpty() || invoiceCreated == null || invoiceCreated.isEmpty()) {
-                            nextPage = "InvoiceManagement/invoice.jsp?invoiceNumber=" + invoiceNumber + "&invoiceCreated=" + invoiceCreated + "&invoiceSent=" + invoiceSent + "&invoicePaid=" + invoicePaid + "&estimatedDeliveryDate=" + estimatedDeliveryDate + "&errMsg=Please fill in all the fields for the Invoice.";
+
+                        String terms = request.getParameter("terms");
+                        Integer intTerms = null;
+                        if (terms != null) {
+                            intTerms = Integer.parseInt(terms);
+                        }
+
+                        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+
+                        Date invoiceSentDateDate = null;
+                        if (invoiceSent != null && !invoiceSent.isEmpty()) {
+                            invoiceSentDateDate = formatter.parse(invoiceSent);
                         } else {
-                            String terms = request.getParameter("terms");
-                            Integer intTerms = null;
-                            if (terms != null) {
-                                intTerms = Integer.parseInt(terms);
-                            }
-
-                            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-                            Date invoiceCreatedDateDate = formatter.parse(invoiceCreated);
-                            Date invoiceSentDateDate = null;
-                            if (invoiceSent != null && !invoiceSent.isEmpty()) {
-                                invoiceSentDateDate = formatter.parse(invoiceSent);
-                            } else {
-                                invoiceSentDateDate = null;
-                            }
-
-                            Date invoicePaidDateDate = null;
-                            if (invoicePaid != null && !invoicePaid.isEmpty()) {
-                                invoicePaidDateDate = formatter.parse(invoicePaid);
-                            } else {
-                                invoicePaidDateDate = null;
-                            }
-
-                            //Update Invoice
-                            returnHelper = invoiceManagementBean.updateInvoice(invoice.getId(), invoiceNumber, invoiceCreatedDateDate, invoiceSentDateDate, invoicePaidDateDate, estimatedDeliveryDate, intTerms, poNumber, isAdmin);
-                            if (returnHelper.getResult()) {
-                                Long invoiceID = returnHelper.getID();
-                                invoice = invoiceManagementBean.getInvoice(invoiceID);
-                                session.setAttribute("invoice", invoice);
-                                nextPage = "InvoiceManagement/invoice.jsp?goodMsg=" + returnHelper.getDescription();
-
-                                //Update line item if there is any
-                                if (itemName != null && !itemName.isEmpty() && itemDescription != null && !itemDescription.isEmpty() && itemQty != null && !itemQty.isEmpty() && itemUnitPrice != null && !itemUnitPrice.isEmpty()) {
-                                    returnHelper = invoiceManagementBean.addInvoiceLineItem(invoiceID, itemName, itemDescription, Integer.parseInt(itemQty), Double.parseDouble(itemUnitPrice), isAdmin);
-                                    invoice = invoiceManagementBean.getInvoice(invoiceID);
-                                    if (returnHelper.getResult() && invoice != null) {
-                                        session.setAttribute("invoice", invoice);
-                                        nextPage = "InvoiceManagement/invoice.jsp?goodMsg=" + returnHelper.getDescription();
-                                    } else {
-                                        nextPage = "InvoiceManagement/invoice.jsp?errMsg=" + returnHelper.getDescription();
-                                    }
-                                }
-                            } else {
-                                nextPage = "InvoiceManagement/invoice.jsp?errMsg=" + returnHelper.getDescription();
-                                break;
-                            }
+                            invoiceSentDateDate = null;
                         }
+
+                        Date invoicePaidDateDate = null;
+                        if (invoicePaid != null && !invoicePaid.isEmpty()) {
+                            invoicePaidDateDate = formatter.parse(invoicePaid);
+                        } else {
+                            invoicePaidDateDate = null;
+                        }
+
+                        //Update Invoice
+                        returnHelper = invoiceManagementBean.updateInvoice(invoice.getId(), invoiceSentDateDate, invoicePaidDateDate, estimatedDeliveryDate, intTerms, poNumber, isAdmin);
+                        if (returnHelper.getResult()) {
+                            Long invoiceID = returnHelper.getID();
+                            invoice = invoiceManagementBean.getInvoice(invoiceID);
+                            session.setAttribute("invoice", invoice);
+                            nextPage = "InvoiceManagement/invoice.jsp?goodMsg=" + returnHelper.getDescription();
+
+                            //Update line item if there is any
+                            if (itemName != null && !itemName.isEmpty() && itemDescription != null && !itemDescription.isEmpty() && itemQty != null && !itemQty.isEmpty() && itemUnitPrice != null && !itemUnitPrice.isEmpty()) {
+                                returnHelper = invoiceManagementBean.addInvoiceLineItem(invoiceID, itemName, itemDescription, Integer.parseInt(itemQty), Double.parseDouble(itemUnitPrice), isAdmin);
+                                invoice = invoiceManagementBean.getInvoice(invoiceID);
+                                if (returnHelper.getResult() && invoice != null) {
+                                    session.setAttribute("invoice", invoice);
+                                    nextPage = "InvoiceManagement/invoice.jsp?goodMsg=" + returnHelper.getDescription();
+                                } else {
+                                    nextPage = "InvoiceManagement/invoice.jsp?errMsg=" + returnHelper.getDescription();
+                                }
+                            }
+                        } else {
+                            nextPage = "InvoiceManagement/invoice.jsp?errMsg=" + returnHelper.getDescription();
+                            break;
+                        }
+
                         break;
 
                     case "UpdateInvoiceNotes":
@@ -309,6 +305,25 @@ public class InvoiceManagementController extends HttpServlet {
                                     nextPage = "InvoiceManagement/invoices.jsp?goodMsg=" + returnHelper.getDescription();
                                 } else {
                                     nextPage = "InvoiceManagement/invoices.jsp?errMsg=" + returnHelper.getDescription();
+                                }
+                            }
+                        }
+                        break;
+                    case "RefreshSCOInvoices":
+                        if (true) {
+                            returnHelper = invoiceManagementBean.refreshInvoices(loggedInStaffID);
+                            SalesConfirmationOrder sco = (SalesConfirmationOrder) session.getAttribute("sco");
+                            if (sco != null) {
+                                List<Invoice> invoices = invoiceManagementBean.listInvoicesTiedToSCO(sco.getId());
+                                if (invoices == null) {
+                                    nextPage = "error500.html";
+                                } else {
+                                    session.setAttribute("listOfInvoice", invoices);
+                                    if (returnHelper.getResult()) {
+                                        nextPage = "InvoiceManagement/invoices.jsp?goodMsg=" + returnHelper.getDescription();
+                                    } else {
+                                        nextPage = "InvoiceManagement/invoices.jsp?errMsg=" + returnHelper.getDescription();
+                                    }
                                 }
                             }
                         }

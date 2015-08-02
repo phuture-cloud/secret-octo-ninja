@@ -20,6 +20,8 @@
         response.sendRedirect("../index.jsp?errMsg=Invalid Request. Please login.");
     } else if (staff == null) {
         response.sendRedirect("../index.jsp?errMsg=Session Expired.");
+    } else if (invoice == null) {
+        response.sendRedirect("invoices.jsp?errMsg=An error has occured.");
     } else {
         String estimatedDeliveryDate = request.getParameter("estimatedDeliveryDate");
         String editingLineItem = request.getParameter("editingLineItem");
@@ -200,11 +202,7 @@
                                         <div class="row">
                                             <div class="col-sm-6 mt-md">
                                                 <h2 class="h2 mt-none mb-sm text-dark text-weight-bold">Invoice</h2>
-                                                <%
-                                                    if (invoice != null) {
-                                                        out.print("<input type='text' " + formDisablerFlag + " class='form-control' id='invoiceNumber' name='invoiceNumber' value='" + invoice.getInvoiceNumber() + "' style='max-width: 300px' required/>");
-                                                    }
-                                                %>
+                                                <h3><%=invoice.getInvoiceNumber()%></h3>
                                             </div>
                                             <br/>
                                             <div class="col-sm-6 text-right mt-md mb-md">
@@ -232,27 +230,25 @@
                                                     <address>
                                                         <div class="col-md-6" style="padding-left: 0px;">
                                                             <%
-                                                                if (invoice != null) {
-                                                                    out.print("<b>" + invoice.getCustomerName() + "</b>");
-                                                                    String repl = invoice.getContactAddress().replaceAll("(\\r|\\n|\\r\\n)+", "<br>");
-                                                                    out.print("<br>" + repl);
-                                                                    out.print("<br>" + invoice.getContactOfficeNo());
-                                                                    if (invoice.getContactFaxNo() != null && !invoice.getContactFaxNo().isEmpty()) {
-                                                                        out.print("<br>" + invoice.getContactFaxNo());
-                                                                    }
-                                                                    out.print("<p class='h5 mb-xs text-dark text-weight-semibold'>Attention:</p>");
-                                                                    out.print(invoice.getContactName() + " ");
-                                                                    if (invoice.getContactMobileNo() != null && !invoice.getContactMobileNo().isEmpty()) {
-                                                                        out.print("<br>" + invoice.getContactMobileNo());
-                                                                    }
-                                                                    if (invoice.getContactEmail() != null && !invoice.getContactEmail().isEmpty()) {
-                                                                        out.print("<br>" + invoice.getContactEmail() + "<br>");
-                                                                    }
-                                                                    if (!formDisablerFlag.equals("disabled")) {
-                                                                        out.print("<div class='text-right'><a href='#modalEditForm' class='modal-with-form'>edit</a></div>");
-                                                                    }
-                                                                    out.print("<br><br>");
+                                                                out.print("<b>" + invoice.getCustomerName() + "</b>");
+                                                                String repl = invoice.getContactAddress().replaceAll("(\\r|\\n|\\r\\n)+", "<br>");
+                                                                out.print("<br>" + repl);
+                                                                out.print("<br>" + invoice.getContactOfficeNo());
+                                                                if (invoice.getContactFaxNo() != null && !invoice.getContactFaxNo().isEmpty()) {
+                                                                    out.print("<br>" + invoice.getContactFaxNo());
                                                                 }
+                                                                out.print("<p class='h5 mb-xs text-dark text-weight-semibold'>Attention:</p>");
+                                                                out.print(invoice.getContactName() + " ");
+                                                                if (invoice.getContactMobileNo() != null && !invoice.getContactMobileNo().isEmpty()) {
+                                                                    out.print("<br>" + invoice.getContactMobileNo());
+                                                                }
+                                                                if (invoice.getContactEmail() != null && !invoice.getContactEmail().isEmpty()) {
+                                                                    out.print("<br>" + invoice.getContactEmail() + "<br>");
+                                                                }
+                                                                if (!formDisablerFlag.equals("disabled")) {
+                                                                    out.print("<div class='text-right'><a href='#modalEditForm' class='modal-with-form'>edit</a></div>");
+                                                                }
+                                                                out.print("<br><br>");
                                                             %>
                                                         </div>
                                                         <br/><br/>
@@ -265,7 +261,7 @@
                                                         <span class="text-dark">Salesperson: </span>
                                                         <span class="value" style="min-width: 110px; font-size: 10.5pt; text-align: left;">
                                                             <%
-                                                                if (invoice != null && invoice.getSalesConfirmationOrder().getSalesPerson().getName() != null) {
+                                                                if (invoice.getSalesConfirmationOrder().getSalesPerson().getName() != null) {
                                                                     out.print(invoice.getSalesConfirmationOrder().getSalesPerson().getName());
                                                                 } else {
                                                                     out.print(staff.getName());
@@ -275,25 +271,10 @@
                                                     </p>
 
                                                     <p class="mb-none">
-                                                        <span class="text-dark">Date Created:</span>
+                                                        <span class="text-dark">Invoice Date</span>
                                                         <span class="value" style="min-width: 110px">
                                                             <%
-                                                                if (invoice != null && invoice.getDateCreated() != null) {
-                                                                    SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
-                                                                    String date = DATE_FORMAT.format(invoice.getDateCreated());
-                                                                    out.print("<input " + formDisablerFlag + " id='invoiceCreated' name='invoiceCreated' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "' required>");
-                                                                } else {
-                                                                    out.print("<input " + formDisablerFlag + " id='invoiceCreated' name='invoiceCreated' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' required placeholder='dd/mm/yyyy'>");
-                                                                }
-                                                            %>
-                                                        </span>
-                                                    </p>
-
-                                                    <p class="mb-none">
-                                                        <span class="text-dark">Date Sent</span>
-                                                        <span class="value" style="min-width: 110px">
-                                                            <%
-                                                                if (invoice != null && invoice.getDateSent() != null) {
+                                                                if (invoice.getDateSent() != null) {
                                                                     SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
                                                                     String date = DATE_FORMAT.format(invoice.getDateSent());
                                                                     out.print("<input " + formDisablerFlag + " id='invoiceSent' name='invoiceSent' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "'>");
@@ -308,7 +289,7 @@
                                                         <span class="text-dark">Date Paid:</span>
                                                         <span class="value" style="min-width: 110px">
                                                             <%
-                                                                if (invoice != null && invoice.getDatePaid() != null) {
+                                                                if (invoice.getDatePaid() != null) {
                                                                     SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
                                                                     String date = DATE_FORMAT.format(invoice.getDatePaid());
                                                                     out.print("<input " + formDisablerFlag + " id='invoicePaid' name='invoicePaid' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "'>");
@@ -352,7 +333,8 @@
                                                     <p class="mb-none">
                                                         <span class="text-dark">PO Number:</span>
                                                         <span class="value" style="min-width: 110px">
-                                                            <%                                                                if (invoice != null && invoice.getCustomerPurchaseOrderNumber() != null && !invoice.getCustomerPurchaseOrderNumber().isEmpty()) {
+                                                            <%
+                                                                if (invoice.getCustomerPurchaseOrderNumber() != null && !invoice.getCustomerPurchaseOrderNumber().isEmpty()) {
                                                                     out.print("<input " + formDisablerFlag + " id='poNumber' name='poNumber' type='text' class='form-control' value='" + invoice.getCustomerPurchaseOrderNumber() + "'>");
                                                                 } else {
                                                                     out.print("<input " + formDisablerFlag + " id='poNumber' name='poNumber' type='text' class='form-control' placeholder='PO Number'>");
@@ -367,7 +349,7 @@
                                                             <%
                                                                 if (estimatedDeliveryDate != null && !estimatedDeliveryDate.isEmpty()) {
                                                                     out.print("<input " + formDisablerFlag + " id='estimatedDeliveryDate' name='estimatedDeliveryDate' type='text' class='form-control' value='" + estimatedDeliveryDate + "'>");
-                                                                } else if (invoice != null && invoice.getEstimatedDeliveryDate() != null && !invoice.getEstimatedDeliveryDate().isEmpty()) {
+                                                                } else if (invoice.getEstimatedDeliveryDate() != null && !invoice.getEstimatedDeliveryDate().isEmpty()) {
                                                                     out.print("<input " + formDisablerFlag + " id='estimatedDeliveryDate' name='estimatedDeliveryDate' type='text' class='form-control' value='" + invoice.getEstimatedDeliveryDate() + "'>");
                                                                 } else {
                                                                     out.print("<input " + formDisablerFlag + " id='estimatedDeliveryDate' name='estimatedDeliveryDate' type='text' class='form-control' placeholder='Estimated date'>");
@@ -376,8 +358,6 @@
                                                         </span>
                                                     </p>
 
-
-                                                    <% if (invoice != null) {%>
                                                     <p class="mb-none">
                                                         <span class="text-dark">Status: </span>
                                                         <span class="value" style="min-width: 110px; font-size: 10.5pt; text-align: left;">
@@ -388,9 +368,8 @@
                                                             %>
                                                         </span>
                                                     </p>
-                                                    <%}%>
 
-                                                    <% if (invoice != null && invoice.getDateDue() != null) {%>
+                                                    <% if (invoice.getDateDue() != null) {%>
                                                     <p class="mb-none">
                                                         <span class="text-dark">Date Due: </span>
                                                         <span class="value" style="min-width: 110px; font-size: 10.5pt; text-align: left;">
@@ -431,9 +410,9 @@
                                                     </td>
                                                     <td>
                                                         <%if (!editingLineItem.equals("")) {
-                                                                out.println("<input type='text' class='form-control' name='itemDescription' disabled/>");
+                                                                out.println("<textarea class='form-control' rows='1' name='itemDescription' disabled></textarea>");
                                                             } else {
-                                                                out.println("<input type='text' class='form-control' name='itemDescription'/>");
+                                                                out.println("<textarea class='form-control' rows='1' name='itemDescription'></textarea>");
                                                             }
                                                         %>
                                                     </td>
@@ -479,7 +458,7 @@
 
                                                 <!-- loop line item page -->
                                                 <%
-                                                    if (invoice != null && invoice.getItems() != null) {
+                                                    if (invoice.getItems() != null) {
                                                         NumberFormat formatter = NumberFormat.getCurrencyInstance();
                                                         for (int i = 0; i < invoice.getItems().size(); i++) {
                                                             if (!editingLineItem.isEmpty() && editingLineItem.equals(invoice.getItems().get(i).getId() + "")) {
@@ -552,7 +531,7 @@
                                                     <li>All Goods Delivered Are Non Returnable / Refundable</li>
                                                 </ul>
                                                 <%
-                                                    if (invoice != null && invoice.getRemarks() != null && !invoice.getRemarks().isEmpty()) {
+                                                    if (invoice.getRemarks() != null && !invoice.getRemarks().isEmpty()) {
                                                         out.print("Remarks: ");
                                                         out.print(invoice.getRemarks().replaceAll("\\r", "<br>"));
                                                     }
@@ -625,17 +604,15 @@
                                     <div class="col-sm-6 mt-md">
                                         <div class="btn-group">
                                             <%
-                                                if (invoice != null) {
-                                                    if (invoice.getItems().size() > 0) {
-                                                        out.print("<a href='../OrderManagementController?target=PrintPDF&id=" + invoice.getId() + "' target='_blank' class='btn btn-default'><i class='fa fa-print'></i> Print PDF</a>");
-                                                    }
-                                                    if (invoice.getNotes() != null && !invoice.getNotes().isEmpty()) {
-                                                        out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalNotes'><i class='fa fa-exclamation'></i> Notes</button>");
-                                                    } else {
-                                                        out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalNotes'>Notes</button>");
-                                                    }
-                                                    out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalRemarks' data-toggle='tooltip' data-placement='top' title='*Remarks will be reflected in the Invoice'>Remarks</button>");
+                                                if (invoice.getItems().size() > 0) {
+                                                    out.print("<a href='../OrderManagementController?target=PrintPDF&id=" + invoice.getId() + "' target='_blank' class='btn btn-default'><i class='fa fa-print'></i> Print PDF</a>");
                                                 }
+                                                if (invoice.getNotes() != null && !invoice.getNotes().isEmpty()) {
+                                                    out.print("<button type='button' class='btn btn-info modal-with-form' href='#modalNotes'>Notes</button>");
+                                                } else {
+                                                    out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalNotes'>Notes</button>");
+                                                }
+                                                out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalRemarks' data-toggle='tooltip' data-placement='top' title='*Remarks will be reflected in the Invoice'>Remarks</button>");
                                             %> 
                                         </div>
                                         &nbsp;
@@ -653,17 +630,13 @@
                                     <div class="col-sm-6 text-right mt-md mb-md">
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-default" onclick="javascript:back()">Back</button>
+                                            <button type='button' class='modal-with-move-anim btn btn-danger' href='#modalRemove'>Cancel</button>
                                             <%
-                                                if (invoice != null) {
-                                                    out.print("<button type='button' class='modal-with-move-anim btn btn-danger' href='#modalRemove'>Cancel</button>");
-                                                    if (invoice.getItems().size() > 0) {
-                                                        out.print("<button type='button' class='btn btn-primary modal-with-form' href='#modalAddPayment'>Add Payment</button>");
-                                                    }
-                                                    out.print("<button " + formDisablerFlag + " class='btn btn-success' onclick='javascript:updateInvoice();'>Save</button>");
-                                                } else {
-                                                    out.print("<button " + formDisablerFlag + " class='btn btn-success' type='submit'>Save</button>");
+                                                if (invoice.getItems().size() > 0) {
+                                                    out.print("<button type='button' class='btn btn-primary modal-with-form' href='#modalAddPayment'>Add Payment</button>");
                                                 }
                                             %>
+                                            <button <%=formDisablerFlag%> class='btn btn-success' onclick='javascript:updateInvoice();'>Save</button>
                                         </div>
                                     </div>
                                 </div>
@@ -671,11 +644,7 @@
                             </div>
                         </section>
 
-                        <%
-                            if (invoice != null) {
-                                out.print("<input type='hidden' name='customerID' value='" + invoice.getSalesConfirmationOrder().getCustomer().getId() + "'>");
-                            }
-                        %>
+                        <input type='hidden' name='customerID' value='<%=invoice.getSalesConfirmationOrder().getCustomer().getId()%>'>
                         <input type="hidden" name="lineItemID" value="">   
                         <input type="hidden" name="target" value="SaveInvoice">    
                         <input type="hidden" name="source" value="">    
@@ -683,7 +652,7 @@
                     </form>
                     <!-- end: page -->
 
-                    <%if (invoice != null) {%>
+
                     <div id="modalAddPayment" class="modal-block modal-block-primary mfp-hide">
                         <section class="panel">
                             <form name="addPaymentForm" action="../PaymentManagementController" class="form-horizontal mb-lg">
@@ -727,7 +696,8 @@
                                     </div>
 
                                     <br>
-                                    <input type="hidden" name="target" value="AddPayment">    
+                                    <input type="hidden" name="target" value="AddPayment">
+                                    <input type="hidden" name="previousPage" value="invoice">
                                 </div>
                                 <footer class="panel-footer">
                                     <div class="row">
@@ -893,7 +863,7 @@
                             </footer>
                         </section>
                     </div>
-                    <%}%>
+
                 </section>
             </div>
         </section>

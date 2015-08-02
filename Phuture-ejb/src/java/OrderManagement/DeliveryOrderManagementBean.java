@@ -558,7 +558,7 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             lineItem.setItemName(itemName);
             lineItem.setItemDescription(itemDescription);
             lineItem.setItemQty(itemQty);
-//            lineItem.setItemUnitPrice(itemUnitPrice);
+            lineItem.setItemUnitPrice(0.0);
             em.persist(lineItem);
             List<LineItem> lineItems = deliveryOrder.getItems();
             lineItems.add(lineItem);
@@ -606,7 +606,7 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             lineItem.setItemName(newItemName);
             lineItem.setItemDescription(newItemDescription);
             lineItem.setItemQty(newItemQty);
-//            lineItem.setItemUnitPrice(newItemUnitPrice);
+            lineItem.setItemUnitPrice(0.0);
             em.merge(lineItem);
             //Update DO total price & tax
             Double totalPrice = 0.0;

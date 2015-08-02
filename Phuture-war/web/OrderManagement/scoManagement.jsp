@@ -88,12 +88,12 @@
                                 <table class="table table-bordered table-striped mb-none" id="datatable-default">
                                     <thead>
                                         <tr> 
-                                            <th></th>
                                             <th>SCO No.</th>
                                             <th>Customer</th>
                                             <th>SCO Date</th>
                                             <th>Total Amount</th>
                                             <th>Total Invoiced</th>
+                                            <th></th>
                                             <th>Status</th>
                                             <th style="width: 300px; text-align: center">Action</th>
                                         </tr>
@@ -104,21 +104,6 @@
                                                 for (int i = 0; i < salesConfirmationOrders.size(); i++) {
                                         %>
                                         <tr>
-                                            <td>
-                                                <% if (salesConfirmationOrders.get(i).getTotalInvoicedAmount() == null) {
-                                                        //If there was some errors calculating the invoiced amount
-                                                        out.println();
-                                                    } else if (salesConfirmationOrders.get(i).getTotalInvoicedAmount() < salesConfirmationOrders.get(i).getTotalPrice()) {
-                                                        //If total invoiced less than SCO amount
-                                                        //todo
-                                                        out.println();
-                                                    } else if (salesConfirmationOrders.get(i).getTotalInvoicedAmount() < salesConfirmationOrders.get(i).getTotalPrice()) {
-                                                        //If total invoiced more than SCO amount
-                                                        out.println();
-                                                    } else {
-                                                        //If total invoiced equal
-                                                    }%>
-                                            </td>
                                             <td><%=staff.getStaffPrefix() + "-" + salesConfirmationOrders.get(i).getSalesConfirmationOrderNumber()%></td>
                                             <td><a href="../CustomerManagementController?target=ListCustomerContacts&id=<%=salesConfirmationOrders.get(i).getCustomer().getId()%>"><%=salesConfirmationOrders.get(i).getCustomerName()%></a></td>
                                             <td>
@@ -142,6 +127,20 @@
                                                         out.println("NA");
                                                     }
                                                 %>
+                                            </td>
+                                            <td>
+                                                <% if (salesConfirmationOrders.get(i).getTotalInvoicedAmount() == null) {
+                                                        //If there was some errors calculating the invoiced amount
+                                                        out.println("<i class='fa fa-exclamation-triangle' style='color:yellow' data-toggle='tooltip' data-placement='top' title='Unable to calculate invoiced amount'></i>");
+                                                    } else if (salesConfirmationOrders.get(i).getTotalInvoicedAmount() < salesConfirmationOrders.get(i).getTotalPrice()) {
+                                                        //If total invoiced less than SCO amount
+                                                        out.println("<i class='fa fa-exclamation-circle' style='color:red' data-toggle='tooltip' data-placement='top' title='Amount invoiced is less than ordered amount'></i>");
+                                                    } else if (salesConfirmationOrders.get(i).getTotalInvoicedAmount() > salesConfirmationOrders.get(i).getTotalPrice()) {
+                                                        //If total invoiced more than SCO amount
+                                                        out.println("<i class='fa fa-exclamation-circle' style='color:orange' data-toggle='tooltip' data-placement='top' title='Amount invoiced is more than ordered amount'></i>");
+                                                    } else {
+                                                        //If total invoiced equal
+                                                    }%>
                                             </td>
                                             <%
                                                 if (salesConfirmationOrders.get(i).getStatus().equals("Unfulfilled")) {

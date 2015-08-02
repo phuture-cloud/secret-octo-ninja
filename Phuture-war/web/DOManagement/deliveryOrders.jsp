@@ -69,7 +69,7 @@
                                 </li>
                                 <%if (previousMgtPage.equals("sco")) {%>
                                 <li><span><a href= "../OrderManagementController?target=ListAllSCO">SCO Management</a></span></li>
-                                <li><span><a href= "../OrderManagementController?target=RetrieveSCO&id=<%=sco.getId()%>"><%=sco.getSalesConfirmationOrderNumber()%></a></span></li>
+                                <li><span><a href= "../OrderManagementController?target=RetrieveSCO&id=<%=sco.getId()%>"><%=staff.getStaffPrefix()%>-<%=sco.getSalesConfirmationOrderNumber()%></a></span></li>
                                             <%} else if (previousMgtPage.equals("soa")) {%>
                                             <%}%>
 
@@ -82,7 +82,7 @@
                     <section class="panel">
                         <header class="panel-heading">
                             <%if (previousMgtPage.equals("sco")) {%>
-                            <h2 class="panel-title">SCO No.<%=sco.getSalesConfirmationOrderNumber()%> - Delivery Orders</h2>
+                            <h2 class="panel-title">SCO No.<%=staff.getStaffPrefix()%>-<%=sco.getSalesConfirmationOrderNumber()%> - Delivery Orders</h2>
                             <%} else {%>
                             <h2 class="panel-title">Delivery Orders</h2>
                             <%}%>

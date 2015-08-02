@@ -52,7 +52,7 @@ public class PaymentManagementController extends HttpServlet {
         ReturnHelper returnHelper = null;
         List<PaymentRecord> paymentRecords;
         Invoice invoice = (Invoice) (session.getAttribute("invoice"));
-        
+
         String previousManagementPage = request.getParameter("previousManagementPage");
         if (previousManagementPage != null && !previousManagementPage.isEmpty()) {
             session.setAttribute("previousManagementPage", previousManagementPage);
@@ -71,9 +71,19 @@ public class PaymentManagementController extends HttpServlet {
                             session.setAttribute("invoice", invoice);
                             session.setAttribute("paymentRecord", paymentManagementBean.getPayment(invoice.getId()));
                             session.setAttribute("invoicePayments", paymentManagementBean.listPaymentByInvoice(invoice.getId()));
-                            nextPage = "InvoiceManagement/invoice.jsp?goodMsg=" + returnHelper.getDescription();
+                            String previousPage = request.getParameter("previousPage");
+                            if (previousPage.equals("invoice")) {
+                                nextPage = "InvoiceManagement/invoice.jsp?goodMsg=" + returnHelper.getDescription();
+                            } else if (previousPage.equals("payments")) {
+                                nextPage = "PaymentManagement/paymentManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                            }
                         } else {
-                            nextPage = "InvoiceManagement/invoice.jsp?errMsg=" + returnHelper.getDescription();
+                            String previousPage = request.getParameter("previousPage");
+                            if (previousPage.equals("invoice")) {
+                                nextPage = "InvoiceManagement/invoice.jsp?errMsg=" + returnHelper.getDescription();
+                            } else if (previousPage.equals("payments")) {
+                                nextPage = "PaymentManagement/paymentManagement.jsp?errMsg=" + returnHelper.getDescription();
+                            }
                         }
                         break;
 

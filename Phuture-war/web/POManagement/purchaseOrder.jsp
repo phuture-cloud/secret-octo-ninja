@@ -331,7 +331,8 @@
                                             <tbody>
                                                 <tr>
                                                     <td>
-                                                        <%if (!editingLineItem.equals("")) {
+                                                        <%
+                                                            if (!editingLineItem.equals("")) {
                                                                 out.println("<input type='text' class='form-control' name='itemName' disabled/>");
                                                             } else {
                                                                 out.println("<input type='text' class='form-control' name='itemName'/>");
@@ -339,10 +340,11 @@
                                                         %>
                                                     </td>
                                                     <td>
-                                                        <%if (!editingLineItem.equals("")) {
-                                                                out.println("<input type='text' class='form-control' name='itemDescription' disabled/>");
+                                                        <%
+                                                            if (!editingLineItem.equals("")) {
+                                                                out.println("<textarea class='form-control' rows='1' name='itemDescription' disabled></textarea>");
                                                             } else {
-                                                                out.println("<input type='text' class='form-control' name='itemDescription'/>");
+                                                                out.println("<textarea class='form-control' rows='1' name='itemDescription'></textarea>");
                                                             }
                                                         %>
                                                     </td>
@@ -351,7 +353,8 @@
                                                             <span class="input-group-addon">
                                                                 <i class="fa fa-dollar"></i>
                                                             </span>
-                                                            <%if (!editingLineItem.equals("")) {
+                                                            <%
+                                                                if (!editingLineItem.equals("")) {
                                                                     out.println("<input type='number' class='form-control' id='input_itemUnitPrice' name='itemUnitPrice' min='0' step='any' disabled/>");
                                                                 } else {
                                                                     out.println("<input type='number' class='form-control' id='input_itemUnitPrice' name='itemUnitPrice' min='0' step='any'/>");
@@ -360,7 +363,8 @@
                                                         </div>
                                                     </td>
                                                     <td class="text-center">
-                                                        <%if (!editingLineItem.equals("")) {
+                                                        <%
+                                                            if (!editingLineItem.equals("")) {
                                                                 out.println("<input type='number' class='form-control' id='input_itemQty' min='0' name='itemQty' disabled/>");
                                                             } else {
                                                                 out.println("<input type='number' class='form-control' id='input_itemQty' min='0' name='itemQty'/>");
@@ -486,7 +490,7 @@
                                                         out.print("<a href='../OrderManagementController?target=PrintPDF&id=" + purchaseOrder.getId() + "' target='_blank' class='btn btn-default'><i class='fa fa-print'></i> Print PDF</a>");
                                                     }
                                                     if (purchaseOrder.getNotes() != null && !purchaseOrder.getNotes().isEmpty()) {
-                                                        out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalNotes'><i class='fa fa-exclamation'></i> Notes</button>");
+                                                        out.print("<button type='button' class='btn btn-info modal-with-form' href='#modalNotes'>Notes</button>");
                                                     } else {
                                                         out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalNotes'>Notes</button>");
                                                     }

@@ -19,6 +19,7 @@
     } else if (invoice == null) {
         response.sendRedirect("invoice.jsp?errMsg=An Error has occured.");
     } else {
+        NumberFormat formatter = NumberFormat.getCurrencyInstance();
 %>
 <!doctype html>
 <html class="fixed">
@@ -53,7 +54,7 @@
                                     </a>
                                 </li>
                                 <li><span><a href= "../OrderManagementController?target=ListAllSCO">SCO Management</a></span></li>
-                                <li><span><a href= "../OrderManagementController?target=RetrieveSCO&id=<%=invoice.getSalesConfirmationOrder().getId()%>"><%=invoice.getSalesConfirmationOrder().getSalesConfirmationOrderNumber()%></a></span></li>
+                                <li><span><a href= "../OrderManagementController?target=RetrieveSCO&id=<%=invoice.getSalesConfirmationOrder().getId()%>"><%=staff.getStaffPrefix()%>-<%=invoice.getSalesConfirmationOrder().getSalesConfirmationOrderNumber()%></a></span></li>
                                 <li><span><a href= "invoice.jsp"><%=invoice.getInvoiceNumber()%></a></span></li>
                                 <li><span>Invoices &nbsp;&nbsp</span></li>
                             </ol>
@@ -67,6 +68,15 @@
                             <h2 class="panel-title">Invoice #<%=invoice.getInvoiceNumber()%> - Payments</h2>
                         </header>
                         <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-12"> 
+                                    <button type='button' class='btn btn-primary modal-with-form' href='#modalAddPayment'>Add Payment</button>
+                                    <span style="float: right;font-size: medium;">
+                                        Total Payment Amount: <span style="font-size: large;"><b><%=formatter.format(invoice.getTotalAmountPaid())%></b></span>
+                                    </span>
+                                </div>
+                            </div>
+                            <br/>
                             <table class="table table-bordered table-striped mb-none" id="datatable-default">
                                 <thead>
                                     <tr>
@@ -88,8 +98,7 @@
                                     %>
                                     <tr>        
                                         <td>
-                                            <%
-                                                SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("d MMM yyyy");
+                                            <%                                                SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("d MMM yyyy");
                                                 String date = DATE_FORMAT.format(paymentRecord.getPaymentDate());
                                                 out.print(date);
                                             %>
@@ -97,8 +106,7 @@
                                         <td><%=paymentRecord.getPaymentMethod()%></td>
                                         <td><%=paymentRecord.getPaymentReferenceNumber()%></td>
                                         <td>
-                                            <%                                                   
-                                                NumberFormat formatter = NumberFormat.getCurrencyInstance();
+                                            <%
                                                 out.print(formatter.format(paymentRecord.getAmount()));
                                             %>
                                         </td>
@@ -237,6 +245,64 @@
                             <button type="button" class="btn btn-default" onclick="javascript:back(<%=invoice.getId()%>);">Back</button>  
                         </div>
                     </section>
+
+                    <div id="modalAddPayment" class="modal-block modal-block-primary mfp-hide">
+                        <section class="panel">
+                            <form name="addPaymentForm" action="../PaymentManagementController" class="form-horizontal mb-lg">
+                                <header class="panel-heading">
+                                    <h2 class="panel-title">Add Payment to <%=invoice.getInvoiceNumber()%></h2>
+                                </header>
+                                <div class="panel-body">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Amount <span class="required">*</span></label>
+                                        <div class="col-sm-9">
+                                            <input type="number" class="form-control" id="price" name="amount" min="0" step="0.01" size="4" title="CDA Currency Format - no dollar sign and no comma(s) - cents (.##) are optional" required/>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Payment Date <span class="required">*</span></label>
+                                        <div class="col-md-9">
+                                            <input type="text" name="paymentDate" data-plugin-datepicker data-date-format="dd/mm/yyyy" class="form-control" placeholder="dd/mm/yyyy" required/>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Payment Method</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" name="paymentMethod" class="form-control"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Payment Reference Number</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" name="paymentReferenceNumber" class="form-control"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Notes</label>
+                                        <div class="col-sm-9">
+                                            <textarea class="form-control" rows="5" name="notes"></textarea>
+                                        </div>
+                                    </div>
+
+                                    <br>
+                                    <input type="hidden" name="target" value="AddPayment">
+                                    <input type="hidden" name="previousPage" value="payments">    
+                                </div>
+                                <footer class="panel-footer">
+                                    <div class="row">
+                                        <div class="col-md-12 text-right">
+                                            <button class="btn btn-success" type="submit">Add Payment</button>
+                                            <button class="btn btn-default modal-dismiss">Cancel</button>
+                                        </div>
+                                    </div>
+                                </footer>
+                            </form>
+                        </section>
+                    </div>
                     <!-- end: page -->
                 </section>
             </div>

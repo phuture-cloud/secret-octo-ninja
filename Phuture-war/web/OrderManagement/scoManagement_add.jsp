@@ -1,4 +1,4 @@
-<%@page import="java.text.NumberFormat"%>
+-<%@page import="java.text.NumberFormat"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="EntityManager.SalesConfirmationOrder"%>
 <%@page import="EntityManager.Contact"%>
@@ -547,7 +547,8 @@
                                             <tbody>
                                                 <tr>
                                                     <td>
-                                                        <%if (scoID == null && (customers == null || selectedContactID == null || selectedContactID.equals("")) || !editingLineItem.equals("")) {
+                                                        <%
+                                                            if (scoID == null && (customers == null || selectedContactID == null || selectedContactID.equals("")) || !editingLineItem.equals("")) {
                                                                 out.println("<input type='text' class='form-control' name='itemName' disabled/>");
                                                             } else {
                                                                 out.println("<input type='text' class='form-control' name='itemName'/>");
@@ -555,7 +556,8 @@
                                                         %>
                                                     </td>
                                                     <td>
-                                                        <%if (scoID == null && (customers == null || selectedContactID == null || selectedContactID.equals("")) || !editingLineItem.equals("")) {
+                                                        <%
+                                                            if (scoID == null && (customers == null || selectedContactID == null || selectedContactID.equals("")) || !editingLineItem.equals("")) {
                                                                 out.println("<textarea class='form-control' rows='1' name='itemDescription' disabled></textarea>");
                                                             } else {
                                                                 out.println("<textarea class='form-control' rows='1' name='itemDescription'></textarea>");
@@ -567,7 +569,8 @@
                                                             <span class="input-group-addon">
                                                                 <i class="fa fa-dollar"></i>
                                                             </span>
-                                                            <%if (scoID == null && (customers == null || selectedContactID == null || selectedContactID.equals("")) || !editingLineItem.equals("")) {
+                                                            <%
+                                                                if (scoID == null && (customers == null || selectedContactID == null || selectedContactID.equals("")) || !editingLineItem.equals("")) {
                                                                     out.println("<input type='number' class='form-control' id='input_itemUnitPrice' name='itemUnitPrice' min='0' step='any' disabled/>");
                                                                 } else {
                                                                     out.println("<input type='number' class='form-control' id='input_itemUnitPrice' name='itemUnitPrice' min='0' step='any'/>");
@@ -576,7 +579,8 @@
                                                         </div>
                                                     </td>
                                                     <td class="text-center">
-                                                        <%if (scoID == null && (customers == null || selectedContactID == null || selectedContactID.equals("")) || !editingLineItem.equals("")) {
+                                                        <%
+                                                            if (scoID == null && (customers == null || selectedContactID == null || selectedContactID.equals("")) || !editingLineItem.equals("")) {
                                                                 out.println("<input type='number' class='form-control' id='input_itemQty' min='0' name='itemQty' disabled/>");
                                                             } else {
                                                                 out.println("<input type='number' class='form-control' id='input_itemQty' min='0' name='itemQty'/>");
@@ -756,7 +760,7 @@
                                                         out.print("<a href='../OrderManagementController?target=PrintPDF&id=" + scoID + "' target='_blank' class='btn btn-default'><i class='fa fa-print'></i> Print PDF</a>");
                                                     }
                                                     if (sco.getNotes() != null && !sco.getNotes().isEmpty()) {
-                                                        out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalNotes'><i class='fa fa-exclamation'></i> Notes</button>");
+                                                        out.print("<button type='button' class='btn btn-info modal-with-form' href='#modalNotes'>Notes</button>");
                                                     } else {
                                                         out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalNotes'>Notes</button>");
                                                     }
@@ -826,9 +830,9 @@
                                 </header>
                                 <div class="panel-body">
                                     <div class="form-group">
-                                        <label class="col-sm-3 control-label">Invoice No <span class="required">*</span></label>
-                                        <div class="col-sm-9">
-                                            <input type="text" name="invoiceNumber" class="form-control" required/>
+                                        <label class="col-md-3 control-label">Date <span class="required">*</span></label>
+                                        <div class="col-md-9">
+                                            <input type="text" name="invoiceDate" data-plugin-datepicker data-date-format="dd/mm/yyyy" class="form-control" placeholder="dd/mm/yyyy" required/>
                                         </div>
                                     </div>
                                     <br>
