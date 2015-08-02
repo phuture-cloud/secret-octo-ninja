@@ -37,7 +37,7 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
     private static final Double gstRate = 7.0;//7%
 
     @Override
-    public ReturnHelper createInvoice(Long salesConfirmationOrderID, String invoiceNumber) {
+    public ReturnHelper createInvoice(Long salesConfirmationOrderID, Date invoiceDate) {
         System.out.println("InvoiceManagementBean: createInvoice() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -49,15 +49,14 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
                 result.setDescription("Failed to create a new invoice. The selected SCO may have been deleted while the invoice is being created. Please try again.");
                 return result;
             }
-            ReturnHelper uniqueResult = checkIfInvoiceNumberIsUnique(invoiceNumber);
-            if (!uniqueResult.getResult()) {
-                uniqueResult.setDescription("Failed to save the invoice as the invoice number is already in use.");
-                return uniqueResult;
-            }
+//            ReturnHelper uniqueResult = checkIfInvoiceNumberIsUnique(invoiceNumber);
+//            if (!uniqueResult.getResult()) {
+//                uniqueResult.setDescription("Failed to save the invoice as the invoice number is already in use.");
+//                return uniqueResult;
+//            }
             //Create new invoice
-            Invoice invoice = new Invoice(invoiceNumber);
+            Invoice invoice = new Invoice(getNewInvoiceNumber());
             invoice.setSalesConfirmationOrder(sco);
-            invoice.setInvoiceNumber(invoiceNumber);
             invoice.setTaxRate(gstRate);
             //Copy SCO details
             invoice.setTerms(sco.getTerms());
@@ -99,7 +98,7 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
     }
 
     @Override
-    public ReturnHelper updateInvoice(Long invoiceID, String newInvoiceNumber, Date invoiceCreated, Date invoiceSent, Date invoicePaid, String estimatedDeliveryDate, Integer terms, String customerPurchaseOrderNumber, Boolean adminOverwrite) {
+    public ReturnHelper updateInvoice(Long invoiceID, Date invoiceDate, Date invoicePaid, String estimatedDeliveryDate, Integer terms, String customerPurchaseOrderNumber, Boolean adminOverwrite) {
         System.out.println("InvoiceManagementBean: updateInvoice() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -116,25 +115,22 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
                 result.setDescription(checkResult.getDescription());
                 return result;
             }
-            ReturnHelper uniqueResult = checkIfInvoiceNumberIsUnique(newInvoiceNumber);
-            if (!uniqueResult.getResult() && !newInvoiceNumber.equals(invoice.getInvoiceNumber())) {
-                uniqueResult.setDescription("Failed to save the invoice as the invoice number is already in use.");
-                return uniqueResult;
-            }
+//            ReturnHelper uniqueResult = checkIfInvoiceNumberIsUnique(newInvoiceNumber);
+//            if (!uniqueResult.getResult() && !newInvoiceNumber.equals(invoice.getInvoiceNumber())) {
+//                uniqueResult.setDescription("Failed to save the invoice as the invoice number is already in use.");
+//                return uniqueResult;
+//            }
             //Update fields 
-            invoice.setInvoiceNumber(newInvoiceNumber);
-            if (invoiceCreated != null) {
-                invoice.setDateCreated(invoiceCreated);
-            }
+//            invoice.setInvoiceNumber(newInvoiceNumber);
             invoice.setTerms(terms);
             invoice.setEstimatedDeliveryDate(estimatedDeliveryDate);
             invoice.setCustomerPurchaseOrderNumber(customerPurchaseOrderNumber);
-            if (invoiceSent != null) {
+            if (invoiceDate != null) {
                 invoice.setStatusAsSent();
-                invoice.setDateSent(invoiceSent);
+                invoice.setDateSent(invoiceDate);
                 //Update due date based on terms
                 Calendar c = new GregorianCalendar();
-                c.setTime(invoiceSent);
+                c.setTime(invoiceDate);
                 c.add(Calendar.DAY_OF_YEAR, terms);
                 Date dateDue = c.getTime();
                 invoice.setDateDue(dateDue);
