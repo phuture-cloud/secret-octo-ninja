@@ -48,10 +48,6 @@
                 function viewOverdueInvoice(id) {
                     window.location.href = "../StatementOfAccountManagementController?target=ViewOverDueInvoiceTiedToCustomer&id=" + id;
                 }
-                function viewPayment(id) {
-                    //todo            
-//                    window.location.href = "../?????previousManagementPage=soa&target=????&id=" + id;
-                }
             </script>
             <jsp:include page="../jspIncludePages/header.jsp" />
 

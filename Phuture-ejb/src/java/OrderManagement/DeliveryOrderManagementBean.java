@@ -382,9 +382,6 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             if (!deliveryOrder.getStatus().equals("Voided")) {
                 deliveryOrder.setStatusAsVoided();
                 em.merge(deliveryOrder);
-                SalesConfirmationOrder sco = deliveryOrder.getSalesConfirmationOrder();
-                sco.setNumOfDeliveryOrders(sco.getNumOfDeliveryOrders() - 1);
-                em.merge(sco);
             }
             result.setResult(true);
             result.setDescription("DO voided.");

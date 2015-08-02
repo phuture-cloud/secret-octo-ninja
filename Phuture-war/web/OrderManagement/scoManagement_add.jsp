@@ -792,7 +792,7 @@
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-default" onclick="javascript:back()">Back</button>
                                             <% if (sco != null && scoID != null && !scoID.isEmpty()) {
-                                                    out.print("<button type='button' class='modal-with-move-anim btn btn-danger' href='#modalRemove'>Void</button>");
+                                                    out.print("<button type='button' class='modal-with-move-anim btn btn-danger' href='#modalRemove'>Void SCO</button>");
                                                     if (sco.getItems().size() > 0) {
                                                         out.print("<button " + formDisablerFlag + " class='btn btn-primary modal-with-form' href='#modalGeneratePO'>Generate PO</button>");
                                                         out.print("<button " + formDisablerFlag + " class='btn btn-primary modal-with-form' href='#modalGenerateDO' >Generate DO</button>");
@@ -1057,7 +1057,7 @@
                                         <i class="fa fa-question-circle" style="top: 0px;"></i>
                                     </div>
                                     <div class="modal-text">
-                                        <p>Are you sure that you want to void this Sales Confirmation Order?<br> All associated Delivery Orders & Invoice will also be voided. All associated Purchase Orders & Payment records will also be deleted. This action cannot be reversed!</p>
+                                        <p>Are you sure that you want to void this Sales Confirmation Order?<br>All associated Delivery Orders & Invoice will also be voided.<br>All associated Purchase Orders & Payment records will also be deleted.<br>This action cannot be reversed!</p>
                                     </div>
                                 </div>
                             </div>

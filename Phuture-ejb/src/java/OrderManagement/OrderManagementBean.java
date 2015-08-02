@@ -6,7 +6,6 @@ import EntityManager.DeliveryOrder;
 import EntityManager.Invoice;
 import EntityManager.LineItem;
 import EntityManager.OrderNumbers;
-import EntityManager.PaymentRecord;
 import EntityManager.PurchaseOrder;
 import EntityManager.ReturnHelper;
 import EntityManager.SalesConfirmationOrder;
@@ -15,7 +14,6 @@ import PaymentManagement.PaymentManagementBeanLocal;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.Resource;
-import javax.ejb.ApplicationException;
 import javax.ejb.EJB;
 import javax.ejb.EJBContext;
 import javax.ejb.Stateless;
@@ -26,7 +24,6 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import jdk.nashorn.internal.runtime.Context;
 
 @Stateless
 public class OrderManagementBean implements OrderManagementBeanLocal {
@@ -474,7 +471,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
                 imbl.voidInvoice(invoice.getId(), adminOverwrite);
             }
             result.setResult(true);
-            result.setDescription("SCO voided successfully.");
+            result.setDescription("SCO voided.");
         } catch (Exception ex) {
             context.setRollbackOnly();
             System.out.println("OrderManagementBean: deleteSalesConfirmationOrder() failed");

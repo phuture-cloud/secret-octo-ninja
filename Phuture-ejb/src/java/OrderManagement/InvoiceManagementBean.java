@@ -349,6 +349,7 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
                 for (PaymentRecord paymentRecord : paymentRecords) {
                     pmbl.deletePayment(paymentRecord.getId());
                 }
+                //todo //Unapply any credit note that were applied to the invoice
             }
             result.setResult(true);
             result.setDescription("Invoice deleted.");
@@ -360,7 +361,7 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
         }
         return result;
     }
-    
+
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Override
     public ReturnHelper voidInvoice(Long invoiceID, Boolean adminOverwrite) {
@@ -385,10 +386,11 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
                 em.merge(sco);
                 //Delete all the payment record
                 for (PaymentRecord paymentRecord : invoice.getPaymentRecords()) {
-                    
+                    pmbl.deletePayment(paymentRecord.getId());
                 }
-                //Unapply any credit note that were applied to the invoice
-                
+//todo                
+//Unapply any credit note that were applied to the invoice
+
             }
             result.setResult(true);
             result.setDescription("Invoice voided.");
