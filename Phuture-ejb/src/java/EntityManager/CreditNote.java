@@ -1,11 +1,14 @@
 package EntityManager;
 
 import java.io.Serializable;
+import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
 public class CreditNote implements Serializable {
@@ -14,17 +17,45 @@ public class CreditNote implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private Long creditNoteNumber;
+    private String creditNoteNumber;
     private Double creditAmount;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dateIssued;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dateUsed;
     @OneToOne
     private Invoice appliedToInvoice;
 
     public CreditNote() {
     }
 
-    public CreditNote(Long creditNoteNumber, Double creditAmount) {
+    public CreditNote(String creditNoteNumber, Double creditAmount) {
         this.creditNoteNumber = creditNoteNumber;
         this.creditAmount = creditAmount;
+    }
+
+    public String getCreditNoteNumber() {
+        return creditNoteNumber;
+    }
+
+    public void setCreditNoteNumber(String creditNoteNumber) {
+        this.creditNoteNumber = creditNoteNumber;
+    }
+
+    public Date getDateIssued() {
+        return dateIssued;
+    }
+
+    public void setDateIssued(Date dateIssued) {
+        this.dateIssued = dateIssued;
+    }
+
+    public Date getDateUsed() {
+        return dateUsed;
+    }
+
+    public void setDateUsed(Date dateUsed) {
+        this.dateUsed = dateUsed;
     }
 
     public Long getId() {
@@ -33,14 +64,6 @@ public class CreditNote implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Long getCreditNoteNumber() {
-        return creditNoteNumber;
-    }
-
-    public void setCreditNoteNumber(Long creditNoteNumber) {
-        this.creditNoteNumber = creditNoteNumber;
     }
 
     public Double getCreditAmount() {
