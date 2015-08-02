@@ -5,6 +5,7 @@ import EntityManager.Customer;
 import EntityManager.Invoice;
 import EntityManager.LineItem;
 import EntityManager.OrderNumbers;
+import EntityManager.PaymentRecord;
 import EntityManager.ReturnHelper;
 import EntityManager.SalesConfirmationOrder;
 import EntityManager.Staff;
@@ -343,6 +344,10 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
                 //Update SCO total amount invoiced
                 sco.setTotalInvoicedAmount(getSCOtotalInvoicedAmount(sco.getId()));
                 em.merge(sco);
+                List<PaymentRecord> paymentRecords = invoice.getPaymentRecords();
+                for (PaymentRecord paymentRecord : paymentRecords) {
+                    pmbl.deletePayment(paymentRecord.getId());
+                }
             }
             result.setResult(true);
             result.setDescription("Invoice deleted.");
@@ -374,10 +379,15 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
                 invoice.setStatusAsVoided();
                 em.merge(invoice);
                 SalesConfirmationOrder sco = invoice.getSalesConfirmationOrder();
-                sco.setNumOfInvoices(sco.getNumOfInvoices() - 1);
                 //Update SCO total amount invoiced
                 sco.setTotalInvoicedAmount(getSCOtotalInvoicedAmount(sco.getId()));
                 em.merge(sco);
+                //Delete all the payment record
+                for (PaymentRecord paymentRecord : invoice.getPaymentRecords()) {
+                    
+                }
+                //Unapply any credit note that were applied to the invoice
+                
             }
             result.setResult(true);
             result.setDescription("Invoice voided.");

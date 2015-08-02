@@ -849,7 +849,7 @@
                                         <i class="fa fa-question-circle" style="top: 0px;"></i>
                                     </div>
                                     <div class="modal-text">
-                                        <p>Are you sure that you want to cancel this Invoice?<br> All associated Payment records will also be cancelled together!</p>
+                                        <p>Are you sure that you want to void this Invoice?<br> All associated Payment records will also be deleted. This action cannot be reversed!</p>
                                     </div>
                                 </div>
                             </div>

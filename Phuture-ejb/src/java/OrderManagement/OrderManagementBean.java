@@ -11,6 +11,7 @@ import EntityManager.PurchaseOrder;
 import EntityManager.ReturnHelper;
 import EntityManager.SalesConfirmationOrder;
 import EntityManager.Staff;
+import PaymentManagement.PaymentManagementBeanLocal;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.Resource;
@@ -27,7 +28,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import jdk.nashorn.internal.runtime.Context;
 
-
 @Stateless
 public class OrderManagementBean implements OrderManagementBeanLocal {
 
@@ -36,7 +36,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
 
     @Resource
     private EJBContext context;
-    
+
     @PersistenceContext
     private EntityManager em;
 
@@ -46,6 +46,8 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
     private DeliveryOrderManagementBeanLocal dombl;
     @EJB
     private PurchaseOrderManagementBeanLocal pombl;
+    @EJB
+    private PaymentManagementBeanLocal pmbl;
 
     private static final Double gstRate = 7.0;//7%
 
@@ -113,7 +115,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
     }
 
     @Override
-    public ReturnHelper updateSalesConfirmationOrder(Long salesConfirmationOrderID,Date newSalesConfirmationOrderDate, String newEstimatedDeliveryDate, String customerPurchaseOrderNumber, Long newCustomerID, String status, Integer newTerms, Boolean adminOverwrite) {
+    public ReturnHelper updateSalesConfirmationOrder(Long salesConfirmationOrderID, Date newSalesConfirmationOrderDate, String newEstimatedDeliveryDate, String customerPurchaseOrderNumber, Long newCustomerID, String status, Integer newTerms, Boolean adminOverwrite) {
         System.out.println("OrderManagementBean: updateSalesConfirmationOrder() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -383,9 +385,6 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
                 case "Write-Off":
                     sco.setStatusAsWritenOff();
                     break;
-                case "Voided":
-                    sco.setStatusAsVoided();
-                    break;
                 default:
                     result.setDescription("Failed to update the SCO to the status specified.");
                     System.out.println("OrderManagementBean: updateSalesConfirmationOrderStatus() received an unknown status.");
@@ -405,6 +404,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
         return result;
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Override
     public ReturnHelper deleteSalesConfirmationOrder(Long salesConfirmationOrderID, Boolean adminOverwrite) {
         System.out.println("OrderManagementBean: deleteSalesConfirmationOrder() called");
@@ -421,16 +421,62 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             }
             sco.setIsDeleted(true);
             em.merge(sco);
-            //TODO need to mark as deleted for all the associated PO, DO, invoices and payment
             List<PurchaseOrder> pos = sco.getPurchaseOrders();
+            for (PurchaseOrder purchaseOrder : pos) {
+                pombl.deletePurchaseOrder(purchaseOrder.getId());
+            }
             List<DeliveryOrder> dos = sco.getDeliveryOrders();
+            for (DeliveryOrder deliveryOrder : dos) {
+                dombl.deleteDeliveryOrder(deliveryOrder.getId(), adminOverwrite);
+            }
             List<Invoice> is = sco.getInvoices();
             for (Invoice invoice : is) {
-                List<PaymentRecord> payment = invoice.getPaymentRecords();
+                imbl.deleteInvoice(invoice.getId(), adminOverwrite);
             }
             result.setResult(true);
             result.setDescription("SCO deleted successfully.");
         } catch (Exception ex) {
+            context.setRollbackOnly();
+            System.out.println("OrderManagementBean: deleteSalesConfirmationOrder() failed");
+            result.setDescription("Internal server error.");
+            ex.printStackTrace();
+        }
+        return result;
+    }
+    
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    @Override
+    public ReturnHelper voidSalesConfirmationOrder(Long salesConfirmationOrderID, Boolean adminOverwrite) {
+        System.out.println("OrderManagementBean: deleteSalesConfirmationOrder() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        try {
+            Query q = em.createQuery("SELECT s FROM SalesConfirmationOrder s WHERE s.id=:id");
+            q.setParameter("id", salesConfirmationOrderID);
+            SalesConfirmationOrder sco = (SalesConfirmationOrder) q.getSingleResult();
+            ReturnHelper checkResult = checkIfSCOisEditable(salesConfirmationOrderID, adminOverwrite);
+            if (!checkResult.getResult()) {
+                result.setDescription(checkResult.getDescription());
+                return result;
+            }
+            sco.setIsDeleted(true);
+            em.merge(sco);
+            List<PurchaseOrder> pos = sco.getPurchaseOrders();
+            for (PurchaseOrder purchaseOrder : pos) {
+                pombl.deletePurchaseOrder(purchaseOrder.getId());
+            }
+            List<DeliveryOrder> dos = sco.getDeliveryOrders();
+            for (DeliveryOrder deliveryOrder : dos) {
+                dombl.voidDeliveryOrder(deliveryOrder.getId(), adminOverwrite);
+            }
+            List<Invoice> is = sco.getInvoices();
+            for (Invoice invoice : is) {
+                imbl.voidInvoice(invoice.getId(), adminOverwrite);
+            }
+            result.setResult(true);
+            result.setDescription("SCO voided successfully.");
+        } catch (Exception ex) {
+            context.setRollbackOnly();
             System.out.println("OrderManagementBean: deleteSalesConfirmationOrder() failed");
             result.setDescription("Internal server error.");
             ex.printStackTrace();

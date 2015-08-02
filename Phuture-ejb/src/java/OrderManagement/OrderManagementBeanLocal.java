@@ -19,6 +19,7 @@ public interface OrderManagementBeanLocal {
     public ReturnHelper updateSalesConfirmationOrderNotes(Long salesConfirmationOrderID, String notes, Boolean adminOverwrite);
     public ReturnHelper updateSalesConfirmationOrderStatus(Long salesConfirmationOrderID, String status);
     public ReturnHelper deleteSalesConfirmationOrder(Long salesConfirmationOrderID, Boolean adminOverwrite);
+    public ReturnHelper voidSalesConfirmationOrder(Long salesConfirmationOrderID, Boolean adminOverwrite);
     public ReturnHelper checkIfSCOisEditable(Long salesConfirmationOrderID, Boolean adminOverwrite);
     public ReturnHelper checkIfSCOnumberIsUnique(String salesConfirmationNumber);
     
