@@ -163,6 +163,10 @@ public class Invoice implements Serializable {
     public void setStatusAsPaid() {
         this.status = "Paid";
     }
+    
+    public void setStatusAsVoided() {
+        this.status = "Voided";
+    }
 
     public Date getDateSent() {
         return dateSent;

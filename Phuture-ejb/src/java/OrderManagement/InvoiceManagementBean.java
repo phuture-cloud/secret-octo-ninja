@@ -90,7 +90,7 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             sco.setTotalInvoicedAmount(getSCOtotalInvoicedAmount(salesConfirmationOrderID));
             em.merge(sco);
             result.setResult(true);
-            result.setDescription("Invoice created successfully.");
+            result.setDescription("Invoice created.");
             return result;
         } catch (NoResultException ex) {
             context.setRollbackOnly();
@@ -142,10 +142,6 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
                 c.add(Calendar.DAY_OF_YEAR, terms);
                 Date dateDue = c.getTime();
                 invoice.setDateDue(dateDue);
-            } else {
-                invoice.setStatusAsCreated();
-                invoice.setDateSent(null);
-                invoice.setDateDue(null);
             }
             if (invoicePaid != null) {
                 invoice.setStatusAsPaid();
@@ -161,7 +157,7 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             em.merge(invoice);
             result.setID(invoice.getId());
             result.setResult(true);
-            result.setDescription("Invoice saved successfully.");
+            result.setDescription("Invoice saved.");
             return result;
         } catch (NoResultException ex) {
             System.out.println("InvoiceManagementBean: updateInvoice() could not find one or more ID(s).");
@@ -201,7 +197,7 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             invoice.setContactName(contactName);
             em.merge(invoice);
             result.setResult(true);
-            result.setDescription("Invoice edited successfully.");
+            result.setDescription("Invoice edited.");
         } catch (NoResultException ex) {
             System.out.println("InvoiceManagementBean: updateInvoiceCustomerContactDetails() could not find one or more ID(s).");
             result.setDescription("Failed to edit the invoice. The invoice selected no longer exist in the system.");
@@ -246,7 +242,7 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             invoice.setContactName(contact.getName());
             em.merge(invoice);
             result.setResult(true);
-            result.setDescription("Invoice edited successfully.");
+            result.setDescription("Invoice edited.");
         } catch (NoResultException ex) {
             System.out.println("InvoiceManagementBean: updateInvoiceCustomerContactDetails() could not find one or more ID(s).");
             result.setDescription("Failed to edit the invoice. The invoice or customer or contact selected no longer exist in the system.");
@@ -279,7 +275,7 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             invoice.setRemarks(remarks);
             em.merge(invoice);
             result.setResult(true);
-            result.setDescription("Invoice edited successfully.");
+            result.setDescription("Invoice edited.");
         } catch (NoResultException ex) {
             System.out.println("InvoiceManagementBean: updateInvoiceRemarks() could not find one or more ID(s).");
             result.setDescription("Failed to edit the invoice. The invoice selected no longer exist in the system.");
@@ -312,7 +308,7 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             invoice.setNotes(notes);
             em.merge(invoice);
             result.setResult(true);
-            result.setDescription("Invoice edited successfully.");
+            result.setDescription("Invoice edited.");
         } catch (NoResultException ex) {
             System.out.println("InvoiceManagementBean: updateInvoiceNotes() could not find one or more ID(s).");
             result.setDescription("Failed to edit the invoice. The invoice selected no longer exist in the system.");
@@ -324,6 +320,7 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
         return result;
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Override
     public ReturnHelper deleteInvoice(Long invoiceID, Boolean adminOverwrite) {
         System.out.println("InvoiceManagementBean: deleteInvoice() called");
@@ -348,9 +345,45 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
                 em.merge(sco);
             }
             result.setResult(true);
-            result.setDescription("Invoice deleted successfully.");
+            result.setDescription("Invoice deleted.");
         } catch (Exception ex) {
+            context.setRollbackOnly();
             System.out.println("InvoiceManagementBean: deleteInvoice() failed");
+            result.setDescription("Failed to delete the invoice due to internal server error.");
+            ex.printStackTrace();
+        }
+        return result;
+    }
+    
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    @Override
+    public ReturnHelper voidInvoice(Long invoiceID, Boolean adminOverwrite) {
+        System.out.println("InvoiceManagementBean: voidInvoice() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        try {
+            Query q = em.createQuery("SELECT s FROM Invoice s WHERE s.id=:id");
+            q.setParameter("id", invoiceID);
+            Invoice invoice = (Invoice) q.getSingleResult();
+            ReturnHelper checkResult = checkIfInvoiceisEditable(invoiceID, adminOverwrite);
+            if (!checkResult.getResult()) {
+                result.setDescription(checkResult.getDescription());
+                return result;
+            }
+            if (!invoice.getStatus().equals("Voided")) {
+                invoice.setStatusAsVoided();
+                em.merge(invoice);
+                SalesConfirmationOrder sco = invoice.getSalesConfirmationOrder();
+                sco.setNumOfInvoices(sco.getNumOfInvoices() - 1);
+                //Update SCO total amount invoiced
+                sco.setTotalInvoicedAmount(getSCOtotalInvoicedAmount(sco.getId()));
+                em.merge(sco);
+            }
+            result.setResult(true);
+            result.setDescription("Invoice voided.");
+        } catch (Exception ex) {
+            context.setRollbackOnly();
+            System.out.println("InvoiceManagementBean: voidInvoice() failed");
             result.setDescription("Failed to delete the invoice due to internal server error.");
             ex.printStackTrace();
         }
@@ -505,7 +538,7 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
         try {
-            Query q = em.createQuery("SELECT s FROM Invoice s WHERE s.isDeleted=false AND s.salesConfirmationOrder.id=:id");
+            Query q = em.createQuery("SELECT s FROM Invoice s WHERE s.isDeleted=false AND s.salesConfirmationOrder.id=:id AND s.status!='Voided'");
             q.setParameter("id", salesConfirmationOrderID);
             List<Invoice> invoices = q.getResultList();
             Double totalAmount = 0.0;

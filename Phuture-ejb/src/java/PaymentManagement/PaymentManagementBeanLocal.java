@@ -22,7 +22,7 @@ public interface PaymentManagementBeanLocal {
     public ReturnHelper addCreditNote(Double amount);
     public ReturnHelper updateCreditNote(Long creditNoteID, Date creditNoteDate, Double amount);
     public ReturnHelper deleteCreditNote(Long creditNoteID);
-    public ReturnHelper cancelCreditNote(Long creditNoteID);
+    public ReturnHelper voidCreditNote(Long creditNoteID);
     public ReturnHelper applyCreditNote(Long creditNoteID, Long invoiceID);
     
     public List<CreditNote> getCreditNoteByCustomer(Long customerID);

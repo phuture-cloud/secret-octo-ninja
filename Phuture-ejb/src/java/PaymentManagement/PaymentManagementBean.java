@@ -261,7 +261,7 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
     }
 
     @Override
-    public ReturnHelper cancelCreditNote(Long creditNoteID) {
+    public ReturnHelper voidCreditNote(Long creditNoteID) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

@@ -164,8 +164,13 @@ public class SalesConfirmationOrder implements Serializable {
     public void setStatusAsCompleted() {
         this.status = "Completed";
     }
+    
     public void setStatusAsWritenOff() {
         this.status = "Write-Off";
+    }
+    
+    public void setStatusAsVoided() {
+        this.status = "Voided";
     }
 
     public String getSalesConfirmationOrderNumber() {

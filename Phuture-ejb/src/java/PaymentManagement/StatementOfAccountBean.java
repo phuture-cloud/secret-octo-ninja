@@ -161,7 +161,7 @@ public class StatementOfAccountBean implements StatementOfAccountBeanLocal {
 
             //Loop thru the SCO to calculate total amount ordered
             //Only loop if SCO not writen off
-            q = em.createQuery("SELECT e FROM SalesConfirmationOrder e WHERE e.status!='Write-Off' AND e.customerLink.id=:customerID");
+            q = em.createQuery("SELECT e FROM SalesConfirmationOrder e WHERE e.status!='Write-Off' AND e.status!='Voided' AND e.customerLink.id=:customerID");
             q.setParameter("customerID", customerID);
             List<SalesConfirmationOrder> scos = q.getResultList();
             for (SalesConfirmationOrder sco : scos) {
@@ -170,7 +170,7 @@ public class StatementOfAccountBean implements StatementOfAccountBeanLocal {
 
             //Loop thru the customer invoice and create it as an SOALineItem
             //Only loop if the parent SCO is not written off
-            q = em.createQuery("SELECT e FROM Invoice e WHERE e.salesConfirmationOrder.status!='Write-Off' AND e.salesConfirmationOrder.customerLink.id=:customerID");
+            q = em.createQuery("SELECT e FROM Invoice e WHERE e.salesConfirmationOrder.status!='Write-Off' AND e.status!='Voided' AND e.salesConfirmationOrder.customerLink.id=:customerID");
             q.setParameter("customerID", customerID);
             List<Invoice> invoices = q.getResultList();
             soalis = new ArrayList();
@@ -194,7 +194,7 @@ public class StatementOfAccountBean implements StatementOfAccountBeanLocal {
                 //For each invoice
                 //Loop thru the customer payment and create it as an SOALineItem
                 //At the same time calculate the amount overdue for each invoice
-                q = em.createQuery("SELECT e FROM PaymentRecord e where e.customer.id=:customerID");
+                q = em.createQuery("SELECT e FROM PaymentRecord e where e.customer.id=:customerID AND e.status!='Voided'");
                 q.setParameter("customerID", customerID);
                 List<PaymentRecord> paymentRecords = q.getResultList();
                 soalis = new ArrayList();

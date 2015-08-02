@@ -79,7 +79,7 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             em.merge(sco);
             result.setID(deliveryOrder.getId());
             result.setResult(true);
-            result.setDescription("DO created successfully.");
+            result.setDescription("DO created.");
             return result;
         } catch (NoResultException ex) {
             context.setRollbackOnly();
@@ -129,7 +129,7 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             em.merge(deliveryOrder);
             result.setID(deliveryOrder.getId());
             result.setResult(true);
-            result.setDescription("DO saved successfully.");
+            result.setDescription("DO saved.");
             return result;
         } catch (NoResultException ex) {
             System.out.println("DeliveryOrderManagementBean: updateDeliveryOrder() could not find one or more ID(s).");
@@ -169,7 +169,7 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             deliveryOrder.setContactMobileNo(mobileNo);
             em.merge(deliveryOrder);
             result.setResult(true);
-            result.setDescription("DO edited successfully.");
+            result.setDescription("DO edited.");
         } catch (NoResultException ex) {
             System.out.println("DeliveryOrderManagementBean: updateDeliveryOrderCustomerContactDetails() could not find one or more ID(s).");
             result.setDescription("Failed to edit the DO. The DO selected no longer exist in the system.");
@@ -214,7 +214,7 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             deliveryOrder.setContactName(contact.getName());
             em.merge(deliveryOrder);
             result.setResult(true);
-            result.setDescription("DO edited successfully.");
+            result.setDescription("DO edited.");
         } catch (NoResultException ex) {
             System.out.println("DeliveryOrderManagementBean: updateDeliveryOrderCustomerContactDetails() could not find one or more ID(s).");
             result.setDescription("Failed to edit the DO. The DO or customer or contact selected no longer exist in the system.");
@@ -247,7 +247,7 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             deliveryOrder.setRemarks(remarks);
             em.merge(deliveryOrder);
             result.setResult(true);
-            result.setDescription("DO edited successfully.");
+            result.setDescription("DO edited.");
         } catch (NoResultException ex) {
             System.out.println("DeliveryOrderManagementBean: updateDeliveryOrderRemarks() could not find one or more ID(s).");
             result.setDescription("Failed to edit the DO. The DO selected no longer exist in the system.");
@@ -280,7 +280,7 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             deliveryOrder.setNotes(notes);
             em.merge(deliveryOrder);
             result.setResult(true);
-            result.setDescription("DO edited successfully.");
+            result.setDescription("DO edited.");
         } catch (NoResultException ex) {
             System.out.println("DeliveryOrderManagementBean: updateDeliveryOrderNotes() could not find one or more ID(s).");
             result.setDescription("Failed to edit the DO. The DO selected no longer exist in the system.");
@@ -319,7 +319,7 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             }
             em.merge(deliveryOrder);
             result.setResult(true);
-            result.setDescription("DO edited successfully.");
+            result.setDescription("DO edited.");
         } catch (NoResultException ex) {
             System.out.println("DeliveryOrderManagementBean: updateDeliveryOrderStatus() could not find one or more ID(s).");
             result.setDescription("Failed to edit the DO. The DO selected no longer exist in the system.");
@@ -331,6 +331,7 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
         return result;
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Override
     public ReturnHelper deleteDeliveryOrder(Long deliveryOrderID, Boolean adminOverwrite) {
         System.out.println("DeliveryOrderManagementBean: deleteDeliveryOrder() called");
@@ -353,9 +354,43 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
                 em.merge(sco);
             }
             result.setResult(true);
-            result.setDescription("DO deleted successfully.");
+            result.setDescription("DO deleted.");
         } catch (Exception ex) {
+            context.setRollbackOnly();
             System.out.println("DeliveryOrderManagementBean: deleteDeliveryOrder() failed");
+            result.setDescription("Failed to delete an DO due to internal server error.");
+            ex.printStackTrace();
+        }
+        return result;
+    }
+    
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    @Override
+    public ReturnHelper voidDeliveryOrder(Long deliveryOrderID, Boolean adminOverwrite) {
+        System.out.println("DeliveryOrderManagementBean: voidDeliveryOrder() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        try {
+            Query q = em.createQuery("SELECT s FROM DeliveryOrder s WHERE s.id=:id");
+            q.setParameter("id", deliveryOrderID);
+            DeliveryOrder deliveryOrder = (DeliveryOrder) q.getSingleResult();
+            ReturnHelper checkResult = checkIfDOisEditable(deliveryOrderID, adminOverwrite);
+            if (!checkResult.getResult()) {
+                result.setDescription(checkResult.getDescription());
+                return result;
+            }
+            if (!deliveryOrder.getStatus().equals("Voided")) {
+                deliveryOrder.setStatusAsVoided();
+                em.merge(deliveryOrder);
+                SalesConfirmationOrder sco = deliveryOrder.getSalesConfirmationOrder();
+                sco.setNumOfDeliveryOrders(sco.getNumOfDeliveryOrders() - 1);
+                em.merge(sco);
+            }
+            result.setResult(true);
+            result.setDescription("DO voided.");
+        } catch (Exception ex) {
+            context.setRollbackOnly();
+            System.out.println("DeliveryOrderManagementBean: voidDeliveryOrder() failed");
             result.setDescription("Failed to delete an DO due to internal server error.");
             ex.printStackTrace();
         }
