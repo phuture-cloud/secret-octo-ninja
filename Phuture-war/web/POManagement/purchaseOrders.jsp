@@ -65,7 +65,7 @@
                                     </a>
                                 </li>
                                 <% if (previousMgtPage.equals("sco")) {%>
-                                <li><span><a href= "../OrderManagementController?target=ListAllSCO">PO Management</a></span></li>
+                                <li><span><a href= "../OrderManagementController?target=ListAllSCO">SCO Management</a></span></li>
                                 <li><span><a href= "../OrderManagementController?target=RetrieveSCO&id=<%=sco.getId()%>"><%=staff.getStaffPrefix()%>-<%=sco.getSalesConfirmationOrderNumber()%></a></span></li>
                                             <%
                                             } else if (previousMgtPage.equals("soa")) {

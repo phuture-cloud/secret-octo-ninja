@@ -30,7 +30,7 @@ public class Customer implements Serializable {
     private StatementOfAccount statementOfAccount;
     @OneToMany
     private List<CreditNote> creditNotes;
-    private Double availableCredits;
+    private Double totalAvailableCredits;
     private boolean isDeleted;
 
     public Customer() {
@@ -114,13 +114,13 @@ public class Customer implements Serializable {
         this.PaymentRecords = PaymentRecords;
     }
 
-//    public StatementOfAccount getStatementOfAccount() {
-//        return statementOfAccount;
-//    }
-//
-//    public void setStatementOfAccount(StatementOfAccount statementOfAccount) {
-//        this.statementOfAccount = statementOfAccount;
-//    }
+    public Double getTotalAvailableCredits() {
+        return totalAvailableCredits;
+    }
+
+    public void setTotalAvailableCredits(Double totalAvailableCredits) {
+        this.totalAvailableCredits = totalAvailableCredits;
+    }
 
     public boolean getIsDeleted() {
         return isDeleted;

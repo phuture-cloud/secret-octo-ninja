@@ -4,6 +4,7 @@ import EntityManager.Contact;
 import EntityManager.Customer;
 import EntityManager.ReturnHelper;
 import EntityManager.Staff;
+import PaymentManagement.PaymentManagementBeanLocal;
 import java.io.IOException;
 import java.util.List;
 import javax.ejb.EJB;
@@ -14,6 +15,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 public class CustomerManagementController extends HttpServlet {
+
+    @EJB
+    private PaymentManagementBeanLocal paymentManagementBean;
 
     @EJB
     private CustomerManagementBeanLocal customerManagementBean;

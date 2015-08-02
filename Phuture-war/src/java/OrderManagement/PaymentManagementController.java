@@ -33,7 +33,6 @@ public class PaymentManagementController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         System.out.println("Welcome to PaymentManagementController");
         String target = request.getParameter("target");
-        String source = request.getParameter("source");
         String id = request.getParameter("id");
 
         String amount = request.getParameter("amount");
@@ -127,7 +126,11 @@ public class PaymentManagementController extends HttpServlet {
                         } else {
                             nextPage = "PaymentManagement/paymentManagement.jsp?errMsg=" + returnHelper.getDescription();
                         }
+                        break;
 
+                    case "ListCustomerCreditNotes":
+                        session.setAttribute("listOfCreditNotes", paymentManagementBean.listAllCreditNote(loggedInStaffID));
+                        nextPage = "CreditNoteManagement/creditNotes.jsp";
                         break;
 
                 }//end switch

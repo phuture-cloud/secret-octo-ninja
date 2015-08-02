@@ -23,6 +23,7 @@
     } else if (invoice == null) {
         response.sendRedirect("invoices.jsp?errMsg=An error has occured.");
     } else {
+        SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
         String estimatedDeliveryDate = request.getParameter("estimatedDeliveryDate");
         String editingLineItem = request.getParameter("editingLineItem");
         String formDisablerFlag = "";
@@ -274,13 +275,8 @@
                                                         <span class="text-dark">Invoice Date</span>
                                                         <span class="value" style="min-width: 110px">
                                                             <%
-                                                                if (invoice.getDateSent() != null) {
-                                                                    SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
-                                                                    String date = DATE_FORMAT.format(invoice.getDateSent());
-                                                                    out.print("<input " + formDisablerFlag + " id='invoiceSent' name='invoiceSent' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "'>");
-                                                                } else {
-                                                                    out.print("<input " + formDisablerFlag + " id='invoiceSent' name='invoiceSent' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' placeholder='dd/mm/yyyy'>");
-                                                                }
+                                                                String date = DATE_FORMAT.format(invoice.getDateSent());
+                                                                out.print("<input " + formDisablerFlag + " id='invoiceSent' name='invoiceSent' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "' required>");
                                                             %>
                                                         </span>
                                                     </p>
@@ -290,8 +286,7 @@
                                                         <span class="value" style="min-width: 110px">
                                                             <%
                                                                 if (invoice.getDatePaid() != null) {
-                                                                    SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
-                                                                    String date = DATE_FORMAT.format(invoice.getDatePaid());
+                                                                    date = DATE_FORMAT.format(invoice.getDatePaid());
                                                                     out.print("<input " + formDisablerFlag + " id='invoicePaid' name='invoicePaid' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "'>");
                                                                 } else {
                                                                     out.print("<input " + formDisablerFlag + " id='invoicePaid' name='invoicePaid' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' placeholder='dd/mm/yyyy'>");
@@ -374,8 +369,7 @@
                                                         <span class="text-dark">Date Due: </span>
                                                         <span class="value" style="min-width: 110px; font-size: 10.5pt; text-align: left;">
                                                             <%
-                                                                SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
-                                                                String date = DATE_FORMAT.format(invoice.getDateDue());
+                                                                date = DATE_FORMAT.format(invoice.getDateDue());
                                                                 out.print(date);
                                                             %>
                                                         </span>
