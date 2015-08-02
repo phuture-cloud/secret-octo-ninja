@@ -792,7 +792,7 @@
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-default" onclick="javascript:back()">Back</button>
                                             <% if (sco != null && scoID != null && !scoID.isEmpty()) {
-                                                    out.print("<button type='button' class='modal-with-move-anim btn btn-danger' href='#modalRemove'>Cancel</button>");
+                                                    out.print("<button type='button' class='modal-with-move-anim btn btn-danger' href='#modalRemove'>Void</button>");
                                                     if (sco.getItems().size() > 0) {
                                                         out.print("<button " + formDisablerFlag + " class='btn btn-primary modal-with-form' href='#modalGeneratePO'>Generate PO</button>");
                                                         out.print("<button " + formDisablerFlag + " class='btn btn-primary modal-with-form' href='#modalGenerateDO' >Generate DO</button>");
@@ -1057,7 +1057,7 @@
                                         <i class="fa fa-question-circle" style="top: 0px;"></i>
                                     </div>
                                     <div class="modal-text">
-                                        <p>Are you sure that you want to cancel this Sales Confirmation Order?<br> All associated PO/DO/Invoice/Payment records will also be cancelled together!</p>
+                                        <p>Are you sure that you want to void this Sales Confirmation Order?<br> All associated PO/DO/Invoice/Payment records will also be voided together!</p>
                                     </div>
                                 </div>
                             </div>

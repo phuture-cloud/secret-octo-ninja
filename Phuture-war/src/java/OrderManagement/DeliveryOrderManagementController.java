@@ -93,7 +93,7 @@ public class DeliveryOrderManagementController extends HttpServlet {
 
                     case "DeleteDO":
                         if (deliveryOrder != null) {
-                            returnHelper = deliveryOrderManagementBean.deleteDeliveryOrder(deliveryOrder.getId(), isAdmin);
+                            returnHelper = deliveryOrderManagementBean.voidDeliveryOrder(deliveryOrder.getId(), isAdmin);
                             if (returnHelper.getResult()) {
                                 List<SalesConfirmationOrder> salesConfirmationOrders = orderManagementBean.listAllSalesConfirmationOrder(loggedInStaffID);
                                 if (salesConfirmationOrders == null) {

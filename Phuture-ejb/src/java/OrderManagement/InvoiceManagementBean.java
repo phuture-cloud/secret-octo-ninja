@@ -63,6 +63,7 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             //Create new invoice
             Invoice invoice = new Invoice(getNewInvoiceNumber());
             invoice.setSalesConfirmationOrder(sco);
+            invoice.setDateSent(invoiceDate);
             invoice.setTaxRate(gstRate);
             //Copy SCO details
             invoice.setTerms(sco.getTerms());

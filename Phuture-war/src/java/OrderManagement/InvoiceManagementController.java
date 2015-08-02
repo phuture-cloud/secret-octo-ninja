@@ -10,6 +10,7 @@ import EntityManager.Staff;
 import PaymentManagement.PaymentManagementBeanLocal;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
@@ -113,6 +114,34 @@ public class InvoiceManagementController extends HttpServlet {
                                 } else {
                                     session.setAttribute("salesConfirmationOrders", salesConfirmationOrders);
                                 }
+                                SalesConfirmationOrder sco = (SalesConfirmationOrder) (session.getAttribute("sco"));
+                                session.setAttribute("sco", orderManagementBean.getSalesConfirmationOrder(sco.getId()));
+                                session.removeAttribute("invoice");
+
+                                nextPage = "InvoiceManagement/invoices.jsp?goodMsg=" + returnHelper.getDescription();
+                            } else {
+                                nextPage = "InvoiceManagement/invoices.jsp?errMsg=" + returnHelper.getDescription();
+                            }
+                        } else {
+                            nextPage = "InvoiceManagement/invoices.jsp?errMsg=Delete Delivery Invoice failed. An error has occured.";
+                        }
+                        break;
+                    case "VoidInvoice":
+                        if (invoice != null) {
+                            returnHelper = invoiceManagementBean.voidInvoice(invoice.getId(), isAdmin);
+                            if (returnHelper.getResult()) {
+                                List<Invoice> invoices = new ArrayList();
+                                String previousMgtPage = (String) session.getAttribute("previousManagementPage");
+                                if (previousMgtPage.equals("invoices")) {
+                                    invoices = invoiceManagementBean.listAllInvoice(loggedInStaffID);
+                                } else if (previousMgtPage.equals("sco")) {
+                                    SalesConfirmationOrder sco = (SalesConfirmationOrder) session.getAttribute("sco");
+                                    invoices = invoiceManagementBean.listInvoicesTiedToSCO(sco.getId());
+                                }
+                                if (invoices == null) {
+                                    nextPage = "error500.html";
+                                }
+                                session.setAttribute("listOfInvoice", invoices);
                                 SalesConfirmationOrder sco = (SalesConfirmationOrder) (session.getAttribute("sco"));
                                 session.setAttribute("sco", orderManagementBean.getSalesConfirmationOrder(sco.getId()));
                                 session.removeAttribute("invoice");
