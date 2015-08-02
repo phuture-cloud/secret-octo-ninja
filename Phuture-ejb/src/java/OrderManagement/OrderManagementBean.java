@@ -40,7 +40,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
     private static final Double gstRate = 7.0;//7%
 
     @Override
-    public ReturnHelper createSalesConfirmationOrder(String salesConfirmationOrderNumber, Date salesConfirmationOrderDate, String estimatedDeliveryDate, String customerPurchaseOrderNumber, Long customerID, Long contactID, Long salesStaffID, Integer terms) {
+    public ReturnHelper createSalesConfirmationOrder(Date salesConfirmationOrderDate, String estimatedDeliveryDate, String customerPurchaseOrderNumber, Long customerID, Long contactID, Long salesStaffID, Integer terms) {
         System.out.println("OrderManagementBean: createSalesConfirmationOrder() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -59,12 +59,12 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
                 result.setDescription("Failed to create a new SCO. The selected customer or contact may have been deleted while the SCO is being created. Please try again.");
                 return result;
             }
-            ReturnHelper uniqueResult = checkIfSCOnumberIsUnique(salesConfirmationOrderNumber);
-            if (!uniqueResult.getResult()) {
-                uniqueResult.setDescription("Failed to create a new SCO. The SCO number is already in use.");
-                return uniqueResult;
-            }
-            SalesConfirmationOrder sco = new SalesConfirmationOrder(salesConfirmationOrderNumber, salesConfirmationOrderDate, customerName, staff, terms, gstRate);
+//            ReturnHelper uniqueResult = checkIfSCOnumberIsUnique(salesConfirmationOrderNumber);
+//            if (!uniqueResult.getResult()) {
+//                uniqueResult.setDescription("Failed to create a new SCO. The SCO number is already in use.");
+//                return uniqueResult;
+//            }
+            SalesConfirmationOrder sco = new SalesConfirmationOrder(getNewSalesConfirmationOrderNumber(), salesConfirmationOrderDate, customerName, staff, terms, gstRate);
             sco.setEstimatedDeliveryDate(estimatedDeliveryDate);
             sco.setCustomerPurchaseOrderNumber(customerPurchaseOrderNumber);
             sco.setCustomer(customer);
@@ -100,7 +100,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
     }
 
     @Override
-    public ReturnHelper updateSalesConfirmationOrder(Long salesConfirmationOrderID, String newSalesConfirmationOrderNumber, Date newSalesConfirmationOrderDate, String newEstimatedDeliveryDate, String customerPurchaseOrderNumber, Long newCustomerID, String status, Integer newTerms, Boolean adminOverwrite) {
+    public ReturnHelper updateSalesConfirmationOrder(Long salesConfirmationOrderID,Date newSalesConfirmationOrderDate, String newEstimatedDeliveryDate, String customerPurchaseOrderNumber, Long newCustomerID, String status, Integer newTerms, Boolean adminOverwrite) {
         System.out.println("OrderManagementBean: updateSalesConfirmationOrder() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -117,11 +117,11 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
                 result.setDescription(checkResult.getDescription());
                 return result;
             }
-            ReturnHelper uniqueResult = checkIfSCOnumberIsUnique(newSalesConfirmationOrderNumber);
-            if (!uniqueResult.getResult() && !newSalesConfirmationOrderNumber.equals(sco.getSalesConfirmationOrderNumber())) {
-                uniqueResult.setDescription("Failed to save the SCO as the SCO number is already in use.");
-                return uniqueResult;
-            }
+//            ReturnHelper uniqueResult = checkIfSCOnumberIsUnique(newSalesConfirmationOrderNumber);
+//            if (!uniqueResult.getResult() && !newSalesConfirmationOrderNumber.equals(sco.getSalesConfirmationOrderNumber())) {
+//                uniqueResult.setDescription("Failed to save the SCO as the SCO number is already in use.");
+//                return uniqueResult;
+//            }
             ReturnHelper updateStatusResult = updateSalesConfirmationOrderStatus(salesConfirmationOrderID, status);
             if (updateStatusResult.getResult() == false) {
                 result.setDescription(updateStatusResult.getDescription());
@@ -152,7 +152,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             //Update fields 
             sco.setCustomerName(newCustomerName);
             sco.setCustomer(newCustomer);
-            sco.setSalesConfirmationOrderNumber(newSalesConfirmationOrderNumber);
+//            sco.setSalesConfirmationOrderNumber(newSalesConfirmationOrderNumber);
             sco.setSalesConfirmationOrderDate(newSalesConfirmationOrderDate);
             sco.setEstimatedDeliveryDate(newEstimatedDeliveryDate);
             sco.setCustomerPurchaseOrderNumber(customerPurchaseOrderNumber);
