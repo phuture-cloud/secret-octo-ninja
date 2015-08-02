@@ -14,8 +14,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import javax.annotation.Resource;
 import javax.ejb.EJB;
+import javax.ejb.EJBContext;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
@@ -27,7 +31,8 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
 
     public InvoiceManagementBean() {
     }
-
+    @Resource
+    private EJBContext context;
     @PersistenceContext
     private EntityManager em;
 
@@ -36,6 +41,7 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
 
     private static final Double gstRate = 7.0;//7%
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Override
     public ReturnHelper createInvoice(Long salesConfirmationOrderID, Date invoiceDate) {
         System.out.println("InvoiceManagementBean: createInvoice() called");
@@ -87,9 +93,11 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             result.setDescription("Invoice created successfully.");
             return result;
         } catch (NoResultException ex) {
+            context.setRollbackOnly();
             System.out.println("InvoiceManagementBean: createInvoice() could not find one or more ID(s).");
             result.setDescription("Failed to create the invoice. The SCO selected no longer exist in the system.");
         } catch (Exception ex) {
+            context.setRollbackOnly();
             System.out.println("InvoiceManagementBean: createInvoice() failed");
             ex.printStackTrace();
             result.setDescription("Failed to create a new invoice due to internal server error.");
@@ -513,6 +521,7 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
         }
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Override
     public ReturnHelper replaceInvoiceLineItemWithSCOitems(Long salesConfirmationOrderID, Long invoiceID, Boolean adminOverwrite) {
         System.out.println("InvoiceManagementBean: replaceInvoiceLineItemWithSCOitems() called");
@@ -572,16 +581,19 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             result.setResult(true);
             result.setDescription("Items copied from SCO.");
         } catch (NoResultException ex) {
+            context.setRollbackOnly();
             System.out.println("InvoiceManagementBean: replaceInvoiceLineItemWithSCOitems() could not find one or more ID(s).");
             result.setDescription("Failed to edit the invoice. The invoice selected no longer exist in the system.");
         } catch (Exception ex) {
+            context.setRollbackOnly();
             System.out.println("InvoiceManagementBean: replaceInvoiceLineItemWithSCOitems() failed");
-            ex.printStackTrace();
             result.setDescription("Failed to edit the invoice due to internal server error.");
+            ex.printStackTrace();
         }
         return result;
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Override
     public ReturnHelper addInvoiceLineItem(Long invoiceID, String itemName, String itemDescription, Integer itemQty, Double itemUnitPrice, Boolean adminOverwrite) {
         System.out.println("InvoiceManagementBean: addInvoiceLineItem() called");
@@ -622,9 +634,11 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             result.setResult(true);
             result.setDescription("Item added.");
         } catch (NoResultException ex) {
+            context.setRollbackOnly();
             System.out.println("InvoiceManagementBean: addInvoiceLineItem() could not find one or more ID(s).");
             result.setDescription("Failed to edit the invoice. The invoice selected no longer exist in the system.");
         } catch (Exception ex) {
+            context.setRollbackOnly();
             System.out.println("InvoiceManagementBean: addInvoiceLineItem() failed");
             result.setDescription("Unable to add line item, internal server error.");
             ex.printStackTrace();
@@ -632,6 +646,7 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
         return result;
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Override
     public ReturnHelper updateInvoiceLineItem(Long invoiceID, Long lineItemID, String newItemName, String newItemDescription, Integer newItemQty, Double newItemUnitPrice, Boolean adminOverwrite) {
         System.out.println("InvoiceManagementBean: updateInvoiceLineItem() called");
@@ -672,9 +687,11 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             result.setResult(true);
             result.setDescription("Line item updated.");
         } catch (NoResultException ex) {
+            context.setRollbackOnly();
             System.out.println("InvoiceManagementBean: updateInvoiceLineItem() could not find one or more ID(s).");
             result.setDescription("Failed to edit the invoice. The invoice or item selected no longer exist in the system.");
         } catch (Exception ex) {
+            context.setRollbackOnly();
             System.out.println("InvoiceManagementBean: updateInvoiceLineItem() failed");
             result.setDescription("Unable to update line item, internal server error.");
             ex.printStackTrace();
@@ -683,6 +700,7 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
         return result;
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Override
     public ReturnHelper deleteInvoiceLineItem(Long invoiceID, Long lineItemID, Boolean adminOverwrite) {
         System.out.println("InvoiceManagementBean: deleteInvoiceLineItem() called");
@@ -721,9 +739,11 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             result.setResult(true);
             result.setDescription("Item deleted.");
         } catch (NoResultException ex) {
+            context.setRollbackOnly();
             System.out.println("InvoiceManagementBean: deleteInvoiceLineItem() could not find one or more ID(s).");
             result.setDescription("Failed to edit the invoice. The invoice or item selected no longer exist in the system.");
         } catch (Exception ex) {
+            context.setRollbackOnly();
             System.out.println("InvoiceManagementBean: deleteInvoiceLineItem() failed");
             result.setDescription("Unable to delete line item, internal server error.");
             ex.printStackTrace();
@@ -732,6 +752,7 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
         return result;
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Override
     public ReturnHelper deleteallInvoiceLineItem(Long invoiceID, Boolean adminOverwrite) {
         System.out.println("InvoiceManagementBean: deleteallInvoiceLineItem() called");
@@ -766,6 +787,7 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             result.setResult(true);
             result.setDescription("Line items deleted.");
         } catch (Exception ex) {
+            context.setRollbackOnly();
             System.out.println("InvoiceManagementBean: deleteallInvoiceLineItem() failed");
             result.setDescription("Unable to delete line items, internal server error.");
             ex.printStackTrace();
@@ -839,6 +861,7 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
         }
     }
 
+    @TransactionAttribute(TransactionAttributeType.MANDATORY)
     @Override
     public String getNewInvoiceNumber() {
         System.out.println("InvoiceManagementBean: getNewInvoiceNumber() called");
