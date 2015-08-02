@@ -563,6 +563,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
         }
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Override
     public ReturnHelper addSCOlineItem(Long salesConfirmationOrderID, String itemName, String itemDescription, Integer itemQty, Double itemUnitPrice, Boolean adminOverwrite) {
         System.out.println("OrderManagementBean: addSCOlineItem() called");
@@ -604,9 +605,11 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             result.setResult(true);
             result.setDescription("Item added.");
         } catch (NoResultException ex) {
+            context.setRollbackOnly();
             System.out.println("OrderManagementBean: addSCOlineItem() could not find one or more ID(s).");
             result.setDescription("Failed to edit a SCO. The SCO selected no longer exist in the system.");
         } catch (Exception ex) {
+            context.setRollbackOnly();
             System.out.println("OrderManagementBean: addSCOlineItem() failed");
             result.setDescription("Unable to add line item, internal server error.");
             ex.printStackTrace();
@@ -614,6 +617,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
         return result;
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Override
     public ReturnHelper updateSCOlineItem(Long salesConfirmationOrderID, Long lineItemID, String newItemName, String newItemDescription, Integer newItemQty, Double newItemUnitPrice, Boolean adminOverwrite) {
         System.out.println("OrderManagementBean: updateSCOlineItem() called");
@@ -655,9 +659,11 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             result.setResult(true);
             result.setDescription("Line item updated.");
         } catch (NoResultException ex) {
+            context.setRollbackOnly();
             System.out.println("OrderManagementBean: updateSCOlineItem() could not find one or more ID(s).");
             result.setDescription("Failed to edit the SCO. The SCO or item selected no longer exist in the system.");
         } catch (Exception ex) {
+            context.setRollbackOnly();
             System.out.println("OrderManagementBean: updateSCOlineItem() failed");
             result.setDescription("Unable to update line item, internal server error.");
             ex.printStackTrace();
@@ -666,6 +672,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
         return result;
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Override
     public ReturnHelper deleteSCOlineItem(Long salesConfirmationOrderID, Long lineItemID, Boolean adminOverwrite) {
         System.out.println("OrderManagementBean: deleteSCOlineItem() called");
@@ -705,9 +712,11 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             result.setResult(true);
             result.setDescription("Item deleted.");
         } catch (NoResultException ex) {
+            context.setRollbackOnly();
             System.out.println("OrderManagementBean: deleteSCOlineItem() could not find one or more ID(s).");
             result.setDescription("Failed to edit the SCO. The SCO or item selected no longer exist in the system.");
         } catch (Exception ex) {
+            context.setRollbackOnly();
             System.out.println("OrderManagementBean: deleteSCOlineItem() failed");
             result.setDescription("Unable to delete line item, internal server error.");
             ex.printStackTrace();
@@ -716,6 +725,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
         return result;
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Override
     public ReturnHelper deleteSCOallLineItem(Long salesConfirmationOrderID, Boolean adminOverwrite) {
         System.out.println("OrderManagementBean: deleteSCOallLineItem() called");
@@ -746,6 +756,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             result.setResult(true);
             result.setDescription("Line items deleted.");
         } catch (Exception ex) {
+            context.setRollbackOnly();
             System.out.println("OrderManagementBean: deleteSCOallLineItem() failed");
             result.setDescription("Unable to delete line items, internal server error.");
             ex.printStackTrace();

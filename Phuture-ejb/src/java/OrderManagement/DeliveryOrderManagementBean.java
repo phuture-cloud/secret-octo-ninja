@@ -12,6 +12,8 @@ import EntityManager.Staff;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.annotation.Resource;
+import javax.ejb.EJBContext;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -25,12 +27,14 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
 
     public DeliveryOrderManagementBean() {
     }
-
+    @Resource
+    private EJBContext context;
     @PersistenceContext
     private EntityManager em;
 
     private static final Double gstRate = 7.0;//7%
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Override
     public ReturnHelper createDeliveryOrder(Long salesConfirmationOrderID, Date deliveryOrderDate) {
         System.out.println("DeliveryOrderManagementBean: createDeliveryOrder() called");
@@ -78,9 +82,11 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             result.setDescription("DO created successfully.");
             return result;
         } catch (NoResultException ex) {
+            context.setRollbackOnly();
             System.out.println("DeliveryOrderManagementBean: createDeliveryOrder() could not find one or more ID(s).");
             result.setDescription("Failed to create the DO. The SCO selected no longer exist in the system.");
         } catch (Exception ex) {
+            context.setRollbackOnly();
             System.out.println("DeliveryOrderManagementBean: createDeliveryOrder() failed");
             ex.printStackTrace();
             result.setDescription("Failed to create a new DO due to internal server error.");
@@ -477,6 +483,7 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
         }
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Override
     public ReturnHelper replaceDOlineItemWithSCOitems(Long salesConfirmationOrderID, Long deliveryOrderID, Boolean adminOverwrite) {
         System.out.println("DeliveryOrderManagementBean: replaceDOlineItemWithSCOitems() called");
@@ -533,18 +540,21 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             result.setResult(true);
             result.setDescription("Items copied from SCO.");
         } catch (NoResultException ex) {
+            context.setRollbackOnly();
             System.out.println("DeliveryOrderManagementBean: replaceDOlineItemWithSCOitems() could not find one or more ID(s).");
             result.setDescription("Failed to edit the DO. The SCO selected no longer exist in the system.");
         } catch (Exception ex) {
+            context.setRollbackOnly();
             System.out.println("DeliveryOrderManagementBean: replaceDOlineItemWithSCOitems() failed");
-            ex.printStackTrace();
             result.setDescription("Failed to edit the DO due to internal server error.");
+            ex.printStackTrace();
         }
         return result;
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Override
-    public ReturnHelper addDOlineItem(Long deliveryOrderID, String itemName, String itemDescription, Integer itemQty,Boolean adminOverwrite) {
+    public ReturnHelper addDOlineItem(Long deliveryOrderID, String itemName, String itemDescription, Integer itemQty, Boolean adminOverwrite) {
         System.out.println("DeliveryOrderManagementBean: addDOlineItem() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -579,9 +589,11 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             result.setResult(true);
             result.setDescription("Item added.");
         } catch (NoResultException ex) {
+            context.setRollbackOnly();
             System.out.println("DeliveryOrderManagementBean: addDOlineItem() could not find one or more ID(s).");
             result.setDescription("Failed to edit the DO. The DO selected no longer exist in the system.");
         } catch (Exception ex) {
+            context.setRollbackOnly();
             System.out.println("DeliveryOrderManagementBean: addDOlineItem() failed");
             result.setDescription("Unable to add line item, internal server error.");
             ex.printStackTrace();
@@ -589,6 +601,7 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
         return result;
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Override
     public ReturnHelper updateDOlineItem(Long deliveryOrderID, Long lineItemID, String newItemName, String newItemDescription, Integer newItemQty, Boolean adminOverwrite) {
         System.out.println("DeliveryOrderManagementBean: updateDOlineItem() called");
@@ -625,9 +638,11 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             result.setResult(true);
             result.setDescription("Line item updated.");
         } catch (NoResultException ex) {
+            context.setRollbackOnly();
             System.out.println("DeliveryOrderManagementBean: updateDOlineItem() could not find one or more ID(s).");
             result.setDescription("Failed to edit the DO. The DO or item selected no longer exist in the system.");
         } catch (Exception ex) {
+            context.setRollbackOnly();
             System.out.println("DeliveryOrderManagementBean: updateDOlineItem() failed");
             result.setDescription("Unable to update line item, internal server error.");
             ex.printStackTrace();
@@ -636,6 +651,7 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
         return result;
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Override
     public ReturnHelper deleteDOlineItem(Long deliveryOrderID, Long lineItemID, Boolean adminOverwrite) {
         System.out.println("DeliveryOrderManagementBean: deleteDOlineItem() called");
@@ -670,9 +686,11 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             result.setResult(true);
             result.setDescription("Item deleted.");
         } catch (NoResultException ex) {
+            context.setRollbackOnly();
             System.out.println("DeliveryOrderManagementBean: deleteDOlineItem() could not find one or more ID(s).");
             result.setDescription("Failed to edit the DO. The DO or item selected no longer exist in the system.");
         } catch (Exception ex) {
+            context.setRollbackOnly();
             System.out.println("DeliveryOrderManagementBean: deleteDOlineItem() failed");
             result.setDescription("Unable to delete line item, internal server error.");
             ex.printStackTrace();
@@ -681,6 +699,7 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
         return result;
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Override
     public ReturnHelper deleteallDOlineItem(Long deliveryOrderID, Boolean adminOverwrite) {
         System.out.println("DeliveryOrderManagementBean: deleteallDOlineItem() called");
@@ -711,6 +730,7 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             result.setResult(true);
             result.setDescription("Line items deleted.");
         } catch (Exception ex) {
+            context.setRollbackOnly();
             System.out.println("DeliveryOrderManagementBean: deleteallDOlineItem() failed");
             result.setDescription("Unable to delete line items, internal server error.");
             ex.printStackTrace();
