@@ -13,13 +13,20 @@ import EntityManager.SalesConfirmationOrder;
 import EntityManager.Staff;
 import java.util.Date;
 import java.util.List;
+import javax.annotation.Resource;
+import javax.ejb.ApplicationException;
 import javax.ejb.EJB;
+import javax.ejb.EJBContext;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import jdk.nashorn.internal.runtime.Context;
+
 
 @Stateless
 public class OrderManagementBean implements OrderManagementBeanLocal {
@@ -27,6 +34,9 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
     public OrderManagementBean() {
     }
 
+    @Resource
+    private EJBContext context;
+    
     @PersistenceContext
     private EntityManager em;
 
@@ -39,8 +49,9 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
 
     private static final Double gstRate = 7.0;//7%
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Override
-    public ReturnHelper createSalesConfirmationOrder(String salesConfirmationOrderNumber, Date salesConfirmationOrderDate, String estimatedDeliveryDate, String customerPurchaseOrderNumber, Long customerID, Long contactID, Long salesStaffID, Integer terms) {
+    public ReturnHelper createSalesConfirmationOrder(Date salesConfirmationOrderDate, String estimatedDeliveryDate, String customerPurchaseOrderNumber, Long customerID, Long contactID, Long salesStaffID, Integer terms) {
         System.out.println("OrderManagementBean: createSalesConfirmationOrder() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -59,12 +70,12 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
                 result.setDescription("Failed to create a new SCO. The selected customer or contact may have been deleted while the SCO is being created. Please try again.");
                 return result;
             }
-            ReturnHelper uniqueResult = checkIfSCOnumberIsUnique(salesConfirmationOrderNumber);
-            if (!uniqueResult.getResult()) {
-                uniqueResult.setDescription("Failed to create a new SCO. The SCO number is already in use.");
-                return uniqueResult;
-            }
-            SalesConfirmationOrder sco = new SalesConfirmationOrder(salesConfirmationOrderNumber, salesConfirmationOrderDate, customerName, staff, terms, gstRate);
+//            ReturnHelper uniqueResult = checkIfSCOnumberIsUnique(salesConfirmationOrderNumber);
+//            if (!uniqueResult.getResult()) {
+//                uniqueResult.setDescription("Failed to create a new SCO. The SCO number is already in use.");
+//                return uniqueResult;
+//            }
+            SalesConfirmationOrder sco = new SalesConfirmationOrder(getNewSalesConfirmationOrderNumber(), salesConfirmationOrderDate, customerName, staff, terms, gstRate);
             sco.setEstimatedDeliveryDate(estimatedDeliveryDate);
             sco.setCustomerPurchaseOrderNumber(customerPurchaseOrderNumber);
             sco.setCustomer(customer);
@@ -89,9 +100,11 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             result.setDescription("SCO created successfully.");
             return result;
         } catch (NoResultException ex) {
+            context.setRollbackOnly();
             System.out.println("OrderManagementBean: createSalesConfirmationOrder() could not find one or more ID(s).");
             result.setDescription("Failed to create a SCO. The customer or staff selected no longer exist in the system.");
         } catch (Exception ex) {
+            context.setRollbackOnly();
             System.out.println("OrderManagementBean: createSalesConfirmationOrder() failed");
             ex.printStackTrace();
             result.setDescription("Failed to create a new SCO due to internal server error.");
@@ -100,7 +113,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
     }
 
     @Override
-    public ReturnHelper updateSalesConfirmationOrder(Long salesConfirmationOrderID, String newSalesConfirmationOrderNumber, Date newSalesConfirmationOrderDate, String newEstimatedDeliveryDate, String customerPurchaseOrderNumber, Long newCustomerID, String status, Integer newTerms, Boolean adminOverwrite) {
+    public ReturnHelper updateSalesConfirmationOrder(Long salesConfirmationOrderID,Date newSalesConfirmationOrderDate, String newEstimatedDeliveryDate, String customerPurchaseOrderNumber, Long newCustomerID, String status, Integer newTerms, Boolean adminOverwrite) {
         System.out.println("OrderManagementBean: updateSalesConfirmationOrder() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -117,11 +130,11 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
                 result.setDescription(checkResult.getDescription());
                 return result;
             }
-            ReturnHelper uniqueResult = checkIfSCOnumberIsUnique(newSalesConfirmationOrderNumber);
-            if (!uniqueResult.getResult() && !newSalesConfirmationOrderNumber.equals(sco.getSalesConfirmationOrderNumber())) {
-                uniqueResult.setDescription("Failed to save the SCO as the SCO number is already in use.");
-                return uniqueResult;
-            }
+//            ReturnHelper uniqueResult = checkIfSCOnumberIsUnique(newSalesConfirmationOrderNumber);
+//            if (!uniqueResult.getResult() && !newSalesConfirmationOrderNumber.equals(sco.getSalesConfirmationOrderNumber())) {
+//                uniqueResult.setDescription("Failed to save the SCO as the SCO number is already in use.");
+//                return uniqueResult;
+//            }
             ReturnHelper updateStatusResult = updateSalesConfirmationOrderStatus(salesConfirmationOrderID, status);
             if (updateStatusResult.getResult() == false) {
                 result.setDescription(updateStatusResult.getDescription());
@@ -152,7 +165,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             //Update fields 
             sco.setCustomerName(newCustomerName);
             sco.setCustomer(newCustomer);
-            sco.setSalesConfirmationOrderNumber(newSalesConfirmationOrderNumber);
+//            sco.setSalesConfirmationOrderNumber(newSalesConfirmationOrderNumber);
             sco.setSalesConfirmationOrderDate(newSalesConfirmationOrderDate);
             sco.setEstimatedDeliveryDate(newEstimatedDeliveryDate);
             sco.setCustomerPurchaseOrderNumber(customerPurchaseOrderNumber);
@@ -550,6 +563,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
         }
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Override
     public ReturnHelper addSCOlineItem(Long salesConfirmationOrderID, String itemName, String itemDescription, Integer itemQty, Double itemUnitPrice, Boolean adminOverwrite) {
         System.out.println("OrderManagementBean: addSCOlineItem() called");
@@ -591,9 +605,11 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             result.setResult(true);
             result.setDescription("Item added.");
         } catch (NoResultException ex) {
+            context.setRollbackOnly();
             System.out.println("OrderManagementBean: addSCOlineItem() could not find one or more ID(s).");
             result.setDescription("Failed to edit a SCO. The SCO selected no longer exist in the system.");
         } catch (Exception ex) {
+            context.setRollbackOnly();
             System.out.println("OrderManagementBean: addSCOlineItem() failed");
             result.setDescription("Unable to add line item, internal server error.");
             ex.printStackTrace();
@@ -601,6 +617,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
         return result;
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Override
     public ReturnHelper updateSCOlineItem(Long salesConfirmationOrderID, Long lineItemID, String newItemName, String newItemDescription, Integer newItemQty, Double newItemUnitPrice, Boolean adminOverwrite) {
         System.out.println("OrderManagementBean: updateSCOlineItem() called");
@@ -642,9 +659,11 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             result.setResult(true);
             result.setDescription("Line item updated.");
         } catch (NoResultException ex) {
+            context.setRollbackOnly();
             System.out.println("OrderManagementBean: updateSCOlineItem() could not find one or more ID(s).");
             result.setDescription("Failed to edit the SCO. The SCO or item selected no longer exist in the system.");
         } catch (Exception ex) {
+            context.setRollbackOnly();
             System.out.println("OrderManagementBean: updateSCOlineItem() failed");
             result.setDescription("Unable to update line item, internal server error.");
             ex.printStackTrace();
@@ -653,6 +672,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
         return result;
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Override
     public ReturnHelper deleteSCOlineItem(Long salesConfirmationOrderID, Long lineItemID, Boolean adminOverwrite) {
         System.out.println("OrderManagementBean: deleteSCOlineItem() called");
@@ -692,9 +712,11 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             result.setResult(true);
             result.setDescription("Item deleted.");
         } catch (NoResultException ex) {
+            context.setRollbackOnly();
             System.out.println("OrderManagementBean: deleteSCOlineItem() could not find one or more ID(s).");
             result.setDescription("Failed to edit the SCO. The SCO or item selected no longer exist in the system.");
         } catch (Exception ex) {
+            context.setRollbackOnly();
             System.out.println("OrderManagementBean: deleteSCOlineItem() failed");
             result.setDescription("Unable to delete line item, internal server error.");
             ex.printStackTrace();
@@ -703,6 +725,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
         return result;
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Override
     public ReturnHelper deleteSCOallLineItem(Long salesConfirmationOrderID, Boolean adminOverwrite) {
         System.out.println("OrderManagementBean: deleteSCOallLineItem() called");
@@ -733,6 +756,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             result.setResult(true);
             result.setDescription("Line items deleted.");
         } catch (Exception ex) {
+            context.setRollbackOnly();
             System.out.println("OrderManagementBean: deleteSCOallLineItem() failed");
             result.setDescription("Unable to delete line items, internal server error.");
             ex.printStackTrace();
@@ -808,6 +832,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
         }
     }
 
+    @TransactionAttribute(TransactionAttributeType.MANDATORY)
     @Override
     public String getNewSalesConfirmationOrderNumber() {
         System.out.println("OrderManagementBean: getNewSalesConfirmationOrderNumber() called");
