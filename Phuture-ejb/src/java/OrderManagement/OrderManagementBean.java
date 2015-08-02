@@ -13,13 +13,20 @@ import EntityManager.SalesConfirmationOrder;
 import EntityManager.Staff;
 import java.util.Date;
 import java.util.List;
+import javax.annotation.Resource;
+import javax.ejb.ApplicationException;
 import javax.ejb.EJB;
+import javax.ejb.EJBContext;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import jdk.nashorn.internal.runtime.Context;
+
 
 @Stateless
 public class OrderManagementBean implements OrderManagementBeanLocal {
@@ -27,6 +34,9 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
     public OrderManagementBean() {
     }
 
+    @Resource
+    private EJBContext context;
+    
     @PersistenceContext
     private EntityManager em;
 
@@ -39,6 +49,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
 
     private static final Double gstRate = 7.0;//7%
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Override
     public ReturnHelper createSalesConfirmationOrder(String salesConfirmationOrderNumber, Date salesConfirmationOrderDate, String estimatedDeliveryDate, String customerPurchaseOrderNumber, Long customerID, Long contactID, Long salesStaffID, Integer terms) {
         System.out.println("OrderManagementBean: createSalesConfirmationOrder() called");
@@ -89,9 +100,11 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             result.setDescription("SCO created successfully.");
             return result;
         } catch (NoResultException ex) {
+            context.setRollbackOnly();
             System.out.println("OrderManagementBean: createSalesConfirmationOrder() could not find one or more ID(s).");
             result.setDescription("Failed to create a SCO. The customer or staff selected no longer exist in the system.");
         } catch (Exception ex) {
+            context.setRollbackOnly();
             System.out.println("OrderManagementBean: createSalesConfirmationOrder() failed");
             ex.printStackTrace();
             result.setDescription("Failed to create a new SCO due to internal server error.");
@@ -808,6 +821,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
         }
     }
 
+    @TransactionAttribute(TransactionAttributeType.MANDATORY)
     @Override
     public String getNewSalesConfirmationOrderNumber() {
         System.out.println("OrderManagementBean: getNewSalesConfirmationOrderNumber() called");
