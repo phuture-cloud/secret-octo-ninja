@@ -109,7 +109,7 @@
                                                         //If there was some errors calculating the invoiced amount
                                                         out.println();
                                                     } else if (salesConfirmationOrders.get(i).getTotalInvoicedAmount() < salesConfirmationOrders.get(i).getTotalPrice()) {
-                                                    //If total invoiced less than SCO amount
+                                                        //If total invoiced less than SCO amount
                                                         //todo
                                                         out.println();
                                                     } else if (salesConfirmationOrders.get(i).getTotalInvoicedAmount() < salesConfirmationOrders.get(i).getTotalPrice()) {
@@ -119,7 +119,7 @@
                                                         //If total invoiced equal
                                                     }%>
                                             </td>
-                                            <td><%=salesConfirmationOrders.get(i).getSalesConfirmationOrderNumber()%></td>
+                                            <td><%=staff.getStaffPrefix() + "-" + salesConfirmationOrders.get(i).getSalesConfirmationOrderNumber()%></td>
                                             <td><a href="../CustomerManagementController?target=ListCustomerContacts&id=<%=salesConfirmationOrders.get(i).getCustomer().getId()%>"><%=salesConfirmationOrders.get(i).getCustomerName()%></a></td>
                                             <td>
                                                 <%

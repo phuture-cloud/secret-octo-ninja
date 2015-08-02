@@ -56,7 +56,7 @@
                 <div class="row">
                     <div class="col-sm-6 mt-md">
                         <h2 class="h2 mt-none mb-sm text-dark text-weight-bold">SALES ORDER</h2>
-                        <h4 class="h4 m-none text-dark text-weight-bold">SCO No. <%=sco.getSalesConfirmationOrderNumber()%></h4>
+                        <h4 class="h4 m-none text-dark text-weight-bold">SCO No. <%=staff.getStaffPrefix()%>-<%=sco.getSalesConfirmationOrderNumber()%></h4>
                     </div>
                     <br/>
                     <div class="col-sm-6 text-right">

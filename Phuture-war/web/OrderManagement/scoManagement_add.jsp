@@ -22,7 +22,6 @@
         response.sendRedirect("../index.jsp?errMsg=Session Expired.");
     } else {
         String scoID = request.getParameter("id");
-        String scoNumber = request.getParameter("scoNumber");
         String scoDate = request.getParameter("scoDate");
         String terms = request.getParameter("terms");
         String status = request.getParameter("status");
@@ -97,37 +96,34 @@
 
                 function back2(id) {
                     window.onbeforeunload = null;
-                    var scoNumber = document.getElementById("scoNumber").value;
                     var scoDate = document.getElementById("scoDate").value;
                     var terms = document.getElementById("terms").value;
                     var status = document.getElementById("status").value;
-                    window.location.href = "scoManagement_add.jsp?id=" + id + "&status=" + status + "&scoNumber=" + scoNumber + "&scoDate=" + scoDate + "&terms=" + terms;
+                    window.location.href = "scoManagement_add.jsp?id=" + id + "&status=" + status + "&scoDate=" + scoDate + "&terms=" + terms;
                 }
 
                 function getCustomerContacts() {
                     window.onbeforeunload = null;
                     var customerID = document.getElementById("customerList").value;
-                    var scoNumber = document.getElementById("scoNumber").value;
                     var scoDate = document.getElementById("scoDate").value;
                     var terms = document.getElementById("terms").value;
                     var estimatedDeliveryDate = document.getElementById("estimatedDeliveryDate").value;
                     var poNumber = document.getElementById("poNumber").value;
                     if (customerID !== "") {
-                        window.location.href = "../OrderManagementController?target=ListCustomerContacts&customerID=" + customerID + "&scoNumber=" + scoNumber + "&scoDate=" + scoDate + "&terms=" + terms + "&estimatedDeliveryDate=" + estimatedDeliveryDate + "&poNumber=" + poNumber;
+                        window.location.href = "../OrderManagementController?target=ListCustomerContacts&customerID=" + customerID + "&scoDate=" + scoDate + "&terms=" + terms + "&estimatedDeliveryDate=" + estimatedDeliveryDate + "&poNumber=" + poNumber;
                     }
                 }
 
                 function selectCustomerContact() {
                     window.onbeforeunload = null;
                     var customerID = document.getElementById("customerList").value;
-                    var scoNumber = document.getElementById("scoNumber").value;
                     var scoDate = document.getElementById("scoDate").value;
                     var terms = document.getElementById("terms").value;
                     var estimatedDeliveryDate = document.getElementById("estimatedDeliveryDate").value;
                     var poNumber = document.getElementById("poNumber").value;
                     if (customerID !== "") {
                         var contactID = document.getElementById("customerContactid").value;
-                        window.location.href = "scoManagement_add.jsp?selectedCustomerID=" + customerID + "&selectedContactID=" + contactID + "&scoNumber=" + scoNumber + "&scoDate=" + scoDate + "&terms=" + terms + "&estimatedDeliveryDate=" + estimatedDeliveryDate + "&poNumber=" + poNumber;
+                        window.location.href = "scoManagement_add.jsp?selectedCustomerID=" + customerID + "&selectedContactID=" + contactID + "&scoDate=" + scoDate + "&terms=" + terms + "&estimatedDeliveryDate=" + estimatedDeliveryDate + "&poNumber=" + poNumber;
                     }
                 }
 
@@ -167,13 +163,12 @@
                     window.onbeforeunload = null;
                     scoManagement.id.value = id;
                     scoManagement.lineItemID.value = lineItemID;
-                    var scoNumber = document.getElementById("scoNumber").value;
                     var scoDate = document.getElementById("scoDate").value;
                     var terms = document.getElementById("terms").value;
                     var status = document.getElementById("status").value;
                     var estimatedDeliveryDate = document.getElementById("estimatedDeliveryDate").value;
                     var poNumber = document.getElementById("poNumber").value;
-                    window.location.href = "scoManagement_add.jsp?id=" + id + "&scoNumber=" + scoNumber + "&scoDate=" + scoDate + "&terms=" + terms + "&status=" + status + "&editingLineItem=" + lineItemID + "&estimatedDeliveryDate=" + estimatedDeliveryDate + "&poNumber=" + poNumber;
+                    window.location.href = "scoManagement_add.jsp?id=" + id + "&scoDate=" + scoDate + "&terms=" + terms + "&status=" + status + "&editingLineItem=" + lineItemID + "&estimatedDeliveryDate=" + estimatedDeliveryDate + "&poNumber=" + poNumber;
                 }
 
                 function saveEditLineItem(id, lineItemID) {
@@ -185,8 +180,7 @@
                     scoManagement.itemUnitPrice.value = document.getElementById("itemUnitPrice" + lineItemID).value;
                     scoManagement.itemQty.value = document.getElementById("itemQty" + lineItemID).value;
                     scoManagement.target.value = "EditLineItem";
-                    scoManagement.scoNumber.value = document.getElementById("scoNumber").value;
-                    document.scoManagement.action = "../OrderManagementController?editingLineItem=" + lineItemID + "&scoNumber=" + scoNumber;
+                    document.scoManagement.action = "../OrderManagementController?editingLineItem=" + lineItemID;
                     document.scoManagement.submit();
                 }
 
@@ -274,12 +268,8 @@
                                             <div class="col-sm-6 mt-md">
                                                 <h2 class="h2 mt-none mb-sm text-dark text-weight-bold">Sales Confirmation Order</h2>
                                                 <%
-                                                    if (scoNumber != null && !scoNumber.isEmpty()) {
-                                                        out.print("<input type='text' class='form-control' id='scoNumber' name='scoNumber' value='" + scoNumber + "' style='max-width: 300px' required/>");
-                                                    } else if (sco != null && scoID != null && !scoID.isEmpty()) {
-                                                        out.print("<input type='text' class='form-control' id='scoNumber' name='scoNumber' value='" + sco.getSalesConfirmationOrderNumber() + "' style='max-width: 300px' required/>");
-                                                    } else {
-                                                        out.print("<input type='text' class='form-control' id='scoNumber' name='scoNumber' placeholder='Enter your SCO No. with prefix " + staff.getStaffPrefix() + "' style='max-width: 350px' required/>");
+                                                    if (sco != null && scoID != null && !scoID.isEmpty()) {
+                                                        out.print("<h3>" + staff.getStaffPrefix() + "-" + sco.getSalesConfirmationOrderNumber() + "</h3>");
                                                     }
                                                 %>
                                             </div>
@@ -899,12 +889,6 @@
                                     <h2 class="panel-title">Generate Delivery Order</h2>
                                 </header>
                                 <div class="panel-body">
-                                    <div class="form-group">
-                                        <label class="col-sm-3 control-label">DO No <span class="required">*</span></label>
-                                        <div class="col-sm-9">
-                                            <input type="text" name="doNumber" class="form-control" required/>
-                                        </div>
-                                    </div>
                                     <div class="form-group">
                                         <label class="col-md-3 control-label">Date <span class="required">*</span></label>
                                         <div class="col-md-9">
