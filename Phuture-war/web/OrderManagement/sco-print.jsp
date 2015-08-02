@@ -229,6 +229,31 @@
                     </div>
                 </div>
             </div>
+
+            <br><br>
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <b>AGREED & CONFIRMED</b>
+
+                    <br><br><br><br><br><br>
+                    ------------------------------------------------
+                    <br>
+                    Customer's Signature & Co. Stamp
+                </div>
+                <div class="col-sm-6">
+                    <b>Phuture International Pte Ltd</b>
+                    <%
+                        if (staff.getSignature() != null && staff.getSignature().length > 0) {
+                            out.write("<img class='img-responsive' src='http://localhost:8080/Phuture-war/sig?id=" + staff.getId() + ">'");
+                        }
+                    %>
+                    <br>
+                    ------------------------------------------------
+                    <br>
+                    <%=staff.getName()%>
+                </div>
+            </div>
         </div>
         <jsp:include page="../jspIncludePages/foot.html" />
         <script>
