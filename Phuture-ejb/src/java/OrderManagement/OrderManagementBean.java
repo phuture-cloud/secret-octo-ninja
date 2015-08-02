@@ -383,6 +383,9 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
                 case "Write-Off":
                     sco.setStatusAsWritenOff();
                     break;
+                case "Voided":
+                    sco.setStatusAsVoided();
+                    break;
                 default:
                     result.setDescription("Failed to update the SCO to the status specified.");
                     System.out.println("OrderManagementBean: updateSalesConfirmationOrderStatus() received an unknown status.");

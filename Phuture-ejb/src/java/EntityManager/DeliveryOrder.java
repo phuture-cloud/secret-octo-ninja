@@ -125,6 +125,10 @@ public class DeliveryOrder implements Serializable {
     public Date getDateCreated() {
         return dateCreated;
     }
+    
+    public void setStatusAsVoided() {
+        this.status = "Voided";
+    }
 
     public void setDateCreated(Date dateCreated) {
         this.dateCreated = dateCreated;

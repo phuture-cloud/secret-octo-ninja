@@ -15,7 +15,8 @@ public interface InvoiceManagementBeanLocal {
     public ReturnHelper updateInvoiceCustomerContactDetails(Long invoiceID, Long customerID, Long contactID, Boolean adminOverwrite);
     public ReturnHelper updateInvoiceRemarks(Long invoiceID, String remarks, Boolean adminOverwrite);
     public ReturnHelper updateInvoiceNotes(Long invoiceID, String notes, Boolean adminOverwrite);
-    public ReturnHelper deleteInvoice(Long invoiceID, Boolean adminOverwrite);  
+    public ReturnHelper deleteInvoice(Long invoiceID, Boolean adminOverwrite);
+    public ReturnHelper voidInvoice(Long invoiceID, Boolean adminOverwrite);
     public ReturnHelper checkIfInvoiceisEditable(Long invoiceID, Boolean adminOverwrite);
     public ReturnHelper checkIfInvoiceNumberIsUnique(String invoiceNumber);
     
