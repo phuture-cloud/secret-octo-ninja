@@ -276,7 +276,7 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
     }
 
     @Override
-    public List<CreditNote> listAllCreditNote(Long staffID) {
+    public List<CreditNote> listAllCreditNote(Long customerID) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
