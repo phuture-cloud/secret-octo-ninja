@@ -308,7 +308,7 @@ public class OrderManagementController extends HttpServlet {
                                 nextPage = "error500.html";
                             } else {
                                 session.setAttribute("sco", sco);
-                                nextPage = "OrderManagement/sco-print.jsp?id=" + id;
+                                nextPage = "OrderManagement/sco-print2.jsp?id=" + id;
                             }
                         }
                         break;

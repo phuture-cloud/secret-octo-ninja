@@ -56,7 +56,7 @@
                 <div class="row">
                     <div class="col-sm-6 mt-md">
                         <h2 class="h2 mt-none mb-sm text-dark text-weight-bold">SALES ORDER</h2>
-                        <h4 class="h4 m-none text-dark text-weight-bold">SCO No. <%=staff.getStaffPrefix()%>-<%=sco.getSalesConfirmationOrderNumber()%></h4>
+                        <h4 class="h4 m-none text-dark text-weight-bold">SCO No. <%=staff.getStaffPrefix()%><%=sco.getSalesConfirmationOrderNumber()%></h4>
                     </div>
                     <br/>
                     <div class="col-sm-6 text-right">
@@ -123,7 +123,6 @@
                                 <span class="value"><%=sco.getContactFaxNo()%></span>
                             </p>
                             <%if (sco.getContactMobileNo() != null && !sco.getContactMobileNo().isEmpty()) {%>
-                            <%}%>
                             <p class="mb-none">
                                 <span class="text-dark">Mobile</span>
                                 <span class="value"><%=sco.getContactMobileNo()%></span>

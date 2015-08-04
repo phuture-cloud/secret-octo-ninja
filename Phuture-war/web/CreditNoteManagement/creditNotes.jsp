@@ -1,23 +1,12 @@
 <%@page import="java.text.NumberFormat"%>
-<%@page import="EntityManager.CreditNote"%>
-<%@page import="EntityManager.StatementOfAccount"%>
 <%@page import="java.text.SimpleDateFormat"%>
-<%@page import="EntityManager.SalesConfirmationOrder"%>
+<%@page import="EntityManager.CreditNote"%>
 <%@page import="EntityManager.Customer"%>
 <%@page import="java.util.List"%>
 <%@page import="EntityManager.Staff"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
     Staff staff = (Staff) (session.getAttribute("staff"));
-
-    String previousMgtPage = (String) session.getAttribute("previousManagementPage");
-    if (previousMgtPage == null) {
-        previousMgtPage = "";
-    }
-    SalesConfirmationOrder sco = null;
-    if (previousMgtPage.equals("sco")) {
-        sco = (SalesConfirmationOrder) (session.getAttribute("sco"));
-    }
 
     List<CreditNote> creditNotes = (List<CreditNote>) (session.getAttribute("listOfCreditNotes"));
     if (session.isNew()) {
@@ -34,16 +23,12 @@
     <body onload="alertFunc()">
         <jsp:include page="../displayNotification.jsp" />
         <script>
-            function viewPO(id) {
+            function viewCreditNote(id) {
                 window.location.href = "../PurchaseOrderManagementController?target=RetrievePO&id=" + id;
             }
 
             function back() {
-            <% if (previousMgtPage.equals("sco")) {%>
-                window.location.href = "../OrderManagementController?target=RetrieveSCO&id=<%=sco.getId()%>";
-            <% } else if (previousMgtPage.equals("soa")) {%>
-                window.location.href = "todo";
-            <%}%>
+                window.location.href = "../CustomerManagementController?target=ListAllCustomer";
             }
         </script>
 
@@ -57,37 +42,22 @@
                         <h2>Credit Notes</h2>
                         <div class="right-wrapper pull-right">
                             <ol class="breadcrumbs">
-                                <li>
-                                    <a href="workspace.jsp">
-                                        <i class="fa fa-home"></i>
-                                    </a>
-                                </li>
-                                <% if (previousMgtPage.equals("sco")) {%>
-                                <li><span><a href= "../OrderManagementController?target=ListAllSCO">SCO Management</a></span></li>
-                                <li><span><a href= "../OrderManagementController?target=RetrieveSCO&id=<%=sco.getId()%>"><%=staff.getStaffPrefix()%>-<%=sco.getSalesConfirmationOrderNumber()%></a></span></li>
-                                            <%
-                                            } else if (previousMgtPage.equals("soa")) {
-
-                                            %>
-                                            <%}%>
+                                <li><a href="../AccountManagement/workspace.jsp"><i class="fa fa-home"></i></a></li>
+                                <li><span><a href= "../CustomerManagementController?target=ListAllCustomer">Customer Management</a></span></li>
                                 <li><span>Credit Notes &nbsp;&nbsp</span></li>
                             </ol>
                         </div>
                     </header>
 
                     <!-- start: page -->
-
                     <section class="panel">
                         <header class="panel-heading">
-                            <%
-                                if (previousMgtPage.equals("sco")) {
-                            %>
-                            <h2 class="panel-title">SCO No. <%=staff.getStaffPrefix()%>-<%=sco.getSalesConfirmationOrderNumber()%> - Credit Notes</h2>
-                            <%} else {%>
-                            <h2 class="panel-title">Purchase Orders</h2>
-                            <%}%>
+                            <h2 class="panel-title">Credit Notes</h2>
                         </header>
                         <div class="panel-body">
+                            <button type='button' class='btn btn-primary modal-with-form' href='#modalAddPayment'>Add Payment</button>
+                            <br>
+
                             <form name="creditNotesForm">
                                 <table class="table table-bordered table-striped mb-none" id="datatable-default">
                                     <thead>
@@ -128,7 +98,7 @@
                                                     }
                                                 %>
                                             </td>
-                                            <td><button type="button" class="btn btn-default btn-block" onclick="javascript:viewPO('<%=creditNotes.get(i).getId()%>')">View</button></td>
+                                            <td><button type="button" class="btn btn-default btn-block" onclick="javascript:viewCreditNote('<%=creditNotes.get(i).getId()%>')">View</button></td>
                                         </tr>
                                         <%
                                                 }
@@ -136,11 +106,6 @@
                                         %>
                                     </tbody>
                                 </table>
-
-                                <br>
-                                <%if (!previousMgtPage.equals("customerManagement")) {%>
-                                <button type="button" class="btn btn-default" onclick="javascript:back()">Back</button>   
-                                <%}%>
                             </form>
                         </div>
 
@@ -152,6 +117,5 @@
         <jsp:include page="../jspIncludePages/foot.html" />
     </body>
 </html>
-<%
-    }
-%>
+<%}%>
+

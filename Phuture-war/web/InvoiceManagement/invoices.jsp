@@ -83,7 +83,7 @@
 
                                 <%if (previousMgtPage.equals("sco")) {%>
                                 <li><span><a href= "../OrderManagementController?target=ListAllSCO">SCO Management</a></span></li>
-                                <li><span><a href= "../OrderManagementController?target=RetrieveSCO&id=<%=sco.getId()%>"><%=staff.getStaffPrefix()%>-<%=sco.getSalesConfirmationOrderNumber()%></a></span></li>
+                                <li><span><a href= "../OrderManagementController?target=RetrieveSCO&id=<%=sco.getId()%>"><%=staff.getStaffPrefix()%><%=sco.getSalesConfirmationOrderNumber()%></a></span></li>
                                             <%} else if (previousMgtPage.equals("soa")) {%>
                                 <li><span><a href= "../StatementOfAccountManagementController?target=ListAllSOA">Statement of Accounts</a></span></li>
                                 <li><span><a href="../StatementOfAccountManagementController?target=RetrieveSOA&id=<%=soa.getCustomer().getId()%>">SOA</a></span></li>
@@ -101,7 +101,7 @@
                             <%
                                 if (previousMgtPage.equals("sco")) {
                             %>
-                            <h2 class="panel-title">SCO No. <%=staff.getStaffPrefix()%>-<%=sco.getSalesConfirmationOrderNumber()%> - Invoices</h2>
+                            <h2 class="panel-title">SCO No. <%=staff.getStaffPrefix()%><%=sco.getSalesConfirmationOrderNumber()%> - Invoices</h2>
                             <%} else {%>
                             <h2 class="panel-title">Invoices</h2>
                             <%}%>
