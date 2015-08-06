@@ -4,6 +4,7 @@ import EntityManager.Contact;
 import EntityManager.CreditNote;
 import EntityManager.Customer;
 import EntityManager.Invoice;
+import EntityManager.OrderNumbers;
 import EntityManager.PaymentRecord;
 import EntityManager.ReturnHelper;
 import OrderManagement.InvoiceManagementBeanLocal;
@@ -17,6 +18,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
@@ -267,6 +269,19 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
         }
     }
 
+    @TransactionAttribute(TransactionAttributeType.MANDATORY)
+    private String getNewCreditNoteNumber() {
+        System.out.println("PaymentManagementBean: getNewCreditNoteNumber() called");
+        Query q = em.createQuery("SELECT e FROM OrderNumbers e");
+        q.setLockMode(LockModeType.PESSIMISTIC_FORCE_INCREMENT);
+        OrderNumbers orderNumbers = (OrderNumbers) q.getResultList().get(0);
+        Long nextCreditNote = orderNumbers.getNextCreditNote();
+        orderNumbers.setNextCreditNote(nextCreditNote + 1);
+        orderNumbers.setLastGeneratedCreditNote(new Date());
+        em.merge(orderNumbers);
+        return nextCreditNote.toString();
+    }
+    
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Override
     public ReturnHelper addCreditNote(Long contactID, Double amount, Date creditNoteDate) {
@@ -286,6 +301,7 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
                 result.setDescription("Credit note amount must be more than $0");
                 return result;
             }
+            creditNote.setCreditNoteNumber(getNewCreditNoteNumber());
             creditNote.setCreditAmount(amount);
             creditNote.setContactName(contact.getName());
             creditNote.setContactMobileNo(contact.getMobileNo());

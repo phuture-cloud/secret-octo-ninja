@@ -33,6 +33,4 @@ public interface DeliveryOrderManagementBeanLocal {
     public ReturnHelper deleteDOlineItem(Long deliveryOrderID, Long lineItemID, Boolean adminOverwrite);
     public ReturnHelper deleteallDOlineItem(Long deliveryOrderID, Boolean adminOverwrite);
     public List<LineItem> listDOlineItems(Long deliveryOrderID);
-    
-    public String getNewDeliveryOrderNumber();
 }

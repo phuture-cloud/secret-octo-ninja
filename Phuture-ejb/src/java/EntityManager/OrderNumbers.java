@@ -28,6 +28,9 @@ public class OrderNumbers implements Serializable {
     private Long nextInvoice;
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastGeneratedInvoice;
+    private Long nextCreditNote;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date lastGeneratedCreditNote;
 
     public Long getId() {
         return id;
@@ -99,6 +102,22 @@ public class OrderNumbers implements Serializable {
 
     public void setLastGeneratedDO(Date lastGeneratedDO) {
         this.lastGeneratedDO = lastGeneratedDO;
+    }
+
+    public Long getNextCreditNote() {
+        return nextCreditNote;
+    }
+
+    public void setNextCreditNote(Long nextCreditNote) {
+        this.nextCreditNote = nextCreditNote;
+    }
+
+    public Date getLastGeneratedCreditNote() {
+        return lastGeneratedCreditNote;
+    }
+
+    public void setLastGeneratedCreditNote(Date lastGeneratedCreditNote) {
+        this.lastGeneratedCreditNote = lastGeneratedCreditNote;
     }
 
     @Override

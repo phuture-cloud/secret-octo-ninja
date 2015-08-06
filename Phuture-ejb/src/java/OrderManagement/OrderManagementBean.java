@@ -21,6 +21,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.LockModeType;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -48,6 +49,19 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
 
     private static final Double gstRate = 7.0;//7%
 
+    @TransactionAttribute(TransactionAttributeType.MANDATORY)
+    private String getNewSalesConfirmationOrderNumber() {
+        System.out.println("OrderManagementBean: getNewSalesConfirmationOrderNumber() called");
+        Query q = em.createQuery("SELECT e FROM OrderNumbers e");
+        q.setLockMode(LockModeType.PESSIMISTIC_FORCE_INCREMENT);
+        OrderNumbers orderNumbers = (OrderNumbers) q.getResultList().get(0);
+        Long nextOrderNumber = orderNumbers.getNextSCO();
+        orderNumbers.setNextSCO(nextOrderNumber + 1);
+        orderNumbers.setLastGeneratedSCO(new Date());
+        em.merge(orderNumbers);
+        return nextOrderNumber.toString();
+    }
+    
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Override
     public ReturnHelper createSalesConfirmationOrder(Date salesConfirmationOrderDate, String estimatedDeliveryDate, String customerPurchaseOrderNumber, Long customerID, Long contactID, Long salesStaffID, Integer terms) {
@@ -877,18 +891,4 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             return null;
         }
     }
-
-    @TransactionAttribute(TransactionAttributeType.MANDATORY)
-    @Override
-    public String getNewSalesConfirmationOrderNumber() {
-        System.out.println("OrderManagementBean: getNewSalesConfirmationOrderNumber() called");
-        Query q = em.createQuery("SELECT e FROM OrderNumbers e");
-        OrderNumbers orderNumbers = (OrderNumbers) q.getResultList().get(0);
-        Long nextOrderNumber = orderNumbers.getNextSCO();
-        orderNumbers.setNextSCO(nextOrderNumber + 1);
-        orderNumbers.setLastGeneratedSCO(new Date());
-        em.merge(orderNumbers);
-        return nextOrderNumber.toString();
-    }
-
 }

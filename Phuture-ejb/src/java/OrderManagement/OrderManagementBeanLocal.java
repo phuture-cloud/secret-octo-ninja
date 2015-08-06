@@ -34,7 +34,5 @@ public interface OrderManagementBeanLocal {
     public List<LineItem> listSCOlineItems(Long salesConfirmationOrderID);
     
     public ReturnHelper refreshSCOs(Long staffID);
-    
-    public String getNewSalesConfirmationOrderNumber();
 }
 

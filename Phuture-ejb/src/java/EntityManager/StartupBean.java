@@ -67,6 +67,7 @@ public class StartupBean {
             orderNumbers.setNextPO(10000L);
             orderNumbers.setNextDO(10000L);
             orderNumbers.setNextInvoice(10000L);
+            orderNumbers.setNextCreditNote(10000L);
             em.merge(orderNumbers);
         } catch (Exception ex) {
             System.out.println("Error initating database");

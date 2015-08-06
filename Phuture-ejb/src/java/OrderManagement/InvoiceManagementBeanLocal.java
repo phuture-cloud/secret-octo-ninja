@@ -35,6 +35,4 @@ public interface InvoiceManagementBeanLocal {
     
     public ReturnHelper refreshInvoice(Long invoiceID);
     public ReturnHelper refreshInvoices(Long staffID);
-    
-    public String getNewInvoiceNumber();
 }

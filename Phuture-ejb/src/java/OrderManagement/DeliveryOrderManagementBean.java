@@ -18,6 +18,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -33,6 +34,19 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
     private EntityManager em;
 
     private static final Double gstRate = 7.0;//7%
+
+    @TransactionAttribute(TransactionAttributeType.MANDATORY)
+    private String getNewDeliveryOrderNumber() {
+        System.out.println("DeliveryOrderManagementBean: getNewDeliveryOrderNumber() called");
+        Query q = em.createQuery("SELECT e FROM OrderNumbers e");
+        q.setLockMode(LockModeType.PESSIMISTIC_FORCE_INCREMENT);
+        OrderNumbers orderNumbers = (OrderNumbers) q.getResultList().get(0);
+        Long nextOrderNumber = orderNumbers.getNextDO();
+        orderNumbers.setNextDO(nextOrderNumber + 1);
+        orderNumbers.setLastGeneratedDO(new Date());
+        em.merge(orderNumbers);
+        return nextOrderNumber.toString();
+    }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Override
@@ -363,7 +377,7 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
         }
         return result;
     }
-    
+
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Override
     public ReturnHelper voidDeliveryOrder(Long deliveryOrderID, Boolean adminOverwrite) {
@@ -788,18 +802,4 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             return null;
         }
     }
-
-    @TransactionAttribute(TransactionAttributeType.MANDATORY)
-    @Override
-    public String getNewDeliveryOrderNumber() {
-        System.out.println("DeliveryOrderManagementBean: getNewDeliveryOrderNumber() called");
-        Query q = em.createQuery("SELECT e FROM OrderNumbers e");
-        OrderNumbers orderNumbers = (OrderNumbers) q.getResultList().get(0);
-        Long nextOrderNumber = orderNumbers.getNextDO();
-        orderNumbers.setNextDO(nextOrderNumber + 1);
-        orderNumbers.setLastGeneratedDO(new Date());
-        em.merge(orderNumbers);
-        return nextOrderNumber.toString();
-    }
-
 }
