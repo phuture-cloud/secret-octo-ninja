@@ -32,11 +32,9 @@
         <jsp:include page="../displayNotification.jsp" />
         <script>
             function updateContact(id, contactID) {
-                contactManagement.id.value = id;
-                contactManagement.contactID.value = contactID;
-                document.contactManagement.action = "contactManagement_update.jsp";
-                document.contactManagement.submit();
+                window.location.href = "contactManagement_update.jsp?id=" + id + "&contactID=" + contactID;
             }
+
             function removeContact(id) {
                 checkboxes = document.getElementsByName('delete');
                 var numOfTicks = 0;
@@ -50,21 +48,20 @@
                 document.contactManagement.action = "../CustomerManagementController";
                 document.contactManagement.submit();
             }
+
             function checkAll(source) {
                 checkboxes = document.getElementsByName('delete');
                 for (var i = 0, n = checkboxes.length; i < n; i++) {
                     checkboxes[i].checked = source.checked;
                 }
             }
+
             function addContact(id) {
-                contactManagement.id.value = id;
-                document.contactManagement.action = "contactManagement_add.jsp";
-                document.contactManagement.submit();
+                window.location.href = "contactManagement_add.jsp?id=" + id;
             }
+
             function back() {
-                contactManagement.target.value = "ListAllCustomer";
-                document.contactManagement.action = "../CustomerManagementController";
-                document.contactManagement.submit();
+                window.location.href = "../CustomerManagementController?target=ListAllCustomer";
             }
         </script>
 
@@ -103,9 +100,9 @@
 
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <input class="btn btn-primary" name="btnAdd" type="submit" value="Add Contact" onclick="addContact(<%=customerID%>)"  />
-                                        <a class="modal-with-move-anim btn btn-danger" href="#modalRemove">Remove Contact</a>
-                                        <div id="modalRemove" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+                                        <input class="btn btn-primary" type="button" value="Add Contact" onclick="addContact(<%=customerID%>)"  />
+                                        <a class="modal-with-move-anim btn btn-danger" href="#modalRemove<%=customerID%>">Remove Contact</a>
+                                        <div id="modalRemove<%=customerID%>" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
                                             <section class="panel">
                                                 <header class="panel-heading">
                                                     <h2 class="panel-title">Are you sure?</h2>
@@ -130,7 +127,7 @@
                                                 </footer>
                                             </section>
                                         </div>
-                                        <input class="btn btn-default" name="btnBack" type="submit" value="Back" onclick="back()"  />
+                                        <input class="btn btn-default" name="btnBack" type="button" value="Back" onclick="back()"  />
                                     </div>
                                 </div>
                                 <br/>
@@ -166,9 +163,9 @@
                                             <td><%=contacts.get(i).getFaxNo()%></td>
                                             <td><%=contacts.get(i).getAddress()%></td>
                                             <td>
-                                                <a class="modal-with-move-anim btn btn-default btn-block" href="#modalNotes">View</a>
+                                                <a class="modal-with-move-anim btn btn-default btn-block" href="#modalNotes<%=contacts.get(i).getId()%>">View</a>
 
-                                                <div id="modalNotes" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+                                                <div id="modalNotes<%=contacts.get(i).getId()%>" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
                                                     <section class="panel">
                                                         <header class="panel-heading">
                                                             <h2 class="panel-title">Notes</h2>
@@ -191,7 +188,7 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <input type="button" name="btnEdit" class="btn btn-primary btn-block" value="Update" onclick="javascript:updateContact('<%=customerID%>', '<%=contacts.get(i).getId()%>')"/>
+                                                <input type="button" class="btn btn-primary btn-block" value="Update" onclick="javascript:updateContact('<%=customerID%>', '<%=contacts.get(i).getId()%>')"/>
                                             </td>
                                             <td>
                                                 <%

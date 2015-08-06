@@ -21,7 +21,7 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>Sample Invoice</title>
+        <title>Sales Confirmation Order</title>
         <link rel="stylesheet" href="../assets/vendor/bootstrap/css/bootstrap.css">
         <style>
             body {
@@ -170,7 +170,15 @@
             </table>
 
             <div class="row text-right">
-                <div class="col-xs-3 col-xs-offset-7">
+                <div class="col-xs-7 text-left">
+                    <u>Terms & Conditions</u>
+                    <ul>
+                        <li>Acceptance of this Sales Order constitutes a contract between the buyer & Phuture International Pte Ltd whereby buyer will adhere to conditions stated on this Sales Order</li>
+                        <li>Buyer shall be liable for at least 50% of total sales amount if buyer opt to cancel the order</li>
+                    </ul>
+                </div>
+
+                <div class="col-xs-3">
                     <p>
                         <strong>
                             SUBTOTAL : <br>
@@ -195,6 +203,32 @@
                         <%=formatter.format(sco.getTotalPrice())%>
                         <br>
                     </strong>
+                </div>
+            </div>
+
+            <br> <br>
+
+            <div class="row text-left">
+                <div class="col-xs-8">
+                    AGREED & CONFIRMED
+
+                    <br><br><br><br><br>
+                    <img src="../assets/images/thin-black-line.png">
+                    <br>
+                    Customer's Signature & Co. Stamp
+                </div>
+                <div class="col-xs-4">
+                    Phuture International Pte Ltd
+
+                    <%
+                        if (staff.getSignature() != null && staff.getSignature().length > 0) {
+                            out.write("<img class='img-responsive' src='http://localhost:8080/Phuture-war/sig?id=" + staff.getId() + "'>");
+                        } else {
+                    %>
+                    <br><br><br><br><br>
+                    <img src="../assets/images/thin-black-line.png">
+                    <%}%>
+                    <br><%=staff.getName()%>
                 </div>
             </div>
         </div>

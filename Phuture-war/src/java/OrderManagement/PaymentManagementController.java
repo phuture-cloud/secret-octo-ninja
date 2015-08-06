@@ -1,5 +1,7 @@
 package OrderManagement;
 
+import CustomerManagement.CustomerManagementBeanLocal;
+import EntityManager.Contact;
 import EntityManager.Invoice;
 import EntityManager.PaymentRecord;
 import EntityManager.ReturnHelper;
@@ -18,6 +20,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 public class PaymentManagementController extends HttpServlet {
+
+    @EJB
+    private CustomerManagementBeanLocal customerManagementBean;
 
     @EJB
     private PaymentManagementBeanLocal paymentManagementBean;
@@ -150,22 +155,31 @@ public class PaymentManagementController extends HttpServlet {
                         break;
 
                     case "ListCustomerCreditNotes":
-                        String name = request.getParameter("name");
-                        session.setAttribute("listOfCreditNotes", paymentManagementBean.listAllCreditNote(Long.parseLong(id)));
-                        nextPage = "CreditNoteManagement/creditNotes.jsp?id=" + id + "&name=" + name;
+                        if (id != null && !id.isEmpty()) {
+                            List<Contact> contacts = customerManagementBean.listCustomerContacts(Long.parseLong(id));
+                            if (contacts == null) {
+                                nextPage = "error500.html";
+                            } else {
+                                session.setAttribute("contacts", contacts);
+                                session.setAttribute("listOfCreditNotes", paymentManagementBean.listAllCreditNote(Long.parseLong(id)));
+                                String name = request.getParameter("name");
+                                nextPage = "CreditNoteManagement/creditNotes.jsp?id=" + id + "&name=" + name;
+                            }
+                        }
                         break;
 
                     case "GenerateCreditNote":
-                        if (id != null && !id.isEmpty()) {
+                        String contactID = request.getParameter("contactID");
+                        String name = request.getParameter("name");
+                        if (id != null && !id.isEmpty() && contactID != null && !contactID.isEmpty()) {
                             String creditNoteDate = request.getParameter("creditNoteDate");
                             Date creditNoteDateDate = sourceFormat.parse(creditNoteDate);
 
-                            System.out.println("id " + id);
-                            returnHelper = paymentManagementBean.addCreditNote(Long.parseLong(id), Double.parseDouble(amount), creditNoteDateDate);
+                            returnHelper = paymentManagementBean.addCreditNote(Long.parseLong(contactID), Double.parseDouble(amount), creditNoteDateDate);
 
                             if (returnHelper.getResult()) {
                                 session.setAttribute("listOfCreditNotes", paymentManagementBean.listAllCreditNote(Long.parseLong(id)));
-                                nextPage = "CreditNoteManagement/creditNotes.jsp";
+                                nextPage = "CreditNoteManagement/creditNotes.jsp?id=" + id + "&name=" + name;
                             }
                         }
                         break;
