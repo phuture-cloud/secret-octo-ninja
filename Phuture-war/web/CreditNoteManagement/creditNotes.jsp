@@ -7,12 +7,15 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
     Staff staff = (Staff) (session.getAttribute("staff"));
-
     List<CreditNote> creditNotes = (List<CreditNote>) (session.getAttribute("listOfCreditNotes"));
+    String customerID = request.getParameter("id");
+    String customerName = request.getParameter("name");
     if (session.isNew()) {
         response.sendRedirect("../index.jsp?errMsg=Invalid Request. Please login.");
     } else if (staff == null) {
         response.sendRedirect("../index.jsp?errMsg=Session Expired.");
+    } else if (customerID == null || customerName == null) {
+        response.sendRedirect("../CustomerManagement/customerManagement.jsp?errMsg=An error has occured.");
     } else {
 %>
 <!doctype html>
@@ -52,11 +55,11 @@
                     <!-- start: page -->
                     <section class="panel">
                         <header class="panel-heading">
-                            <h2 class="panel-title">Credit Notes</h2>
+                            <h2 class="panel-title"><%=customerName%> - Credit Notes</h2>
                         </header>
                         <div class="panel-body">
-                            <button type='button' class='btn btn-primary modal-with-form' href='#modalAddPayment'>Add Payment</button>
-                            <br>
+                            <button type='button' class='btn btn-primary modal-with-form' href='#modalGenerateCN'>Generate Credit Note</button>
+                            <br><br>
 
                             <form name="creditNotesForm">
                                 <table class="table table-bordered table-striped mb-none" id="datatable-default">
@@ -108,9 +111,47 @@
                                 </table>
                             </form>
                         </div>
-
                     </section>
-                    <!-- end: page -->
+
+
+                    <div id="modalGenerateCN" class="modal-block modal-block-primary mfp-hide">
+                        <section class="panel">
+                            <form name="addPaymentForm" action="../PaymentManagementController" class="form-horizontal mb-lg">
+                                <header class="panel-heading">
+                                    <h2 class="panel-title">Generate Credit Note</h2>
+                                </header>
+                                <div class="panel-body">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Amount <span class="required">*</span></label>
+                                        <div class="col-sm-9">
+                                            <input type="number" class="form-control" id="price" name="amount" min="0" step="0.01" size="4" title="CDA Currency Format - no dollar sign and no comma(s) - cents (.##) are optional" required/>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Credit Note <br>Issue Date <span class="required">*</span></label>
+                                        <div class="col-md-9">
+                                            <input type="text" name="creditNoteDate" data-plugin-datepicker data-date-format="dd/mm/yyyy" class="form-control" placeholder="dd/mm/yyyy" required/>
+                                        </div>
+                                    </div>
+
+                                    <br>
+
+                                    <input type="hidden" name="id" value="<%=customerID%>">
+                                    <input type="hidden" name="target" value="GenerateCreditNote">
+                                </div>
+                                <footer class="panel-footer">
+                                    <div class="row">
+                                        <div class="col-md-12 text-right">
+                                            <button class="btn btn-success" type="submit">Generate Credit Note</button>
+                                            <button class="btn btn-default modal-dismiss">Cancel</button>
+                                        </div>
+                                    </div>
+                                </footer>
+                            </form>
+                        </section>
+                    </div>
+
                 </section>
             </div>
         </section>

@@ -62,7 +62,7 @@
                                     <%
                                     } else if (previousMgtPage.equals("soa")) {
                                     %>
-                                <% }%>
+                                    <% }%>
                             </ol>
                         </div>
                     </header>
@@ -91,6 +91,8 @@
                                             <th>SCO Date</th>
                                             <th>Total Amount</th>
                                             <th>Total Invoiced</th>
+                                            <th>Delivery Orders</th>
+                                            <th>Invoices</th>
                                             <th></th>
                                             <th>Status</th>
                                             <th style="width: 300px; text-align: center">Action</th>
@@ -123,6 +125,32 @@
                                                         out.print(formatter.format(salesConfirmationOrders.get(i).getTotalInvoicedAmount()));
                                                     } else {
                                                         out.println("NA");
+                                                    }
+                                                %>
+                                            </td>
+                                            <td>
+                                                <%
+                                                    if (salesConfirmationOrders.get(i).getDeliveryOrders().size() > 0) {
+                                                        for (int k = 0; k < salesConfirmationOrders.get(i).getDeliveryOrders().size(); k++) {
+                                                            if ((k + 1) == salesConfirmationOrders.get(i).getDeliveryOrders().size()) {
+                                                                out.print(salesConfirmationOrders.get(i).getDeliveryOrders().get(i).getDeliveryOrderNumber());
+                                                            } else {
+                                                                out.print(salesConfirmationOrders.get(i).getDeliveryOrders().get(i).getDeliveryOrderNumber() + " , ");
+                                                            }
+                                                        }
+                                                    }
+                                                %>
+                                            </td>
+                                            <td>
+                                                <%
+                                                    if (salesConfirmationOrders.get(i).getInvoices().size() > 0) {
+                                                        for (int k = 0; k < salesConfirmationOrders.get(i).getInvoices().size(); k++) {
+                                                            if ((k + 1) == salesConfirmationOrders.get(i).getDeliveryOrders().size()) {
+                                                                out.print(salesConfirmationOrders.get(i).getInvoices().get(i).getInvoiceNumber());
+                                                            } else {
+                                                                out.print(salesConfirmationOrders.get(i).getInvoices().get(i).getInvoiceNumber() + " , ");
+                                                            }
+                                                        }
                                                     }
                                                 %>
                                             </td>

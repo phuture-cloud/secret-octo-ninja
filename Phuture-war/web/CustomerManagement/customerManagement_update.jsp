@@ -66,7 +66,7 @@
                                         <div class="form-group">
                                             <label class="col-md-3 control-label">Company Name</label>
                                             <div class="col-md-6">
-                                                <input type="text" class="form-control" name="name" value="<%=name%>" required>
+                                                <input type="text" class="form-control" name="name" value="<%=name%>" title="Please do not insert illegal characters" pattern="^[A-Za-z0-9 _@]*[A-Za-z0-9][A-Za-z0-9 _@    ]*$" required>
                                             </div>
                                         </div>
 

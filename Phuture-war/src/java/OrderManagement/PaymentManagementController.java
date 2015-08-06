@@ -29,6 +29,7 @@ public class PaymentManagementController extends HttpServlet {
     HttpSession session;
     Boolean isAdmin = false;
     Long loggedInStaffID = null;
+    Invoice invoice;
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         System.out.println("Welcome to PaymentManagementController");
@@ -61,85 +62,118 @@ public class PaymentManagementController extends HttpServlet {
             if (checkLogin()) {
                 switch (target) {
                     case "AddPayment":
-                        paymentDateDate = sourceFormat.parse(paymentDate);
+                        if (invoice != null) {
+                            paymentDateDate = sourceFormat.parse(paymentDate);
 
-                        returnHelper = paymentManagementBean.addPayment(invoice.getId(), Double.parseDouble(amount), paymentDateDate, paymentMethod, paymentReferenceNumber, notes);
-                        invoice = invoiceManagementBean.getInvoice(invoice.getId());
+                            returnHelper = paymentManagementBean.addPayment(invoice.getId(), Double.parseDouble(amount), paymentDateDate, paymentMethod, paymentReferenceNumber, notes);
+                            invoice = invoiceManagementBean.getInvoice(invoice.getId());
 
-                        if (returnHelper.getResult() && invoice != null) {
-                            session.setAttribute("invoice", invoice);
-                            session.setAttribute("paymentRecord", paymentManagementBean.getPayment(invoice.getId()));
-                            session.setAttribute("invoicePayments", paymentManagementBean.listPaymentByInvoice(invoice.getId()));
-                            String previousPage = request.getParameter("previousPage");
-                            if (previousPage.equals("invoice")) {
-                                nextPage = "InvoiceManagement/invoice.jsp?goodMsg=" + returnHelper.getDescription();
-                            } else if (previousPage.equals("payments")) {
-                                nextPage = "PaymentManagement/paymentManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                            if (returnHelper.getResult() && invoice != null) {
+                                session.setAttribute("invoice", invoice);
+                                session.setAttribute("paymentRecord", paymentManagementBean.getPayment(invoice.getId()));
+                                session.setAttribute("invoicePayments", paymentManagementBean.listPaymentByInvoice(invoice.getId()));
+                                String previousPage = request.getParameter("previousPage");
+                                if (previousPage.equals("invoice")) {
+                                    nextPage = "InvoiceManagement/invoice.jsp?goodMsg=" + returnHelper.getDescription();
+                                } else if (previousPage.equals("payments")) {
+                                    nextPage = "PaymentManagement/paymentManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                                }
+                            } else {
+                                String previousPage = request.getParameter("previousPage");
+                                if (previousPage.equals("invoice")) {
+                                    nextPage = "InvoiceManagement/invoice.jsp?errMsg=" + returnHelper.getDescription();
+                                } else if (previousPage.equals("payments")) {
+                                    nextPage = "PaymentManagement/paymentManagement.jsp?errMsg=" + returnHelper.getDescription();
+                                }
                             }
                         } else {
-                            String previousPage = request.getParameter("previousPage");
-                            if (previousPage.equals("invoice")) {
-                                nextPage = "InvoiceManagement/invoice.jsp?errMsg=" + returnHelper.getDescription();
-                            } else if (previousPage.equals("payments")) {
-                                nextPage = "PaymentManagement/paymentManagement.jsp?errMsg=" + returnHelper.getDescription();
-                            }
+                            response.sendRedirect("InvoiceManagement/paymentManagement.jsp?errMsg=An Error has occured");
+                            return;
                         }
                         break;
 
                     case "ListPaymentTiedToInvoice":
-                        paymentRecords = paymentManagementBean.listPaymentByInvoice(invoice.getId());
-                        if (paymentRecords == null) {
-                            nextPage = "error500.html";
-                        } else {
-                            session.setAttribute("paymentRecords", paymentRecords);
-                        }
-                        nextPage = "PaymentManagement/paymentManagement.jsp";
-                        break;
-
-                    case "DeletePaymentRecord":
-                        returnHelper = paymentManagementBean.deletePayment(Long.parseLong(id));
-                        if (returnHelper.getResult()) {
+                        if (invoice != null) {
                             paymentRecords = paymentManagementBean.listPaymentByInvoice(invoice.getId());
                             if (paymentRecords == null) {
                                 nextPage = "error500.html";
                             } else {
                                 session.setAttribute("paymentRecords", paymentRecords);
                             }
-                            nextPage = "PaymentManagement/paymentManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                            nextPage = "PaymentManagement/paymentManagement.jsp";
                         } else {
-                            nextPage = "PaymentManagement/paymentManagement.jsp?errMsg=" + returnHelper.getDescription();
+                            response.sendRedirect("InvoiceManagement/paymentManagement.jsp?errMsg=An Error has occured");
+                            return;
+                        }
+                        break;
+
+                    case "DeletePaymentRecord":
+                        if (invoice != null) {
+                            returnHelper = paymentManagementBean.deletePayment(Long.parseLong(id));
+                            if (returnHelper.getResult()) {
+                                paymentRecords = paymentManagementBean.listPaymentByInvoice(invoice.getId());
+                                if (paymentRecords == null) {
+                                    nextPage = "error500.html";
+                                } else {
+                                    session.setAttribute("paymentRecords", paymentRecords);
+                                }
+                                nextPage = "PaymentManagement/paymentManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                            } else {
+                                nextPage = "PaymentManagement/paymentManagement.jsp?errMsg=" + returnHelper.getDescription();
+                            }
+                        } else {
+                            response.sendRedirect("InvoiceManagement/paymentManagement.jsp?errMsg=An Error has occured");
+                            return;
                         }
                         break;
 
                     case "UpdatePaymentRecord":
-                        paymentDateDate = sourceFormat.parse(paymentDate);
+                        if (invoice != null) {
+                            paymentDateDate = sourceFormat.parse(paymentDate);
 
-                        returnHelper = paymentManagementBean.updatePayment(Long.parseLong(id), Double.parseDouble(amount), paymentDateDate, paymentMethod, paymentReferenceNumber, notes);
-                        if (returnHelper.getResult()) {
-                            paymentRecords = paymentManagementBean.listPaymentByInvoice(invoice.getId());
-                            if (paymentRecords == null) {
-                                nextPage = "error500.html";
+                            returnHelper = paymentManagementBean.updatePayment(Long.parseLong(id), Double.parseDouble(amount), paymentDateDate, paymentMethod, paymentReferenceNumber, notes);
+                            if (returnHelper.getResult()) {
+                                paymentRecords = paymentManagementBean.listPaymentByInvoice(invoice.getId());
+                                if (paymentRecords == null) {
+                                    nextPage = "error500.html";
+                                } else {
+                                    session.setAttribute("paymentRecords", paymentRecords);
+                                }
+                                nextPage = "PaymentManagement/paymentManagement.jsp?goodMsg=" + returnHelper.getDescription();
                             } else {
-                                session.setAttribute("paymentRecords", paymentRecords);
+                                nextPage = "PaymentManagement/paymentManagement.jsp?errMsg=" + returnHelper.getDescription();
                             }
-                            nextPage = "PaymentManagement/paymentManagement.jsp?goodMsg=" + returnHelper.getDescription();
                         } else {
-                            nextPage = "PaymentManagement/paymentManagement.jsp?errMsg=" + returnHelper.getDescription();
+                            response.sendRedirect("InvoiceManagement/paymentManagement.jsp?errMsg=An Error has occured");
+                            return;
                         }
                         break;
 
                     case "ListCustomerCreditNotes":
+                        String name = request.getParameter("name");
                         session.setAttribute("listOfCreditNotes", paymentManagementBean.listAllCreditNote(Long.parseLong(id)));
-                        nextPage = "CreditNoteManagement/creditNotes.jsp";
+                        nextPage = "CreditNoteManagement/creditNotes.jsp?id=" + id + "&name=" + name;
+                        break;
+
+                    case "GenerateCreditNote":
+                        if (id != null && !id.isEmpty()) {
+                            String creditNoteDate = request.getParameter("creditNoteDate");
+                            Date creditNoteDateDate = sourceFormat.parse(creditNoteDate);
+
+                            System.out.println("id " + id);
+                            returnHelper = paymentManagementBean.addCreditNote(Long.parseLong(id), Double.parseDouble(amount), creditNoteDateDate);
+
+                            if (returnHelper.getResult()) {
+                                session.setAttribute("listOfCreditNotes", paymentManagementBean.listAllCreditNote(Long.parseLong(id)));
+                                nextPage = "CreditNoteManagement/creditNotes.jsp";
+                            }
+                        }
                         break;
 
                 }//end switch
             }//end checkLogin
 
-            if (invoice == null) {
-                response.sendRedirect("InvoiceManagement/paymentManagement.jsp?errMsg=An Error has occured");
-                return;
-            } else if (nextPage.equals("")) {
+            if (nextPage.equals("")) {
                 response.sendRedirect("index.jsp?errMsg=Session Expired.");
                 return;
             } else {
@@ -160,6 +194,7 @@ public class PaymentManagementController extends HttpServlet {
                 isAdmin = true;
                 loggedInStaffID = staff.getId();
             }
+
             if (staff == null) {
                 return false;
             } else {
