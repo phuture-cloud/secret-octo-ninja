@@ -323,8 +323,8 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
             result.setResult(true);
             result.setDescription("Credit note added.");
         } catch (EntityNotFoundException ex) {
-            System.out.println("PaymentManagementBean: addCreditNote(): Customer not found");
-            result.setDescription("Customer does not exist.");
+            System.out.println("PaymentManagementBean: addCreditNote(): Contact not found");
+            result.setDescription("Contact does not exist.");
 
         } catch (Exception ex) {
             System.out.println("PaymentManagementBean: addCreditNote() failed");
