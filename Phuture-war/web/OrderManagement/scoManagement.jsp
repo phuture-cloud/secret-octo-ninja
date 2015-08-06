@@ -62,9 +62,7 @@
                                     <%
                                     } else if (previousMgtPage.equals("soa")) {
                                     %>
-
                                 <% }%>
-
                             </ol>
                         </div>
                     </header>

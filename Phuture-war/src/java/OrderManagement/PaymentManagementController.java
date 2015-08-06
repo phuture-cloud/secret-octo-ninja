@@ -129,7 +129,7 @@ public class PaymentManagementController extends HttpServlet {
                         break;
 
                     case "ListCustomerCreditNotes":
-                        session.setAttribute("listOfCreditNotes", paymentManagementBean.listAllCreditNote(loggedInStaffID));
+                        session.setAttribute("listOfCreditNotes", paymentManagementBean.listAllCreditNote(Long.parseLong(id)));
                         nextPage = "CreditNoteManagement/creditNotes.jsp";
                         break;
 
