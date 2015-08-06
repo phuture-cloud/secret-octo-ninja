@@ -28,7 +28,7 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
 
     @Resource
     private EJBContext context;
-    
+
     @EJB
     private InvoiceManagementBeanLocal imbl;
 
@@ -250,7 +250,10 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
                 totalAmount += paymentRecord.getAmount();
             }
             for (CreditNote creditNote : invoice.getCreditNotes()) {
-                totalAmount -= creditNote.getCreditAmount();
+                //Don't use credit note that are deleted or voided
+                if (!creditNote.getIsDeleted() && !creditNote.getIsVoided()) {
+                    totalAmount -= creditNote.getCreditAmount();
+                }
             }
             if (totalAmount < 0) {
                 totalAmount = 0.0;
@@ -357,8 +360,14 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
             }
             creditNote.setDateIssued(creditNoteDate);
             em.merge(creditNote);
+            //Update customer credits
             customer.setTotalAvailableCredits(customer.getTotalAvailableCredits() - oldAmt + amount);
             em.merge(customer);
+            //Update invoice if attached
+            Invoice invoice = creditNote.getAppliedToInvoice();
+            if (invoice != null) {
+                imbl.refreshInvoice(invoice.getId());
+            }
             result.setResult(true);
             result.setDescription("Credit note updated.");
         } catch (EntityNotFoundException ex) {
@@ -387,6 +396,11 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
                 Customer customer = creditNote.getCustomer();
                 customer.setTotalAvailableCredits(customer.getTotalAvailableCredits() - creditNote.getCreditAmount());
                 em.merge(customer);
+                //Update invoice if attached
+                Invoice invoice = creditNote.getAppliedToInvoice();
+                if (invoice != null) {
+                    imbl.refreshInvoice(invoice.getId());
+                }
             }
             result.setResult(true);
             result.setDescription("Credit note deleted.");
@@ -408,7 +422,7 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
         result.setResult(false);
         try {
             CreditNote creditNote = em.getReference(CreditNote.class, creditNoteID);
-            if (creditNote.getAppliedToInvoice()!=null) {
+            if (creditNote.getAppliedToInvoice() != null) {
                 result.setDescription("Credit note cannot be voided as it has been applied to an invoice.");
                 return result;
             }
@@ -419,6 +433,11 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
                 Customer customer = creditNote.getCustomer();
                 customer.setTotalAvailableCredits(customer.getTotalAvailableCredits() - creditNote.getCreditAmount());
                 em.merge(customer);
+                //Update invoice if attached
+                Invoice invoice = creditNote.getAppliedToInvoice();
+                if (invoice != null) {
+                    imbl.refreshInvoice(invoice.getId());
+                }
             }
             result.setResult(true);
             result.setDescription("Credit note voided.");
@@ -457,7 +476,7 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
                 return result;
             }
             //Check if invoice & credit note belongs to the same customer
-            if (invoice.getSalesConfirmationOrder().getCustomer().getId() != creditNote.getCustomer().getId()) {
+            if (invoice.getSalesConfirmationOrder().getCustomer().getId().equals(creditNote.getCustomer().getId())) {
                 result.setDescription("Unable to apply the credit note to this invoice as it belongs to a different customer.");
                 return result;
             }
