@@ -326,7 +326,6 @@
                                                         </span>
                                                     </p>
 
-
                                                     <p class="mb-none">
                                                         <span class="text-dark">PO Number:</span>
                                                         <span class="value" style="min-width: 110px">
@@ -511,7 +510,6 @@
                                                     }
                                                 %>
                                                 <!-- end loop line item page -->
-
                                             </tbody>
                                         </table>
                                     </div>
@@ -644,7 +642,6 @@
                         <input type="hidden" name="id" value="">    
                     </form>
                     <!-- end: page -->
-
 
                     <div id="modalAddPayment" class="modal-block modal-block-primary mfp-hide">
                         <section class="panel">

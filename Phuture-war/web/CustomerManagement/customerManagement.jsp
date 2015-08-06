@@ -42,8 +42,9 @@
                 document.customerManagement.action = "../CustomerManagementController";
                 document.customerManagement.submit();
             }
-            function viewCreditNotes(id) {
+            function viewCreditNotes(id, name) {
                 customerManagement.id.value = id;
+                customerManagement.name.value = name;
                 customerManagement.target.value = "ListCustomerCreditNotes";
                 document.customerManagement.action = "../PaymentManagementController";
                 document.customerManagement.submit();
@@ -103,7 +104,7 @@
                                             <td><%=customers.get(i).getCustomerName()%></td>
                                             <td>
                                                 <div class="btn-group" role="group" aria-label="...">
-                                                    <button class="btn btn-default" onclick="javascript:viewCreditNotes('<%=customers.get(i).getId()%>')">Credit Note Management</button>
+                                                    <button class="btn btn-default" onclick="javascript:viewCreditNotes('<%=customers.get(i).getId()%>', '<%=customers.get(i).getCustomerName()%>')">Credit Note Management</button>
                                                     <button class="btn btn-default" onclick="javascript:viewContact('<%=customers.get(i).getId()%>')">Contact Management</button>
                                                     <button class="btn btn-default" onclick="javascript:updateCustomer('<%=customers.get(i).getId()%>', '<%=customers.get(i).getCustomerName()%>')">Update</button>
                                                     <button class="modal-with-move-anim btn btn-default"  href="#modalRemove">Remove</button>
