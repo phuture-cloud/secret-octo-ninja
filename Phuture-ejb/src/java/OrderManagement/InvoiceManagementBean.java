@@ -861,6 +861,30 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
     }
 
     @Override
+    public ReturnHelper refreshInvoice(Long invoiceID) {
+        System.out.println("InvoiceManagementBean: refreshInvoice() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        try {
+
+            Query q = em.createQuery("SELECT i FROM Invoice i WHERE i.isDeleted=false and i.id=:invoiceID");
+            q.setParameter("invoiceID", invoiceID);
+            Invoice invoice = (Invoice) q.getSingleResult();
+            Double paymentAmount = pmbl.getInvoiceTotalPaymentAmount(invoice.getId());
+            invoice.setTotalAmountPaid(paymentAmount);
+            invoice.setNumOfPaymentRecords(pmbl.listPaymentByInvoice(invoice.getId()).size());
+            em.merge(invoice);
+            result.setDescription("Invoices refreshed");
+            result.setResult(true);
+        } catch (Exception ex) {
+            System.out.println("InvoiceManagementBean: refreshInvoice() failed");
+            result.setDescription("Internal server error.");
+            ex.printStackTrace();
+        }
+        return result;
+    }
+
+    @Override
     public ReturnHelper refreshInvoices(Long staffID) {
         System.out.println("InvoiceManagementBean: refreshInvoices() called");
         ReturnHelper result = new ReturnHelper();
@@ -884,13 +908,10 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             List<Invoice> invoices = q.getResultList();
             Boolean someFailed = false;
             for (Invoice invoice : invoices) {
-                Double paymentAmount = pmbl.getInvoiceTotalPaymentAmount(invoice.getId());
-                if (paymentAmount == null) {
+                ReturnHelper result2 = refreshInvoice(invoice.getId());
+                if (!result2.getResult()) {
                     someFailed = true;
                 }
-                invoice.setTotalAmountPaid(paymentAmount);
-                invoice.setNumOfPaymentRecords(pmbl.listPaymentByInvoice(invoice.getId()).size());
-                em.merge(invoice);
             }
             if (someFailed) {
                 result.setDescription("Some invoices could not be refreshed");

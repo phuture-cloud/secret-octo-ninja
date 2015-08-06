@@ -30,6 +30,8 @@ public class Invoice implements Serializable {
     private Double totalAmountPaid;
     @OneToMany
     private List<LineItem> items;
+    @OneToMany
+    private List<CreditNote> creditNotes;
     private Double taxRate;//in %
     private Double totalTax;//total totalTax amount
     private Double totalPrice;//after gst
@@ -75,6 +77,7 @@ public class Invoice implements Serializable {
         setStatusAsCreated();
         this.numOfPaymentRecords=0;
         this.totalAmountPaid=0.0;
+        this.creditNotes = new ArrayList();
     }
 
     public Invoice(String invoiceNumber) {
@@ -90,6 +93,7 @@ public class Invoice implements Serializable {
         setStatusAsCreated();
         this.numOfPaymentRecords=0;
         this.totalAmountPaid=0.0;
+        this.creditNotes = new ArrayList();
     }
 
     public Long getId() {
@@ -114,6 +118,14 @@ public class Invoice implements Serializable {
 
     public void setDateDue(Date dateDue) {
         this.dateDue = dateDue;
+    }
+
+    public List<CreditNote> getCreditNotes() {
+        return creditNotes;
+    }
+
+    public void setCreditNotes(List<CreditNote> creditNotes) {
+        this.creditNotes = creditNotes;
     }
 
     public Integer getTerms() {

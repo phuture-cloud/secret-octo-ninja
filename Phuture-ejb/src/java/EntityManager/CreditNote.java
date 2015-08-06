@@ -19,14 +19,18 @@ public class CreditNote implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @ManyToOne
+    private Customer customer;
     private String creditNoteNumber;
     private Double creditAmount;
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateIssued;
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateUsed;
-    @OneToOne
+    @ManyToOne
     private Invoice appliedToInvoice;
+    private boolean isDeleted;
+    private boolean isVoided;
 
     private String contactName;
     private String contactEmail;
@@ -39,9 +43,18 @@ public class CreditNote implements Serializable {
     public CreditNote() {
     }
 
-    public CreditNote(String creditNoteNumber, Double creditAmount) {
+    public CreditNote(String creditNoteNumber, Double creditAmount, Date dateIssued) {
         this.creditNoteNumber = creditNoteNumber;
         this.creditAmount = creditAmount;
+        this.dateIssued = dateIssued;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     public String getCreditNoteNumber() {
@@ -50,6 +63,22 @@ public class CreditNote implements Serializable {
 
     public void setCreditNoteNumber(String creditNoteNumber) {
         this.creditNoteNumber = creditNoteNumber;
+    }
+
+    public boolean getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
+    public boolean getIsVoided() {
+        return isVoided;
+    }
+
+    public void setIsVoided(boolean isVoided) {
+        this.isVoided = isVoided;
     }
 
     public Date getDateIssued() {
@@ -138,6 +167,7 @@ public class CreditNote implements Serializable {
 
     public void setAppliedToInvoice(Invoice appliedToInvoice) {
         this.appliedToInvoice = appliedToInvoice;
+        this.dateUsed = new Date();
     }
 
     @Override

@@ -19,8 +19,8 @@ public interface PaymentManagementBeanLocal {
     public List<PaymentRecord> listAllPayment();
     public Double getInvoiceTotalPaymentAmount(Long invoiceID);
     
-    public ReturnHelper addCreditNote(Double amount);
-    public ReturnHelper updateCreditNote(Long creditNoteID, Date creditNoteDate, Double amount);
+    public ReturnHelper addCreditNote(Long contactID, Double amount, Date creditNoteDate);
+    public ReturnHelper updateCreditNote(Long creditNoteID, Long contactID, Date creditNoteDate, Double amount);
     public ReturnHelper deleteCreditNote(Long creditNoteID);
     public ReturnHelper voidCreditNote(Long creditNoteID);
     public ReturnHelper applyCreditNote(Long creditNoteID, Long invoiceID);
