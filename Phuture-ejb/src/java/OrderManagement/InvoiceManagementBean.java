@@ -867,11 +867,12 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
         try {
-
             Query q = em.createQuery("SELECT i FROM Invoice i WHERE i.isDeleted=false and i.id=:invoiceID");
             q.setParameter("invoiceID", invoiceID);
             Invoice invoice = (Invoice) q.getSingleResult();
-            Double paymentAmount = pmbl.getInvoiceTotalPaymentAmount(invoice.getId());
+            Double paymentAmount = pmbl.getInvoiceTotalPaymentAmount(invoiceID);
+            Double creditNoteAmount = pmbl.getInvoiceTotalCreditNoteApplied(invoiceID);
+            invoice.setTotalCreditNoteAmount(creditNoteAmount);
             invoice.setTotalAmountPaid(paymentAmount);
             invoice.setNumOfPaymentRecords(pmbl.listPaymentByInvoice(invoice.getId()).size());
             em.merge(invoice);

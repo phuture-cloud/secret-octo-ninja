@@ -38,7 +38,7 @@ public class Invoice implements Serializable {
     private List<CreditNote> creditNotes;
     private Double taxRate;//in %
     private Double totalTax;//total totalTax amount
-    private Double priceBeforeCredit;//before credit note
+    private Double totalCreditNoteAmount;//credit notes
     private Double totalPrice;//after gst & credit note
     @Lob
     private String remarks;//Will appear on order
@@ -83,7 +83,7 @@ public class Invoice implements Serializable {
         this.numOfPaymentRecords=0;
         this.totalAmountPaid=0.0;
         this.creditNotes = new ArrayList();
-        this.priceBeforeCredit = 0.0;
+        this.totalCreditNoteAmount = 0.0;
     }
 
     public Invoice(String invoiceNumber) {
@@ -100,7 +100,7 @@ public class Invoice implements Serializable {
         this.numOfPaymentRecords=0;
         this.totalAmountPaid=0.0;
         this.creditNotes = new ArrayList();
-        this.priceBeforeCredit = 0.0;
+        this.totalCreditNoteAmount = 0.0;
     }
 
     public Long getId() {
@@ -135,12 +135,12 @@ public class Invoice implements Serializable {
         this.creditNotes = creditNotes;
     }
 
-    public Double getPriceBeforeCredit() {
-        return priceBeforeCredit;
+    public Double getTotalCreditNoteAmount() {
+        return totalCreditNoteAmount;
     }
 
-    public void setPriceBeforeCredit(Double priceBeforeCredit) {
-        this.priceBeforeCredit = priceBeforeCredit;
+    public void setTotalCreditNoteAmount(Double totalCreditNoteAmount) {
+        this.totalCreditNoteAmount = totalCreditNoteAmount;
     }
 
     public Integer getTerms() {

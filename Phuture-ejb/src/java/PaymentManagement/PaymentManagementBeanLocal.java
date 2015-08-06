@@ -17,6 +17,7 @@ public interface PaymentManagementBeanLocal {
     public List<PaymentRecord> listPaymentByCustomer(Long customerID);
     public List<PaymentRecord> listPaymentByInvoice(Long invoiceID);
     public List<PaymentRecord> listAllPayment();
+    public Double getInvoiceTotalCreditNoteApplied(Long invoiceID);
     public Double getInvoiceTotalPaymentAmount(Long invoiceID);
     
     public ReturnHelper addCreditNote(Long contactID, Double amount, Date creditNoteDate);

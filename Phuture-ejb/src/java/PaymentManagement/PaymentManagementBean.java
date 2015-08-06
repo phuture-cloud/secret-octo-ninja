@@ -238,6 +238,32 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
     }
 
     @Override
+    public Double getInvoiceTotalCreditNoteApplied(Long invoiceID) {
+        System.out.println("PaymentManagementBean: getInvoiceTotalCreditNoteApplied() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        try {
+            Invoice invoice = em.getReference(Invoice.class, invoiceID);
+            Double creditAmount = 0.0;
+            for (CreditNote creditNote : invoice.getCreditNotes()) {
+                //Don't use credit note that are deleted or voided
+                if (!creditNote.getIsDeleted() && !creditNote.getIsVoided()) {
+                    creditAmount += creditNote.getCreditAmount();
+                }
+            }
+            if (creditAmount > invoice.getTotalPrice()) {
+                creditAmount = invoice.getTotalPrice();
+            }
+            return creditAmount;
+        } catch (Exception ex) {
+            System.out.println("PaymentManagementBean: getInvoiceTotalCreditNoteApplied() failed");
+            result.setDescription("Internal server error");
+            ex.printStackTrace();
+            return null;
+        }
+    }
+    
+    @Override
     public Double getInvoiceTotalPaymentAmount(Long invoiceID) {
         System.out.println("PaymentManagementBean: getInvoiceTotalPaymentAmount() called");
         ReturnHelper result = new ReturnHelper();
