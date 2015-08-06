@@ -251,8 +251,8 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
                     creditAmount += creditNote.getCreditAmount();
                 }
             }
-            if (creditAmount > invoice.getTotalPrice()) {
-                creditAmount = invoice.getTotalPrice();
+            if (creditAmount > invoice.getTotalPriceBeforeCreditNote()) {
+                creditAmount = invoice.getTotalPriceBeforeCreditNote();
             }
             return creditAmount;
         } catch (Exception ex) {
@@ -262,7 +262,7 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
             return null;
         }
     }
-    
+
     @Override
     public Double getInvoiceTotalPaymentAmount(Long invoiceID) {
         System.out.println("PaymentManagementBean: getInvoiceTotalPaymentAmount() called");
@@ -276,15 +276,6 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
             Double totalAmount = 0.0;
             for (PaymentRecord paymentRecord : paymentRecords) {
                 totalAmount += paymentRecord.getAmount();
-            }
-            for (CreditNote creditNote : invoice.getCreditNotes()) {
-                //Don't use credit note that are deleted or voided
-                if (!creditNote.getIsDeleted() && !creditNote.getIsVoided()) {
-                    totalAmount -= creditNote.getCreditAmount();
-                }
-            }
-            if (totalAmount < 0) {
-                totalAmount = 0.0;
             }
             return totalAmount;
         } catch (Exception ex) {
@@ -409,6 +400,8 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
             //Update invoice if attached
             Invoice invoice = creditNote.getAppliedToInvoice();
             if (invoice != null) {
+                invoice.setTotalCreditNoteAmount(invoice.getTotalCreditNoteAmount() - oldAmt + amount);
+                em.merge(invoice);
                 imbl.refreshInvoice(invoice.getId());
             }
             result.setResult(true);
@@ -442,6 +435,7 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
                 //Update invoice if attached
                 Invoice invoice = creditNote.getAppliedToInvoice();
                 if (invoice != null) {
+                    invoice.setTotalCreditNoteAmount(invoice.getTotalCreditNoteAmount() - creditNote.getCreditAmount());
                     imbl.refreshInvoice(invoice.getId());
                 }
             }
@@ -479,6 +473,7 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
                 //Update invoice if attached
                 Invoice invoice = creditNote.getAppliedToInvoice();
                 if (invoice != null) {
+                    invoice.setTotalCreditNoteAmount(invoice.getTotalCreditNoteAmount() - creditNote.getCreditAmount());
                     imbl.refreshInvoice(invoice.getId());
                 }
             }
@@ -531,10 +526,11 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
                 }
                 return result;
             }
-            //Update invoice list of credit notes
+            //Update invoice list of credit notes & total value of credit notes applied to that invoice
             List<CreditNote> creditNotes = invoice.getCreditNotes();
             creditNotes.add(creditNote);
             invoice.setCreditNotes(creditNotes);
+            invoice.setTotalCreditNoteAmount(invoice.getTotalCreditNoteAmount() + creditNote.getCreditAmount());
             em.merge(invoice);
             imbl.refreshInvoice(invoiceID);
             //Link credit note to new invoice
@@ -585,9 +581,11 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
                 result.setDescription("Unable to detach the credit note as the invoice has been voided.");
                 return result;
             }
+            //Update invoice list of credit notes & total value of credit notes applied to that invoice
             List<CreditNote> creditNotes = invoice.getCreditNotes();
             creditNotes.remove(creditNote);
             invoice.setCreditNotes(creditNotes);
+            invoice.setTotalCreditNoteAmount(invoice.getTotalCreditNoteAmount() - creditNote.getCreditAmount());
             em.merge(invoice);
             imbl.refreshInvoice(invoice.getId());
             //Link credit note to new invoice

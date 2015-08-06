@@ -1,5 +1,6 @@
 package PaymentManagement;
 
+import EntityManager.CreditNote;
 import EntityManager.Customer;
 import EntityManager.Invoice;
 import EntityManager.PaymentRecord;
@@ -11,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import javax.ejb.Schedule;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -184,12 +184,12 @@ public class StatementOfAccountBean implements StatementOfAccountBeanLocal {
                 soali.setDueDate(invoice.getDateDue());
                 soali.setScoID(invoice.getSalesConfirmationOrder().getId());
                 soali.setInvoiceID(invoice.getId());
-                soali.setDebit(invoice.getTotalPrice());
+                soali.setDebit(invoice.getTotalPriceBeforeCreditNote());
                 soali.setCredit(0.0);
                 em.persist(soali);
                 soalis.add(soali);
                 if (invoice.getDateSent() != null || invoice.getDatePaid() != null) {
-                    totalAmountInvoiced = totalAmountInvoiced + invoice.getTotalPrice();
+                    totalAmountInvoiced = totalAmountInvoiced + invoice.getTotalPriceBeforeCreditNote();
                 }
                 //For each invoice
                 //Loop thru the customer payment and create it as an SOALineItem
@@ -220,12 +220,45 @@ public class StatementOfAccountBean implements StatementOfAccountBeanLocal {
                     }
                     totalAmountPaidForThisInvoice = totalAmountPaidForThisInvoice + paymentRecord.getAmount();
                 }
+                //Loop thru the customer credit note and create it as an SOAlineitem
+                q = em.createQuery("SELECT e FROM CreditNote e where e.customer=:customerID AND e.isDeleted=false AND e.isVoided=false");
+                q.setParameter("customerID", customerID);
+                List<CreditNote> creditNotes = q.getResultList();
+                soalis = new ArrayList();
+                for (CreditNote creditNote : creditNotes) {
+                    SOALineItem soali3 = new SOALineItem();
+                    soali3.setStatementOfAccount(customer.getStatementOfAccount());
+                    soali3.setEntryDate(creditNote.getDateIssued());
+                    soali3.setReferenceNo(creditNote.getCreditNoteNumber());
+                    soali3.setMethod("");
+                    soali3.setDescription("CN for " + creditNote.getCustomer().getCustomerName());
+                    soali3.setDueDate(null);
+                    Invoice currentInvoice = creditNote.getAppliedToInvoice();
+                    if (currentInvoice != null) {
+                        soali3.setScoID(creditNote.getAppliedToInvoice().getSalesConfirmationOrder().getId());
+                        soali3.setInvoiceID(creditNote.getAppliedToInvoice().getId());
+                        //todo
+                        //if credit note is applied and over the invoice amount, don't over add
+                        if (creditNote.getCreditAmount()>currentInvoice.getTotalPriceBeforeCreditNote()) {
+                            soali3.setCredit(currentInvoice.getTotalPriceBeforeCreditNote());
+                        } else {
+                            soali3.setCredit(creditNote.getCreditAmount());
+                        }
+                    } else {
+                        soali3.setScoID(null);
+                        soali3.setInvoiceID(null);
+                    }
+                    soali3.setPaymentID(null);
+                    soali3.setDebit(0.0);
+                    em.persist(soali3);
+                    soalis.add(soali3);
+                }
                 //Calculate amount overdue for each invoice
                 //only if payment is less then amount invoiced
-                if (invoice.getTotalPrice() > totalAmountPaidForThisInvoice) {
+                if (invoice.getTotalPriceBeforeCreditNote() > totalAmountPaidForThisInvoice) {
                     if (invoice.getDateDue() != null && invoice.getDateDue().before(todayDate)) {
                         Long dayDifference = getDifferenceDays(invoice.getDateDue(), todayDate);
-                        Double amountOwedForThisInvoice = invoice.getTotalPrice() - totalAmountPaidForThisInvoice;
+                        Double amountOwedForThisInvoice = invoice.getTotalPriceBeforeCreditNote() - totalAmountPaidForThisInvoice;
                         if (dayDifference > 91) {
                             amountOverDueOver91Days = amountOverDueOver91Days + amountOwedForThisInvoice;
                         } else if (dayDifference >= 61) {

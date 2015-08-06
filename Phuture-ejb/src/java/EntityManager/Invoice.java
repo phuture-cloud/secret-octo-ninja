@@ -39,7 +39,8 @@ public class Invoice implements Serializable {
     private Double taxRate;//in %
     private Double totalTax;//total totalTax amount
     private Double totalCreditNoteAmount;//credit notes
-    private Double totalPrice;//after gst & credit note
+    private Double totalPriceBeforeCreditNote;//after gst but before credit note
+    private Double totalPriceAfterCreditNote;//after gst and credit note
     @Lob
     private String remarks;//Will appear on order
     @Lob
@@ -77,7 +78,8 @@ public class Invoice implements Serializable {
         this.isDeleted = false;
         this.remarks = "";
         this.notes = "";
-        this.totalPrice = 0.0;
+        this.totalPriceAfterCreditNote = 0.0;
+        this.totalPriceBeforeCreditNote = 0.0;
         this.totalTax = 0.0;
         setStatusAsCreated();
         this.numOfPaymentRecords=0;
@@ -94,7 +96,8 @@ public class Invoice implements Serializable {
         this.isDeleted = false;
         this.remarks = "";
         this.notes = "";
-        this.totalPrice = 0.0;
+        this.totalPriceAfterCreditNote = 0.0;
+        this.totalPriceBeforeCreditNote = 0.0;
         this.totalTax = 0.0;
         setStatusAsCreated();
         this.numOfPaymentRecords=0;
@@ -149,6 +152,14 @@ public class Invoice implements Serializable {
 
     public void setTerms(Integer terms) {
         this.terms = terms;
+    }
+
+    public Double getTotalPriceAfterCreditNote() {
+        return totalPriceAfterCreditNote;
+    }
+
+    public void setTotalPriceAfterCreditNote(Double totalPriceAfterCreditNote) {
+        this.totalPriceAfterCreditNote = totalPriceAfterCreditNote;
     }
 
     public String getInvoiceNumber() {
@@ -219,12 +230,12 @@ public class Invoice implements Serializable {
         this.totalTax = totalTax;
     }
 
-    public Double getTotalPrice() {
-        return totalPrice;
+    public Double getTotalPriceBeforeCreditNote() {
+        return totalPriceBeforeCreditNote;
     }
 
-    public void setTotalPrice(Double totalPrice) {
-        this.totalPrice = totalPrice;
+    public void setTotalPriceBeforeCreditNote(Double totalPriceBeforeCreditNote) {
+        this.totalPriceBeforeCreditNote = totalPriceBeforeCreditNote;
     }
 
     public String getRemarks() {

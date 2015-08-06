@@ -541,9 +541,9 @@
                                                                     if (invoice == null) {
                                                                         out.print("<span id='output_subtotal'>$0.00</span>");
                                                                     } else {
-                                                                        formatedPrice = invoice.getTotalPrice() / (invoice.getTaxRate() / 100 + 1);
+                                                                        formatedPrice = invoice.getTotalPriceBeforeCreditNote()/ (invoice.getTaxRate() / 100 + 1);
                                                                         out.print("<span id='output_subtotal'>" + formatter.format(formatedPrice) + "</span>");
-                                                                        out.print("<input type='hidden' value='" + (invoice.getTotalPrice() / (invoice.getTaxRate() / 100 + 1)) + "' id='subtotal'>");
+                                                                        out.print("<input type='hidden' value='" + (invoice.getTotalPriceBeforeCreditNote() / (invoice.getTaxRate() / 100 + 1)) + "' id='subtotal'>");
                                                                     }
                                                                 %>
                                                             </td>
@@ -577,9 +577,9 @@
                                                                     if (invoice == null) {
                                                                         out.print("<span id='output_totalPrice'>$0.00</span>");
                                                                     } else {
-                                                                        formatedPrice = invoice.getTotalPrice();
+                                                                        formatedPrice = invoice.getTotalPriceAfterCreditNote();
                                                                         out.print("<span id='output_totalPrice'>" + formatter.format(formatedPrice) + "</span>");
-                                                                        out.print("<input type='hidden' value='" + invoice.getTotalPrice() + "' id='totalPrice'>");
+                                                                        out.print("<input type='hidden' value='" + invoice.getTotalPriceAfterCreditNote() + "' id='totalPrice'>");
                                                                     }
                                                                 %>
                                                             </td>

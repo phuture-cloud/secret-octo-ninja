@@ -139,7 +139,7 @@
                                                     out.print(date);
                                                 %>
                                             </td>
-                                            <td><%=formatter.format(invoices.get(i).getTotalPrice())%></td>
+                                            <td><%=formatter.format(invoices.get(i).getTotalPriceAfterCreditNote())%></td>
                                             <td>
                                                 <%
                                                     if (invoices.get(i).getTotalAmountPaid() != null) {
@@ -153,11 +153,11 @@
                                                 <% if (invoices.get(i).getTotalAmountPaid() == null) {
                                                         //If there was some errors calculating the payment amount
                                                         out.println("<i class='fa fa-exclamation-triangle' style='color:yellow' data-toggle='tooltip' data-placement='top' title='Unable to calculate payment amount'></i>");
-                                                    } else if (invoices.get(i).getTotalAmountPaid() < invoices.get(i).getTotalPrice()) {
+                                                    } else if (invoices.get(i).getTotalAmountPaid() < invoices.get(i).getTotalPriceAfterCreditNote()) {
                                                         //If total paid less than invoiced amount
                                                         out.println("<i class='fa fa-exclamation-circle' style='color:red' data-toggle='tooltip' data-placement='top' title='Payment not fully received'></i>");
                                                         out.println();
-                                                    } else if (invoices.get(i).getTotalAmountPaid() > invoices.get(i).getTotalPrice()) {
+                                                    } else if (invoices.get(i).getTotalAmountPaid() > invoices.get(i).getTotalPriceAfterCreditNote()) {
                                                         //If total paid more than invoiced amount
                                                         out.println("<i class='fa fa-exclamation-circle' style='color:orange' data-toggle='tooltip' data-placement='top' title='Invoice overpaid'></i>");
                                                     } else {

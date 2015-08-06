@@ -1,6 +1,7 @@
 package OrderManagement;
 
 import EntityManager.Contact;
+import EntityManager.CreditNote;
 import EntityManager.Customer;
 import EntityManager.Invoice;
 import EntityManager.LineItem;
@@ -557,7 +558,7 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             List<Invoice> invoices = q.getResultList();
             Double totalAmount = 0.0;
             for (Invoice i : invoices) {
-                totalAmount += i.getTotalPrice();
+                totalAmount += i.getTotalPriceBeforeCreditNote();
             }
             return totalAmount;
         } catch (Exception ex) {
@@ -612,15 +613,21 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             }
             invoice.setItems(invoiceLineItems);
             //Update invoice total price & tax
-            Double totalPrice = 0.0;
+            Double totalPriceBeforeCreditNote = 0.0;
             Double totalTax = 0.0;
+            Double totalPriceAfterCreditNote = 0.0;
             for (LineItem curLineItem : invoiceLineItems) {
                 Double currLineItemTotalPriceBeforeTax = curLineItem.getItemUnitPrice() * curLineItem.getItemQty();
-                totalPrice = totalPrice + (currLineItemTotalPriceBeforeTax * ((gstRate / 100) + 1));
+                totalPriceBeforeCreditNote = totalPriceBeforeCreditNote + (currLineItemTotalPriceBeforeTax * ((gstRate / 100) + 1));
                 totalTax = totalTax + (currLineItemTotalPriceBeforeTax * gstRate / 100);
             }
-            invoice.setTotalPrice(totalPrice);
+            invoice.setTotalPriceBeforeCreditNote(totalPriceBeforeCreditNote);
             invoice.setTotalTax(totalTax);
+            totalPriceAfterCreditNote = totalPriceBeforeCreditNote - invoice.getTotalCreditNoteAmount();
+            if (totalPriceAfterCreditNote < 0) {
+                totalPriceAfterCreditNote = 0.0;
+            }
+            invoice.setTotalPriceAfterCreditNote(totalPriceAfterCreditNote);
             em.merge(invoice);
             //Update SCO total amount invoiced
             sco.setTotalInvoicedAmount(getSCOtotalInvoicedAmount(salesConfirmationOrderID));
@@ -664,15 +671,21 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             lineItems.add(lineItem);
             invoice.setItems(lineItems);
             //Update invoice total price & tax
-            Double totalPrice = 0.0;
+            Double totalPriceBeforeCreditNote = 0.0;
             Double totalTax = 0.0;
+            Double totalPriceAfterCreditNote = 0.0;
             for (LineItem curLineItem : lineItems) {
                 Double currLineItemTotalPriceBeforeTax = curLineItem.getItemUnitPrice() * curLineItem.getItemQty();
-                totalPrice = totalPrice + (currLineItemTotalPriceBeforeTax * ((gstRate / 100) + 1));
+                totalPriceBeforeCreditNote = totalPriceBeforeCreditNote + (currLineItemTotalPriceBeforeTax * ((gstRate / 100) + 1));
                 totalTax = totalTax + (currLineItemTotalPriceBeforeTax * gstRate / 100);
             }
-            invoice.setTotalPrice(totalPrice);
+            invoice.setTotalPriceBeforeCreditNote(totalPriceBeforeCreditNote);
             invoice.setTotalTax(totalTax);
+            totalPriceAfterCreditNote = totalPriceBeforeCreditNote - invoice.getTotalCreditNoteAmount();
+            if (totalPriceAfterCreditNote < 0) {
+                totalPriceAfterCreditNote = 0.0;
+            }
+            invoice.setTotalPriceAfterCreditNote(totalPriceAfterCreditNote);
             em.merge(invoice);
             //Update SCO total amount invoiced
             SalesConfirmationOrder sco = invoice.getSalesConfirmationOrder();
@@ -715,17 +728,23 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             lineItem.setItemQty(newItemQty);
             lineItem.setItemUnitPrice(newItemUnitPrice);
             em.merge(lineItem);
-            //Update invoice total price & tax
-            Double totalPrice = 0.0;
-            Double totalTax = 0.0;
             List<LineItem> lineItems = invoice.getItems();
+            //Update invoice total price & tax
+            Double totalPriceBeforeCreditNote = 0.0;
+            Double totalTax = 0.0;
+            Double totalPriceAfterCreditNote = 0.0;
             for (LineItem curLineItem : lineItems) {
                 Double currLineItemTotalPriceBeforeTax = curLineItem.getItemUnitPrice() * curLineItem.getItemQty();
-                totalPrice = totalPrice + (currLineItemTotalPriceBeforeTax * ((gstRate / 100) + 1));
+                totalPriceBeforeCreditNote = totalPriceBeforeCreditNote + (currLineItemTotalPriceBeforeTax * ((gstRate / 100) + 1));
                 totalTax = totalTax + (currLineItemTotalPriceBeforeTax * gstRate / 100);
             }
-            invoice.setTotalPrice(totalPrice);
+            invoice.setTotalPriceBeforeCreditNote(totalPriceBeforeCreditNote);
             invoice.setTotalTax(totalTax);
+            totalPriceAfterCreditNote = totalPriceBeforeCreditNote - invoice.getTotalCreditNoteAmount();
+            if (totalPriceAfterCreditNote < 0) {
+                totalPriceAfterCreditNote = 0.0;
+            }
+            invoice.setTotalPriceAfterCreditNote(totalPriceAfterCreditNote);
             em.merge(invoice);
             //Update SCO total amount invoiced
             SalesConfirmationOrder sco = invoice.getSalesConfirmationOrder();
@@ -768,15 +787,21 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             lineItems.remove(lineItem);
             invoice.setItems(lineItems);
             //Update invoice total price & tax
-            Double totalPrice = 0.0;
+            Double totalPriceBeforeCreditNote = 0.0;
             Double totalTax = 0.0;
+            Double totalPriceAfterCreditNote = 0.0;
             for (LineItem curLineItem : lineItems) {
                 Double currLineItemTotalPriceBeforeTax = curLineItem.getItemUnitPrice() * curLineItem.getItemQty();
-                totalPrice = totalPrice + (currLineItemTotalPriceBeforeTax * ((gstRate / 100) + 1));
+                totalPriceBeforeCreditNote = totalPriceBeforeCreditNote + (currLineItemTotalPriceBeforeTax * ((gstRate / 100) + 1));
                 totalTax = totalTax + (currLineItemTotalPriceBeforeTax * gstRate / 100);
             }
-            invoice.setTotalPrice(totalPrice);
+            invoice.setTotalPriceBeforeCreditNote(totalPriceBeforeCreditNote);
             invoice.setTotalTax(totalTax);
+            totalPriceAfterCreditNote = totalPriceBeforeCreditNote - invoice.getTotalCreditNoteAmount();
+            if (totalPriceAfterCreditNote < 0) {
+                totalPriceAfterCreditNote = 0.0;
+            }
+            invoice.setTotalPriceAfterCreditNote(totalPriceAfterCreditNote);
             em.merge(invoice);
             em.remove(lineItem);
             //Update SCO total amount invoiced
@@ -824,7 +849,7 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
                 em.remove(lineItem);
             }
             invoice.setItems(lineItems);
-            invoice.setTotalPrice(0.0);
+            invoice.setTotalPriceBeforeCreditNote(0.0);
             invoice.setTotalTax(0.0);
             em.merge(invoice);
             //Update SCO total amount invoiced
@@ -862,6 +887,27 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
     }
 
     @Override
+    public Double getInvoiceTotalPriceBeforeCreditNote(Long invoiceID) {
+        System.out.println("InvoiceManagementBean: getInvoiceTotalPriceBeforeCreditNote() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        try {
+            Invoice invoice = em.getReference(Invoice.class, invoiceID);
+            Double totalPriceBeforeCreditNote = 0.0;
+            for (LineItem lineItem : invoice.getItems()) {
+                Double currLineItemTotalPriceBeforeTax = lineItem.getItemUnitPrice() * lineItem.getItemQty();
+                totalPriceBeforeCreditNote = totalPriceBeforeCreditNote + (currLineItemTotalPriceBeforeTax * ((gstRate / 100) + 1));
+            }
+            return totalPriceBeforeCreditNote;
+        } catch (Exception ex) {
+            System.out.println("InvoiceManagementBean: getInvoiceTotalPriceBeforeCreditNote() failed");
+            result.setDescription("Internal server error");
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
     public ReturnHelper refreshInvoice(Long invoiceID) {
         System.out.println("InvoiceManagementBean: refreshInvoice() called");
         ReturnHelper result = new ReturnHelper();
@@ -870,9 +916,19 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             Query q = em.createQuery("SELECT i FROM Invoice i WHERE i.isDeleted=false and i.id=:invoiceID");
             q.setParameter("invoiceID", invoiceID);
             Invoice invoice = (Invoice) q.getSingleResult();
+            //todo: Recalculate line item?
+            //Recalculate totals
+            Double totalPriceBeforeCreditNote = getInvoiceTotalPriceBeforeCreditNote(invoiceID);
             Double paymentAmount = pmbl.getInvoiceTotalPaymentAmount(invoiceID);
             Double creditNoteAmount = pmbl.getInvoiceTotalCreditNoteApplied(invoiceID);
             invoice.setTotalCreditNoteAmount(creditNoteAmount);
+            Double totalPriceAfterCreditNote = invoice.getTotalPriceBeforeCreditNote() - creditNoteAmount;
+            if (totalPriceAfterCreditNote < 0) {
+                totalPriceAfterCreditNote = 0.0;
+            }
+            invoice.setTotalPriceBeforeCreditNote(totalPriceBeforeCreditNote);
+            invoice.setTotalPriceAfterCreditNote(totalPriceAfterCreditNote);
+            //Recalculate payment amounts
             invoice.setTotalAmountPaid(paymentAmount);
             invoice.setNumOfPaymentRecords(pmbl.listPaymentByInvoice(invoice.getId()).size());
             em.merge(invoice);

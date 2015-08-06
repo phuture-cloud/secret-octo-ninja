@@ -33,6 +33,8 @@ public interface InvoiceManagementBeanLocal {
     public ReturnHelper deleteallInvoiceLineItem(Long invoiceID, Boolean adminOverwrite);
     public List<LineItem> listInvoiceLineItems(Long invoiceID);
     
+    public Double getInvoiceTotalPriceBeforeCreditNote(Long invoiceID);
+    
     public ReturnHelper refreshInvoice(Long invoiceID);
     public ReturnHelper refreshInvoices(Long staffID);
 }
