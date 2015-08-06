@@ -1,7 +1,7 @@
+<%@page import="EntityManager.Contact"%>
 <%@page import="java.text.NumberFormat"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="EntityManager.CreditNote"%>
-<%@page import="EntityManager.Customer"%>
 <%@page import="java.util.List"%>
 <%@page import="EntityManager.Staff"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -59,6 +59,7 @@
                         </header>
                         <div class="panel-body">
                             <button type='button' class='btn btn-primary modal-with-form' href='#modalGenerateCN'>Generate Credit Note</button>
+                            <input class="btn btn-default" type="button" value="Back" onclick="back()"  />
                             <br><br>
 
                             <form name="creditNotesForm">
@@ -76,19 +77,17 @@
                                     <tbody>
                                         <%
                                             if (creditNotes != null) {
-                                                SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("d MMM yyyy hh:mm:ss");
+                                                SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("d MMM yyyy");
                                                 NumberFormat formatter = NumberFormat.getCurrencyInstance();
                                                 for (int i = 0; i < creditNotes.size(); i++) {
                                         %>
                                         <tr>        
                                             <td><%=creditNotes.get(i).getCreditNoteNumber()%></td>
-                                            <td>
-                                                <%=DATE_FORMAT.format(creditNotes.get(i).getDateIssued())%>
-                                            </td>
-                                            <td><%=formatter.format(creditNotes.get(i).getCreditNoteNumber())%></td>
+                                            <td><%=DATE_FORMAT.format(creditNotes.get(i).getDateIssued())%></td>
+                                            <td><%=formatter.format(creditNotes.get(i).getCreditAmount())%></td>
                                             <td>
                                                 <%
-                                                    if (creditNotes.get(i).getAppliedToInvoice().getInvoiceNumber() != null) {
+                                                    if (creditNotes.get(i).getAppliedToInvoice() != null && creditNotes.get(i).getAppliedToInvoice().getInvoiceNumber() != null) {
                                                         out.print(creditNotes.get(i).getAppliedToInvoice().getInvoiceNumber());
                                                     }
                                                 %>
@@ -135,8 +134,24 @@
                                         </div>
                                     </div>
 
-                                    <br>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Select a contact <span class="required">*</span></label>
+                                        <div class="col-md-9">
+                                            <select id="customerContactid" name="id" data-plugin-selectTwo class="form-control populate" required>
+                                                <option value=""></option>
+                                                <%
+                                                    List<Contact> contacts = (List<Contact>) (session.getAttribute("contacts"));
+                                                    if (contacts != null && contacts.size() > 0) {
+                                                        for (int i = 0; i < contacts.size(); i++) {
+                                                            out.print("<option value='" + contacts.get(i).getId() + "'>" + contacts.get(i).getName() + "</option>");
+                                                        }
+                                                    }
+                                                %>
+                                            </select>
+                                        </div>
+                                    </div>
 
+                                    <br>
                                     <input type="hidden" name="id" value="<%=customerID%>">
                                     <input type="hidden" name="target" value="GenerateCreditNote">
                                 </div>

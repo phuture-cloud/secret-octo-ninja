@@ -20,34 +20,19 @@
         <jsp:include page="../displayNotification.jsp" />
         <script>
             function updateCustomer(id, name) {
-                customerManagement.id.value = id;
-                customerManagement.name.value = name;
-                document.customerManagement.action = "customerManagement_update.jsp";
-                document.customerManagement.submit();
+                window.location.href = "customerManagement_update.jsp?id=" + id + "&name=" + name;
             }
             function removeCustomer(id) {
-                customerManagement.id.value = id;
-                customerManagement.target.value = "RemoveCustomer";
-                document.customerManagement.action = "../CustomerManagementController";
-                document.customerManagement.submit();
+                window.location.href = "../CustomerManagementController?target=RemoveCustomer&id=" + id;
             }
             function addCustomer() {
-                window.event.returnValue = true;
-                document.customerManagement.action = "customerManagement_add.jsp";
-                document.customerManagement.submit();
+                window.location.href = "customerManagement_add.jsp";
             }
             function viewContact(id) {
-                customerManagement.id.value = id;
-                customerManagement.target.value = "ListCustomerContacts";
-                document.customerManagement.action = "../CustomerManagementController";
-                document.customerManagement.submit();
+                window.location.href = "../CustomerManagementController?target=ListCustomerContacts?id=" + id;
             }
             function viewCreditNotes(id, name) {
-                customerManagement.id.value = id;
-                customerManagement.name.value = name;
-                customerManagement.target.value = "ListCustomerCreditNotes";
-                document.customerManagement.action = "../PaymentManagementController";
-                document.customerManagement.submit();
+                window.location.href = "../PaymentManagementController?target=ListCustomerCreditNotes&id=" + id + "&name=" + name;
             }
         </script>
 
@@ -101,16 +86,16 @@
                                                 for (int i = 0; i < customers.size(); i++) {
                                         %>
                                         <tr>        
-                                            <td><%=customers.get(i).getCustomerName()%></td>
+                                            <td> <%=customers.get(i).getId()%> - <%=customers.get(i).getCustomerName()%></td>
                                             <td>
                                                 <div class="btn-group" role="group" aria-label="...">
-                                                    <button class="btn btn-default" onclick="javascript:viewCreditNotes('<%=customers.get(i).getId()%>', '<%=customers.get(i).getCustomerName()%>')">Credit Note Management</button>
-                                                    <button class="btn btn-default" onclick="javascript:viewContact('<%=customers.get(i).getId()%>')">Contact Management</button>
-                                                    <button class="btn btn-default" onclick="javascript:updateCustomer('<%=customers.get(i).getId()%>', '<%=customers.get(i).getCustomerName()%>')">Update</button>
-                                                    <button class="modal-with-move-anim btn btn-default"  href="#modalRemove">Remove</button>
+                                                    <button type="button" class="btn btn-default" onclick="javascript:viewCreditNotes('<%=customers.get(i).getId()%>', '<%=customers.get(i).getCustomerName()%>')">Credit Note Management</button>
+                                                    <button type="button" class="btn btn-default" onclick="javascript:viewContact('<%=customers.get(i).getId()%>')">Contact Management</button>
+                                                    <button type="button" class="btn btn-default" onclick="javascript:updateCustomer('<%=customers.get(i).getId()%>', '<%=customers.get(i).getCustomerName()%>')">Update</button>
+                                                    <button type="button" class="modal-with-move-anim btn btn-default" href="#modalRemove<%=customers.get(i).getId()%>">Remove</button>
                                                 </div>
 
-                                                <div id="modalRemove" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+                                                <div id="modalRemove<%=customers.get(i).getId()%>" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
                                                     <section class="panel">
                                                         <header class="panel-heading">
                                                             <h2 class="panel-title">Are you sure?</h2>

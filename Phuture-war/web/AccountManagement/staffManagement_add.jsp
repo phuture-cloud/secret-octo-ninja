@@ -12,6 +12,7 @@
 <html class="fixed">
     <head>
         <jsp:include page="../jspIncludePages/head.html" />
+        <link rel="stylesheet" href="../assets/vendor/bootstrap-fileupload/bootstrap-fileupload.min.css" />
     </head>
     <body onload="alertFunc()">
         <jsp:include page="../displayNotification.jsp" />
@@ -69,7 +70,21 @@
                                         <div class="form-group">
                                             <label class="col-md-3 control-label">Signature</label>
                                             <div class="col-md-6">
-                                                <input type="file" id="picture" name="signature">
+                                                <div class="fileupload fileupload-new" data-provides="fileupload">
+                                                    <div class="input-append">
+                                                        <div class="uneditable-input">
+                                                            <i class="fa fa-file fileupload-exists"></i>
+                                                            <span class="fileupload-preview"></span>
+                                                        </div>
+
+                                                        <span class="btn btn-default btn-file">
+                                                            <span class="fileupload-exists">Change</span>
+                                                            <span class="fileupload-new">Select file</span>
+                                                            <input type="file" id="picture" name="signature"> 
+                                                        </span>
+                                                        <a href="#" class="btn btn-default fileupload-exists" data-dismiss="fileupload">Remove</a>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -115,7 +130,8 @@
             </div>
         </section>
 
-
+        <script src="../assets/vendor/jquery-autosize/jquery.autosize.js"></script>
+        <script src="../assets/vendor/bootstrap-fileupload/bootstrap-fileupload.min.js"></script>
         <jsp:include page="../jspIncludePages/foot.html" />
     </body>
 </html>

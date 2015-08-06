@@ -19,9 +19,7 @@
         <jsp:include page="../displayNotification.jsp" />
         <script>
             function updateStaff(id) {
-                staffManagement.id.value = id;
-                document.staffManagement.action = "staffManagement_update.jsp";
-                document.staffManagement.submit();
+                window.location.href = "staffManagement_update.jsp?id=" + id;
             }
             function removeStaff(id) {
                 staffManagement.id.value = id;
@@ -30,9 +28,7 @@
                 document.staffManagement.submit();
             }
             function addStaff() {
-                window.event.returnValue = true;
-                document.staffManagement.action = "staffManagement_add.jsp";
-                document.staffManagement.submit();
+                window.location.href = "staffManagement_add.jsp";
             }
         </script>
 
@@ -66,7 +62,7 @@
 
                             <div class="row">
                                 <div class="col-md-12"> 
-                                    <button class="btn btn-primary" onclick="addStaff()">Add Staff</button>
+                                    <button class="btn btn-primary" type="button" onclick="addStaff()">Add Staff</button>
                                 </div>
                             </div>
                             <br/>
@@ -109,10 +105,10 @@
                                             <td>
                                                 <% if (!staffs.get(i).getIsDisabled()) {%>
                                                 <div class="btn-group" role="group" aria-label="...">
-                                                    <button type="button" name="btnEdit" class="btn btn-default" onclick="javascript:updateStaff('<%=staffs.get(i).getId()%>')">Update</button>
-                                                    <button type="button" class="modal-with-move-anim btn btn-default"  href="#modalRemove">Disable</button>
+                                                    <button type="button" class="btn btn-default" onclick="javascript:updateStaff('<%=staffs.get(i).getId()%>')">Update</button>
+                                                    <button type="button" class="modal-with-move-anim btn btn-default" href="#modalRemove<%=staffs.get(i).getId()%>">Disable</button>
                                                 </div>
-                                                <div id="modalRemove" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+                                                <div id="modalRemove<%=staffs.get(i).getId()%>" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
                                                     <section class="panel">
                                                         <header class="panel-heading">
                                                             <h2 class="panel-title">Are you sure?</h2>
