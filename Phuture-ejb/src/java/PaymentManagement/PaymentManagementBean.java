@@ -281,7 +281,7 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
         em.merge(orderNumbers);
         return nextCreditNote.toString();
     }
-    
+
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Override
     public ReturnHelper addCreditNote(Long contactID, Double amount, Date creditNoteDate) {
@@ -349,8 +349,8 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
             }
             Double oldAmt = creditNote.getCreditAmount();
             Contact contact = em.getReference(Contact.class, contactID);
-            if (contact.getCustomer().getId() != creditNote.getCustomer().getId()) {
-                result.setDescription("Unable to tie this credit note to another customer. Create a new one instead.");
+            if (!contact.getCustomer().getId().equals(creditNote.getCustomer().getId())) {
+                result.setDescription("The contact selected does not belong to the customer who has this credit note.");
                 return result;
             }
             Customer customer = contact.getCustomer();
@@ -377,6 +377,7 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
             creditNote.setDateIssued(creditNoteDate);
             em.merge(creditNote);
             //Update customer credits
+            em.lock(customer, LockModeType.PESSIMISTIC_WRITE);
             customer.setTotalAvailableCredits(customer.getTotalAvailableCredits() - oldAmt + amount);
             em.merge(customer);
             //Update invoice if attached
@@ -470,8 +471,8 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     @Override
-    public ReturnHelper applyCreditNote(Long creditNoteID, Long invoiceID) {
-        System.out.println("PaymentManagementBean: applyCreditNote() called");
+    public ReturnHelper attachCreditNote(Long creditNoteID, Long invoiceID) {
+        System.out.println("PaymentManagementBean: attachCreditNote() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
         try {
@@ -484,6 +485,7 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
                 return result;
             }
             Invoice invoice = em.getReference(Invoice.class, invoiceID);
+            em.lock(invoice, LockModeType.PESSIMISTIC_FORCE_INCREMENT);
             if (invoice.getIsDeleted()) {
                 result.setDescription("Unable to apply the credit note as the invoice has been deleted.");
                 return result;
@@ -495,23 +497,87 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
             if (invoice.getSalesConfirmationOrder().getCustomer().getId().equals(creditNote.getCustomer().getId())) {
                 result.setDescription("Unable to apply the credit note to this invoice as it belongs to a different customer.");
                 return result;
+            } else if (creditNote.getAppliedToInvoice() != null) { //if invoice already attached
+                if (!creditNote.getAppliedToInvoice().getId().equals(invoiceID)) {
+                    result.setDescription("Credit note is already attached to another invoice.");
+                } else {
+                    result.setDescription("Credit note is already attached to the current invoice.");
+                }
+                return result;
             }
-            //Use credit note
+            //Update invoice list of credit notes
+            List<CreditNote> creditNotes = invoice.getCreditNotes();
+            creditNotes.add(creditNote);
+            invoice.setCreditNotes(creditNotes);
+            em.merge(invoice);
+            imbl.refreshInvoice(invoiceID);
+            //Link credit note to new invoice
             creditNote.setAppliedToInvoice(invoice);
             em.merge(creditNote);
-            //Update invoice amount
-            imbl.refreshInvoice(invoiceID);
             //Update customer available credits
             Customer customer = creditNote.getCustomer();
             customer.setTotalAvailableCredits(customer.getTotalAvailableCredits() - creditNote.getCreditAmount());
             em.merge(customer);
             result.setResult(true);
-            result.setDescription("Credit note applied to invoice.");
+            result.setDescription("Credit note attached to invoice.");
         } catch (EntityNotFoundException ex) {
-            System.out.println("PaymentManagementBean: applyCreditNote(): Credit note or Invoice not found");
+            System.out.println("PaymentManagementBean: attachCreditNote(): Credit note or Invoice not found");
             result.setDescription("Credit note or invoice specified does not exist.");
         } catch (Exception ex) {
-            System.out.println("PaymentManagementBean: applyCreditNote() failed");
+            System.out.println("PaymentManagementBean: attachCreditNote() failed");
+            result.setDescription("Internal server error");
+            ex.printStackTrace();
+            context.setRollbackOnly();
+        }
+        return result;
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    @Override
+    public ReturnHelper detachCreditNote(Long creditNoteID) {
+        System.out.println("PaymentManagementBean: detachCreditNote() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        try {
+            CreditNote creditNote = em.getReference(CreditNote.class, creditNoteID);
+            if (creditNote.getIsDeleted()) {
+                result.setDescription("Credit note has been deleted and cannot be updated.");
+                return result;
+            } else if (creditNote.getIsVoided()) {
+                result.setDescription("Credit note has been voided and cannot be updated.");
+                return result;
+            } else if (creditNote.getAppliedToInvoice() == null) {
+                result.setDescription("Credit note is already detached");
+                return result;
+            }
+            Invoice invoice = creditNote.getAppliedToInvoice();
+            em.lock(invoice, LockModeType.PESSIMISTIC_FORCE_INCREMENT);
+            if (invoice.getIsDeleted()) {
+                result.setDescription("Unable to detach the credit note as the invoice has been deleted.");
+                return result;
+            } else if (invoice.getStatus().equals("Voided")) {
+                result.setDescription("Unable to detach the credit note as the invoice has been voided.");
+                return result;
+            }
+            List<CreditNote> creditNotes = invoice.getCreditNotes();
+            creditNotes.remove(creditNote);
+            invoice.setCreditNotes(creditNotes);
+            em.merge(invoice);
+            imbl.refreshInvoice(invoice.getId());
+            //Link credit note to new invoice
+            creditNote.setAppliedToInvoice(null);
+            em.merge(creditNote);
+            //Update customer available credits
+            Customer customer = creditNote.getCustomer();
+            customer.setTotalAvailableCredits(customer.getTotalAvailableCredits() + creditNote.getCreditAmount());
+            em.merge(customer);
+            result.setResult(true);
+            result.setDescription("Credit note detached.");
+        } catch (EntityNotFoundException ex) {
+            System.out.println("PaymentManagementBean: detachCreditNote(): Credit note not found");
+            result.setDescription("Credit note specified does not exist.");
+        } catch (Exception ex) {
+            System.out.println("PaymentManagementBean: detachCreditNote() failed");
             result.setDescription("Internal server error");
             ex.printStackTrace();
             context.setRollbackOnly();
@@ -537,15 +603,50 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
     }
 
     @Override
-    public List<CreditNote> listAllCreditNote(Long staffID) {
+    public List<CreditNote> listAllCreditNote(Long customerID) {
         System.out.println("PaymentManagementBean: listAllCreditNote() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
         try {
-            Query q = em.createQuery("SELECT e FROM CreditNote e WHERE e.isDeleted=false");
+            Query q = em.createQuery("SELECT e FROM CreditNote e WHERE e.isDeleted=false AND e.customer.id=:customerID");
+            q.setParameter("customerID", customerID);
             return q.getResultList();
         } catch (Exception ex) {
             System.out.println("PaymentManagementBean: listAllCreditNote() failed");
+            result.setDescription("Internal server error");
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public List<CreditNote> listAvailableCreditNote(Long customerID) {
+        System.out.println("PaymentManagementBean: listAvailableCreditNote() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        try {
+            Query q = em.createQuery("SELECT e FROM CreditNote e WHERE e.isDeleted=false AND e.isVoided=false AND e.appliedToInvoice IS NULL AND e.customer.id=:customerID");
+            q.setParameter("customerID", customerID);
+            return q.getResultList();
+        } catch (Exception ex) {
+            System.out.println("PaymentManagementBean: listAvailableCreditNote() failed");
+            result.setDescription("Internal server error");
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public List<CreditNote> listAttachedCreditNote(Long invoiceID) {
+        System.out.println("PaymentManagementBean: listAttachedCreditNote() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        try {
+            Query q = em.createQuery("SELECT e FROM CreditNote e WHERE e.isDeleted=false AND e.appliedToInvoice.id=:invoiceID");
+            q.setParameter("invoiceID", invoiceID);
+            return q.getResultList();
+        } catch (Exception ex) {
+            System.out.println("PaymentManagementBean: listAttachedCreditNote() failed");
             result.setDescription("Internal server error");
             ex.printStackTrace();
             return null;

@@ -23,9 +23,12 @@ public interface PaymentManagementBeanLocal {
     public ReturnHelper updateCreditNote(Long creditNoteID, Long contactID, Date creditNoteDate, Double amount);
     public ReturnHelper deleteCreditNote(Long creditNoteID);
     public ReturnHelper voidCreditNote(Long creditNoteID);
-    public ReturnHelper applyCreditNote(Long creditNoteID, Long invoiceID);
+    public ReturnHelper attachCreditNote(Long creditNoteID, Long invoiceID);
+    public ReturnHelper detachCreditNote(Long creditNoteID);
     
     public List<CreditNote> getCreditNoteByCustomer(Long customerID);
     public List<CreditNote> listAllCreditNote(Long customerID);
+    public List<CreditNote> listAvailableCreditNote(Long customerID);
+    public List<CreditNote> listAttachedCreditNote(Long invoiceID);
     
 }
