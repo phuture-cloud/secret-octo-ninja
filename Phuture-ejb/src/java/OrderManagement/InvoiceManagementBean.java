@@ -347,10 +347,12 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
                 //Update SCO total amount invoiced
                 sco.setTotalInvoicedAmount(getSCOtotalInvoicedAmount(sco.getId()));
                 em.merge(sco);
+                //Delete all the payment records
                 List<PaymentRecord> paymentRecords = invoice.getPaymentRecords();
                 for (PaymentRecord paymentRecord : paymentRecords) {
                     pmbl.deletePayment(paymentRecord.getId());
                 }
+                //Delete all the credit notes
                 List<CreditNote> creditNotes = invoice.getCreditNotes();
                 for (CreditNote creditNote : creditNotes) {
                     pmbl.deleteCreditNote(creditNote.getId());
@@ -389,10 +391,11 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
                 //Update SCO total amount invoiced
                 sco.setTotalInvoicedAmount(getSCOtotalInvoicedAmount(sco.getId()));
                 em.merge(sco);
-                //Delete all the payment record
+                //Delete all the payment records
                 for (PaymentRecord paymentRecord : invoice.getPaymentRecords()) {
                     pmbl.deletePayment(paymentRecord.getId());
                 }
+                //Void all the credit notes
                 List<CreditNote> creditNotes = invoice.getCreditNotes();
                 for (CreditNote creditNote : creditNotes) {
                     pmbl.voidCreditNote(creditNote.getId());
