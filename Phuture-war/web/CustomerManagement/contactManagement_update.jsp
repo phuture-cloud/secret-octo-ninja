@@ -87,7 +87,7 @@
                                         <div class="form-group">
                                             <label class="col-md-3 control-label">Name <span class="required">*</span></label>
                                             <div class="col-md-6">
-                                                <input type="text" class="form-control" name="name" value="<%=contact.getName()%>" required>
+                                                <input type="text" class="form-control" name="name" value="<%=contact.getName()%>" title="Please do not insert illegal characters" pattern="^[A-Za-z0-9 _@]*[A-Za-z0-9][A-Za-z0-9 _@    ]*$" required>
                                             </div>
                                         </div>
 
