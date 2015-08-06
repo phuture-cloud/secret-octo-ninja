@@ -1,6 +1,7 @@
 package EntityManager;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,6 +11,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Version;
 
 @Entity
 public class SOALineItem implements Serializable {
@@ -18,6 +20,8 @@ public class SOALineItem implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @Version
+    private Timestamp version;
     @Temporal(TemporalType.DATE)
     private Date entryDate;
     private String referenceNo;

@@ -1,6 +1,7 @@
 package EntityManager;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Version;
 
 @Entity
 public class StatementOfAccount implements Serializable {
@@ -16,6 +18,8 @@ public class StatementOfAccount implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @Version
+    private Timestamp version;
     @OneToOne(mappedBy = "statementOfAccount")
     private Customer customer;
     private Double totalAmountOrdered;

@@ -1,6 +1,7 @@
 package EntityManager;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -13,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Version;
 
 @Entity
 public class PurchaseOrder implements Serializable {
@@ -21,7 +23,8 @@ public class PurchaseOrder implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
+    @Version
+    private Timestamp version;
     @ManyToOne
     private SalesConfirmationOrder salesConfirmationOrder;
     private String purchaseOrderNumber;
@@ -53,7 +56,7 @@ public class PurchaseOrder implements Serializable {
         this.items = new ArrayList<>();
         this.totalPrice = 0.0;
         this.isDeleted = false;
-        
+
         this.supplierName = "";
         this.supplierEmail = "";
         this.supplierOfficeNo = "";

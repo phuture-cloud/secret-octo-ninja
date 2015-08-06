@@ -1,6 +1,7 @@
 package EntityManager;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,6 +11,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Version;
 
 @Entity
 public class PaymentRecord implements Serializable {
@@ -18,7 +20,8 @@ public class PaymentRecord implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
+    @Version
+    private Timestamp version;
     private Double amount;
     @Temporal(TemporalType.DATE)
     private Date paymentDate;
@@ -27,7 +30,7 @@ public class PaymentRecord implements Serializable {
     @Lob
     private String notes;//internal staff view only
     private boolean isDeleted;
-    
+
     @ManyToOne
     private Customer customer;
     @ManyToOne
@@ -76,7 +79,6 @@ public class PaymentRecord implements Serializable {
     public void setPaymentReferenceNumber(String paymentReferenceNumber) {
         this.paymentReferenceNumber = paymentReferenceNumber;
     }
-
 
     public Date getPaymentDate() {
         return paymentDate;

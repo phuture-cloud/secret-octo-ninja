@@ -1,6 +1,7 @@
 package EntityManager;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Version;
 
 @Entity
 public class OrderNumbers implements Serializable {
@@ -16,6 +18,8 @@ public class OrderNumbers implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @Version
+    private Timestamp version;
     private Long nextSCO;
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastGeneratedSCO;

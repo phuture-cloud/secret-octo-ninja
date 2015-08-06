@@ -1,6 +1,7 @@
 package EntityManager;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -13,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Version;
 
 @Entity
 public class Invoice implements Serializable {
@@ -21,6 +23,8 @@ public class Invoice implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @Version
+    private Timestamp version;
     private String invoiceNumber;
     @ManyToOne
     private SalesConfirmationOrder salesConfirmationOrder;
@@ -34,7 +38,8 @@ public class Invoice implements Serializable {
     private List<CreditNote> creditNotes;
     private Double taxRate;//in %
     private Double totalTax;//total totalTax amount
-    private Double totalPrice;//after gst
+    private Double priceBeforeCredit;//before credit note
+    private Double totalPrice;//after gst & credit note
     @Lob
     private String remarks;//Will appear on order
     @Lob
@@ -78,6 +83,7 @@ public class Invoice implements Serializable {
         this.numOfPaymentRecords=0;
         this.totalAmountPaid=0.0;
         this.creditNotes = new ArrayList();
+        this.priceBeforeCredit = 0.0;
     }
 
     public Invoice(String invoiceNumber) {
@@ -94,6 +100,7 @@ public class Invoice implements Serializable {
         this.numOfPaymentRecords=0;
         this.totalAmountPaid=0.0;
         this.creditNotes = new ArrayList();
+        this.priceBeforeCredit = 0.0;
     }
 
     public Long getId() {
@@ -126,6 +133,14 @@ public class Invoice implements Serializable {
 
     public void setCreditNotes(List<CreditNote> creditNotes) {
         this.creditNotes = creditNotes;
+    }
+
+    public Double getPriceBeforeCredit() {
+        return priceBeforeCredit;
+    }
+
+    public void setPriceBeforeCredit(Double priceBeforeCredit) {
+        this.priceBeforeCredit = priceBeforeCredit;
     }
 
     public Integer getTerms() {

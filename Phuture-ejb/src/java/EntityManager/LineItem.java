@@ -1,11 +1,13 @@
 package EntityManager;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.Version;
 
 @Entity
 public class LineItem implements Serializable {
@@ -13,6 +15,8 @@ public class LineItem implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @Version
+    private Timestamp version;
     private String itemName;
     @Lob
     private String itemDescription;
