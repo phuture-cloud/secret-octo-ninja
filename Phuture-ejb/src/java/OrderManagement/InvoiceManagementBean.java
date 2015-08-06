@@ -351,7 +351,10 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
                 for (PaymentRecord paymentRecord : paymentRecords) {
                     pmbl.deletePayment(paymentRecord.getId());
                 }
-                //todo //Unapply any credit note that were applied to the invoice
+                List<CreditNote> creditNotes = invoice.getCreditNotes();
+                for (CreditNote creditNote : creditNotes) {
+                    pmbl.deleteCreditNote(creditNote.getId());
+                }
             }
             result.setResult(true);
             result.setDescription("Invoice deleted.");
@@ -390,9 +393,10 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
                 for (PaymentRecord paymentRecord : invoice.getPaymentRecords()) {
                     pmbl.deletePayment(paymentRecord.getId());
                 }
-//todo                
-//Unapply any credit note that were applied to the invoice
-
+                List<CreditNote> creditNotes = invoice.getCreditNotes();
+                for (CreditNote creditNote : creditNotes) {
+                    pmbl.voidCreditNote(creditNote.getId());
+                }
             }
             result.setResult(true);
             result.setDescription("Invoice voided.");
