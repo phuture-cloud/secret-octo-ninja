@@ -43,6 +43,7 @@ public class Customer implements Serializable {
         this.PaymentRecords = new ArrayList();
         this.creditNotes = new ArrayList();
         this.isDeleted = false;
+        this.totalAvailableCredits = 0.0;
     }
 
     public Customer(String customerName) {
@@ -52,6 +53,7 @@ public class Customer implements Serializable {
         this.PaymentRecords = new ArrayList();
         this.creditNotes = new ArrayList();
         this.isDeleted = false;
+        this.totalAvailableCredits = 0.0;
     }
 
     public StatementOfAccount getStatementOfAccount() {
