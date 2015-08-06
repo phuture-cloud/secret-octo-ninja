@@ -206,10 +206,10 @@
                 </div>
             </div>
 
-            <br>
+            <br> <br>
 
-            <div class="row text-right">
-                <div class="col-xs-7 text-left">
+            <div class="row text-left">
+                <div class="col-xs-8">
                     AGREED & CONFIRMED
 
                     <br><br><br><br><br>
@@ -217,14 +217,17 @@
                     <br>
                     Customer's Signature & Co. Stamp
                 </div>
-                <div class="col-xs-5">
+                <div class="col-xs-4">
                     Phuture International Pte Ltd
 
                     <%
                         if (staff.getSignature() != null && staff.getSignature().length > 0) {
                             out.write("<img class='img-responsive' src='http://localhost:8080/Phuture-war/sig?id=" + staff.getId() + "'>");
-                        }
+                        } else {
                     %>
+                    <br><br><br><br><br>
+                    <img src="../assets/images/thin-black-line.png">
+                    <%}%>
                     <br><%=staff.getName()%>
                 </div>
             </div>

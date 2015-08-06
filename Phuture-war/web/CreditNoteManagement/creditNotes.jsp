@@ -100,7 +100,7 @@
                                                     }
                                                 %>
                                             </td>
-                                            <td><button type="button" class="btn btn-default btn-block" onclick="javascript:viewCreditNote('<%=creditNotes.get(i).getId()%>')">View</button></td>
+                                            <td><button type="button" class="btn btn-default btn-block" onclick="javascript:viewCreditNote('<%=creditNotes.get(i).getId()%>')">Update</button></td>
                                         </tr>
                                         <%
                                                 }
@@ -137,7 +137,7 @@
                                     <div class="form-group">
                                         <label class="col-sm-3 control-label">Select a contact <span class="required">*</span></label>
                                         <div class="col-md-9">
-                                            <select id="customerContactid" name="id" data-plugin-selectTwo class="form-control populate" required>
+                                            <select name="contactID" data-plugin-selectTwo class="form-control populate" required>
                                                 <option value=""></option>
                                                 <%
                                                     List<Contact> contacts = (List<Contact>) (session.getAttribute("contacts"));
@@ -153,6 +153,7 @@
 
                                     <br>
                                     <input type="hidden" name="id" value="<%=customerID%>">
+                                    <input type="hidden" name="name" value="<%=customerName%>">
                                     <input type="hidden" name="target" value="GenerateCreditNote">
                                 </div>
                                 <footer class="panel-footer">

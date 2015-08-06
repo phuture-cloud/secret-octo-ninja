@@ -86,7 +86,7 @@
                                                 for (int i = 0; i < customers.size(); i++) {
                                         %>
                                         <tr>        
-                                            <td> <%=customers.get(i).getId()%> - <%=customers.get(i).getCustomerName()%></td>
+                                            <td><%=customers.get(i).getCustomerName()%></td>
                                             <td>
                                                 <div class="btn-group" role="group" aria-label="...">
                                                     <button type="button" class="btn btn-default" onclick="javascript:viewCreditNotes('<%=customers.get(i).getId()%>', '<%=customers.get(i).getCustomerName()%>')">Credit Note Management</button>

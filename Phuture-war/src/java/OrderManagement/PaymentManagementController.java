@@ -40,7 +40,7 @@ public class PaymentManagementController extends HttpServlet {
         System.out.println("Welcome to PaymentManagementController");
         String target = request.getParameter("target");
         String id = request.getParameter("id");
-        
+
         String amount = request.getParameter("amount");
         String paymentMethod = request.getParameter("paymentMethod");
         String paymentDate = request.getParameter("paymentDate");
@@ -169,15 +169,17 @@ public class PaymentManagementController extends HttpServlet {
                         break;
 
                     case "GenerateCreditNote":
-                        if (id != null && !id.isEmpty()) {
+                        String contactID = request.getParameter("contactID");
+                        String name = request.getParameter("name");
+                        if (id != null && !id.isEmpty() && contactID != null && !contactID.isEmpty()) {
                             String creditNoteDate = request.getParameter("creditNoteDate");
                             Date creditNoteDateDate = sourceFormat.parse(creditNoteDate);
 
-                            returnHelper = paymentManagementBean.addCreditNote(Long.parseLong(id), Double.parseDouble(amount), creditNoteDateDate);
+                            returnHelper = paymentManagementBean.addCreditNote(Long.parseLong(contactID), Double.parseDouble(amount), creditNoteDateDate);
 
                             if (returnHelper.getResult()) {
                                 session.setAttribute("listOfCreditNotes", paymentManagementBean.listAllCreditNote(Long.parseLong(id)));
-                                nextPage = "CreditNoteManagement/creditNotes.jsp";
+                                nextPage = "CreditNoteManagement/creditNotes.jsp?id=" + id + "&name=" + name;
                             }
                         }
                         break;
