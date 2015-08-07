@@ -624,6 +624,7 @@
                                             <button type='button' class='modal-with-move-anim btn btn-danger' href='#modalRemove'>Void Invoice</button>
                                             <%
                                                 if (invoice.getItems().size() > 0) {
+                                                    out.print("<button type='button' class='btn btn-primary modal-with-form' href='#modalAttachCN'>Attach Credit Note</button>");
                                                     out.print("<button type='button' class='btn btn-primary modal-with-form' href='#modalAddPayment'>Add Payment</button>");
                                                 }
                                             %>
@@ -643,6 +644,26 @@
                     </form>
                     <!-- end: page -->
 
+                    <div id="modalAttachCN" class="modal-block modal-block-primary mfp-hide">
+                        <section class="panel">
+                            <form name="attachCreditNoteForm" action="../PaymentManagementController" class="form-horizontal mb-lg">
+                                <header class="panel-heading">
+                                    <h2 class="panel-title">Attach Credit Note to <%=invoice.getInvoiceNumber()%></h2>
+                                </header>
+                                <div class="panel-body">
+                                </div>
+                                <footer class="panel-footer">
+                                    <div class="row">
+                                        <div class="col-md-12 text-right">
+                                            <button class="btn btn-success" type="submit">Attach Credit Note</button>
+                                            <button class="btn btn-default modal-dismiss">Cancel</button>
+                                        </div>
+                                    </div>
+                                </footer>
+                            </form>
+                        </section>
+                    </div>
+                                
                     <div id="modalAddPayment" class="modal-block modal-block-primary mfp-hide">
                         <section class="panel">
                             <form name="addPaymentForm" action="../PaymentManagementController" class="form-horizontal mb-lg">

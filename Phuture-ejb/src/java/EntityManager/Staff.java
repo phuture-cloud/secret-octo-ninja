@@ -36,11 +36,15 @@ public class Staff implements Serializable {
     private List<SalesConfirmationOrder> sales;
 
     public Staff() {
+        staffPrefix = "";
     }
 
     public Staff(String name, String staffPrefix, String username, String passwordSalt, String passwordHash, boolean isAdmin) {
         this.name = name;
         this.staffPrefix = staffPrefix;
+        if (staffPrefix==null) {
+            staffPrefix = "";
+        }
         this.username = username;
         this.passwordHash = passwordHash;
         this.passwordSalt = passwordSalt;

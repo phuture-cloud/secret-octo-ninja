@@ -58,8 +58,7 @@
                             <h2 class="panel-title"><%=customerName%> - Credit Notes</h2>
                         </header>
                         <div class="panel-body">
-                            <button type='button' class='btn btn-primary modal-with-form' href='#modalGenerateCN'>Generate Credit Note</button>
-                            <input class="btn btn-default" type="button" value="Back" onclick="back()"  />
+                            <button type='button' class='btn btn-primary modal-with-form' href='#modalGenerateCN'>Add Credit Note</button>
                             <br><br>
 
                             <form name="creditNotesForm">
@@ -109,6 +108,8 @@
                                     </tbody>
                                 </table>
                             </form>
+                            <br/>
+                            <input class="btn btn-default" type="button" value="Back" onclick="back()"  />
                         </div>
                     </section>
 
@@ -117,7 +118,7 @@
                         <section class="panel">
                             <form name="addPaymentForm" action="../PaymentManagementController" class="form-horizontal mb-lg">
                                 <header class="panel-heading">
-                                    <h2 class="panel-title">Generate Credit Note</h2>
+                                    <h2 class="panel-title">Add Credit Note</h2>
                                 </header>
                                 <div class="panel-body">
                                     <div class="form-group">
@@ -159,7 +160,7 @@
                                 <footer class="panel-footer">
                                     <div class="row">
                                         <div class="col-md-12 text-right">
-                                            <button class="btn btn-success" type="submit">Generate Credit Note</button>
+                                            <button class="btn btn-success" type="submit">Add Credit Note</button>
                                             <button class="btn btn-default modal-dismiss">Cancel</button>
                                         </div>
                                     </div>

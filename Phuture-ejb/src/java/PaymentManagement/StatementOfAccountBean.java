@@ -220,44 +220,7 @@ public class StatementOfAccountBean implements StatementOfAccountBeanLocal {
                     }
                     totalAmountPaidForThisInvoice = totalAmountPaidForThisInvoice + paymentRecord.getAmount();
                 }
-                //Loop thru the customer credit note and create it as an SOAlineitem
-                q = em.createQuery("SELECT e FROM CreditNote e where e.customer.id=:customerID AND e.isDeleted=false AND e.isVoided=false");
-                q.setParameter("customerID", customerID);
-                List<CreditNote> creditNotes = q.getResultList();
-                soalis = new ArrayList();
-                for (CreditNote creditNote : creditNotes) {
-                    SOALineItem soali3 = new SOALineItem();
-                    soali3.setStatementOfAccount(customer.getStatementOfAccount());
-                    soali3.setEntryDate(creditNote.getDateIssued());
-                    soali3.setReferenceNo(creditNote.getCreditNoteNumber());
-                    soali3.setMethod("Credit Note");
-                    soali3.setDescription("");
-                    soali3.setDueDate(null);
-                    Invoice currentInvoice = creditNote.getAppliedToInvoice();
-                    //If applied to invoice
-                    if (currentInvoice != null) {
-                        soali3.setScoID(creditNote.getAppliedToInvoice().getSalesConfirmationOrder().getId());
-                        soali3.setInvoiceID(creditNote.getAppliedToInvoice().getId());
-                        //TODO (future) Update logic to support multiple credit note
-                        //if credit note is applied and over the invoice amount, don't over add
-                        if (creditNote.getCreditAmount()>currentInvoice.getTotalPriceBeforeCreditNote()) {
-                            soali3.setCredit(currentInvoice.getTotalPriceBeforeCreditNote());
-                        } else {
-                            soali3.setCredit(creditNote.getCreditAmount());
-                        }
-                        soali3.setScoID(invoice.getSalesConfirmationOrder().getId());
-                        soali3.setInvoiceID(invoice.getId());
-                        soali3.setDescription("Applied on "+invoice.getInvoiceNumber());
-                    } else {
-                        soali3.setCredit(creditNote.getCreditAmount());
-                        soali3.setScoID(null);
-                        soali3.setInvoiceID(null);
-                    }
-                    soali3.setPaymentID(null);
-                    soali3.setDebit(0.0);
-                    em.persist(soali3);
-                    soalis.add(soali3);
-                }
+
                 //Calculate amount overdue for each invoice
                 //only if payment is less then amount invoiced
                 if (invoice.getTotalPriceAfterCreditNote() > totalAmountPaidForThisInvoice) {
@@ -277,6 +240,46 @@ public class StatementOfAccountBean implements StatementOfAccountBeanLocal {
                     }
                 }
             }
+
+            //Loop thru the customer credit note and create it as an SOAlineitem
+            q = em.createQuery("SELECT e FROM CreditNote e where e.customer.id=:customerID AND e.isDeleted=false AND e.isVoided=false");
+            q.setParameter("customerID", customerID);
+            List<CreditNote> creditNotes = q.getResultList();
+            soalis = new ArrayList();
+            for (CreditNote creditNote : creditNotes) {
+                SOALineItem soali3 = new SOALineItem();
+                soali3.setStatementOfAccount(customer.getStatementOfAccount());
+                soali3.setEntryDate(creditNote.getDateIssued());
+                soali3.setReferenceNo(creditNote.getCreditNoteNumber());
+                soali3.setMethod("Credit Note");
+                soali3.setDescription("");
+                soali3.setDueDate(null);
+                Invoice currentInvoice = creditNote.getAppliedToInvoice();
+                //If applied to invoice
+                if (currentInvoice != null) {
+                    soali3.setScoID(creditNote.getAppliedToInvoice().getSalesConfirmationOrder().getId());
+                    soali3.setInvoiceID(creditNote.getAppliedToInvoice().getId());
+                        //TODO (future) Update logic to support multiple credit note
+                    //if credit note is applied and over the invoice amount, don't over add
+                    if (creditNote.getCreditAmount() > currentInvoice.getTotalPriceBeforeCreditNote()) {
+                        soali3.setCredit(currentInvoice.getTotalPriceBeforeCreditNote());
+                    } else {
+                        soali3.setCredit(creditNote.getCreditAmount());
+                    }
+                    soali3.setScoID(currentInvoice.getSalesConfirmationOrder().getId());
+                    soali3.setInvoiceID(currentInvoice.getId());
+                    soali3.setDescription("Applied on " + currentInvoice.getInvoiceNumber());
+                } else {
+                    soali3.setCredit(creditNote.getCreditAmount());
+                    soali3.setScoID(null);
+                    soali3.setInvoiceID(null);
+                }
+                soali3.setPaymentID(null);
+                soali3.setDebit(0.0);
+                em.persist(soali3);
+                soalis.add(soali3);
+            }
+
             //Sort the SOALIS by their date and calculate the balance fields
             q = em.createQuery("SELECT e FROM SOALineItem e where e.statementOfAccount.customer.id=:customerID ORDER BY e.entryDate ASC");
             q.setParameter("customerID", customerID);
