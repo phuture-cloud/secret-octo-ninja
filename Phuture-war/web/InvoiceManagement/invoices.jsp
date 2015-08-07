@@ -61,8 +61,12 @@
             <% if (previousMgtPage.equals("sco")) {%>
             window.location.href = "../InvoiceManagementController?target=RefreshSCOInvoices";
             <%} else if (previousMgtPage.equals("invoices") || previousMgtPage.equals("soa")) {%>
+            <%if (request.getParameter("show")!=null && request.getParameter("show").equals("overdue")) {%>
+            window.location.href = "../StatementOfAccountManagementController?target=ViewOverDueInvoiceTiedToCustomer";
+            <%} else {%>
             window.location.href = "../InvoiceManagementController?target=RefreshInvoices";
-            <%}%>
+            <%}
+                }%>
         }
         </script>
 
