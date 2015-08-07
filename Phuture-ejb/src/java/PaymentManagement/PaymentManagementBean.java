@@ -504,6 +504,9 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
             } else if (creditNote.getIsVoided()) {
                 result.setDescription("Credit note has been voided and cannot be used anymore.");
                 return result;
+            } else if (creditNote.getAppliedToInvoice()!=null) {
+                result.setDescription("Credit note has already been applied to another invoice.");
+                return result;
             }
             Invoice invoice = em.getReference(Invoice.class, invoiceID);
             em.lock(invoice, LockModeType.PESSIMISTIC_FORCE_INCREMENT);
@@ -513,6 +516,14 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
             } else if (invoice.getStatus().equals("Voided")) {
                 result.setDescription("Unable to apply the credit note as the invoice has been voided.");
                 return result;
+            }
+            //Check if invoice already have credit note applied
+            List<CreditNote> creditNotes = invoice.getCreditNotes();
+            for (CreditNote cn : creditNotes) {
+                if (!cn.getIsDeleted() && !cn.getIsVoided()) {
+                    result.setDescription("A maximum of one credit note can be applied to each invoice.");
+                    return result;
+                }
             }
             //Check if invoice & credit note belongs to the same customer
             if (invoice.getSalesConfirmationOrder().getCustomer().getId().equals(creditNote.getCustomer().getId())) {
@@ -527,7 +538,6 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
                 return result;
             }
             //Update invoice list of credit notes & total value of credit notes applied to that invoice
-            List<CreditNote> creditNotes = invoice.getCreditNotes();
             creditNotes.add(creditNote);
             invoice.setCreditNotes(creditNotes);
             invoice.setTotalCreditNoteAmount(invoice.getTotalCreditNoteAmount() + creditNote.getCreditAmount());
