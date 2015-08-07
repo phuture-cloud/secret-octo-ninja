@@ -80,6 +80,12 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
             invoice.setContactMobileNo(sco.getContactMobileNo());
             invoice.setContactOfficeNo(sco.getContactOfficeNo());
             invoice.setContactFaxNo(sco.getContactFaxNo());
+            //Update due date based on terms
+            Calendar c = new GregorianCalendar();
+            c.setTime(invoiceDate);
+            c.add(Calendar.DAY_OF_YEAR, sco.getTerms());
+            Date dateDue = c.getTime();
+            invoice.setDateDue(dateDue);
             em.persist(invoice);
             //Copy line items from SCO
             replaceInvoiceLineItemWithSCOitems(sco.getId(), invoice.getId(), false);
