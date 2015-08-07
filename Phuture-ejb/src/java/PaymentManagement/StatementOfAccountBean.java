@@ -221,7 +221,7 @@ public class StatementOfAccountBean implements StatementOfAccountBeanLocal {
                     totalAmountPaidForThisInvoice = totalAmountPaidForThisInvoice + paymentRecord.getAmount();
                 }
                 //Loop thru the customer credit note and create it as an SOAlineitem
-                q = em.createQuery("SELECT e FROM CreditNote e where e.customer=:customerID AND e.isDeleted=false AND e.isVoided=false");
+                q = em.createQuery("SELECT e FROM CreditNote e where e.customer.id=:customerID AND e.isDeleted=false AND e.isVoided=false");
                 q.setParameter("customerID", customerID);
                 List<CreditNote> creditNotes = q.getResultList();
                 soalis = new ArrayList();
