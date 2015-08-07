@@ -3,6 +3,8 @@ package OrderManagement;
 import CustomerManagement.CustomerManagementBeanLocal;
 import EntityManager.Contact;
 import EntityManager.Customer;
+import EntityManager.DeliveryOrder;
+import EntityManager.Invoice;
 import EntityManager.ReturnHelper;
 import EntityManager.SalesConfirmationOrder;
 import EntityManager.Staff;
