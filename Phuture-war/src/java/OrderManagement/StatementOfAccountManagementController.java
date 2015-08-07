@@ -101,7 +101,7 @@ public class StatementOfAccountManagementController extends HttpServlet {
                                 session.setAttribute("statementOfAccount", soa);
                                 session.setAttribute("listOfInvoice", invoices);
                                 session.setAttribute("previousManagementPage", "soa");
-                                nextPage = "InvoiceManagement/invoices.jsp";
+                                nextPage = "InvoiceManagement/invoices.jsp?show=overdue";
                             }
                             break;
                         }
