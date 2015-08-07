@@ -57,7 +57,7 @@
         }
         function refreshInvoices() {
             NProgress.start();
-            <% if (previousMgtPage.equals("sco")) {%>
+            <% if (previousMgtPage.equals("sco") || previousMgtPage.equals("soa")) {%>
             window.location.href = "../InvoiceManagementController?target=RefreshSCOInvoices";
             <%} else if (previousMgtPage.equals("invoices")) {%>
             window.location.href = "../InvoiceManagementController?target=RefreshInvoices";
@@ -86,7 +86,7 @@
                                 <li><span><a href= "../OrderManagementController?target=RetrieveSCO&id=<%=sco.getId()%>"><%=staff.getStaffPrefix()%><%=sco.getSalesConfirmationOrderNumber()%></a></span></li>
                                             <%} else if (previousMgtPage.equals("soa")) {%>
                                 <li><span><a href= "../StatementOfAccountManagementController?target=ListAllSOA">Statement of Accounts</a></span></li>
-                                <li><span><a href="../StatementOfAccountManagementController?target=RetrieveSOA&id=<%=soa.getCustomer().getId()%>">SOA</a></span></li>
+                                <li><span><a href="../StatementOfAccountManagementController?target=RetrieveSOA&id=<%=soa.getCustomer().getId()%>"><%=soa.getCustomer().getCustomerName()%></a></span></li>
                                             <%}%>
 
                                 <li><span>Invoices &nbsp;&nbsp</span></li>
