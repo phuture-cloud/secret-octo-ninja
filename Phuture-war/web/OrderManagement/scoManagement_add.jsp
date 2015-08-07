@@ -269,7 +269,7 @@
                                                 <h2 class="h2 mt-none mb-sm text-dark text-weight-bold">Sales Confirmation Order</h2>
                                                 <%
                                                     if (sco != null && scoID != null && !scoID.isEmpty()) {
-                                                        out.print("<h3>" + staff.getStaffPrefix() + sco.getSalesConfirmationOrderNumber() + "</h3>");
+                                                        out.print("<h3>" + sco.getSalesPerson().getStaffPrefix() + sco.getSalesConfirmationOrderNumber() + "</h3>");
                                                     }
                                                 %>
                                             </div>
