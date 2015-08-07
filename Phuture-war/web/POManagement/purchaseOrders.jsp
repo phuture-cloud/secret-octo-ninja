@@ -109,7 +109,7 @@
                                             <td><%=purchaseOrders.get(i).getPurchaseOrderNumber()%></td>
                                             <td>
                                                 <%
-                                                    SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("d MMM yyyy hh:mm:ss");
+                                                    SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
                                                     String date = DATE_FORMAT.format(purchaseOrders.get(i).getPurchaseOrderDate());
                                                     out.print(date);
                                                 %>

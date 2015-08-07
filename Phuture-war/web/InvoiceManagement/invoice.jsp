@@ -170,7 +170,7 @@
                 <section role="main" class="content-body">
                     <header class="page-header">
                         <h2>Invoice <%if (invoice != null && invoice.getInvoiceNumber() != null) {
-                                out.print(invoice.getInvoiceNumber());
+                                out.print(invoice.getSalesConfirmationOrder().getSalesPerson().getStaffPrefix()+"-"+invoice.getInvoiceNumber());
                             }%></h2>
                         <div class="right-wrapper pull-right">
                             <ol class="breadcrumbs">
@@ -203,7 +203,7 @@
                                         <div class="row">
                                             <div class="col-sm-6 mt-md">
                                                 <h2 class="h2 mt-none mb-sm text-dark text-weight-bold">Invoice</h2>
-                                                <h3><%=invoice.getInvoiceNumber()%></h3>
+                                                <h3><%=invoice.getSalesConfirmationOrder().getSalesPerson().getStaffPrefix()+"-"+invoice.getInvoiceNumber()%></h3>
                                             </div>
                                             <br/>
                                             <div class="col-sm-6 text-right mt-md mb-md">

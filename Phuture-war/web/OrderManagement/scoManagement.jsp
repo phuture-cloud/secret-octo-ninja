@@ -108,7 +108,7 @@
                                             <td><a href="../CustomerManagementController?target=ListCustomerContacts&id=<%=salesConfirmationOrders.get(i).getCustomer().getId()%>"><%=salesConfirmationOrders.get(i).getCustomerName()%></a></td>
                                             <td>
                                                 <%
-                                                    SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("d MMM yyyy");
+                                                    SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
                                                     String date = DATE_FORMAT.format(salesConfirmationOrders.get(i).getSalesConfirmationOrderDate());
                                                     out.print(date);
                                                 %>
@@ -130,15 +130,16 @@
                                             </td>
                                             <td>
                                                 <%
-//                                                    if (salesConfirmationOrders.get(i).getDeliveryOrders().size() > 0) {
-//                                                        for (int k = 0; k < salesConfirmationOrders.get(i).getDeliveryOrders().size(); k++) {
-//                                                            if ((k + 1) == salesConfirmationOrders.get(i).getDeliveryOrders().size()) {
-//                                                                out.print(salesConfirmationOrders.get(i).getDeliveryOrders().get(i).getDeliveryOrderNumber());
-//                                                            } else {
-//                                                                out.print(salesConfirmationOrders.get(i).getDeliveryOrders().get(i).getDeliveryOrderNumber() + " , ");
-//                                                            }
-//                                                        }
-//                                                    }
+                                                    if (salesConfirmationOrders.get(i).getDeliveryOrders().size() > 0) {
+                                                        for (int k = 0; k < salesConfirmationOrders.get(i).getDeliveryOrders().size(); k++) {
+                                                            if ((k + 1) == salesConfirmationOrders.get(i).getDeliveryOrders().size()) {
+                                                                
+                                                                out.print(salesConfirmationOrders.get(i).getDeliveryOrders().get(k).getDeliveryOrderNumber());
+                                                            } else {
+                                                                out.print(salesConfirmationOrders.get(i).getDeliveryOrders().get(k).getDeliveryOrderNumber() + ", ");
+                                                            }
+                                                        }
+                                                    }
                                                 %>
                                             </td>
                                             <td>
@@ -148,7 +149,7 @@
 //                                                            if ((k + 1) == salesConfirmationOrders.get(i).getDeliveryOrders().size()) {
 //                                                                out.print(salesConfirmationOrders.get(i).getInvoices().get(i).getInvoiceNumber());
 //                                                            } else {
-//                                                                out.print(salesConfirmationOrders.get(i).getInvoices().get(i).getInvoiceNumber() + " , ");
+//                                                                out.print(salesConfirmationOrders.get(i).getInvoices().get(i).getInvoiceNumber() + ", ");
 //                                                            }
 //                                                        }
 //                                                    }

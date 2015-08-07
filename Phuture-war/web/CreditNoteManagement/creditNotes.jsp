@@ -77,7 +77,7 @@
                                     <tbody>
                                         <%
                                             if (creditNotes != null) {
-                                                SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("d MMM yyyy");
+                                                SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
                                                 NumberFormat formatter = NumberFormat.getCurrencyInstance();
                                                 for (int i = 0; i < creditNotes.size(); i++) {
                                         %>

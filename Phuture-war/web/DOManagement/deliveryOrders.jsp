@@ -106,7 +106,7 @@
                                             <td><%=deliveryOrders.get(i).getDeliveryOrderNumber()%></td>
                                             <td>
                                                 <%
-                                                    SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("d MMM yyyy");
+                                                    SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
                                                     String date = DATE_FORMAT.format(deliveryOrders.get(i).getDeliveryOrderDate());
                                                     out.print(date);
                                                 %>
