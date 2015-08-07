@@ -1,3 +1,4 @@
+<%@page import="java.util.Date"%>
 <%@page import="java.text.NumberFormat"%>
 <%@page import="EntityManager.StatementOfAccount"%>
 <%@page import="EntityManager.Invoice"%>
@@ -57,9 +58,9 @@
         }
         function refreshInvoices() {
             NProgress.start();
-            <% if (previousMgtPage.equals("sco") || previousMgtPage.equals("soa")) {%>
+            <% if (previousMgtPage.equals("sco")) {%>
             window.location.href = "../InvoiceManagementController?target=RefreshSCOInvoices";
-            <%} else if (previousMgtPage.equals("invoices")) {%>
+            <%} else if (previousMgtPage.equals("invoices") || previousMgtPage.equals("soa")) {%>
             window.location.href = "../InvoiceManagementController?target=RefreshInvoices";
             <%}%>
         }
@@ -122,6 +123,7 @@
                                             <th>Invoiced Amount</th>
                                             <th>Amount Paid</th>
                                             <th></th>
+                                            <th>Due Date</th>
                                             <th>Invoice Status</th>
                                             <th style="width: 400px;">Action</th>
                                         </tr>
@@ -134,7 +136,7 @@
                                             <td><%=invoices.get(i).getInvoiceNumber()%></td>
                                             <td>
                                                 <%
-                                                    SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("d MMM yyyy");
+                                                    SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
                                                     String date = DATE_FORMAT.format(invoices.get(i).getDateSent());
                                                     out.print(date);
                                                 %>
@@ -163,6 +165,15 @@
                                                     } else {
                                                         //If total paid equal invoiced
                                                     }%>
+                                            </td>
+                                            <td>
+                                                <%
+                                                    Date dueDate = invoices.get(i).getDateDue();
+                                                    if (dueDate != null) {
+                                                        date = DATE_FORMAT.format(dueDate);
+                                                        out.print(date);
+                                                    }
+                                                %>
                                             </td>
                                             <td><%=invoices.get(i).getStatus()%></td>
                                             <td><button type="button" class="btn btn-default btn-block" onclick="javascript:viewInvoice('<%=invoices.get(i).getId()%>')">View</button></td>
