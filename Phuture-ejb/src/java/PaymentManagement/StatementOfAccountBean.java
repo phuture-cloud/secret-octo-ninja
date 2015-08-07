@@ -194,8 +194,8 @@ public class StatementOfAccountBean implements StatementOfAccountBeanLocal {
                 //For each invoice
                 //Loop thru the customer payment and create it as an SOALineItem
                 //At the same time calculate the amount overdue for each invoice
-                q = em.createQuery("SELECT e FROM PaymentRecord e where e.customer.id=:customerID AND e.isDeleted=false");
-                q.setParameter("customerID", customerID);
+                q = em.createQuery("SELECT e FROM PaymentRecord e where e.invoice.id=:invoiceID AND e.isDeleted=false");
+                q.setParameter("invoiceID", invoice.getId());
                 List<PaymentRecord> paymentRecords = q.getResultList();
                 soalis = new ArrayList();
                 Double totalAmountPaidForThisInvoice = 0.0;
