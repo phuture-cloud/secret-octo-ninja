@@ -104,7 +104,7 @@
                                                 for (int i = 0; i < salesConfirmationOrders.size(); i++) {
                                         %>
                                         <tr>
-                                            <td><%=staff.getStaffPrefix() + "-" + salesConfirmationOrders.get(i).getSalesConfirmationOrderNumber()%></td>
+                                            <td><%=salesConfirmationOrders.get(i).getSalesPerson().getStaffPrefix()+ "-" + salesConfirmationOrders.get(i).getSalesConfirmationOrderNumber()%></td>
                                             <td><a href="../CustomerManagementController?target=ListCustomerContacts&id=<%=salesConfirmationOrders.get(i).getCustomer().getId()%>"><%=salesConfirmationOrders.get(i).getCustomerName()%></a></td>
                                             <td>
                                                 <%
@@ -130,28 +130,28 @@
                                             </td>
                                             <td>
                                                 <%
-                                                    if (salesConfirmationOrders.get(i).getDeliveryOrders().size() > 0) {
-                                                        for (int k = 0; k < salesConfirmationOrders.get(i).getDeliveryOrders().size(); k++) {
-                                                            if ((k + 1) == salesConfirmationOrders.get(i).getDeliveryOrders().size()) {
-                                                                out.print(salesConfirmationOrders.get(i).getDeliveryOrders().get(i).getDeliveryOrderNumber());
-                                                            } else {
-                                                                out.print(salesConfirmationOrders.get(i).getDeliveryOrders().get(i).getDeliveryOrderNumber() + " , ");
-                                                            }
-                                                        }
-                                                    }
+//                                                    if (salesConfirmationOrders.get(i).getDeliveryOrders().size() > 0) {
+//                                                        for (int k = 0; k < salesConfirmationOrders.get(i).getDeliveryOrders().size(); k++) {
+//                                                            if ((k + 1) == salesConfirmationOrders.get(i).getDeliveryOrders().size()) {
+//                                                                out.print(salesConfirmationOrders.get(i).getDeliveryOrders().get(i).getDeliveryOrderNumber());
+//                                                            } else {
+//                                                                out.print(salesConfirmationOrders.get(i).getDeliveryOrders().get(i).getDeliveryOrderNumber() + " , ");
+//                                                            }
+//                                                        }
+//                                                    }
                                                 %>
                                             </td>
                                             <td>
                                                 <%
-                                                    if (salesConfirmationOrders.get(i).getInvoices().size() > 0) {
-                                                        for (int k = 0; k < salesConfirmationOrders.get(i).getInvoices().size(); k++) {
-                                                            if ((k + 1) == salesConfirmationOrders.get(i).getDeliveryOrders().size()) {
-                                                                out.print(salesConfirmationOrders.get(i).getInvoices().get(i).getInvoiceNumber());
-                                                            } else {
-                                                                out.print(salesConfirmationOrders.get(i).getInvoices().get(i).getInvoiceNumber() + " , ");
-                                                            }
-                                                        }
-                                                    }
+//                                                    if (salesConfirmationOrders.get(i).getInvoices().size() > 0) {
+//                                                        for (int k = 0; k < salesConfirmationOrders.get(i).getInvoices().size(); k++) {
+//                                                            if ((k + 1) == salesConfirmationOrders.get(i).getDeliveryOrders().size()) {
+//                                                                out.print(salesConfirmationOrders.get(i).getInvoices().get(i).getInvoiceNumber());
+//                                                            } else {
+//                                                                out.print(salesConfirmationOrders.get(i).getInvoices().get(i).getInvoiceNumber() + " , ");
+//                                                            }
+//                                                        }
+//                                                    }
                                                 %>
                                             </td>
                                             <td>
