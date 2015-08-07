@@ -234,6 +234,7 @@ public class StatementOfAccountBean implements StatementOfAccountBeanLocal {
                     soali3.setDescription("");
                     soali3.setDueDate(null);
                     Invoice currentInvoice = creditNote.getAppliedToInvoice();
+                    //If applied to invoice
                     if (currentInvoice != null) {
                         soali3.setScoID(creditNote.getAppliedToInvoice().getSalesConfirmationOrder().getId());
                         soali3.setInvoiceID(creditNote.getAppliedToInvoice().getId());
@@ -248,6 +249,7 @@ public class StatementOfAccountBean implements StatementOfAccountBeanLocal {
                         soali3.setInvoiceID(invoice.getId());
                         soali3.setDescription("Applied on "+invoice.getInvoiceNumber());
                     } else {
+                        soali3.setCredit(creditNote.getCreditAmount());
                         soali3.setScoID(null);
                         soali3.setInvoiceID(null);
                     }
