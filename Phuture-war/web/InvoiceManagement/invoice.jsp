@@ -136,7 +136,7 @@
                     document.invoiceManagement.submit();
                 }
 
-                function deleteInvoice() {
+                function voidInvoice() {
                     window.onbeforeunload = null;
                     window.location.href = "../InvoiceManagementController?target=VoidInvoice";
                 }
@@ -846,7 +846,7 @@
                             <footer class="panel-footer">
                                 <div class="row">
                                     <div class="col-md-12 text-right">
-                                        <button class="btn btn-primary modal-confirm" onclick="javascript:deleteInvoice();">Confirm</button>
+                                        <button class="btn btn-primary modal-confirm" onclick="javascript:voidInvoice();">Confirm</button>
                                         <button class="btn btn-default modal-dismiss">Cancel</button>
                                     </div>
                                 </div>

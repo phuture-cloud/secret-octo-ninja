@@ -91,7 +91,7 @@ public class DeliveryOrderManagementController extends HttpServlet {
                         }
                         break;
 
-                    case "DeleteDO":
+                    case "VoidDO":
                         if (deliveryOrder != null) {
                             returnHelper = deliveryOrderManagementBean.voidDeliveryOrder(deliveryOrder.getId(), isAdmin);
                             if (returnHelper.getResult()) {

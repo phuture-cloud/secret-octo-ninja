@@ -193,10 +193,10 @@
                     document.scoManagement.submit();
                 }
 
-                function deleteSCO(id) {
+                function voidSCOSCO(id) {
                     window.onbeforeunload = null;
                     scoManagement.id.value = id;
-                    scoManagement.target.value = "DeleteSCO";
+                    scoManagement.target.value = "VoidSCO";
                     document.scoManagement.action = "../OrderManagementController";
                     document.scoManagement.submit();
                 }
@@ -1064,7 +1064,7 @@
                             <footer class="panel-footer">
                                 <div class="row">
                                     <div class="col-md-12 text-right">
-                                        <button class="btn btn-primary modal-confirm" onclick="deleteSCO(<%=scoID%>)">Confirm</button>
+                                        <button class="btn btn-primary modal-confirm" onclick="voidSCO(<%=scoID%>)">Confirm</button>
                                         <button class="btn btn-default modal-dismiss">Cancel</button>
                                     </div>
                                 </div>

@@ -365,7 +365,23 @@ public class OrderManagementController extends HttpServlet {
                             }
                         }
                         break;
-
+                    case "VoidSCO":
+                        if (true) {
+                            returnHelper = orderManagementBean.voidSalesConfirmationOrder(Long.parseLong(id), isAdmin);
+                            if (returnHelper.getResult()) {
+                                List<SalesConfirmationOrder> salesConfirmationOrders = orderManagementBean.listAllSalesConfirmationOrder(loggedInStaffID);
+                                if (salesConfirmationOrders == null) {
+                                    nextPage = "error500.html";
+                                } else {
+                                    session.setAttribute("salesConfirmationOrders", salesConfirmationOrders);
+                                }
+                                session.removeAttribute("sco");
+                                nextPage = "OrderManagement/scoManagement.jsp?goodMsg=" + returnHelper.getDescription();
+                            } else {
+                                nextPage = "OrderManagement/scoManagement.jsp?errMsg=" + returnHelper.getDescription();
+                            }
+                        }
+                        break;
                     case "GenerateDO":
                         if (true) {
                             DateFormat sourceFormat = new SimpleDateFormat("dd/MM/yyyy");

@@ -123,7 +123,7 @@ public class InvoiceManagementController extends HttpServlet {
                                 nextPage = "InvoiceManagement/invoices.jsp?errMsg=" + returnHelper.getDescription();
                             }
                         } else {
-                            nextPage = "InvoiceManagement/invoices.jsp?errMsg=Delete Delivery Invoice failed. An error has occured.";
+                            nextPage = "InvoiceManagement/invoices.jsp?errMsg=Voiding of invoice failed. An error has occured.";
                         }
                         break;
                     case "VoidInvoice":
@@ -151,7 +151,7 @@ public class InvoiceManagementController extends HttpServlet {
                                 nextPage = "InvoiceManagement/invoices.jsp?errMsg=" + returnHelper.getDescription();
                             }
                         } else {
-                            nextPage = "InvoiceManagement/invoices.jsp?errMsg=Delete Delivery Invoice failed. An error has occured.";
+                            nextPage = "InvoiceManagement/invoices.jsp?errMsg=Voiding of invoice failed. An error has occured.";
                         }
                         break;
 
