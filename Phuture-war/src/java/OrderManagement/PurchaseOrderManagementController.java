@@ -2,6 +2,7 @@ package OrderManagement;
 
 import EntityManager.PurchaseOrder;
 import EntityManager.ReturnHelper;
+import EntityManager.SalesConfirmationOrder;
 import EntityManager.Staff;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -82,6 +83,13 @@ public class PurchaseOrderManagementController extends HttpServlet {
                             returnHelper = purchaseOrderManagementBean.deletePurchaseOrder(purchaseOrder.getId());
                             if (returnHelper.getResult()) {
                                 session.removeAttribute("po");
+                                String previousMgtPage = (String) session.getAttribute("previousManagementPage");
+                                if (previousMgtPage.equals("sco")) {
+                                    session.setAttribute("listOfPO", purchaseOrderManagementBean.listPurchaseOrdersTiedToSCO(purchaseOrder.getSalesConfirmationOrder().getId()));
+                                } else { //coming from po
+                                    session.setAttribute("listOfPO", purchaseOrderManagementBean.listAllPurchaseOrder(loggedInStaffID));
+                                }
+                                
                                 nextPage = "POManagement/purchaseOrders.jsp?goodMsg=" + returnHelper.getDescription();
                             } else {
                                 nextPage = "POManagement/purchaseOrders.jsp?errMsg=" + returnHelper.getDescription();

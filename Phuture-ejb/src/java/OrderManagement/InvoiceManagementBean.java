@@ -375,7 +375,7 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
         return result;
     }
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     @Override
     public ReturnHelper voidInvoice(Long invoiceID, Boolean adminOverwrite) {
         System.out.println("InvoiceManagementBean: voidInvoice() called");
@@ -391,8 +391,6 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
                 return result;
             }
             if (!invoice.getStatus().equals("Voided")) {
-                invoice.setStatusAsVoided();
-                em.merge(invoice);
                 SalesConfirmationOrder sco = invoice.getSalesConfirmationOrder();
                 //Update SCO total amount invoiced
                 sco.setTotalInvoicedAmount(getSCOtotalInvoicedAmount(sco.getId()));
@@ -406,6 +404,8 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
                 for (CreditNote creditNote : creditNotes) {
                     pmbl.voidCreditNote(creditNote.getId());
                 }
+                invoice.setStatusAsVoided();
+                em.merge(invoice);
             }
             result.setResult(true);
             result.setDescription("Invoice voided.");

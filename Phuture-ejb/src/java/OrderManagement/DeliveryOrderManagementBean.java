@@ -378,7 +378,7 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
         return result;
     }
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     @Override
     public ReturnHelper voidDeliveryOrder(Long deliveryOrderID, Boolean adminOverwrite) {
         System.out.println("DeliveryOrderManagementBean: voidDeliveryOrder() called");

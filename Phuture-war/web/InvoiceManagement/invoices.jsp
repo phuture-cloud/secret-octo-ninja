@@ -174,7 +174,6 @@
                                                         //Invoice fully paid using credit note and credit note is over invoice amount
                                                         //do nothing
                                                     } else if ( Math.round(invoices.get(i).getTotalAmountPaid() * 100.0) / 100.0 < Math.round(invoices.get(i).getTotalPriceAfterCreditNote() * 100.0) / 100.0) {
-                                                        System.out.print(">>>>>>>>>>>>>>>" + invoices.get(i).getTotalPriceAfterCreditNote());
                                                         //If total paid less than invoiced amount
                                                         out.println("<i class='fa fa-exclamation-circle' style='color:red' data-toggle='tooltip' data-placement='top' title='Payment not fully received'></i>");
                                                     } else if (Math.round((invoices.get(i).getTotalCreditNoteAmount() + invoices.get(i).getTotalAmountPaid()) * 100.0) / 100.0  > Math.round(invoices.get(i).getTotalPriceBeforeCreditNote()*100.0)/100.0) {

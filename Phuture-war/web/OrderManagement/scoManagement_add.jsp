@@ -1042,7 +1042,7 @@
                                         <i class="fa fa-question-circle" style="top: 0px;"></i>
                                     </div>
                                     <div class="modal-text">
-                                        <p>Are you sure that you want to void this Sales Confirmation Order?<br>All associated Delivery Orders & Invoice & Credit Notes will also be voided.<br>All associated Purchase Orders & Payment records will also be deleted.<br>This action cannot be reversed!</p>
+                                        <p>Are you sure that you want to void this Sales Confirmation Order?<br>All associated DO, Invoice, Credit Notes will be voided.<br>All associated Purchase Orders & Payment records will also be deleted.<br>This action cannot be reversed!</p>
                                     </div>
                                 </div>
                             </div>
