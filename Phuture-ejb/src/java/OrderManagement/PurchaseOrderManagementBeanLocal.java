@@ -12,7 +12,8 @@ public interface PurchaseOrderManagementBeanLocal {
     public ReturnHelper createPurchaseOrder(Long salesConfirmationOrderID, String purchaseOrderNumber, Date purchaseOrderDate);
     public ReturnHelper updatePurchaseOrder(Long purchaseOrderID, String purchaseOrderNumber, Date purchaseOrderDate, String status, String supplierName, String supplierEmail, String supplierOfficeNo, String supplierMobileNo, String supplierFaxNo, String supplierAddress, String companyName, String terms, String deliveryDate, String remarks, String currency);
     public ReturnHelper updatePurchaseOrderStatus(Long purchaseOrderID, String status);
-    public ReturnHelper updatePurchaseOrderNotes(Long salesConfirmationOrderID, String notes);
+    public ReturnHelper updatePurchaseOrderNotes(Long purchaseOrderID, String notes);
+    public ReturnHelper updatePurchaseOrderRemarks(Long purchaseOrderID, String remarks);
     public ReturnHelper deletePurchaseOrder(Long purchaseOrderID);
     public ReturnHelper checkIfPOnumberIsUnique(String purchaseOrderNumber);
     

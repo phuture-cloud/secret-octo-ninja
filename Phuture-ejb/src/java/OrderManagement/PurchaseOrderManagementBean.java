@@ -191,6 +191,33 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
         }
         return result;
     }
+    @Override
+    public ReturnHelper updatePurchaseOrderRemarks(Long purchaseOrderID, String remarks) {
+        System.out.println("PurchaseOrderManagementBean: updatePurchaseOrderRemarks() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        try {
+            Query q = em.createQuery("SELECT s FROM PurchaseOrder s WHERE s.id=:id");
+            q.setParameter("id", purchaseOrderID);
+            PurchaseOrder po = (PurchaseOrder) q.getSingleResult();
+            if (po.getIsDeleted()) {
+                result.setDescription("Failed to edit the PO as it has been deleted.");
+                return result;
+            }
+            po.setRemarks(remarks);
+            em.merge(po);
+            result.setResult(true);
+            result.setDescription("PO edited successfully.");
+        } catch (NoResultException ex) {
+            System.out.println("PurchaseOrderManagementBean: updatePurchaseOrderRemarks() could not find one or more ID(s).");
+            result.setDescription("Failed to edit the PO. The PO selected no longer exist in the system.");
+        } catch (Exception ex) {
+            System.out.println("PurchaseOrderManagementBean: updatePurchaseOrderRemarks() failed");
+            ex.printStackTrace();
+            result.setDescription("Failed to edit the PO due to internal server error.");
+        }
+        return result;
+    }
 
     @Override
     public ReturnHelper deletePurchaseOrder(Long purchaseOrderID) {
