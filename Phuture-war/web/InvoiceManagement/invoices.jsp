@@ -2,7 +2,6 @@
 <%@page import="java.text.NumberFormat"%>
 <%@page import="EntityManager.StatementOfAccount"%>
 <%@page import="EntityManager.Invoice"%>
-<%@page import="EntityManager.DeliveryOrder"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="EntityManager.SalesConfirmationOrder"%>
 <%@page import="EntityManager.Customer"%>
@@ -29,6 +28,7 @@
     }
 
     List<Invoice> invoices = (List<Invoice>) (session.getAttribute("listOfInvoice"));
+
     if (session.isNew()) {
         response.sendRedirect("../index.jsp?errMsg=Invalid Request. Please login.");
     } else if (staff == null) {
@@ -61,7 +61,7 @@
             <% if (previousMgtPage.equals("sco")) {%>
             window.location.href = "../InvoiceManagementController?target=RefreshSCOInvoices";
             <%} else if (previousMgtPage.equals("invoices") || previousMgtPage.equals("soa")) {%>
-            <%if (request.getParameter("show")!=null && request.getParameter("show").equals("overdue")) {%>
+            <%if (request.getParameter("show") != null && request.getParameter("show").equals("overdue")) {%>
             window.location.href = "../StatementOfAccountManagementController?target=ViewOverDueInvoiceTiedToCustomer";
             <%} else {%>
             window.location.href = "../InvoiceManagementController?target=RefreshInvoices";
@@ -124,12 +124,14 @@
                                         <tr>
                                             <th>Invoice #</th>
                                             <th>Invoice Date</th>
+                                            <th>Customer</th>
                                             <th>Invoiced Amount</th>
                                             <th>Amount Paid</th>
+                                            <th>Credits Applied</th>
                                             <th></th>
                                             <th>Due Date</th>
                                             <th>Invoice Status</th>
-                                            <th style="width: 400px;">Action</th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -145,7 +147,8 @@
                                                     out.print(date);
                                                 %>
                                             </td>
-                                            <td><%=formatter.format(invoices.get(i).getTotalPriceAfterCreditNote())%></td>
+                                            <td><%=invoices.get(i).getCustomerName()%></td>
+                                            <td><%=formatter.format(invoices.get(i).getTotalPriceBeforeCreditNote())%></td>
                                             <td>
                                                 <%
                                                     if (invoices.get(i).getTotalAmountPaid() != null) {
@@ -156,14 +159,26 @@
                                                 %>
                                             </td>
                                             <td>
-                                                <% if (invoices.get(i).getTotalAmountPaid() == null) {
+                                                <%
+                                                    if (invoices.get(i).getTotalCreditNoteAmount() != null) {
+                                                        out.print(formatter.format(invoices.get(i).getTotalCreditNoteAmount()));
+                                                    } else {
+                                                        out.println("NA");
+                                                    }
+                                                %>
+                                            </td>
+                                            <td>
+                                                <% if (invoices.get(i).getTotalAmountPaid() == null || invoices.get(i).getTotalCreditNoteAmount() == null || invoices.get(i).getTotalPriceAfterCreditNote() == null || invoices.get(i).getTotalPriceBeforeCreditNote() == null) {
                                                         //If there was some errors calculating the payment amount
                                                         out.println("<i class='fa fa-exclamation-triangle' style='color:yellow' data-toggle='tooltip' data-placement='top' title='Unable to calculate payment amount'></i>");
-                                                    } else if (invoices.get(i).getTotalAmountPaid() < invoices.get(i).getTotalPriceAfterCreditNote()) {
+                                                    } else if (invoices.get(i).getTotalAmountPaid() == 0 &&  Math.round(invoices.get(i).getTotalCreditNoteAmount() * 100.0) / 100.0  > Math.round(invoices.get(i).getTotalPriceBeforeCreditNote() * 100.0) / 100.0) {
+                                                        //Invoice fully paid using credit note and credit note is over invoice amount
+                                                        //do nothing
+                                                    } else if ( Math.round(invoices.get(i).getTotalAmountPaid() * 100.0) / 100.0 < Math.round(invoices.get(i).getTotalPriceAfterCreditNote() * 100.0) / 100.0) {
+                                                        System.out.print(">>>>>>>>>>>>>>>" + invoices.get(i).getTotalPriceAfterCreditNote());
                                                         //If total paid less than invoiced amount
                                                         out.println("<i class='fa fa-exclamation-circle' style='color:red' data-toggle='tooltip' data-placement='top' title='Payment not fully received'></i>");
-                                                        out.println();
-                                                    } else if (invoices.get(i).getTotalAmountPaid() > invoices.get(i).getTotalPriceAfterCreditNote()) {
+                                                    } else if (Math.round((invoices.get(i).getTotalCreditNoteAmount() + invoices.get(i).getTotalAmountPaid()) * 100.0) / 100.0  > Math.round(invoices.get(i).getTotalPriceBeforeCreditNote()*100.0)/100.0) {
                                                         //If total paid more than invoiced amount
                                                         out.println("<i class='fa fa-exclamation-circle' style='color:orange' data-toggle='tooltip' data-placement='top' title='Invoice overpaid'></i>");
                                                     } else {
@@ -180,7 +195,9 @@
                                                 %>
                                             </td>
                                             <td><%=invoices.get(i).getStatus()%></td>
-                                            <td><button type="button" class="btn btn-default btn-block" onclick="javascript:viewInvoice('<%=invoices.get(i).getId()%>')">View</button></td>
+                                            <td>
+                                                <button type="button" class="btn btn-default btn-block" onclick="javascript:viewInvoice('<%=invoices.get(i).getId()%>')">View</button>
+                                            </td>
                                         </tr>
                                         <%
                                             }

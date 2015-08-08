@@ -3,10 +3,10 @@ package OrderManagement;
 import EntityManager.LineItem;
 import EntityManager.ReturnHelper;
 import EntityManager.SalesConfirmationOrder;
+import EntityManager.SalesConfirmationOrderHelper;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.Local;
-import javax.ejb.TransactionAttribute;
 
 @Local
 public interface OrderManagementBeanLocal {
@@ -24,8 +24,8 @@ public interface OrderManagementBeanLocal {
     public ReturnHelper checkIfSCOnumberIsUnique(String salesConfirmationNumber);
     
     public SalesConfirmationOrder getSalesConfirmationOrder(Long salesConfirmationOrderID);
-    public List<SalesConfirmationOrder> listAllSalesConfirmationOrder(Long staffID);
-    public List<SalesConfirmationOrder> listCustomerSalesConfirmationOrder(Long customerID);
+    public List<SalesConfirmationOrderHelper> listAllSalesConfirmationOrder(Long staffID);
+    public List<SalesConfirmationOrderHelper> listCustomerSalesConfirmationOrder(Long customerID);
     
     public ReturnHelper addSCOlineItem(Long salesConfirmationOrderID, String itemName, String itemDescription, Integer itemQty, Double itemUnitPrice,Boolean adminOverwrite);
     public ReturnHelper updateSCOlineItem(Long salesConfirmationOrderID, Long lineItemID, String newItemName, String newItemDescription, Integer newItemQty, Double newItemUnitPrice, Boolean adminOverwrite);

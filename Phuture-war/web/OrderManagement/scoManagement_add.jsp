@@ -31,6 +31,10 @@
         String selectedContactID = request.getParameter("selectedContactID");
         String editingLineItem = request.getParameter("editingLineItem");
         String formDisablerFlag = "";
+        if (sco!=null && sco.getStatus().equals("Voided")) {
+            formDisablerFlag = "disabled";
+            editingLineItem = "disabled";
+        }
         if (editingLineItem == null) {
             editingLineItem = "";
         } else {//Disable unneccessary fields when editing line item
@@ -193,12 +197,9 @@
                     document.scoManagement.submit();
                 }
 
-                function voidSCOSCO(id) {
+                function voidSCO(id) {
                     window.onbeforeunload = null;
-                    scoManagement.id.value = id;
-                    scoManagement.target.value = "VoidSCO";
-                    document.scoManagement.action = "../OrderManagementController";
-                    document.scoManagement.submit();
+                    window.location.href = "../OrderManagementController?target=VoidSCO&id=" + id;
                 }
 
                 function addressBook() {
@@ -515,6 +516,8 @@
                                                                             out.print("<option value='Fulfilled'>Fulfilled</option>");
                                                                             out.print("<option value='Completed'>Completed</option>");
                                                                             out.print("<option value='Write-Off' selected>Write-Off</option>");
+                                                                        } else if (selectedStatus.equals("Voided")) {
+                                                                             out.print("<option value='Voided' selected>Voided</option>");
                                                                         } else {
                                                                             out.print("<option value='Unfulfilled'>Unfulfilled</option>");
                                                                             out.print("<option value='Fulfilled'>Fulfilled</option>");
@@ -750,7 +753,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="row">
                                     <div class="col-sm-6 mt-md">
                                         <div class="btn-group">
@@ -792,7 +794,9 @@
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-default" onclick="javascript:back()">Back</button>
                                             <% if (sco != null && scoID != null && !scoID.isEmpty()) {
-                                                    out.print("<button type='button' class='modal-with-move-anim btn btn-danger' href='#modalRemove'>Void SCO</button>");
+                                                    if (!sco.getStatus().equals("Voided")) {
+                                                        out.print("<button type='button' class='modal-with-move-anim btn btn-danger' href='#modalRemove'>Void SCO</button>");
+                                                    }
                                                     if (sco.getItems().size() > 0) {
                                                         out.print("<button " + formDisablerFlag + " class='btn btn-primary modal-with-form' href='#modalGeneratePO'>Generate PO</button>");
                                                         out.print("<button " + formDisablerFlag + " class='btn btn-primary modal-with-form' href='#modalGenerateDO' >Generate DO</button>");
@@ -1005,9 +1009,9 @@
                                 <footer class="panel-footer">
                                     <div class="row">
                                         <div class="col-md-12 text-right">
-                                            <button class="btn btn-success" type="submit">Save</button>
-                                            <button class="btn btn-default" type="reset">Clear</button>
-                                            <button class="btn btn-default modal-dismiss">Cancel</button>
+                                            <button <%=formDisablerFlag%> class="btn btn-success" type="submit">Save</button>
+                                            <button <%=formDisablerFlag%> class="btn btn-default" type="reset">Clear</button>
+                                            <button class="btn btn-default modal-dismiss">Close</button>
                                         </div>
                                     </div>
                                 </footer>
@@ -1036,9 +1040,9 @@
                                 <footer class="panel-footer">
                                     <div class="row">
                                         <div class="col-md-12 text-right">
-                                            <button class="btn btn-success" type="submit">Save</button>
-                                            <button class="btn btn-default" type="reset">Clear</button>
-                                            <button class="btn btn-default modal-dismiss">Cancel</button>
+                                            <button <%=formDisablerFlag%>  class="btn btn-success" type="submit">Save</button>
+                                            <button <%=formDisablerFlag%>  class="btn btn-default" type="reset">Clear</button>
+                                            <button class="btn btn-default modal-dismiss">Close</button>
                                         </div>
                                     </div>
                                 </footer>

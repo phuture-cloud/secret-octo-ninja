@@ -3,10 +3,9 @@ package OrderManagement;
 import CustomerManagement.CustomerManagementBeanLocal;
 import EntityManager.Contact;
 import EntityManager.Customer;
-import EntityManager.DeliveryOrder;
-import EntityManager.Invoice;
 import EntityManager.ReturnHelper;
 import EntityManager.SalesConfirmationOrder;
+import EntityManager.SalesConfirmationOrderHelper;
 import EntityManager.Staff;
 import java.io.IOException;
 import java.text.DateFormat;
@@ -105,7 +104,7 @@ public class OrderManagementController extends HttpServlet {
                 switch (target) {
                     case "ListAllSCO":
                         if (true) {
-                            List<SalesConfirmationOrder> salesConfirmationOrders = orderManagementBean.listAllSalesConfirmationOrder(loggedInStaffID);
+                            List<SalesConfirmationOrderHelper> salesConfirmationOrders = orderManagementBean.listAllSalesConfirmationOrder(loggedInStaffID);
                             if (salesConfirmationOrders == null) {
                                 nextPage = "error500.html";
                             } else {
@@ -354,7 +353,7 @@ public class OrderManagementController extends HttpServlet {
                         if (true) {
                             returnHelper = orderManagementBean.deleteSalesConfirmationOrder(Long.parseLong(id), isAdmin);
                             if (returnHelper.getResult()) {
-                                List<SalesConfirmationOrder> salesConfirmationOrders = orderManagementBean.listAllSalesConfirmationOrder(loggedInStaffID);
+                                List<SalesConfirmationOrderHelper> salesConfirmationOrders = orderManagementBean.listAllSalesConfirmationOrder(loggedInStaffID);
                                 if (salesConfirmationOrders == null) {
                                     nextPage = "error500.html";
                                 } else {
@@ -371,7 +370,7 @@ public class OrderManagementController extends HttpServlet {
                         if (true) {
                             returnHelper = orderManagementBean.voidSalesConfirmationOrder(Long.parseLong(id), isAdmin);
                             if (returnHelper.getResult()) {
-                                List<SalesConfirmationOrder> salesConfirmationOrders = orderManagementBean.listAllSalesConfirmationOrder(loggedInStaffID);
+                                List<SalesConfirmationOrderHelper> salesConfirmationOrders = orderManagementBean.listAllSalesConfirmationOrder(loggedInStaffID);
                                 if (salesConfirmationOrders == null) {
                                     nextPage = "error500.html";
                                 } else {
@@ -437,7 +436,7 @@ public class OrderManagementController extends HttpServlet {
                     case "RefreshSCOs":
                         if (true) {
                             returnHelper = orderManagementBean.refreshSCOs(staff.getId());
-                            List<SalesConfirmationOrder> salesConfirmationOrders = orderManagementBean.listAllSalesConfirmationOrder(loggedInStaffID);
+                            List<SalesConfirmationOrderHelper> salesConfirmationOrders = orderManagementBean.listAllSalesConfirmationOrder(loggedInStaffID);
                             if (salesConfirmationOrders == null) {
                                 nextPage = "error500.html";
                             } else {

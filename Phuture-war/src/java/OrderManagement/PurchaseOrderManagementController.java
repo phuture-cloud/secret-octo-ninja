@@ -91,16 +91,7 @@ public class PurchaseOrderManagementController extends HttpServlet {
                         if (purchaseOrder != null) {
                             returnHelper = purchaseOrderManagementBean.deletePurchaseOrder(purchaseOrder.getId());
                             if (returnHelper.getResult()) {
-                                List<SalesConfirmationOrder> salesConfirmationOrders = orderManagementBean.listAllSalesConfirmationOrder(loggedInStaffID);
-                                if (salesConfirmationOrders == null) {
-                                    nextPage = "error500.html";
-                                } else {
-                                    session.setAttribute("salesConfirmationOrders", salesConfirmationOrders);
-                                }
-                                SalesConfirmationOrder sco = (SalesConfirmationOrder) (session.getAttribute("sco"));
-                                session.setAttribute("sco", orderManagementBean.getSalesConfirmationOrder(sco.getId()));
                                 session.removeAttribute("po");
-
                                 nextPage = "POManagement/purchaseOrders.jsp?goodMsg=" + returnHelper.getDescription();
                             } else {
                                 nextPage = "POManagement/purchaseOrders.jsp?errMsg=" + returnHelper.getDescription();

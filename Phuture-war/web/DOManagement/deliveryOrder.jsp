@@ -22,6 +22,10 @@
     } else {
         String editingLineItem = request.getParameter("editingLineItem");
         String formDisablerFlag = "";
+        if (deliveryOrder!=null && deliveryOrder.getStatus().equals("Voided")) {
+            formDisablerFlag = "disabled";
+            editingLineItem = "disabled";
+        }
         if (editingLineItem == null) {
             editingLineItem = "";
         } else {//Disable unneccessary fields when editing line item
@@ -269,6 +273,8 @@
                                                                             out.print("<option value='Created'>Created</option>");
                                                                             out.print("<option value='Shipped'>Shipped</option>");
                                                                             out.print("<option value='Delivered' selected>Delivered</option>");
+                                                                        } else if (selectedStatus.equals("Voided")) {
+                                                                            out.print("<option value='Voided'>Voided</option>");
                                                                         } else {
                                                                             out.print("<option value='Created'>Created</option>");
                                                                             out.print("<option value='Shipped'>Shipped</option>");
@@ -334,7 +340,7 @@
                                                         for (int i = 0; i < deliveryOrder.getItems().size(); i++) {
                                                             if (!editingLineItem.isEmpty() && editingLineItem.equals(deliveryOrder.getItems().get(i).getId() + "")) {
                                                                 //Print editable fields
-                                                %>
+%>
                                                 <tr>
                                                     <td>
                                                         <input type='text' class='form-control' name='itemName' id='itemName<%=deliveryOrder.getItems().get(i).getId()%>' value='<%=deliveryOrder.getItems().get(i).getItemName()%>'/>
@@ -417,7 +423,9 @@
                                     <div class="col-sm-6 text-right mt-md mb-md">
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-default" onclick="javascript:back()">Back</button>
+                                            <%if (!deliveryOrder.getStatus().equals("Voided")) {%>
                                             <button type='button' class='modal-with-move-anim btn btn-danger' href='#modalRemove'>Void Delivery Order</button>
+                                            <%}%>
                                             <button <%=formDisablerFlag%> class='btn btn-success' onclick='javascript:updateDO();'>Save</button>
                                         </div>
                                     </div>
@@ -521,9 +529,9 @@
                                 <footer class="panel-footer">
                                     <div class="row">
                                         <div class="col-md-12 text-right">
-                                            <button class="btn btn-success" type="submit">Save</button>
-                                            <button class="btn btn-default" type="reset">Clear</button>
-                                            <button class="btn btn-default modal-dismiss">Cancel</button>
+                                            <button <%=formDisablerFlag%> class="btn btn-success" type="submit">Save</button>
+                                            <button <%=formDisablerFlag%> class="btn btn-default" type="reset">Clear</button>
+                                            <button class="btn btn-default modal-dismiss">Close</button>
                                         </div>
                                     </div>
                                 </footer>
@@ -551,9 +559,9 @@
                                 <footer class="panel-footer">
                                     <div class="row">
                                         <div class="col-md-12 text-right">
-                                            <button class="btn btn-success" type="submit">Save</button>
-                                            <button class="btn btn-default" type="reset">Clear</button>
-                                            <button class="btn btn-default modal-dismiss">Cancel</button>
+                                            <button <%=formDisablerFlag%> class="btn btn-success" type="submit">Save</button>
+                                            <button <%=formDisablerFlag%> class="btn btn-default" type="reset">Clear</button>
+                                            <button class="btn btn-default modal-dismiss">Close</button>
                                         </div>
                                     </div>
                                 </footer>

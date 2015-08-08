@@ -95,16 +95,7 @@ public class DeliveryOrderManagementController extends HttpServlet {
                         if (deliveryOrder != null) {
                             returnHelper = deliveryOrderManagementBean.voidDeliveryOrder(deliveryOrder.getId(), isAdmin);
                             if (returnHelper.getResult()) {
-                                List<SalesConfirmationOrder> salesConfirmationOrders = orderManagementBean.listAllSalesConfirmationOrder(loggedInStaffID);
-                                if (salesConfirmationOrders == null) {
-                                    nextPage = "error500.html";
-                                } else {
-                                    session.setAttribute("salesConfirmationOrders", salesConfirmationOrders);
-                                }
-                                SalesConfirmationOrder sco = (SalesConfirmationOrder) (session.getAttribute("sco"));
-                                session.setAttribute("sco", orderManagementBean.getSalesConfirmationOrder(sco.getId()));
                                 session.removeAttribute("do");
-
                                 nextPage = "DOManagement/deliveryOrders.jsp?goodMsg=" + returnHelper.getDescription();
                             } else {
                                 nextPage = "DOManagement/deliveryOrders.jsp?errMsg=" + returnHelper.getDescription();

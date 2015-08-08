@@ -9,8 +9,10 @@ import EntityManager.OrderNumbers;
 import EntityManager.PurchaseOrder;
 import EntityManager.ReturnHelper;
 import EntityManager.SalesConfirmationOrder;
+import EntityManager.SalesConfirmationOrderHelper;
 import EntityManager.Staff;
 import PaymentManagement.PaymentManagementBeanLocal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.Resource;
@@ -470,7 +472,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
                 result.setDescription(checkResult.getDescription());
                 return result;
             }
-            sco.setIsDeleted(true);
+            sco.setStatusAsVoided();
             em.merge(sco);
             List<PurchaseOrder> pos = sco.getPurchaseOrders();
             for (PurchaseOrder purchaseOrder : pos) {
@@ -579,7 +581,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
     }
 
     @Override
-    public List<SalesConfirmationOrder> listAllSalesConfirmationOrder(Long staffID) {
+    public List<SalesConfirmationOrderHelper> listAllSalesConfirmationOrder(Long staffID) {
         System.out.println("OrderManagementBean: listAllSalesConfirmationOrder() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -596,7 +598,16 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
                 q.setParameter("staffID", staffID);
             }
             List<SalesConfirmationOrder> salesConfirmationOrders = q.getResultList();
-            return salesConfirmationOrders;
+            List<SalesConfirmationOrderHelper> salesConfirmationOrderHelpers = new ArrayList();
+            for (SalesConfirmationOrder salesConfirmationOrder: salesConfirmationOrders) {
+                SalesConfirmationOrderHelper salesConfirmationOrderHelper = new SalesConfirmationOrderHelper();
+                salesConfirmationOrderHelper.setSco(salesConfirmationOrder);
+                salesConfirmationOrderHelper.setDeliveryOrders(dombl.listDeliveryOrdersTiedToSCO(salesConfirmationOrder.getId()));
+                salesConfirmationOrderHelper.setInvoices(imbl.listInvoicesTiedToSCO(salesConfirmationOrder.getId()));
+                salesConfirmationOrderHelper.setPurchaseOrders(pombl.listPurchaseOrdersTiedToSCO(salesConfirmationOrder.getId()));
+                salesConfirmationOrderHelpers.add(salesConfirmationOrderHelper);
+            }
+            return salesConfirmationOrderHelpers;
         } catch (Exception ex) {
             System.out.println("OrderManagementBean: listAllSalesConfirmationOrder() failed");
             result.setDescription("Internal server error.");
@@ -606,7 +617,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
     }
 
     @Override
-    public List<SalesConfirmationOrder> listCustomerSalesConfirmationOrder(Long customerID) {
+    public List<SalesConfirmationOrderHelper> listCustomerSalesConfirmationOrder(Long customerID) {
         System.out.println("OrderManagementBean: listCustomerSalesConfirmationOrder() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -614,7 +625,16 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             Query q = em.createQuery("SELECT s FROM SalesConfirmationOrder s WHERE s.isDeleted=false AND s.customerLink.id=:id");
             q.setParameter("id", customerID);
             List<SalesConfirmationOrder> salesConfirmationOrders = q.getResultList();
-            return salesConfirmationOrders;
+            List<SalesConfirmationOrderHelper> salesConfirmationOrderHelpers = new ArrayList();
+            for (SalesConfirmationOrder salesConfirmationOrder: salesConfirmationOrders) {
+                SalesConfirmationOrderHelper salesConfirmationOrderHelper = new SalesConfirmationOrderHelper();
+                salesConfirmationOrderHelper.setSco(salesConfirmationOrder);
+                salesConfirmationOrderHelper.setDeliveryOrders(dombl.listDeliveryOrdersTiedToSCO(salesConfirmationOrder.getId()));
+                salesConfirmationOrderHelper.setInvoices(imbl.listInvoicesTiedToSCO(salesConfirmationOrder.getId()));
+                salesConfirmationOrderHelper.setPurchaseOrders(pombl.listPurchaseOrdersTiedToSCO(salesConfirmationOrder.getId()));
+                salesConfirmationOrderHelpers.add(salesConfirmationOrderHelper);
+            }
+            return salesConfirmationOrderHelpers;
         } catch (Exception ex) {
             System.out.println("OrderManagementBean: listAllSalesConfirmationOrder() failed");
             result.setDescription("Internal server error.");

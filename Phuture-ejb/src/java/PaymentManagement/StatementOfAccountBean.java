@@ -249,7 +249,12 @@ public class StatementOfAccountBean implements StatementOfAccountBeanLocal {
             for (CreditNote creditNote : creditNotes) {
                 SOALineItem soali3 = new SOALineItem();
                 soali3.setStatementOfAccount(customer.getStatementOfAccount());
-                soali3.setEntryDate(creditNote.getDateIssued());
+                //Use date used if the CN is applied
+                if (creditNote.getAppliedToInvoice() != null) {
+                    soali3.setEntryDate(creditNote.getDateUsed());
+                } else {
+                    soali3.setEntryDate(creditNote.getDateIssued());
+                }
                 soali3.setReferenceNo(creditNote.getCreditNoteNumber());
                 soali3.setMethod("Credit Note");
                 soali3.setDescription("");
@@ -259,10 +264,10 @@ public class StatementOfAccountBean implements StatementOfAccountBeanLocal {
                 if (currentInvoice != null) {
                     soali3.setScoID(creditNote.getAppliedToInvoice().getSalesConfirmationOrder().getId());
                     soali3.setInvoiceID(creditNote.getAppliedToInvoice().getId());
-                        //TODO (future) Update logic to support multiple credit note
+                    //TODO (future) Update logic to support multiple credit note
                     //if credit note is applied and over the invoice amount, don't over add
-                    if (creditNote.getCreditAmount() > currentInvoice.getTotalPriceBeforeCreditNote()) {
-                        soali3.setCredit(currentInvoice.getTotalPriceBeforeCreditNote());
+                    if (creditNote.getCreditAmount() > (currentInvoice.getTotalPriceBeforeCreditNote()-currentInvoice.getTotalAmountPaid())) {
+                        soali3.setCredit(currentInvoice.getTotalPriceBeforeCreditNote()-currentInvoice.getTotalAmountPaid());
                     } else {
                         soali3.setCredit(creditNote.getCreditAmount());
                     }

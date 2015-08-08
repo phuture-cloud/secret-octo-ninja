@@ -1,3 +1,4 @@
+<%@page import="EntityManager.CreditNote"%>
 <%@page import="EntityManager.PaymentRecord"%>
 <%@page import="EntityManager.DeliveryOrder"%>
 <%@page import="EntityManager.SalesConfirmationOrder"%>
@@ -16,17 +17,23 @@
     }
     Invoice invoice = (Invoice) (session.getAttribute("invoice"));
     List<PaymentRecord> invoicePayments = (List<PaymentRecord>) (session.getAttribute("invoicePayments"));
+    List<CreditNote> creditNotes = (List<CreditNote>) session.getAttribute("customerAvailableCreditNotes");
+
     if (session.isNew()) {
         response.sendRedirect("../index.jsp?errMsg=Invalid Request. Please login.");
     } else if (staff == null) {
         response.sendRedirect("../index.jsp?errMsg=Session Expired.");
-    } else if (invoice == null) {
+    } else if (invoice == null || creditNotes == null) {
         response.sendRedirect("invoices.jsp?errMsg=An error has occured.");
     } else {
         SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
         String estimatedDeliveryDate = request.getParameter("estimatedDeliveryDate");
         String editingLineItem = request.getParameter("editingLineItem");
         String formDisablerFlag = "";
+        if (invoice != null && invoice.getStatus().equals("Voided")) {
+            formDisablerFlag = "disabled";
+            editingLineItem = "disabled";
+        }
         if (editingLineItem == null) {
             editingLineItem = "";
         } else {//Disable unneccessary fields when editing line item
@@ -93,6 +100,11 @@
                 function back2() {
                     window.onbeforeunload = null;
                     window.location.href = "invoice.jsp";
+                }
+
+                function detachCR(id) {
+                    window.onbeforeunload = null;
+                    window.location.href = "../PaymentManagementController?target=DetachCreditNote&invoiceID=" + id;
                 }
 
                 function addLineItemToExistingInvoice() {
@@ -170,7 +182,7 @@
                 <section role="main" class="content-body">
                     <header class="page-header">
                         <h2>Invoice <%if (invoice != null && invoice.getInvoiceNumber() != null) {
-                                out.print(invoice.getSalesConfirmationOrder().getSalesPerson().getStaffPrefix()+"-"+invoice.getInvoiceNumber());
+                                out.print(invoice.getInvoiceNumber());
                             }%></h2>
                         <div class="right-wrapper pull-right">
                             <ol class="breadcrumbs">
@@ -203,7 +215,7 @@
                                         <div class="row">
                                             <div class="col-sm-6 mt-md">
                                                 <h2 class="h2 mt-none mb-sm text-dark text-weight-bold">Invoice</h2>
-                                                <h3><%=invoice.getSalesConfirmationOrder().getSalesPerson().getStaffPrefix()+"-"+invoice.getInvoiceNumber()%></h3>
+                                                <h3><%=invoice.getInvoiceNumber()%></h3>
                                             </div>
                                             <br/>
                                             <div class="col-sm-6 text-right mt-md mb-md">
@@ -541,7 +553,7 @@
                                                                     if (invoice == null) {
                                                                         out.print("<span id='output_subtotal'>$0.00</span>");
                                                                     } else {
-                                                                        formatedPrice = invoice.getTotalPriceBeforeCreditNote()/ (invoice.getTaxRate() / 100 + 1);
+                                                                        formatedPrice = invoice.getTotalPriceBeforeCreditNote() / (invoice.getTaxRate() / 100 + 1);
                                                                         out.print("<span id='output_subtotal'>" + formatter.format(formatedPrice) + "</span>");
                                                                         out.print("<input type='hidden' value='" + (invoice.getTotalPriceBeforeCreditNote() / (invoice.getTaxRate() / 100 + 1)) + "' id='subtotal'>");
                                                                     }
@@ -577,9 +589,9 @@
                                                                     if (invoice == null) {
                                                                         out.print("<span id='output_totalPrice'>$0.00</span>");
                                                                     } else {
-                                                                        formatedPrice = invoice.getTotalPriceAfterCreditNote();
+                                                                        formatedPrice = invoice.getTotalPriceBeforeCreditNote();
                                                                         out.print("<span id='output_totalPrice'>" + formatter.format(formatedPrice) + "</span>");
-                                                                        out.print("<input type='hidden' value='" + invoice.getTotalPriceAfterCreditNote() + "' id='totalPrice'>");
+                                                                        out.print("<input type='hidden' value='" + invoice.getTotalPriceBeforeCreditNote()+ "' id='totalPrice'>");
                                                                     }
                                                                 %>
                                                             </td>
@@ -621,11 +633,17 @@
                                     <div class="col-sm-6 text-right mt-md mb-md">
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-default" onclick="javascript:back()">Back</button>
+                                            <%if (!invoice.getStatus().equals("Voided")) {%>
                                             <button type='button' class='modal-with-move-anim btn btn-danger' href='#modalRemove'>Void Invoice</button>
+                                            <%}%>
                                             <%
                                                 if (invoice.getItems().size() > 0) {
-                                                    out.print("<button type='button' class='btn btn-primary modal-with-form' href='#modalAttachCN'>Attach Credit Note</button>");
-                                                    out.print("<button type='button' class='btn btn-primary modal-with-form' href='#modalAddPayment'>Add Payment</button>");
+                                                    if (invoice.getTotalCreditNoteAmount() > 0) {
+                                                        out.print("<button type='button' class='btn btn-primary' onclick='javascript:detachCR(" + invoice.getId() + ")'>Detach Credit Note</button>");
+                                                    } else {
+                                                        out.print("<button " + formDisablerFlag + " type='button' class='btn btn-primary modal-with-form' href='#modalAttachCN'>Attach Credit Note</button>");
+                                                    }
+                                                    out.print("<button type='button' " + formDisablerFlag + " class='btn btn-primary modal-with-form' href='#modalAddPayment'>Add Payment</button>");
                                                 }
                                             %>
                                             <button <%=formDisablerFlag%> class='btn btn-success' onclick='javascript:updateInvoice();'>Save</button>
@@ -648,9 +666,23 @@
                         <section class="panel">
                             <form name="attachCreditNoteForm" action="../PaymentManagementController" class="form-horizontal mb-lg">
                                 <header class="panel-heading">
-                                    <h2 class="panel-title">Attach Credit Note to <%=invoice.getInvoiceNumber()%></h2>
+                                    <h2 class="panel-title">Attach Credit Note to Invoice</h2>
                                 </header>
                                 <div class="panel-body">
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label">Credit Note Number</label>
+                                        <div class="col-sm-8">
+                                            <select class="form-control mb-md" name="creditNoteID">
+                                                <%
+                                                    for (int i = 0; i < creditNotes.size(); i++) {
+                                                        out.print("<option value='" + creditNotes.get(i).getId() + "'>" + creditNotes.get(i).getCreditNoteNumber() + " (" + formatter.format(creditNotes.get(i).getCreditAmount()) + ")</option>");
+                                                    }
+                                                %>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="invoiceID" value="<%=invoice.getId()%>">
+                                    <input type="hidden" name="target" value="AttachCreditNote">
                                 </div>
                                 <footer class="panel-footer">
                                     <div class="row">
@@ -663,12 +695,12 @@
                             </form>
                         </section>
                     </div>
-                                
+
                     <div id="modalAddPayment" class="modal-block modal-block-primary mfp-hide">
                         <section class="panel">
                             <form name="addPaymentForm" action="../PaymentManagementController" class="form-horizontal mb-lg">
                                 <header class="panel-heading">
-                                    <h2 class="panel-title">Add Payment to <%=invoice.getInvoiceNumber()%></h2>
+                                    <h2 class="panel-title">Add Payment to Invoice</h2>
                                 </header>
                                 <div class="panel-body">
                                     <div class="form-group">
@@ -809,9 +841,9 @@
                                 <footer class="panel-footer">
                                     <div class="row">
                                         <div class="col-md-12 text-right">
-                                            <button class="btn btn-success" type="submit">Save</button>
-                                            <button class="btn btn-default" type="reset">Clear</button>
-                                            <button class="btn btn-default modal-dismiss">Cancel</button>
+                                            <button <%=formDisablerFlag%> class="btn btn-success" type="submit">Save</button>
+                                            <button <%=formDisablerFlag%> class="btn btn-default" type="reset">Clear</button>
+                                            <button class="btn btn-default modal-dismiss">Close</button>
                                         </div>
                                     </div>
                                 </footer>
@@ -839,9 +871,9 @@
                                 <footer class="panel-footer">
                                     <div class="row">
                                         <div class="col-md-12 text-right">
-                                            <button class="btn btn-success" type="submit">Save</button>
-                                            <button class="btn btn-default" type="reset">Clear</button>
-                                            <button class="btn btn-default modal-dismiss">Cancel</button>
+                                            <button <%=formDisablerFlag%> class="btn btn-success" type="submit">Save</button>
+                                            <button <%=formDisablerFlag%> class="btn btn-default" type="reset">Clear</button>
+                                            <button class="btn btn-default modal-dismiss">Close</button>
                                         </div>
                                     </div>
                                 </footer>

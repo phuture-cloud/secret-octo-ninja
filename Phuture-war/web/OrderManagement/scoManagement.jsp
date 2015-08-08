@@ -1,11 +1,11 @@
 <%@page import="java.text.NumberFormat"%>
 <%@page import="java.text.SimpleDateFormat"%>
-<%@page import="EntityManager.SalesConfirmationOrder"%>
+<%@page import="EntityManager.SalesConfirmationOrderHelper"%>
 <%@page import="java.util.List"%>
 <%@page import="EntityManager.Staff"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
-    List<SalesConfirmationOrder> salesConfirmationOrders = (List<SalesConfirmationOrder>) (session.getAttribute("salesConfirmationOrders"));
+    List<SalesConfirmationOrderHelper> salesConfirmationOrders = (List<SalesConfirmationOrderHelper>) (session.getAttribute("salesConfirmationOrders"));
     String previousMgtPage = (String) session.getAttribute("previousManagementPage");
     if (previousMgtPage == null) {
         previousMgtPage = "";
@@ -104,25 +104,25 @@
                                                 for (int i = 0; i < salesConfirmationOrders.size(); i++) {
                                         %>
                                         <tr>
-                                            <td><%=salesConfirmationOrders.get(i).getSalesPerson().getStaffPrefix()+ "-" + salesConfirmationOrders.get(i).getSalesConfirmationOrderNumber()%></td>
-                                            <td><a href="../CustomerManagementController?target=ListCustomerContacts&id=<%=salesConfirmationOrders.get(i).getCustomer().getId()%>"><%=salesConfirmationOrders.get(i).getCustomerName()%></a></td>
+                                            <td><%=salesConfirmationOrders.get(i).getSco().getSalesPerson().getStaffPrefix() + salesConfirmationOrders.get(i).getSco().getSalesConfirmationOrderNumber()%></td>
+                                            <td><a href="../CustomerManagementController?target=ListCustomerContacts&id=<%=salesConfirmationOrders.get(i).getSco().getCustomer().getId()%>"><%=salesConfirmationOrders.get(i).getSco().getCustomerName()%></a></td>
                                             <td>
                                                 <%
                                                     SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
-                                                    String date = DATE_FORMAT.format(salesConfirmationOrders.get(i).getSalesConfirmationOrderDate());
+                                                    String date = DATE_FORMAT.format(salesConfirmationOrders.get(i).getSco().getSalesConfirmationOrderDate());
                                                     out.print(date);
                                                 %>
                                             </td>
                                             <td>
                                                 <%
                                                     NumberFormat formatter = NumberFormat.getCurrencyInstance();
-                                                    out.print(formatter.format(salesConfirmationOrders.get(i).getTotalPrice()));
+                                                    out.print(formatter.format(salesConfirmationOrders.get(i).getSco().getTotalPrice()));
                                                 %>
                                             </td>
                                             <td>
                                                 <%
-                                                    if (salesConfirmationOrders.get(i).getTotalInvoicedAmount() != null) {
-                                                        out.print(formatter.format(salesConfirmationOrders.get(i).getTotalInvoicedAmount()));
+                                                    if (salesConfirmationOrders.get(i).getSco().getTotalInvoicedAmount() != null) {
+                                                        out.print(formatter.format(salesConfirmationOrders.get(i).getSco().getTotalInvoicedAmount()));
                                                     } else {
                                                         out.println("NA");
                                                     }
@@ -130,10 +130,9 @@
                                             </td>
                                             <td>
                                                 <%
-                                                    if (salesConfirmationOrders.get(i).getDeliveryOrders().size() > 0) {
+                                                    if (salesConfirmationOrders.get(i).getDeliveryOrders() != null) {
                                                         for (int k = 0; k < salesConfirmationOrders.get(i).getDeliveryOrders().size(); k++) {
                                                             if ((k + 1) == salesConfirmationOrders.get(i).getDeliveryOrders().size()) {
-                                                                
                                                                 out.print(salesConfirmationOrders.get(i).getDeliveryOrders().get(k).getDeliveryOrderNumber());
                                                             } else {
                                                                 out.print(salesConfirmationOrders.get(i).getDeliveryOrders().get(k).getDeliveryOrderNumber() + ", ");
@@ -144,25 +143,25 @@
                                             </td>
                                             <td>
                                                 <%
-//                                                    if (salesConfirmationOrders.get(i).getInvoices().size() > 0) {
-//                                                        for (int k = 0; k < salesConfirmationOrders.get(i).getInvoices().size(); k++) {
-//                                                            if ((k + 1) == salesConfirmationOrders.get(i).getDeliveryOrders().size()) {
-//                                                                out.print(salesConfirmationOrders.get(i).getInvoices().get(i).getInvoiceNumber());
-//                                                            } else {
-//                                                                out.print(salesConfirmationOrders.get(i).getInvoices().get(i).getInvoiceNumber() + ", ");
-//                                                            }
-//                                                        }
-//                                                    }
+                                                    if (salesConfirmationOrders.get(i).getInvoices()!= null) {
+                                                        for (int k = 0; k < salesConfirmationOrders.get(i).getInvoices().size(); k++) {
+                                                            if ((k + 1) == salesConfirmationOrders.get(i).getInvoices().size()) {
+                                                                out.print(salesConfirmationOrders.get(i).getInvoices().get(k).getInvoiceNumber());
+                                                            } else {
+                                                                out.print(salesConfirmationOrders.get(i).getInvoices().get(k).getInvoiceNumber() + ", ");
+                                                           }
+                                                        }
+                                                    }
                                                 %>
                                             </td>
                                             <td>
-                                                <% if (salesConfirmationOrders.get(i).getTotalInvoicedAmount() == null) {
+                                                <% if (salesConfirmationOrders.get(i).getSco().getTotalInvoicedAmount() == null) {
                                                         //If there was some errors calculating the invoiced amount
                                                         out.println("<i class='fa fa-exclamation-triangle' style='color:yellow' data-toggle='tooltip' data-placement='top' title='Unable to calculate invoiced amount'></i>");
-                                                    } else if (salesConfirmationOrders.get(i).getTotalInvoicedAmount() < salesConfirmationOrders.get(i).getTotalPrice()) {
+                                                    } else if (salesConfirmationOrders.get(i).getSco().getTotalInvoicedAmount() < salesConfirmationOrders.get(i).getSco().getTotalPrice()) {
                                                         //If total invoiced less than SCO amount
                                                         out.println("<i class='fa fa-exclamation-circle' style='color:red' data-toggle='tooltip' data-placement='top' title='Amount invoiced is less than ordered amount'></i>");
-                                                    } else if (salesConfirmationOrders.get(i).getTotalInvoicedAmount() > salesConfirmationOrders.get(i).getTotalPrice()) {
+                                                    } else if (salesConfirmationOrders.get(i).getSco().getTotalInvoicedAmount() > salesConfirmationOrders.get(i).getSco().getTotalPrice()) {
                                                         //If total invoiced more than SCO amount
                                                         out.println("<i class='fa fa-exclamation-circle' style='color:orange' data-toggle='tooltip' data-placement='top' title='Amount invoiced is more than ordered amount'></i>");
                                                     } else {
@@ -170,18 +169,20 @@
                                                     }%>
                                             </td>
                                             <%
-                                                if (salesConfirmationOrders.get(i).getStatus().equals("Unfulfilled")) {
+                                                if (salesConfirmationOrders.get(i).getSco().getStatus().equals("Unfulfilled")) {
                                                     out.print("<td>Unfulfilled</td>");
-                                                } else if (salesConfirmationOrders.get(i).getStatus().equals("Fulfilled")) {
+                                                } else if (salesConfirmationOrders.get(i).getSco().getStatus().equals("Fulfilled")) {
                                                     out.print("<td class='info'>Fulfilled</td>");
-                                                } else if (salesConfirmationOrders.get(i).getStatus().equals("Completed")) {
+                                                } else if (salesConfirmationOrders.get(i).getSco().getStatus().equals("Completed")) {
                                                     out.print("<td class='success'>Completed</td>");
-                                                } else if (salesConfirmationOrders.get(i).getStatus().equals("Write-Off")) {
+                                                } else if (salesConfirmationOrders.get(i).getSco().getStatus().equals("Write-Off")) {
                                                     out.print("<td class='warning'>Write-Off</td>");
+                                                } else if (salesConfirmationOrders.get(i).getSco().getStatus().equals("Voided")) {
+                                                    out.print("<td class='danger'>Voided</td>");
                                                 }
                                             %>
                                             <td>
-                                                <button class="btn btn-default btn-block" onclick="javascript:viewSCO(<%=salesConfirmationOrders.get(i).getId()%>)">View</button>
+                                                <button class="btn btn-default btn-block" onclick="javascript:viewSCO(<%=salesConfirmationOrders.get(i).getSco().getId()%>)">View</button>
                                             </td>
                                         </tr>
                                         <%

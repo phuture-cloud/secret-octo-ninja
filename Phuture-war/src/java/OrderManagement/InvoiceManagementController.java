@@ -77,6 +77,7 @@ public class InvoiceManagementController extends HttpServlet {
                             List<Invoice> invoices = invoiceManagementBean.listAllInvoice(loggedInStaffID);
                             if (invoices == null) {
                                 nextPage = "error500.html";
+                                break;
                             } else {
                                 session.setAttribute("listOfInvoice", invoices);
                                 session.setAttribute("previousManagementPage", "invoices");
@@ -98,8 +99,14 @@ public class InvoiceManagementController extends HttpServlet {
                         if (true) {
                             String id = request.getParameter("id");
                             if (id != null) {
-                                session.setAttribute("invoice", invoiceManagementBean.getInvoice(Long.parseLong(id)));
+                                invoice = invoiceManagementBean.getInvoice(Long.parseLong(id));
+                                if (invoice == null) {
+                                    nextPage = "error500.html";
+                                    break;
+                                }
+                                session.setAttribute("invoice", invoice);
                                 session.setAttribute("invoicePayments", paymentManagementBeanLocal.listPaymentByInvoice(Long.parseLong(id)));
+                                session.setAttribute("customerAvailableCreditNotes", paymentManagementBeanLocal.listAvailableCreditNote(invoice.getSalesConfirmationOrder().getCustomer().getId()));
                                 nextPage = "InvoiceManagement/invoice.jsp";
                             }
                             break;
@@ -108,16 +115,7 @@ public class InvoiceManagementController extends HttpServlet {
                         if (invoice != null) {
                             returnHelper = invoiceManagementBean.deleteInvoice(invoice.getId(), isAdmin);
                             if (returnHelper.getResult()) {
-                                List<SalesConfirmationOrder> salesConfirmationOrders = orderManagementBean.listAllSalesConfirmationOrder(loggedInStaffID);
-                                if (salesConfirmationOrders == null) {
-                                    nextPage = "error500.html";
-                                } else {
-                                    session.setAttribute("salesConfirmationOrders", salesConfirmationOrders);
-                                }
-                                SalesConfirmationOrder sco = (SalesConfirmationOrder) (session.getAttribute("sco"));
-                                session.setAttribute("sco", orderManagementBean.getSalesConfirmationOrder(sco.getId()));
                                 session.removeAttribute("invoice");
-
                                 nextPage = "InvoiceManagement/invoices.jsp?goodMsg=" + returnHelper.getDescription();
                             } else {
                                 nextPage = "InvoiceManagement/invoices.jsp?errMsg=" + returnHelper.getDescription();
@@ -140,6 +138,7 @@ public class InvoiceManagementController extends HttpServlet {
                                 }
                                 if (invoices == null) {
                                     nextPage = "error500.html";
+                                    break;
                                 }
                                 session.setAttribute("listOfInvoice", invoices);
                                 SalesConfirmationOrder sco = (SalesConfirmationOrder) (session.getAttribute("sco"));
@@ -197,6 +196,7 @@ public class InvoiceManagementController extends HttpServlet {
                                 Long invoiceID = returnHelper.getID();
                                 invoice = invoiceManagementBean.getInvoice(invoiceID);
                                 session.setAttribute("invoice", invoice);
+                                session.setAttribute("customerAvailableCreditNotes", paymentManagementBeanLocal.listAvailableCreditNote(invoice.getSalesConfirmationOrder().getCustomer().getId()));
                                 nextPage = "InvoiceManagement/invoice.jsp?goodMsg=" + returnHelper.getDescription();
 
                                 //Update line item if there is any
@@ -222,6 +222,7 @@ public class InvoiceManagementController extends HttpServlet {
                         invoice = invoiceManagementBean.getInvoice(invoice.getId());
                         if (returnHelper.getResult() && invoice != null) {
                             session.setAttribute("invoice", invoice);
+                            session.setAttribute("customerAvailableCreditNotes", paymentManagementBeanLocal.listAvailableCreditNote(invoice.getSalesConfirmationOrder().getCustomer().getId()));
                             nextPage = "InvoiceManagement/invoice.jsp?goodMsg=" + returnHelper.getDescription();
                         } else {
                             nextPage = "InvoiceManagement/invoice.jsp?errMsg=" + returnHelper.getDescription();
@@ -233,6 +234,7 @@ public class InvoiceManagementController extends HttpServlet {
                         invoice = invoiceManagementBean.getInvoice(invoice.getId());
                         if (returnHelper.getResult() && invoice != null) {
                             session.setAttribute("invoice", invoice);
+                            session.setAttribute("customerAvailableCreditNotes", paymentManagementBeanLocal.listAvailableCreditNote(invoice.getSalesConfirmationOrder().getCustomer().getId()));
                             nextPage = "InvoiceManagement/invoice.jsp?goodMsg=" + returnHelper.getDescription();
                         } else {
                             nextPage = "InvoiceManagement/invoice.jsp?errMsg=" + returnHelper.getDescription();
@@ -244,6 +246,7 @@ public class InvoiceManagementController extends HttpServlet {
                         invoice = invoiceManagementBean.getInvoice(invoice.getId());
                         if (returnHelper.getResult() && invoice != null) {
                             session.setAttribute("invoice", invoice);
+                            session.setAttribute("customerAvailableCreditNotes", paymentManagementBeanLocal.listAvailableCreditNote(invoice.getSalesConfirmationOrder().getCustomer().getId()));
                             nextPage = "InvoiceManagement/invoice.jsp?goodMsg=" + returnHelper.getDescription();
                         } else {
                             nextPage = "InvoiceManagement/invoice.jsp?errMsg=" + returnHelper.getDescription();
@@ -262,6 +265,7 @@ public class InvoiceManagementController extends HttpServlet {
                         invoice = invoiceManagementBean.getInvoice(invoice.getId());
                         if (returnHelper.getResult() && invoice != null) {
                             session.setAttribute("invoice", invoice);
+                            session.setAttribute("customerAvailableCreditNotes", paymentManagementBeanLocal.listAvailableCreditNote(invoice.getSalesConfirmationOrder().getCustomer().getId()));
                             nextPage = "InvoiceManagement/invoice.jsp?goodMsg=" + returnHelper.getDescription();
                         } else {
                             nextPage = "InvoiceManagement/invoice.jsp?errMsg=" + returnHelper.getDescription();
@@ -276,6 +280,7 @@ public class InvoiceManagementController extends HttpServlet {
                             invoice = invoiceManagementBean.getInvoice(invoice.getId());
                             if (returnHelper.getResult() && invoice != null) {
                                 session.setAttribute("invoice", invoice);
+                                session.setAttribute("customerAvailableCreditNotes", paymentManagementBeanLocal.listAvailableCreditNote(invoice.getSalesConfirmationOrder().getCustomer().getId()));
                                 nextPage = "InvoiceManagement/invoice.jsp?goodMsg=" + returnHelper.getDescription();
                             } else {
                                 nextPage = "InvoiceManagement/invoice.jsp?errMsg=" + returnHelper.getDescription();
@@ -295,6 +300,7 @@ public class InvoiceManagementController extends HttpServlet {
                                 invoice = invoiceManagementBean.getInvoice(invoice.getId());
                                 if (returnHelper.getResult() && invoice != null) {
                                     session.setAttribute("invoice", invoice);
+                                    session.setAttribute("customerAvailableCreditNotes", paymentManagementBeanLocal.listAvailableCreditNote(invoice.getSalesConfirmationOrder().getCustomer().getId()));
                                     nextPage = "InvoiceManagement/invoice.jsp?goodMsg=" + returnHelper.getDescription();
                                 } else {
                                     nextPage = "InvoiceManagement/invoice.jsp?errMsg=" + returnHelper.getDescription();
@@ -307,6 +313,7 @@ public class InvoiceManagementController extends HttpServlet {
                         List<Customer> customers = customerManagementBean.listCustomers();
                         if (customers == null) {
                             nextPage = "error500.html";
+                            break;
                         } else {
                             session.setAttribute("customers", customers);
                             nextPage = "OrderManagement/updateContact.jsp?previousPage=invoice";
@@ -318,6 +325,7 @@ public class InvoiceManagementController extends HttpServlet {
                         List<Contact> contacts = customerManagementBean.listCustomerContacts(Long.parseLong(customerID));
                         if (contacts == null) {
                             nextPage = "error500.html";
+                            break;
                         } else {
                             session.setAttribute("contacts", contacts);
                             if (source != null && source.equals("addressBook")) {
@@ -331,6 +339,7 @@ public class InvoiceManagementController extends HttpServlet {
                             List<Invoice> invoices = invoiceManagementBean.listAllInvoice(loggedInStaffID);
                             if (invoices == null) {
                                 nextPage = "error500.html";
+                                break;
                             } else {
                                 session.setAttribute("listOfInvoice", invoices);
                                 if (returnHelper.getResult()) {
@@ -349,6 +358,7 @@ public class InvoiceManagementController extends HttpServlet {
                                 List<Invoice> invoices = invoiceManagementBean.listInvoicesTiedToSCO(sco.getId());
                                 if (invoices == null) {
                                     nextPage = "error500.html";
+                                    break;
                                 } else {
                                     session.setAttribute("listOfInvoice", invoices);
                                     if (returnHelper.getResult()) {

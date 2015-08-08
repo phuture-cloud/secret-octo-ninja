@@ -25,7 +25,7 @@ public class PaymentManagementController extends HttpServlet {
     private CustomerManagementBeanLocal customerManagementBean;
 
     @EJB
-    private PaymentManagementBeanLocal paymentManagementBean;
+    private PaymentManagementBeanLocal pmbl;
 
     @EJB
     private InvoiceManagementBeanLocal invoiceManagementBean;
@@ -50,6 +50,11 @@ public class PaymentManagementController extends HttpServlet {
             paymentDate = "";
         }
 
+        String invoiceID = request.getParameter("invoiceID");
+        String creditNoteID = request.getParameter("creditNoteID");
+        String contactID = request.getParameter("contactID");
+        String name = request.getParameter("name");
+
         DateFormat sourceFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date paymentDateDate = null;
 
@@ -70,13 +75,13 @@ public class PaymentManagementController extends HttpServlet {
                         if (invoice != null) {
                             paymentDateDate = sourceFormat.parse(paymentDate);
 
-                            returnHelper = paymentManagementBean.addPayment(invoice.getId(), Double.parseDouble(amount), paymentDateDate, paymentMethod, paymentReferenceNumber, notes);
+                            returnHelper = pmbl.addPayment(invoice.getId(), Double.parseDouble(amount), paymentDateDate, paymentMethod, paymentReferenceNumber, notes);
                             invoice = invoiceManagementBean.getInvoice(invoice.getId());
 
                             if (returnHelper.getResult() && invoice != null) {
                                 session.setAttribute("invoice", invoice);
-                                session.setAttribute("paymentRecord", paymentManagementBean.getPayment(invoice.getId()));
-                                session.setAttribute("invoicePayments", paymentManagementBean.listPaymentByInvoice(invoice.getId()));
+                                session.setAttribute("paymentRecord", pmbl.getPayment(invoice.getId()));
+                                session.setAttribute("invoicePayments", pmbl.listPaymentByInvoice(invoice.getId()));
                                 String previousPage = request.getParameter("previousPage");
                                 if (previousPage.equals("invoice")) {
                                     nextPage = "InvoiceManagement/invoice.jsp?goodMsg=" + returnHelper.getDescription();
@@ -99,7 +104,7 @@ public class PaymentManagementController extends HttpServlet {
 
                     case "ListPaymentTiedToInvoice":
                         if (invoice != null) {
-                            paymentRecords = paymentManagementBean.listPaymentByInvoice(invoice.getId());
+                            paymentRecords = pmbl.listPaymentByInvoice(invoice.getId());
                             if (paymentRecords == null) {
                                 nextPage = "error500.html";
                             } else {
@@ -114,9 +119,9 @@ public class PaymentManagementController extends HttpServlet {
 
                     case "DeletePaymentRecord":
                         if (invoice != null) {
-                            returnHelper = paymentManagementBean.deletePayment(Long.parseLong(id));
+                            returnHelper = pmbl.deletePayment(Long.parseLong(id));
                             if (returnHelper.getResult()) {
-                                paymentRecords = paymentManagementBean.listPaymentByInvoice(invoice.getId());
+                                paymentRecords = pmbl.listPaymentByInvoice(invoice.getId());
                                 if (paymentRecords == null) {
                                     nextPage = "error500.html";
                                 } else {
@@ -136,9 +141,9 @@ public class PaymentManagementController extends HttpServlet {
                         if (invoice != null) {
                             paymentDateDate = sourceFormat.parse(paymentDate);
 
-                            returnHelper = paymentManagementBean.updatePayment(Long.parseLong(id), Double.parseDouble(amount), paymentDateDate, paymentMethod, paymentReferenceNumber, notes);
+                            returnHelper = pmbl.updatePayment(Long.parseLong(id), Double.parseDouble(amount), paymentDateDate, paymentMethod, paymentReferenceNumber, notes);
                             if (returnHelper.getResult()) {
-                                paymentRecords = paymentManagementBean.listPaymentByInvoice(invoice.getId());
+                                paymentRecords = pmbl.listPaymentByInvoice(invoice.getId());
                                 if (paymentRecords == null) {
                                     nextPage = "error500.html";
                                 } else {
@@ -161,25 +166,94 @@ public class PaymentManagementController extends HttpServlet {
                                 nextPage = "error500.html";
                             } else {
                                 session.setAttribute("contacts", contacts);
-                                session.setAttribute("listOfCreditNotes", paymentManagementBean.listAllCreditNote(Long.parseLong(id)));
-                                String name = request.getParameter("name");
+                                session.setAttribute("listOfCreditNotes", pmbl.listAllCreditNote(Long.parseLong(id)));
                                 nextPage = "CreditNoteManagement/creditNotes.jsp?id=" + id + "&name=" + name;
                             }
                         }
                         break;
 
                     case "GenerateCreditNote":
-                        String contactID = request.getParameter("contactID");
-                        String name = request.getParameter("name");
                         if (id != null && !id.isEmpty() && contactID != null && !contactID.isEmpty()) {
                             String creditNoteDate = request.getParameter("creditNoteDate");
                             Date creditNoteDateDate = sourceFormat.parse(creditNoteDate);
 
-                            returnHelper = paymentManagementBean.addCreditNote(Long.parseLong(contactID), Double.parseDouble(amount), creditNoteDateDate);
+                            returnHelper = pmbl.addCreditNote(Long.parseLong(contactID), Double.parseDouble(amount), creditNoteDateDate);
 
                             if (returnHelper.getResult()) {
-                                session.setAttribute("listOfCreditNotes", paymentManagementBean.listAllCreditNote(Long.parseLong(id)));
-                                nextPage = "CreditNoteManagement/creditNotes.jsp?id=" + id + "&name=" + name;
+                                session.setAttribute("listOfCreditNotes", pmbl.listAllCreditNote(Long.parseLong(id)));
+                                nextPage = "CreditNoteManagement/creditNotes.jsp?id=" + id + "&name=" + name + "&goodMsg=" + returnHelper.getDescription();
+                            } else {
+                                nextPage = "CreditNoteManagement/creditNotes.jsp?id=" + id + "&name=" + name + "&errMsg=" + returnHelper.getDescription();
+                            }
+                        }
+                        break;
+
+                    case "UpdateCreditNote":
+                        //id here refers to custoemr ID
+
+                        if (creditNoteID != null && !creditNoteID.isEmpty() && id != null && !id.isEmpty()) {
+                            String creditNoteDate = request.getParameter("creditNoteDate");
+                            Date creditNoteDateDate = sourceFormat.parse(creditNoteDate);
+
+                            Long longContactID = null;
+                            if (contactID != null && !contactID.isEmpty()) {
+                                longContactID = Long.parseLong(contactID);
+                            }
+
+                            returnHelper = pmbl.updateCreditNote(Long.parseLong(creditNoteID), longContactID, creditNoteDateDate, Double.parseDouble(amount));
+
+                            if (returnHelper.getResult()) {
+                                session.setAttribute("listOfCreditNotes", pmbl.listAllCreditNote(Long.parseLong(id)));
+                                nextPage = "CreditNoteManagement/creditNotes.jsp?id=" + id + "&name=" + name + "&goodMsg=" + returnHelper.getDescription();
+                            } else {
+                                nextPage = "CreditNoteManagement/creditNotes.jsp?id=" + id + "&name=" + name + "&errMsg=" + returnHelper.getDescription();
+                            }
+                        }
+                        break;
+
+                    case "VoidCreditNote":
+                        //id here refers to custoemr ID
+                        if (creditNoteID != null && !creditNoteID.isEmpty() && id != null && !id.isEmpty()) {
+                            returnHelper = pmbl.voidCreditNote(Long.parseLong(creditNoteID));
+
+                            if (returnHelper.getResult()) {
+                                session.setAttribute("listOfCreditNotes", pmbl.listAllCreditNote(Long.parseLong(id)));
+                                nextPage = "CreditNoteManagement/creditNotes.jsp?id=" + id + "&name=" + name + "&goodMsg=" + returnHelper.getDescription();
+                            } else {
+                                nextPage = "CreditNoteManagement/creditNotes.jsp?id=" + id + "&name=" + name + "&errMsg=" + returnHelper.getDescription();
+                            }
+                        }
+                        break;
+
+                    case "AttachCreditNote":
+                        //id here refers to custoemr ID
+                        System.out.println("creditNoteID " + creditNoteID);
+                        System.out.println("invoiceID " + invoiceID);
+                        if (creditNoteID != null && !creditNoteID.isEmpty() && invoiceID != null && !invoiceID.isEmpty()) {
+                            returnHelper = pmbl.attachCreditNote(Long.parseLong(creditNoteID), Long.parseLong(invoiceID));
+
+                            if (returnHelper.getResult()) {
+                                session.setAttribute("customerAvailableCreditNotes", pmbl.listAvailableCreditNote(invoice.getSalesConfirmationOrder().getCustomer().getId()));
+                                invoice = invoiceManagementBean.getInvoice(Long.parseLong(invoiceID));
+                                session.setAttribute("invoice", invoice);
+                                nextPage = "InvoiceManagement/invoice.jsp?goodMsg=" + returnHelper.getDescription();
+                            } else {
+                                nextPage = "InvoiceManagement/invoice.jsp?errMsg=" + returnHelper.getDescription();
+                            }
+                        }
+                        break;
+
+                    case "DetachCreditNote":
+                        if (invoiceID != null && !invoiceID.isEmpty()) {
+                            returnHelper = pmbl.detachAllCreditNote(Long.parseLong(invoiceID));
+
+                            if (returnHelper.getResult()) {
+                                session.setAttribute("customerAvailableCreditNotes", pmbl.listAvailableCreditNote(invoice.getSalesConfirmationOrder().getCustomer().getId()));
+                                invoice = invoiceManagementBean.getInvoice(Long.parseLong(invoiceID));
+                                session.setAttribute("invoice", invoice);
+                                nextPage = "InvoiceManagement/invoice.jsp?goodMsg=" + returnHelper.getDescription();
+                            } else {
+                                nextPage = "InvoiceManagement/invoice.jsp?errMsg=" + returnHelper.getDescription();
                             }
                         }
                         break;
