@@ -365,6 +365,7 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
                 return result;
             }
             Double oldAmt = creditNote.getCreditAmount();
+            Customer customer = null;
             //Only update contact if contactID is not null
             if (contactID != null) {
                 Contact contact = em.getReference(Contact.class, contactID);
@@ -372,7 +373,7 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
                     result.setDescription("The contact selected does not belong to the customer who has this credit note.");
                     return result;
                 }
-                Customer customer = contact.getCustomer();
+                customer = contact.getCustomer();
                 if (customer.getIsDeleted()) {
                     result.setDescription("Unable to update the credit note for this customer as the customer has been deleted.");
                     return result;
@@ -388,6 +389,8 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
                 creditNote.setContactFaxNo(contact.getFaxNo());
                 creditNote.setContactEmail(contact.getEmail());
                 creditNote.setContactAddress(contact.getAddress());
+            } else {
+                customer = creditNote.getCustomer();
             }
             if (creditNoteDate == null) {
                 result.setDescription("Credit note date cannot be empty");
