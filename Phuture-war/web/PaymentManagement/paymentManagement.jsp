@@ -54,7 +54,7 @@
                                     </a>
                                 </li>
                                 <li><span><a href= "../OrderManagementController?target=ListAllSCO">SCO Management</a></span></li>
-                                <li><span><a href= "../OrderManagementController?target=RetrieveSCO&id=<%=invoice.getSalesConfirmationOrder().getId()%>"><%=staff.getStaffPrefix()%>-<%=invoice.getSalesConfirmationOrder().getSalesConfirmationOrderNumber()%></a></span></li>
+                                <li><span><a href= "../OrderManagementController?target=RetrieveSCO&id=<%=invoice.getSalesConfirmationOrder().getId()%>"><%=invoice.getSalesConfirmationOrder().getSalesPerson().getStaffPrefix()%>-<%=invoice.getSalesConfirmationOrder().getSalesConfirmationOrderNumber()%></a></span></li>
                                 <li><span><a href= "invoice.jsp"><%=invoice.getInvoiceNumber()%></a></span></li>
                                 <li><span>Invoices &nbsp;&nbsp</span></li>
                             </ol>

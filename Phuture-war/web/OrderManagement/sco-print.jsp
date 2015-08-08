@@ -85,7 +85,7 @@
                 </div>
                 <div class="col-xs-2">
                     <strong>
-                        <%=staff.getStaffPrefix()%><%=sco.getSalesConfirmationOrderNumber()%>
+                        <%=sco.getSalesPerson().getStaffPrefix()%><%=sco.getSalesConfirmationOrderNumber()%>
                     </strong>
                     <br>
                     <%=DATE_FORMAT.format(sco.getSalesConfirmationOrderDate())%>
