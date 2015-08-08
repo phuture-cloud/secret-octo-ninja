@@ -75,7 +75,7 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
     }
 
     @Override
-    public ReturnHelper updatePurchaseOrder(Long purchaseOrderID, String purchaseOrderNumber, Date purchaseOrderDate, String status, String supplierName, String supplierEmail, String supplierOfficeNo, String supplierMobileNo, String supplierFaxNo, String supplierAddress) {
+    public ReturnHelper updatePurchaseOrder(Long purchaseOrderID, String purchaseOrderNumber, Date purchaseOrderDate, String status, String supplierName, String supplierEmail, String supplierOfficeNo, String supplierMobileNo, String supplierFaxNo, String supplierAddress, String companyName, String terms, String deliveryDate, String remarks, String currency) {
         System.out.println("PurchaseOrderManagementBean: updatePurchaseOrder() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -104,6 +104,11 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
             po.setSupplierMobileNo(supplierMobileNo);
             po.setSupplierFaxNo(supplierFaxNo);
             po.setSupplierAddress(supplierAddress);
+            po.setCompanyName(companyName);
+            po.setTerms(terms);
+            po.setDeliveryDate(deliveryDate);
+            po.setRemarks(remarks);
+            po.setCurrency(currency);
             em.merge(po);
             result.setID(po.getId());
             result.setResult(true);

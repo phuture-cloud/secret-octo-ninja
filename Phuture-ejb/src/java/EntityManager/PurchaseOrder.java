@@ -33,6 +33,7 @@ public class PurchaseOrder implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date purchaseOrderDate;
 
+    private String companyName;
     private String supplierName;
     private String supplierEmail;
     private String supplierOfficeNo;
@@ -41,12 +42,18 @@ public class PurchaseOrder implements Serializable {
     @Lob
     private String supplierAddress;
 
+    private String terms;
+    private String deliveryDate;
+
     private String status;
     @OneToMany
     private List<LineItem> items;
+    private String currency;
     private Double totalPrice;
     @Lob
     private String notes;
+    @Lob
+    private String remarks;
     private boolean isDeleted;
 
     public PurchaseOrder() {
@@ -56,13 +63,17 @@ public class PurchaseOrder implements Serializable {
         this.items = new ArrayList<>();
         this.totalPrice = 0.0;
         this.isDeleted = false;
-
+        this.companyName = "";
         this.supplierName = "";
         this.supplierEmail = "";
         this.supplierOfficeNo = "";
         this.supplierMobileNo = "";
         this.supplierFaxNo = "";
         this.supplierAddress = "";
+        this.terms = "";
+        this.deliveryDate = "";
+        this.remarks="";
+        this.currency="";
     }
 
     public Long getId() {
@@ -191,6 +202,46 @@ public class PurchaseOrder implements Serializable {
 
     public void setSupplierFaxNo(String supplierFaxNo) {
         this.supplierFaxNo = supplierFaxNo;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+    public String getTerms() {
+        return terms;
+    }
+
+    public void setTerms(String terms) {
+        this.terms = terms;
+    }
+
+    public String getDeliveryDate() {
+        return deliveryDate;
+    }
+
+    public void setDeliveryDate(String deliveryDate) {
+        this.deliveryDate = deliveryDate;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
     }
 
     @Override
