@@ -314,7 +314,7 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
                 return result;
             }
             creditNote.setCustomer(customer);
-            if (amount == null || amount < 0.0) {
+            if (amount == null || amount <= 0.0) {
                 result.setDescription("Credit note amount must be more than $0");
                 return result;
             }
@@ -532,7 +532,7 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
                 }
             }
             //Check if invoice & credit note belongs to the same customer
-            if (invoice.getSalesConfirmationOrder().getCustomer().getId().equals(creditNote.getCustomer().getId())) {
+            if (!invoice.getSalesConfirmationOrder().getCustomer().getId().equals(creditNote.getCustomer().getId())) {
                 result.setDescription("Unable to apply the credit note to this invoice as it belongs to a different customer.");
                 return result;
             } else if (creditNote.getAppliedToInvoice() != null) { //if invoice already attached
