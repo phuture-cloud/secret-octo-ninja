@@ -24,19 +24,19 @@ import javax.persistence.Query;
 
 @Stateless
 public class PaymentManagementBean implements PaymentManagementBeanLocal {
-
+    
     @PersistenceContext
     private EntityManager em;
-
+    
     @Resource
     private EJBContext context;
-
+    
     @EJB
     private InvoiceManagementBeanLocal imbl;
-
+    
     public PaymentManagementBean() {
     }
-
+    
     @Override
     public ReturnHelper addPayment(Long invoiceID, Double amount, Date date, String paymentMethod, String paymentReferenceNumber, String notes) {
         System.out.println("PaymentManagementBean: addPayment() called");
@@ -93,7 +93,7 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
         }
         return result;
     }
-
+    
     @Override
     public ReturnHelper updatePayment(Long paymentID, Double amount, Date date, String paymentMethod, String paymentReferenceNumber, String notes) {
         System.out.println("PaymentManagementBean: updatePayment() called");
@@ -136,7 +136,7 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
         }
         return result;
     }
-
+    
     @Override
     public ReturnHelper deletePayment(Long paymentID) {
         System.out.println("PaymentManagementBean: deletePayment() called");
@@ -166,7 +166,7 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
         }
         return result;
     }
-
+    
     @Override
     public PaymentRecord getPayment(Long paymentID) {
         System.out.println("PaymentManagementBean: getPayment() called");
@@ -186,7 +186,7 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
             return null;
         }
     }
-
+    
     @Override
     public List<PaymentRecord> listPaymentByCustomer(Long customerID) {
         System.out.println("PaymentManagementBean: listPaymentByCustomer() called");
@@ -203,7 +203,7 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
             return null;
         }
     }
-
+    
     @Override
     public List<PaymentRecord> listPaymentByInvoice(Long invoiceID) {
         System.out.println("PaymentManagementBean: listPaymentByInvoice() called");
@@ -220,7 +220,7 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
             return null;
         }
     }
-
+    
     @Override
     public List<PaymentRecord> listAllPayment() {
         System.out.println("PaymentManagementBean: listAllInvoice() called");
@@ -236,7 +236,7 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
             return null;
         }
     }
-
+    
     @Override
     public Double getInvoiceTotalCreditNoteApplied(Long invoiceID) {
         System.out.println("PaymentManagementBean: getInvoiceTotalCreditNoteApplied() called");
@@ -262,7 +262,7 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
             return null;
         }
     }
-
+    
     @Override
     public Double getInvoiceTotalPaymentAmount(Long invoiceID) {
         System.out.println("PaymentManagementBean: getInvoiceTotalPaymentAmount() called");
@@ -285,7 +285,7 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
             return null;
         }
     }
-
+    
     @TransactionAttribute(TransactionAttributeType.MANDATORY)
     private String getNewCreditNoteNumber() {
         System.out.println("PaymentManagementBean: getNewCreditNoteNumber() called");
@@ -298,7 +298,7 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
         em.merge(orderNumbers);
         return nextCreditNote.toString();
     }
-
+    
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Override
     public ReturnHelper addCreditNote(Long contactID, Double amount, Date creditNoteDate) {
@@ -342,7 +342,7 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
         } catch (EntityNotFoundException ex) {
             System.out.println("PaymentManagementBean: addCreditNote(): Contact not found");
             result.setDescription("Contact does not exist.");
-
+            
         } catch (Exception ex) {
             System.out.println("PaymentManagementBean: addCreditNote() failed");
             result.setDescription("Internal server error");
@@ -351,7 +351,7 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
         }
         return result;
     }
-
+    
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Override
     public ReturnHelper updateCreditNote(Long creditNoteID, Long contactID, Date creditNoteDate, Double amount) {
@@ -423,7 +423,7 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
         }
         return result;
     }
-
+    
     @Override
     public ReturnHelper deleteCreditNote(Long creditNoteID) {
         System.out.println("PaymentManagementBean: deleteCreditNote() called");
@@ -457,7 +457,7 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
         }
         return result;
     }
-
+    
     @Override
     public ReturnHelper voidCreditNote(Long creditNoteID) {
         System.out.println("PaymentManagementBean: voidCreditNote() called");
@@ -495,7 +495,7 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
         }
         return result;
     }
-
+    
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     @Override
     public ReturnHelper attachCreditNote(Long creditNoteID, Long invoiceID) {
@@ -569,7 +569,7 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
         }
         return result;
     }
-
+    
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     @Override
     public ReturnHelper detachCreditNote(Long creditNoteID) {
@@ -624,7 +624,43 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
         }
         return result;
     }
-
+    
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    @Override
+    public ReturnHelper detachAllCreditNote(Long invoiceID) {
+        System.out.println("PaymentManagementBean: detachAllCreditNote() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        try {
+            Invoice invoice = em.getReference(Invoice.class, invoiceID);
+            List<CreditNote> creditNotes = invoice.getCreditNotes();
+            Boolean someFailed = false;
+            for (CreditNote creditNote : creditNotes) {
+                if (!creditNote.getIsDeleted()) {
+                    ReturnHelper result2 = detachCreditNote(creditNote.getId());
+                    if (!result2.getResult()) {
+                        someFailed = true;
+                    }
+                }
+            }
+            if (someFailed) {
+                result.setDescription("Some credit note(s) could not be detached due to inconsistent records.");
+            } else {
+                result.setResult(true);
+                result.setDescription("Credit note detached.");
+            }
+        } catch (EntityNotFoundException ex) {
+            System.out.println("PaymentManagementBean: detachAllCreditNote(): Credit note not found");
+            result.setDescription("Credit note specified does not exist.");
+        } catch (Exception ex) {
+            System.out.println("PaymentManagementBean: detachAllCreditNote() failed");
+            result.setDescription("Internal server error");
+            ex.printStackTrace();
+            context.setRollbackOnly();
+        }
+        return result;
+    }
+    
     @Override
     public List<CreditNote> getCreditNoteByCustomer(Long customerID) {
         System.out.println("PaymentManagementBean: getCreditNoteByCustomer() called");
@@ -641,7 +677,7 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
             return null;
         }
     }
-
+    
     @Override
     public List<CreditNote> listAllCreditNote(Long customerID) {
         System.out.println("PaymentManagementBean: listAllCreditNote() called");
@@ -658,7 +694,7 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
             return null;
         }
     }
-
+    
     @Override
     public List<CreditNote> listAvailableCreditNote(Long customerID) {
         System.out.println("PaymentManagementBean: listAvailableCreditNote() called");
@@ -675,7 +711,7 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
             return null;
         }
     }
-
+    
     @Override
     public List<CreditNote> listAttachedCreditNote(Long invoiceID) {
         System.out.println("PaymentManagementBean: listAttachedCreditNote() called");
@@ -692,5 +728,5 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
             return null;
         }
     }
-
+    
 }
