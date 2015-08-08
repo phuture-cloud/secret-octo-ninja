@@ -22,7 +22,7 @@
     } else {
         String editingLineItem = request.getParameter("editingLineItem");
         String formDisablerFlag = "";
-        if (deliveryOrder!=null && deliveryOrder.getStatus().equals("Voided")) {
+        if (deliveryOrder != null && deliveryOrder.getStatus().equals("Voided")) {
             formDisablerFlag = "disabled";
             editingLineItem = "disabled";
         }
@@ -135,7 +135,7 @@
                                 </li>
                                 <%if (previousMgtPage.equals("sco")) {%>
                                 <li><span><a href= "../OrderManagementController?target=ListAllSCO">SCO Management</a></span></li>
-                                <li><span><a href= "../OrderManagementController?target=RetrieveSCO&id=<%=deliveryOrder.getSalesConfirmationOrder().getId()%>"><%=deliveryOrder.getSalesConfirmationOrder().getSalesConfirmationOrderNumber()%></a></span></li>
+                                <li><span><a href= "../OrderManagementController?target=RetrieveSCO&id=<%=deliveryOrder.getSalesConfirmationOrder().getId()%>"><%=deliveryOrder.getSalesConfirmationOrder().getSalesPerson().getStaffPrefix()%><%=deliveryOrder.getSalesConfirmationOrder().getSalesConfirmationOrderNumber()%></a></span></li>
                                 <li><span><a href= "deliveryOrders.jsp">Delivery Orders</a></span></li>
                                             <%} else if (previousMgtPage.equals("deliveryOrders")) {%>
                                 <li><span><a href= "../DeliveryOrderManagementController?target=ListAllDO">Delivery Orders</a></span></li>  
@@ -156,27 +156,10 @@
                                     <header class="clearfix">
                                         <div class="row">
                                             <div class="col-sm-6 mt-md">
-                                                <h2 class="h2 mt-none mb-sm text-dark text-weight-bold">Delivery Order</h2>
-                                                <h3><%=deliveryOrder.getDeliveryOrderNumber()%></h3>
-                                            </div>
-                                            <br/>
-                                            <div class="col-sm-6 text-right mt-md mb-md">
-                                                <address class="ib mr-xlg">
-                                                    Phuture International Ltd
-                                                    <br/>
-                                                    28 Sin Ming Lane, #06-145 Midview City S(573972)
-                                                    <br/>
-                                                    Phone: (65) 6842 0198
-                                                    <br/>
-                                                    Fax: (65) 6285 6753
-                                                </address>
-                                                <div class="ib">
-                                                    <img src="../assets/images/invoice-logo.png" alt="Phuture International" />
-                                                </div>
+                                                <h2 class="h2 mt-none mb-sm text-dark text-weight-bold">Delivery Order <%=deliveryOrder.getDeliveryOrderNumber()%></h2><br>
                                             </div>
                                         </div>
                                     </header>
-
                                     <div class="bill-info">
                                         <div class="row">
                                             <div class="col-md-6">
@@ -340,7 +323,7 @@
                                                         for (int i = 0; i < deliveryOrder.getItems().size(); i++) {
                                                             if (!editingLineItem.isEmpty() && editingLineItem.equals(deliveryOrder.getItems().get(i).getId() + "")) {
                                                                 //Print editable fields
-%>
+                                                %>
                                                 <tr>
                                                     <td>
                                                         <input type='text' class='form-control' name='itemName' id='itemName<%=deliveryOrder.getItems().get(i).getId()%>' value='<%=deliveryOrder.getItems().get(i).getItemName()%>'/>
@@ -391,14 +374,6 @@
                                                     }
                                                 %>
                                             </div>
-                                            <div class="col-sm-3"></div>
-                                            <div class="col-sm-4">
-                                                <table class="table h5 text-dark">
-                                                    <tbody>
-
-                                                    </tbody>
-                                                </table>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -408,7 +383,7 @@
                                         <div class="btn-group">
                                             <%
                                                 if (deliveryOrder.getItems().size() > 0) {
-                                                    out.print("<a href='../OrderManagementController?target=PrintPDF&id=" + deliveryOrder.getId() + "' target='_blank' class='btn btn-default'><i class='fa fa-print'></i> Print PDF</a>");
+                                                    out.print("<a href='deliveryOrder-print.jsp' target='_blank' class='btn btn-default'><i class='fa fa-print'></i> Print PDF</a>");
                                                 }
                                                 if (deliveryOrder.getNotes() != null && !deliveryOrder.getNotes().isEmpty()) {
                                                     out.print("<button type='button' class='btn btn-info modal-with-form' href='#modalNotes'>Notes</button>");

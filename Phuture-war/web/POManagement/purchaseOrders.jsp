@@ -67,11 +67,7 @@
                                 <% if (previousMgtPage.equals("sco")) {%>
                                 <li><span><a href= "../OrderManagementController?target=ListAllSCO">SCO Management</a></span></li>
                                 <li><span><a href= "../OrderManagementController?target=RetrieveSCO&id=<%=sco.getId()%>"><%=sco.getSalesPerson().getStaffPrefix()%><%=sco.getSalesConfirmationOrderNumber()%></a></span></li>
-                                            <%
-                                            } else if (previousMgtPage.equals("soa")) {
-
-                                            %>
-                                            <%}%>
+                                <%}%>
                                 <li><span>Purchase Orders &nbsp;&nbsp</span></li>
                             </ol>
                         </div>
@@ -84,7 +80,7 @@
                             <%
                                 if (previousMgtPage.equals("sco")) {
                             %>
-                            <h2 class="panel-title">SCO No. <%=sco.getSalesPerson().getStaffPrefix()%><%=sco.getSalesConfirmationOrderNumber()%> - Purchase Orders</h2>
+                            <h2 class="panel-title"><%=sco.getSalesPerson().getStaffPrefix()%><%=sco.getSalesConfirmationOrderNumber()%> - Purchase Orders</h2>
                             <%} else {%>
                             <h2 class="panel-title">Purchase Orders</h2>
                             <%}%>
@@ -97,7 +93,7 @@
                                             <th>Purchase Order No.</th>
                                             <th>Purchase Date</th>
                                             <th>Purchase Status</th>
-                                            <th style="width: 400px;">Action</th>
+                                            <th style="text-align: center;">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -128,7 +124,6 @@
                                             <td><button type="button" class="btn btn-default btn-block" onclick="javascript:viewPO('<%=purchaseOrders.get(i).getId()%>')">View</button></td>
                                         </tr>
                                         <%
-
                                                 }
                                             }
                                         %>

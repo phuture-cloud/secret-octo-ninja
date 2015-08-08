@@ -103,20 +103,19 @@
                                                 }
                                             %>
                                         </td>
+                                        <%
+                                            if (creditNotes.get(i).getIsVoided()) {
+                                                out.print("<td class='danger'>Voided</td>");
+                                            } else {
+                                                out.print("<td class='success'>Active</td>");
+                                            }
+                                        %>
                                         <td>
-                                            <%
-                                                if (creditNotes.get(i).getIsVoided()) {
-                                                    out.print("Voided");
-                                                } else {
-                                                    out.print("Active");
-                                                }
-                                            %>
-                                        </td>
-                                        <td>
-                                            <button type="button" class="btn btn-default" onclick="javascript:viewCreditNote('<%=creditNotes.get(i).getId()%>')">Print</button>
-                                            <button type='button' class='btn btn-default modal-with-form' href='#modalUpdateCN<%=creditNotes.get(i).getId()%>'>Update</button>
-                                            <button type="button" class="btn btn-danger" onclick="javascript:voidCreditNote('<%=customerID%>', '<%=customerName%>', '<%=creditNotes.get(i).getId()%>')">Void</button>
-
+                                            <div class="btn-group" role="group" aria-label="...">
+                                                <button type="button" class="btn btn-default" onclick="javascript:viewCreditNote('<%=creditNotes.get(i).getId()%>')">Print</button>
+                                                <button type='button' class='btn btn-default modal-with-form' href='#modalUpdateCN<%=creditNotes.get(i).getId()%>'>Update</button>
+                                                <button type="button" class="btn btn-danger" onclick="javascript:voidCreditNote('<%=customerID%>', '<%=customerName%>', '<%=creditNotes.get(i).getId()%>')">Void</button>
+                                            </div>
                                             <div id="modalUpdateCN<%=creditNotes.get(i).getId()%>" class="modal-block modal-block-primary mfp-hide">
                                                 <form name="creditNotesForm" action="../PaymentManagementController">
                                                     <section class="panel">

@@ -1,4 +1,3 @@
-<%@page import="EntityManager.SalesConfirmationOrder"%>
 <%@page import="EntityManager.PurchaseOrder"%>
 <%@page import="java.text.NumberFormat"%>
 <%@page import="java.text.SimpleDateFormat"%>
@@ -9,13 +8,12 @@
 <%
     Staff staff = (Staff) (session.getAttribute("staff"));
     PurchaseOrder purchaseOrder = (PurchaseOrder) (session.getAttribute("po"));
-    SalesConfirmationOrder sco = (SalesConfirmationOrder) (session.getAttribute("sco"));
     if (session.isNew()) {
         response.sendRedirect("../index.jsp?errMsg=Invalid Request. Please login.");
     } else if (staff == null) {
         response.sendRedirect("../index.jsp?errMsg=Session Expired.");
-    } else if (sco == null) {
-        response.sendRedirect("scoManagement.jsp?errMsg=An Error has occured.");
+    } else if (purchaseOrder == null) {
+        response.sendRedirect("purchaseOrders.jsp?errMsg=An error has occured.");
     } else {
         String editingLineItem = request.getParameter("editingLineItem");
         String formDisablerFlag = "";
@@ -163,7 +161,7 @@
                                     </a>
                                 </li>
                                 <li><span><a href= "../OrderManagementController?target=ListAllSCO">SCO Management</a></span></li>
-                                <li><span><a href= "../OrderManagementController?target=RetrieveSCO&id=<%=purchaseOrder.getSalesConfirmationOrder().getId()%>"><%=purchaseOrder.getSalesConfirmationOrder().getSalesConfirmationOrderNumber()%></a></span></li>
+                                <li><span><a href= "../OrderManagementController?target=RetrieveSCO&id=<%=purchaseOrder.getSalesConfirmationOrder().getId()%>"><%=purchaseOrder.getSalesConfirmationOrder().getSalesPerson().getStaffPrefix()%><%=purchaseOrder.getSalesConfirmationOrder().getSalesConfirmationOrderNumber()%></a></span></li>
                                 <li><span><a href= "purchaseOrders.jsp">POs</a></span></li>
                                 <li><span>PO &nbsp;&nbsp</span></li>
                             </ol>
@@ -179,26 +177,8 @@
                                         <div class="row">
                                             <div class="col-sm-6 mt-md">
                                                 <h2 class="h2 mt-none mb-sm text-dark text-weight-bold">Purchase Order</h2>
-                                                <%
-                                                    if (purchaseOrder != null) {
-                                                        out.print("<input type='text' " + formDisablerFlag + " class='form-control' id='poNumber' name='poNumber' value='" + purchaseOrder.getPurchaseOrderNumber() + "' style='max-width: 300px' required/>");
-                                                    }
-                                                %>
-                                            </div>
-                                            <br/>
-                                            <div class="col-sm-6 text-right mt-md mb-md">
-                                                <address class="ib mr-xlg">
-                                                    Phuture International Ltd
-                                                    <br/>
-                                                    28 Sin Ming Lane, #06-145 Midview City S(573972)
-                                                    <br/>
-                                                    Phone: (65) 6842 0198
-                                                    <br/>
-                                                    Fax: (65) 6285 6753
-                                                </address>
-                                                <div class="ib">
-                                                    <img src="../assets/images/invoice-logo.png" alt="Phuture International" />
-                                                </div>
+                                                <input type='text' <%=formDisablerFlag%> class='form-control' id='poNumber' name='poNumber' value='<%=purchaseOrder.getPurchaseOrderNumber()%>' style='max-width: 300px' required/>
+                                                <br/>
                                             </div>
                                         </div>
                                     </header>
@@ -212,6 +192,7 @@
                                                         <div class="col-md-6" style="padding-left: 0px;">
                                                             <%
                                                                 if (purchaseOrder != null) {
+                                                                    String s_coyname = purchaseOrder.getCompanyName();
                                                                     String s_name = purchaseOrder.getSupplierName();
                                                                     String s_email = purchaseOrder.getSupplierEmail();
                                                                     String s_officeNo = purchaseOrder.getSupplierOfficeNo();
@@ -238,15 +219,16 @@
                                                                         s_address = "";
                                                                     }
 
-                                                                    out.print("<input type='text' " + formDisablerFlag + " class='form-control' id='supplierName' name='supplierName' value='" + s_name + "' placeholder='Supplier Name'/>");
-                                                                    out.print("<input type='text' " + formDisablerFlag + " class='form-control' id='supplierEmail' name='supplierEmail' value='" + s_email + "' placeholder='Supplier Email' />");
-                                                                    out.print("<input type='text' " + formDisablerFlag + " class='form-control' id='supplierOfficeNo' name='supplierOfficeNo' value='" + s_officeNo + "' placeholder='Supplier Office No' />");
-                                                                    out.print("<input type='text' " + formDisablerFlag + " class='form-control' id='supplierMobileNo' name='supplierMobileNo' value='" + s_mobileNo + "' placeholder='Supplier Mobile No' />");
-                                                                    out.print("<input type='text' " + formDisablerFlag + " class='form-control' id='supplierFaxNo' name='supplierFaxNo' value='" + s_faxNo + "' placeholder='Supplier Fax No' />");
+                                                                    out.print("<input type='text' " + formDisablerFlag + " class='form-control' name='companyName' value='" + s_coyname + "' placeholder='Company'/>");
+                                                                    out.print("<input type='text' " + formDisablerFlag + " class='form-control' name='supplierName' value='" + s_name + "' placeholder='Supplier Name'/>");
+                                                                    out.print("<input type='text' " + formDisablerFlag + " class='form-control' name='supplierEmail' value='" + s_email + "' placeholder='Supplier Email' />");
+                                                                    out.print("<input type='text' " + formDisablerFlag + " class='form-control' name='supplierOfficeNo' value='" + s_officeNo + "' placeholder='Supplier Office No' />");
+                                                                    out.print("<input type='text' " + formDisablerFlag + " class='form-control' name='supplierMobileNo' value='" + s_mobileNo + "' placeholder='Supplier Mobile No' />");
+                                                                    out.print("<input type='text' " + formDisablerFlag + " class='form-control' name='supplierFaxNo' value='" + s_faxNo + "' placeholder='Supplier Fax No' />");
                                                                     if (!s_address.equals("")) {
-                                                                        out.print("<textarea " + formDisablerFlag + "  placeholder='Supplier Address' class='form-control' rows='3' name='supplierAddress' id='supplierAddress'>" + s_address + " </textarea>");
+                                                                        out.print("<textarea " + formDisablerFlag + "  placeholder='Supplier Address' class='form-control' rows='3' name='supplierAddress'>" + s_address + " </textarea>");
                                                                     } else {
-                                                                        out.print("<textarea " + formDisablerFlag + "  placeholder='Supplier Address' class='form-control' rows='3' name='supplierAddress' id='supplierAddress'></textarea>");
+                                                                        out.print("<textarea " + formDisablerFlag + "  placeholder='Supplier Address' class='form-control' rows='3' name='supplierAddress'></textarea>");
                                                                     }
                                                                     out.print("<br>");
                                                                 }
@@ -261,7 +243,7 @@
                                                 <div class="bill-data text-right">
                                                     <p class="mb-none">
                                                         <span class="text-dark">Salesperson: </span>
-                                                        <span class="value" style="min-width: 110px; font-size: 10.5pt; text-align: left;">
+                                                        <span class="value" style="min-width: 200px; font-size: 10.5pt; text-align: left;">
                                                             <%
                                                                 if (purchaseOrder != null && purchaseOrder.getSalesConfirmationOrder().getSalesPerson().getName() != null) {
                                                                     out.print(purchaseOrder.getSalesConfirmationOrder().getSalesPerson().getName());
@@ -271,11 +253,12 @@
                                                             %>
                                                         </span>
                                                     </p>
+
                                                     <p class="mb-none">
                                                         <span class="text-dark">Date:</span>
-                                                        <span class="value" style="min-width: 110px">
+                                                        <span class="value" style="min-width: 200px">
                                                             <%
-                                                                if (purchaseOrder != null) {
+                                                                if (purchaseOrder.getPurchaseOrderDate() != null) {
                                                                     SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
                                                                     String date = DATE_FORMAT.format(purchaseOrder.getPurchaseOrderDate());
                                                                     out.print("<input " + formDisablerFlag + " id='poDate' name='poDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "' required>");
@@ -286,10 +269,9 @@
                                                         </span>
                                                     </p>
 
-                                                    <% if (purchaseOrder != null) {%>
                                                     <p class="mb-none">
                                                         <span class="text-dark">Status: </span>
-                                                        <span class="value" style="min-width: 110px">
+                                                        <span class="value" style="min-width: 200px">
                                                             <select <%=formDisablerFlag%> id="status" name="status" class="form-control input-sm" required>
                                                                 <%
                                                                     if ((purchaseOrder.getStatus() != null && !purchaseOrder.getStatus().isEmpty())) {
@@ -310,7 +292,39 @@
                                                             </select>
                                                         </span>
                                                     </p>
-                                                    <%}%>
+
+                                                    <p class="mb-none">
+                                                        <span class="text-dark">Terms: </span>
+                                                        <span class="value" style="min-width: 200px; font-size: 10.5pt; text-align: left;">
+                                                            <%if (purchaseOrder.getTerms() != null && !purchaseOrder.getTerms().isEmpty()) {%>
+                                                            <input type='text' <%=formDisablerFlag%> class='form-control' name='terms' value='<%=purchaseOrder.getTerms()%>'>
+                                                            <%} else {%>
+                                                            <input type='text' <%=formDisablerFlag%> class='form-control' name='terms' placeholder='eg TT in advance'>
+                                                            <%}%>
+                                                        </span>
+                                                    </p>
+
+                                                    <p class="mb-none">
+                                                        <span class="text-dark">Delivery Date: </span>
+                                                        <span class="value" style="min-width: 200px; font-size: 10.5pt; text-align: left;">
+                                                            <%if (purchaseOrder.getTerms() != null && !purchaseOrder.getTerms().isEmpty()) {%>
+                                                            <input type='text' <%=formDisablerFlag%> class='form-control' name='deliveryDate' value='<%=purchaseOrder.getDeliveryDate()%>'>
+                                                            <%} else {%>
+                                                            <input type='text' <%=formDisablerFlag%> class='form-control' name='deliveryDate' placeholder='eg TT in advance'>
+                                                            <%}%>
+                                                        </span>
+                                                    </p>
+
+                                                    <p class="mb-none">
+                                                        <span class="text-dark">Currency: </span>
+                                                        <span class="value" style="min-width: 200px; font-size: 10.5pt; text-align: left;">
+                                                            <%if (purchaseOrder.getCurrency() != null && !purchaseOrder.getCurrency().isEmpty()) {%>
+                                                            <input type='text' <%=formDisablerFlag%> class='form-control' name='currency' value='<%=purchaseOrder.getCurrency()%>'>
+                                                            <%} else {%>
+                                                            <input type='text' <%=formDisablerFlag%> class='form-control' name='currency' placeholder='eg RMB'>
+                                                            <%}%>
+                                                        </span>
+                                                    </p>
                                                 </div>
                                             </div>
                                         </div>
@@ -453,6 +467,12 @@
                                     <div class="invoice-summary" style="margin-top: 10px;">
                                         <div class="row">
                                             <div class="col-sm-5">
+                                                <%
+                                                    if (purchaseOrder.getRemarks() != null && !purchaseOrder.getRemarks().isEmpty()) {
+                                                        out.print("Remarks: ");
+                                                        out.print(purchaseOrder.getRemarks().replaceAll("\\r", "<br>"));
+                                                    }
+                                                %>
                                             </div>
                                             <div class="col-sm-3"></div>
                                             <div class="col-sm-4">
@@ -487,13 +507,14 @@
                                             <%
                                                 if (purchaseOrder != null) {
                                                     if (purchaseOrder.getItems().size() > 0) {
-                                                        out.print("<a href='../OrderManagementController?target=PrintPDF&id=" + purchaseOrder.getId() + "' target='_blank' class='btn btn-default'><i class='fa fa-print'></i> Print PDF</a>");
+                                                        out.print("<a href='purchaseOrder-print.jsp' target='_blank' class='btn btn-default'><i class='fa fa-print'></i> Print PDF</a>");
                                                     }
                                                     if (purchaseOrder.getNotes() != null && !purchaseOrder.getNotes().isEmpty()) {
                                                         out.print("<button type='button' class='btn btn-info modal-with-form' href='#modalNotes'>Notes</button>");
                                                     } else {
                                                         out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalNotes'>Notes</button>");
                                                     }
+                                                    out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalRemarks' data-toggle='tooltip' data-placement='top' title='*Remarks will be reflected in the PO'>Remarks</button>");
                                                 }
                                             %> 
                                         </div>
@@ -502,11 +523,9 @@
                                     <div class="col-sm-6 text-right mt-md mb-md">
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-default" onclick="javascript:back()">Back</button>
-                                            <%              if (purchaseOrder != null) {
+                                            <%
+                                                if (purchaseOrder != null) {
                                                     out.print("<button type='button' class='modal-with-move-anim btn btn-danger' href='#modalRemove'>Delete</button>");
-                                                    if (purchaseOrder.getItems().size() > 0) {
-                                                        out.print("<button " + formDisablerFlag + " class='btn btn-primary' onclick='javascript:generateInvoice()'>Generate Invoice</button>");
-                                                    }
                                                     out.print("<button " + formDisablerFlag + " class='btn btn-success' onclick='javascript:updatePO();'>Save</button>");
                                                 } else {
                                                     out.print("<button " + formDisablerFlag + " class='btn btn-success' type='submit'>Save</button>");
@@ -533,7 +552,7 @@
                     <%if (purchaseOrder != null) {%>
                     <div id="modalEditForm" class="modal-block modal-block-primary mfp-hide">
                         <section class="panel">
-                            <form name="editContactForm" action="../OrderManagementController" class="form-horizontal mb-lg">
+                            <form name="editContactForm" action="../PurchaseOrderManagementController" class="form-horizontal mb-lg">
                                 <header class="panel-heading">
                                     <h2 class="panel-title">Edit Contact</h2>
                                 </header>
@@ -600,9 +619,40 @@
                         </section>
                     </div>
 
+                    <div id="modalRemarks" class="modal-block modal-block-primary mfp-hide">
+                        <section class="panel">
+                            <form name="editRemarksForm" action="../PurchaseOrderManagementController" class="form-horizontal mb-lg">
+                                <header class="panel-heading">
+                                    <h2 class="panel-title">Remarks</h2>
+                                </header>
+                                <div class="panel-body">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Remarks</label>
+                                        <div class="col-sm-9">
+                                            <textarea class="form-control" rows="5" name="remarks"><%if (purchaseOrder.getRemarks() != null) {
+                                                    out.print(purchaseOrder.getRemarks());
+                                                }%></textarea>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="target" value="UpdatePORemarks">    
+                                    <input type="hidden" name="id" value="<%=purchaseOrder.getId()%>">  
+                                </div>
+                                <footer class="panel-footer">
+                                    <div class="row">
+                                        <div class="col-md-12 text-right">
+                                            <button <%=formDisablerFlag%> class="btn btn-success" type="submit">Save</button>
+                                            <button <%=formDisablerFlag%> class="btn btn-default" type="reset">Clear</button>
+                                            <button class="btn btn-default modal-dismiss">Close</button>
+                                        </div>
+                                    </div>
+                                </footer>
+                            </form>
+                        </section>
+                    </div>      
+
                     <div id="modalNotes" class="modal-block modal-block-primary mfp-hide">
                         <section class="panel">
-                            <form name="editNotesForm" action="../DeliveryOrderManagementController" class="form-horizontal mb-lg">
+                            <form name="editNotesForm" action="../PurchaseOrderManagementController" class="form-horizontal mb-lg">
                                 <header class="panel-heading">
                                     <h2 class="panel-title">Notes</h2>
                                 </header>

@@ -190,7 +190,6 @@ public class PaymentManagementController extends HttpServlet {
 
                     case "UpdateCreditNote":
                         //id here refers to custoemr ID
-
                         if (creditNoteID != null && !creditNoteID.isEmpty() && id != null && !id.isEmpty()) {
                             String creditNoteDate = request.getParameter("creditNoteDate");
                             Date creditNoteDateDate = sourceFormat.parse(creditNoteDate);

@@ -193,7 +193,7 @@
                                 </li>
                                 <%if (previousMgtPage.equals("sco")) {%>
                                 <li><span><a href= "../OrderManagementController?target=ListAllSCO">SCO Management</a></span></li>
-                                <li><span><a href= "../OrderManagementController?target=RetrieveSCO&id=<%=invoice.getSalesConfirmationOrder().getId()%>"><%=invoice.getSalesConfirmationOrder().getSalesConfirmationOrderNumber()%></a></span></li>
+                                <li><span><a href= "../OrderManagementController?target=RetrieveSCO&id=<%=invoice.getSalesConfirmationOrder().getId()%>"><%=invoice.getSalesConfirmationOrder().getSalesPerson().getStaffPrefix()%><%=invoice.getSalesConfirmationOrder().getSalesConfirmationOrderNumber()%></a></span></li>
                                 <li><span><a href= "invoices.jsp">Invoices</a></span></li>
                                             <%} else if (previousMgtPage.equals("invoices")) {%>
                                 <li><span><a href= "../InvoiceManagementController?target=ListAllInvoice">Invoices</a></span></li>
@@ -214,23 +214,7 @@
                                     <header class="clearfix">
                                         <div class="row">
                                             <div class="col-sm-6 mt-md">
-                                                <h2 class="h2 mt-none mb-sm text-dark text-weight-bold">Invoice</h2>
-                                                <h3><%=invoice.getInvoiceNumber()%></h3>
-                                            </div>
-                                            <br/>
-                                            <div class="col-sm-6 text-right mt-md mb-md">
-                                                <address class="ib mr-xlg">
-                                                    Phuture International Ltd
-                                                    <br/>
-                                                    28 Sin Ming Lane, #06-145 Midview City S(573972)
-                                                    <br/>
-                                                    Phone: (65) 6842 0198
-                                                    <br/>
-                                                    Fax: (65) 6285 6753
-                                                </address>
-                                                <div class="ib">
-                                                    <img src="../assets/images/invoice-logo.png" alt="Phuture International" />
-                                                </div>
+                                                <h2 class="h2 mt-none mb-sm text-dark text-weight-bold">Invoice <%=invoice.getInvoiceNumber()%></h2><br>
                                             </div>
                                         </div>
                                     </header>
@@ -529,13 +513,9 @@
                                     <div class="invoice-summary" style="margin-top: 10px;">
                                         <div class="row">
                                             <div class="col-sm-5">
-                                                Terms & Conditions
-                                                <ul>
-                                                    <li>All Goods Delivered Are Non Returnable / Refundable</li>
-                                                </ul>
                                                 <%
                                                     if (invoice.getRemarks() != null && !invoice.getRemarks().isEmpty()) {
-                                                        out.print("Remarks: ");
+                                                        out.print("REMARKS: ");
                                                         out.print(invoice.getRemarks().replaceAll("\\r", "<br>"));
                                                     }
                                                 %>
@@ -591,7 +571,7 @@
                                                                     } else {
                                                                         formatedPrice = invoice.getTotalPriceBeforeCreditNote();
                                                                         out.print("<span id='output_totalPrice'>" + formatter.format(formatedPrice) + "</span>");
-                                                                        out.print("<input type='hidden' value='" + invoice.getTotalPriceBeforeCreditNote()+ "' id='totalPrice'>");
+                                                                        out.print("<input type='hidden' value='" + invoice.getTotalPriceBeforeCreditNote() + "' id='totalPrice'>");
                                                                     }
                                                                 %>
                                                             </td>
@@ -608,7 +588,7 @@
                                         <div class="btn-group">
                                             <%
                                                 if (invoice.getItems().size() > 0) {
-                                                    out.print("<a href='../OrderManagementController?target=PrintPDF&id=" + invoice.getId() + "' target='_blank' class='btn btn-default'><i class='fa fa-print'></i> Print PDF</a>");
+                                                    out.print("<a href='invoice-print.jsp' target='_blank' class='btn btn-default'><i class='fa fa-print'></i> Print PDF</a>");
                                                 }
                                                 if (invoice.getNotes() != null && !invoice.getNotes().isEmpty()) {
                                                     out.print("<button type='button' class='btn btn-info modal-with-form' href='#modalNotes'>Notes</button>");

@@ -31,7 +31,7 @@
         String selectedContactID = request.getParameter("selectedContactID");
         String editingLineItem = request.getParameter("editingLineItem");
         String formDisablerFlag = "";
-        if (sco!=null && sco.getStatus().equals("Voided")) {
+        if (sco != null && sco.getStatus().equals("Voided")) {
             formDisablerFlag = "disabled";
             editingLineItem = "disabled";
         }
@@ -267,27 +267,13 @@
                                     <header class="clearfix">
                                         <div class="row">
                                             <div class="col-sm-6 mt-md">
-                                                <h2 class="h2 mt-none mb-sm text-dark text-weight-bold">Sales Confirmation Order</h2>
-                                                <%
-                                                    if (sco != null && scoID != null && !scoID.isEmpty()) {
-                                                        out.print("<h3>" + sco.getSalesPerson().getStaffPrefix() + sco.getSalesConfirmationOrderNumber() + "</h3>");
-                                                    }
-                                                %>
-                                            </div>
-                                            <br/>
-                                            <div class="col-sm-6 text-right mt-md mb-md">
-                                                <address class="ib mr-xlg">
-                                                    Phuture International Ltd
-                                                    <br/>
-                                                    28 Sin Ming Lane, #06-145 Midview City S(573972)
-                                                    <br/>
-                                                    Phone: (65) 6842 0198
-                                                    <br/>
-                                                    Fax: (65) 6285 6753
-                                                </address>
-                                                <div class="ib">
-                                                    <img src="../assets/images/invoice-logo.png" alt="Phuture International" />
-                                                </div>
+                                                <h2 class="h2 mt-none mb-sm text-dark text-weight-bold">SCO No.
+                                                    <%
+                                                        if (sco != null && scoID != null && !scoID.isEmpty()) {
+                                                            out.print(sco.getSalesPerson().getStaffPrefix() + sco.getSalesConfirmationOrderNumber());
+                                                        }
+                                                    %>
+                                                </h2><br>
                                             </div>
                                         </div>
                                     </header>
@@ -517,7 +503,7 @@
                                                                             out.print("<option value='Completed'>Completed</option>");
                                                                             out.print("<option value='Write-Off' selected>Write-Off</option>");
                                                                         } else if (selectedStatus.equals("Voided")) {
-                                                                             out.print("<option value='Voided' selected>Voided</option>");
+                                                                            out.print("<option value='Voided' selected>Voided</option>");
                                                                         } else {
                                                                             out.print("<option value='Unfulfilled'>Unfulfilled</option>");
                                                                             out.print("<option value='Fulfilled'>Fulfilled</option>");
@@ -679,14 +665,9 @@
                                     <div class="invoice-summary" style="margin-top: 10px;">
                                         <div class="row">
                                             <div class="col-sm-5">
-                                                Terms & Conditions
-                                                <ul>
-                                                    <li>Acceptance of this Sales Order constitutes a contract between the buyer & Phuture International Pte Ltd whereby buyer will adhere to conditions stated on this Sales Order</li>
-                                                    <li>Buyer shall be liable for at least 50% of total sales amount if buyer opt to cancel the order</li>
-                                                </ul>
                                                 <%
                                                     if (sco != null && scoID != null && !scoID.isEmpty() && sco.getRemarks() != null && !sco.getRemarks().isEmpty()) {
-                                                        out.print("Remarks: ");
+                                                        out.print("REMARKS: ");
                                                         out.print(sco.getRemarks().replaceAll("\\r", "<br>"));
                                                     }
                                                 %>
@@ -1029,7 +1010,7 @@
                                     <div class="form-group">
                                         <label class="col-sm-3 control-label">Remarks</label>
                                         <div class="col-sm-9">
-                                            <textarea class="form-control" name="remarks"><%if (sco.getRemarks() != null) {
+                                            <textarea class="form-control" rows="5" name="remarks"><%if (sco.getRemarks() != null) {
                                                     out.print(sco.getRemarks());
                                                 }%></textarea>
                                         </div>

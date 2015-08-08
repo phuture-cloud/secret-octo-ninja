@@ -82,7 +82,7 @@
                     <section class="panel">
                         <header class="panel-heading">
                             <%if (previousMgtPage.equals("sco")) {%>
-                            <h2 class="panel-title">SCO No.<%=sco.getSalesPerson().getStaffPrefix()%><%=sco.getSalesConfirmationOrderNumber()%> - Delivery Orders</h2>
+                            <h2 class="panel-title"><%=sco.getSalesPerson().getStaffPrefix()%><%=sco.getSalesConfirmationOrderNumber()%> - Delivery Orders</h2>
                             <%} else {%>
                             <h2 class="panel-title">Delivery Orders</h2>
                             <%}%>
@@ -95,7 +95,7 @@
                                             <th>Delivery No.</th>
                                             <th>Delivery Date</th>
                                             <th>Delivery Status</th>
-                                            <th style="width: 400px;">Action</th>
+                                            <th style="text-align: center;">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>

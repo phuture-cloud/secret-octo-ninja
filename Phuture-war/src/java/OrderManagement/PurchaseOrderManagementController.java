@@ -2,7 +2,6 @@ package OrderManagement;
 
 import EntityManager.PurchaseOrder;
 import EntityManager.ReturnHelper;
-import EntityManager.SalesConfirmationOrder;
 import EntityManager.Staff;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -20,9 +19,6 @@ public class PurchaseOrderManagementController extends HttpServlet {
     @EJB
     private PurchaseOrderManagementBeanLocal purchaseOrderManagementBean;
 
-    @EJB
-    private OrderManagementBeanLocal orderManagementBean;
-
     String nextPage = "", goodMsg = "", errMsg = "";
     HttpSession session;
     Long loggedInStaffID = null;
@@ -32,7 +28,6 @@ public class PurchaseOrderManagementController extends HttpServlet {
         String target = request.getParameter("target");
         String source = request.getParameter("source");
 
-        String notes = request.getParameter("notes");
         String itemName = request.getParameter("itemName");
         String itemDescription = request.getParameter("itemDescription");
         String itemQty = request.getParameter("itemQty");
@@ -54,12 +49,7 @@ public class PurchaseOrderManagementController extends HttpServlet {
         session = request.getSession();
         ReturnHelper returnHelper = null;
         PurchaseOrder purchaseOrder = (PurchaseOrder) (session.getAttribute("po"));
-        
-//        String previousManagementPage = request.getParameter("previousManagementPage");
-//        if (previousManagementPage != null && !previousManagementPage.isEmpty()) {
-//            session.setAttribute("previousManagementPage", previousManagementPage);
-//        }
-        
+
         try {
             if (checkLogin()) {
                 switch (target) {
@@ -113,6 +103,8 @@ public class PurchaseOrderManagementController extends HttpServlet {
                         } else {
                             SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
                             Date poDateDate = formatter.parse(poDate);
+
+                            String companyName = request.getParameter("companyName");
                             String supplierName = request.getParameter("supplierName");
                             String supplierEmail = request.getParameter("supplierEmail");
                             String supplierOfficeNo = request.getParameter("supplierOfficeNo");
@@ -120,8 +112,13 @@ public class PurchaseOrderManagementController extends HttpServlet {
                             String supplierFaxNo = request.getParameter("supplierFaxNo");
                             String supplierAddress = request.getParameter("supplierAddress");
 
+                            String remarks = request.getParameter("remarks");
+                            String deliveryDate = request.getParameter("deliveryDate");
+                            String terms = request.getParameter("terms");
+                            String currency = request.getParameter("currency");
+
                             //Update PO
-                            returnHelper = purchaseOrderManagementBean.updatePurchaseOrder(purchaseOrder.getId(), poNumber, poDateDate, status, supplierName, supplierEmail, supplierOfficeNo, supplierMobileNo, supplierFaxNo, supplierAddress);
+                            returnHelper = purchaseOrderManagementBean.updatePurchaseOrder(purchaseOrder.getId(), poNumber, poDateDate, status, supplierName, supplierEmail, supplierOfficeNo, supplierMobileNo, supplierFaxNo, supplierAddress, companyName, terms, deliveryDate, remarks, currency);
                             if (returnHelper.getResult()) {
                                 Long poID = returnHelper.getID();
                                 purchaseOrder = purchaseOrderManagementBean.getPurchaseOrder(poID);
@@ -147,7 +144,20 @@ public class PurchaseOrderManagementController extends HttpServlet {
                         break;
 
                     case "UpdatePONotes":
+                        String notes = request.getParameter("notes");
                         returnHelper = purchaseOrderManagementBean.updatePurchaseOrderNotes(purchaseOrder.getId(), notes);
+                        purchaseOrder = purchaseOrderManagementBean.getPurchaseOrder(purchaseOrder.getId());
+                        if (returnHelper.getResult() && purchaseOrder != null) {
+                            session.setAttribute("po", purchaseOrder);
+                            nextPage = "POManagement/purchaseOrder.jsp?goodMsg=" + returnHelper.getDescription();
+                        } else {
+                            nextPage = "POManagement/purchaseOrder.jsp?errMsg=" + returnHelper.getDescription();
+                        }
+                        break;
+
+                    case "UpdatePORemarks":
+                        String remarks = request.getParameter("remarks");
+                        returnHelper = purchaseOrderManagementBean.updatePurchaseOrderRemarks(purchaseOrder.getId(), remarks);
                         purchaseOrder = purchaseOrderManagementBean.getPurchaseOrder(purchaseOrder.getId());
                         if (returnHelper.getResult() && purchaseOrder != null) {
                             session.setAttribute("po", purchaseOrder);

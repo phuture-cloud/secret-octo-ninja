@@ -73,7 +73,6 @@
                             <h2 class="panel-title">Sales Confirmation Order Management</h2>
                         </header>
                         <div class="panel-body">
-
                             <div class="row">
                                 <div class="col-md-12"> 
                                     <button class="btn btn-primary" onclick="createSCO()">Create Sales Confirmation Order</button>
@@ -95,7 +94,7 @@
                                             <th>Invoices</th>
                                             <th></th>
                                             <th>Status</th>
-                                            <th style="width: 300px; text-align: center">Action</th>
+                                            <th style="text-align: center">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>

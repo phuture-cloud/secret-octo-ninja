@@ -1,18 +1,18 @@
+<%@page import="EntityManager.PurchaseOrder"%>
 <%@page import="java.text.NumberFormat"%>
 <%@page import="java.text.SimpleDateFormat"%>
-<%@page import="EntityManager.SalesConfirmationOrder"%>
 <%@page import="EntityManager.Staff"%>
 <%@page import="java.util.List"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
     Staff staff = (Staff) (session.getAttribute("staff"));
-    SalesConfirmationOrder sco = (SalesConfirmationOrder) (session.getAttribute("sco"));
+    PurchaseOrder purchaseOrder = (PurchaseOrder) (session.getAttribute("po"));
     if (session.isNew()) {
         response.sendRedirect("../index.jsp?errMsg=Invalid Request. Please login.");
     } else if (staff == null) {
         response.sendRedirect("../index.jsp?errMsg=Session Expired.");
-    } else if (sco == null) {
-        response.sendRedirect("../scoManagement.jsp?errMsg=An Error Occured.");
+    } else if (purchaseOrder == null) {
+        response.sendRedirect("purchaseOrder.jsp?errMsg=An Error Occured.");
     } else {
         NumberFormat formatter = NumberFormat.getCurrencyInstance();
         SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
@@ -21,7 +21,7 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>Sales Confirmation Order</title>
+        <title>Purchase Order</title>
         <link rel="stylesheet" href="../assets/vendor/bootstrap/css/bootstrap.css">
         <style>
             body {
@@ -54,7 +54,7 @@
                     </p>
                 </div>
                 <div class="col-xs-6 text-right">
-                    <h1>SALES ORDER</h1>
+                    <h1>TAX INVOICE</h1>
                     <p>Co / GST Reg: 200919866N</p>
                 </div>
             </div>
@@ -65,13 +65,13 @@
                 <div class="col-xs-6">
                     <div  class="row">
                         <div class="col-xs-3">
-                            <p><strong>To</strong></p>
+                            <p><strong>Vendor</strong></p>
                         </div>
                         <div class="col-xs-9">
                             <p>
-                                <strong><%=sco.getCustomerName()%></strong>
+                                <strong><%=purchaseOrder.getCompanyName()%></strong>
                                 <br>
-                                <%=sco.getContactAddress().replaceAll("\\r", "<br>")%>
+                                <%=purchaseOrder.getSupplierAddress().replaceAll("\\r", "<br>")%>
                             </p>
                         </div>
                     </div>
@@ -81,7 +81,7 @@
                             <p>Attention</p>
                         </div>
                         <div class="col-xs-9">
-                            <p><%=sco.getCustomerName()%></p>
+                            <p><%=purchaseOrder.getSupplierName()%></p>
                         </div>
                     </div>
                 </div>
@@ -90,7 +90,7 @@
 
                 <div class="col-xs-2">
                     <p>
-                        <strong>SCO No.</strong>
+                        <strong>PO NO.</strong>
                         <br>
                         Date
                         <br>
@@ -103,16 +103,30 @@
                 </div>
                 <div class="col-xs-2">
                     <strong>
-                        <%=sco.getSalesPerson().getStaffPrefix()%><%=sco.getSalesConfirmationOrderNumber()%>
+                        <%=purchaseOrder.getPurchaseOrderNumber()%>
                     </strong>
                     <br>
-                    <%=DATE_FORMAT.format(sco.getSalesConfirmationOrderDate())%>
+                    <%=DATE_FORMAT.format(purchaseOrder.getPurchaseOrderDate())%>
                     <br>
-                    <%=sco.getContactOfficeNo()%>
+                    <%
+                        if (purchaseOrder.getSupplierOfficeNo() != null) {
+                            out.print(purchaseOrder.getSupplierOfficeNo());
+                        }
+                    %>
+
                     <br>
-                    <%=sco.getContactFaxNo()%>
+                    <%
+                        if (purchaseOrder.getSupplierFaxNo() != null) {
+                            out.print(purchaseOrder.getSupplierFaxNo());
+                        }
+                    %>
+
                     <br>
-                    <%=sco.getContactMobileNo()%>
+                    <%
+                        if (purchaseOrder.getSupplierMobileNo() != null) {
+                            out.print(purchaseOrder.getSupplierMobileNo());
+                        }
+                    %>
                 </div>
             </div>
 
@@ -121,22 +135,38 @@
 
             <table class="table table-bordered">
                 <thead style="background: #eeece1;">
-                <th class='text-center'><h4>SALESPERSON</h4></th>
-                <th class='text-center'><h4>EST. DELIVERY DATE</h4></th>
-                <th class='text-center'><h4>TERMS</h4> </th>
+                <th class='text-center'><h4>BUYER</h4></th>
+                <th class='text-center'><h4>SCO</h4></th>
+                <th class='text-center'><h4>TERMS</h4></th>
+                <th class='text-center'><h4>DELIVERY DATE</h4></th>
                 </thead>
                 <tbody>
                     <tr class="text-center">
-                        <td><%=staff.getName()%></td>
-                        <td><%=sco.getEstimatedDeliveryDate()%></td>
                         <td>
                             <%
-                                if (sco.getTerms() == 0) {
-                                    out.print("Cash on delivery");
-                                } else if (sco.getTerms() == 14) {
-                                    out.print("14 Days");
-                                } else if (sco.getTerms() == 30) {
-                                    out.print("30 Days");
+                                if (purchaseOrder.getSupplierName() != null) {
+                                    out.print(purchaseOrder.getSupplierName());
+                                }
+                            %>
+                        </td>
+                        <td>
+                            <%
+                                if (purchaseOrder.getSalesConfirmationOrder().getSalesConfirmationOrderNumber() != null) {
+                                    out.print(purchaseOrder.getSalesConfirmationOrder().getSalesConfirmationOrderNumber());
+                                }
+                            %>
+                        </td>
+                        <td>
+                            <%
+                                if (purchaseOrder.getTerms() != null) {
+                                    out.print(purchaseOrder.getTerms());
+                                }
+                            %>
+                        </td>
+                        <td>
+                            <%
+                                if (purchaseOrder.getDeliveryDate() != null) {
+                                    out.print(purchaseOrder.getDeliveryDate());
                                 }
                             %>
                         </td>
@@ -146,25 +176,30 @@
 
             <table class="table table-bordered">
                 <thead style="background: #eeece1;">
-                <th class='text-center'><h4>QTY</h4></th>
                 <th class='text-center'><h4>ITEM</h4></th>
                 <th class='text-center'><h4>DESCRIPTION</h4></th>
-                <th class='text-center'><h4>UNIT PRICE</h4> </th>
-                <th class='text-center'><h4>AMOUNT</h4></th>
+                <th class='text-center'><h4>QTY</h4></th>
+                <th class='text-center'><h4>UNIT PRICE (<%if (purchaseOrder.getCurrency() != null) {
+                        out.print(purchaseOrder.getCurrency());
+                    }%>)</h4></th>
+                <th class='text-center'><h4>TOTAL (<%if (purchaseOrder.getCurrency() != null) {
+                        out.print(purchaseOrder.getCurrency());
+                    }%>)</h4></th>
                 </thead>
                 <tbody>
                     <%
-                        for (int i = 0; i < sco.getItems().size(); i++) {
+                        for (int i = 0; i < purchaseOrder.getItems().size(); i++) {
                             double price = 0;
                             out.print("<tr>");
-                            out.print("<td class='text-center'>" + sco.getItems().get(i).getItemQty() + "</td>");
-                            out.print("<td>" + sco.getItems().get(i).getItemName() + "</td>");
-                            out.print("<td>" + sco.getItems().get(i).getItemDescription() + "</td>");
+                            out.print("<td>" + purchaseOrder.getItems().get(i).getItemName() + "</td>");
+                            out.print("<td>" + purchaseOrder.getItems().get(i).getItemDescription() + "</td>");
 
-                            price = sco.getItems().get(i).getItemUnitPrice();
+                            out.print("<td class='text-center'>" + purchaseOrder.getItems().get(i).getItemQty() + "</td>");
+
+                            price = purchaseOrder.getItems().get(i).getItemUnitPrice();
                             out.print("<td class='text-center'>" + formatter.format(price) + "</td>");
 
-                            price = sco.getItems().get(i).getItemUnitPrice() * sco.getItems().get(i).getItemQty();
+                            price = purchaseOrder.getItems().get(i).getItemUnitPrice() * purchaseOrder.getItems().get(i).getItemQty();
                             out.print("<td class='text-center'>" + formatter.format(price) + "</td>");
 
                             out.print("</tr>");
@@ -177,40 +212,29 @@
                 <div class="col-xs-7 text-left">
                     <u>Terms & Conditions</u>
                     <ul style="padding-left: 20px;">
-                        <li>Acceptance of this Sales Order constitutes a contract between the buyer & Phuture International Pte Ltd whereby buyer will adhere to conditions stated on this Sales Order</li>
-                        <li>Buyer shall be liable for at least 50% of total sales amount if buyer opt to cancel the order</li>
+                        <li>Phuture International Pte Ltd reserves all right to cancel this Purchase Order due to supplier unable to fulfill or meet the buyer's requirements.</li>
                     </ul>
                     <%
-                        if (sco.getRemarks() != null && !sco.getRemarks().isEmpty()) {
+                        if (purchaseOrder.getRemarks() != null && !purchaseOrder.getRemarks().isEmpty()) {
                             out.print("REMARKS: ");
-                            out.print(sco.getRemarks().replaceAll("\\r", "<br>"));
+                            out.print(purchaseOrder.getRemarks().replaceAll("\\r", "<br>"));
                         }
                     %>
                 </div>
 
+
                 <div class="col-xs-3">
                     <p>
                         <strong>
-                            SUBTOTAL : <br>
-                            7% GST : <br>
-                            Total (SGD) : <br>
+                            Total (<%if (purchaseOrder.getCurrency() != null) {
+                        out.print(purchaseOrder.getCurrency());
+                    }%>) : <br>
                         </strong>
                     </p>
                 </div>
                 <div class="col-xs-2">
                     <strong>
-                        <%
-                            double formatedPrice = 0;
-                            formatedPrice = (sco.getTotalPrice() / 107) * 100;
-                            out.print(formatter.format(formatedPrice));
-                        %>
-                        <br>
-                        <%
-                            formatedPrice = sco.getTotalTax();
-                            out.print(formatter.format(formatedPrice));
-                        %>
-                        <br>
-                        <%=formatter.format(sco.getTotalPrice())%>
+                        <%=formatter.format(purchaseOrder.getTotalPrice())%>
                         <br>
                     </strong>
                 </div>
@@ -220,16 +244,9 @@
 
             <div class="row text-left">
                 <div class="col-xs-8">
-                    <strong>AGREED & CONFIRMED</strong>
-
-                    <br><br><br><br><br>
-                    <img src="../assets/images/thin-black-line.png">
-                    <br>
-                    Customer's Signature & Co. Stamp
                 </div>
                 <div class="col-xs-4">
                     <strong>Phuture International Pte Ltd</strong>
-
                     <%
                         if (staff.getSignature() != null && staff.getSignature().length > 0) {
                             out.write("<img class='img-responsive' src='http://localhost:8080/Phuture-war/sig?id=" + staff.getId() + "'>");

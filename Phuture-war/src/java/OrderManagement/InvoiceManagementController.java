@@ -333,6 +333,7 @@ public class InvoiceManagementController extends HttpServlet {
                             }
                         }
                         break;
+
                     case "RefreshInvoices":
                         if (true) {
                             returnHelper = invoiceManagementBean.refreshInvoices(loggedInStaffID);
@@ -350,6 +351,7 @@ public class InvoiceManagementController extends HttpServlet {
                             }
                         }
                         break;
+
                     case "RefreshSCOInvoices":
                         if (true) {
                             returnHelper = invoiceManagementBean.refreshInvoices(loggedInStaffID);
@@ -370,7 +372,6 @@ public class InvoiceManagementController extends HttpServlet {
                             }
                         }
                         break;
-
                 }//end switch
             }//end checkLogin
 

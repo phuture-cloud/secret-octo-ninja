@@ -1,27 +1,26 @@
+<%@page import="EntityManager.DeliveryOrder"%>
 <%@page import="java.text.NumberFormat"%>
 <%@page import="java.text.SimpleDateFormat"%>
-<%@page import="EntityManager.SalesConfirmationOrder"%>
 <%@page import="EntityManager.Staff"%>
 <%@page import="java.util.List"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
     Staff staff = (Staff) (session.getAttribute("staff"));
-    SalesConfirmationOrder sco = (SalesConfirmationOrder) (session.getAttribute("sco"));
+    DeliveryOrder deliveryOrder = (DeliveryOrder) (session.getAttribute("do"));
     if (session.isNew()) {
         response.sendRedirect("../index.jsp?errMsg=Invalid Request. Please login.");
     } else if (staff == null) {
         response.sendRedirect("../index.jsp?errMsg=Session Expired.");
-    } else if (sco == null) {
-        response.sendRedirect("../scoManagement.jsp?errMsg=An Error Occured.");
+    } else if (deliveryOrder == null) {
+        response.sendRedirect("deliveryOrder.jsp?errMsg=An Error Occured.");
     } else {
-        NumberFormat formatter = NumberFormat.getCurrencyInstance();
         SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
 %>
 <!doctype html>
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>Sales Confirmation Order</title>
+        <title>Delivery Order</title>
         <link rel="stylesheet" href="../assets/vendor/bootstrap/css/bootstrap.css">
         <style>
             body {
@@ -54,8 +53,7 @@
                     </p>
                 </div>
                 <div class="col-xs-6 text-right">
-                    <h1>SALES ORDER</h1>
-                    <p>Co / GST Reg: 200919866N</p>
+                    <h1>Delivery Order</h1>
                 </div>
             </div>
 
@@ -65,13 +63,13 @@
                 <div class="col-xs-6">
                     <div  class="row">
                         <div class="col-xs-3">
-                            <p><strong>To</strong></p>
+                            <p><strong>SHIP TO</strong></p>
                         </div>
                         <div class="col-xs-9">
                             <p>
-                                <strong><%=sco.getCustomerName()%></strong>
+                                <strong><%=deliveryOrder.getCustomerName()%></strong>
                                 <br>
-                                <%=sco.getContactAddress().replaceAll("\\r", "<br>")%>
+                                <%=deliveryOrder.getContactAddress().replaceAll("\\r", "<br>")%>
                             </p>
                         </div>
                     </div>
@@ -81,7 +79,7 @@
                             <p>Attention</p>
                         </div>
                         <div class="col-xs-9">
-                            <p><%=sco.getCustomerName()%></p>
+                            <p><%=deliveryOrder.getContactName()%></p>
                         </div>
                     </div>
                 </div>
@@ -90,7 +88,7 @@
 
                 <div class="col-xs-2">
                     <p>
-                        <strong>SCO No.</strong>
+                        <strong>DELIVERY NO</strong>
                         <br>
                         Date
                         <br>
@@ -103,16 +101,16 @@
                 </div>
                 <div class="col-xs-2">
                     <strong>
-                        <%=sco.getSalesPerson().getStaffPrefix()%><%=sco.getSalesConfirmationOrderNumber()%>
+                        <%=deliveryOrder.getDeliveryOrderNumber()%>
                     </strong>
                     <br>
-                    <%=DATE_FORMAT.format(sco.getSalesConfirmationOrderDate())%>
+                    <%=DATE_FORMAT.format(deliveryOrder.getDeliveryOrderDate())%>
                     <br>
-                    <%=sco.getContactOfficeNo()%>
+                    <%=deliveryOrder.getContactOfficeNo()%>
                     <br>
-                    <%=sco.getContactFaxNo()%>
+                    <%=deliveryOrder.getContactFaxNo()%>
                     <br>
-                    <%=sco.getContactMobileNo()%>
+                    <%=deliveryOrder.getContactMobileNo()%>
                 </div>
             </div>
 
@@ -122,51 +120,34 @@
             <table class="table table-bordered">
                 <thead style="background: #eeece1;">
                 <th class='text-center'><h4>SALESPERSON</h4></th>
-                <th class='text-center'><h4>EST. DELIVERY DATE</h4></th>
-                <th class='text-center'><h4>TERMS</h4> </th>
+                <th class='text-center'><h4>SCO</h4></th>
+                <th class='text-center'><h4>PO Number</h4></th>
+                <th class='text-center'><h4>BUYER</h4></th>
                 </thead>
                 <tbody>
                     <tr class="text-center">
                         <td><%=staff.getName()%></td>
-                        <td><%=sco.getEstimatedDeliveryDate()%></td>
-                        <td>
-                            <%
-                                if (sco.getTerms() == 0) {
-                                    out.print("Cash on delivery");
-                                } else if (sco.getTerms() == 14) {
-                                    out.print("14 Days");
-                                } else if (sco.getTerms() == 30) {
-                                    out.print("30 Days");
-                                }
-                            %>
-                        </td>
+                        <td><%=deliveryOrder.getSalesConfirmationOrder().getSalesConfirmationOrderNumber()%></td>
+                        <td><%=deliveryOrder.getCustomerPurchaseOrderNumber()%></td>
+                        <td><%=deliveryOrder.getContactName()%></td>
                     </tr>
                 </tbody>
             </table>
 
             <table class="table table-bordered">
                 <thead style="background: #eeece1;">
-                <th class='text-center'><h4>QTY</h4></th>
                 <th class='text-center'><h4>ITEM</h4></th>
                 <th class='text-center'><h4>DESCRIPTION</h4></th>
-                <th class='text-center'><h4>UNIT PRICE</h4> </th>
-                <th class='text-center'><h4>AMOUNT</h4></th>
+                <th class='text-center'><h4>QTY</h4></th>
                 </thead>
                 <tbody>
                     <%
-                        for (int i = 0; i < sco.getItems().size(); i++) {
+                        for (int i = 0; i < deliveryOrder.getItems().size(); i++) {
                             double price = 0;
                             out.print("<tr>");
-                            out.print("<td class='text-center'>" + sco.getItems().get(i).getItemQty() + "</td>");
-                            out.print("<td>" + sco.getItems().get(i).getItemName() + "</td>");
-                            out.print("<td>" + sco.getItems().get(i).getItemDescription() + "</td>");
-
-                            price = sco.getItems().get(i).getItemUnitPrice();
-                            out.print("<td class='text-center'>" + formatter.format(price) + "</td>");
-
-                            price = sco.getItems().get(i).getItemUnitPrice() * sco.getItems().get(i).getItemQty();
-                            out.print("<td class='text-center'>" + formatter.format(price) + "</td>");
-
+                            out.print("<td>" + deliveryOrder.getItems().get(i).getItemName() + "</td>");
+                            out.print("<td>" + deliveryOrder.getItems().get(i).getItemDescription() + "</td>");
+                            out.print("<td class='text-center'>" + deliveryOrder.getItems().get(i).getItemQty() + "</td>");
                             out.print("</tr>");
                         }
                     %>
@@ -177,42 +158,14 @@
                 <div class="col-xs-7 text-left">
                     <u>Terms & Conditions</u>
                     <ul style="padding-left: 20px;">
-                        <li>Acceptance of this Sales Order constitutes a contract between the buyer & Phuture International Pte Ltd whereby buyer will adhere to conditions stated on this Sales Order</li>
-                        <li>Buyer shall be liable for at least 50% of total sales amount if buyer opt to cancel the order</li>
+                        <li>All Goods Delivered Are Non Returnable / Refundable</li>
                     </ul>
                     <%
-                        if (sco.getRemarks() != null && !sco.getRemarks().isEmpty()) {
-                            out.print("REMARKS: ");
-                            out.print(sco.getRemarks().replaceAll("\\r", "<br>"));
+                        if (deliveryOrder != null && deliveryOrder.getRemarks() != null && !deliveryOrder.getRemarks().isEmpty()) {
+                            out.print("Remarks: ");
+                            out.print(deliveryOrder.getRemarks().replaceAll("\\r", "<br>"));
                         }
                     %>
-                </div>
-
-                <div class="col-xs-3">
-                    <p>
-                        <strong>
-                            SUBTOTAL : <br>
-                            7% GST : <br>
-                            Total (SGD) : <br>
-                        </strong>
-                    </p>
-                </div>
-                <div class="col-xs-2">
-                    <strong>
-                        <%
-                            double formatedPrice = 0;
-                            formatedPrice = (sco.getTotalPrice() / 107) * 100;
-                            out.print(formatter.format(formatedPrice));
-                        %>
-                        <br>
-                        <%
-                            formatedPrice = sco.getTotalTax();
-                            out.print(formatter.format(formatedPrice));
-                        %>
-                        <br>
-                        <%=formatter.format(sco.getTotalPrice())%>
-                        <br>
-                    </strong>
                 </div>
             </div>
 
@@ -220,12 +173,12 @@
 
             <div class="row text-left">
                 <div class="col-xs-8">
-                    <strong>AGREED & CONFIRMED</strong>
+                    <strong>Goods Received In Good Condition & Order</strong>
 
                     <br><br><br><br><br>
                     <img src="../assets/images/thin-black-line.png">
                     <br>
-                    Customer's Signature & Co. Stamp
+                    Signature & Company's Stamp
                 </div>
                 <div class="col-xs-4">
                     <strong>Phuture International Pte Ltd</strong>
