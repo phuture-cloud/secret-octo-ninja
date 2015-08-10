@@ -266,8 +266,12 @@ public class StatementOfAccountBean implements StatementOfAccountBeanLocal {
                     soali3.setInvoiceID(creditNote.getAppliedToInvoice().getId());
                     //TODO (future) Update logic to support multiple credit note
                     //if credit note is applied and over the invoice amount, don't over add
-                    if (creditNote.getCreditAmount() > (currentInvoice.getTotalPriceBeforeCreditNote()-currentInvoice.getTotalAmountPaid())) {
-                        soali3.setCredit(currentInvoice.getTotalPriceBeforeCreditNote()-currentInvoice.getTotalAmountPaid());
+                    if (creditNote.getCreditAmount() > (currentInvoice.getTotalPriceBeforeCreditNote() - currentInvoice.getTotalAmountPaid())) {
+                        Double creditAmount = currentInvoice.getTotalPriceBeforeCreditNote() - currentInvoice.getTotalAmountPaid();
+                        if (creditAmount < 0) {
+                            creditAmount = 0.0;
+                        }
+                        soali3.setCredit(creditAmount);
                     } else {
                         soali3.setCredit(creditNote.getCreditAmount());
                     }
