@@ -2,6 +2,7 @@ package OrderManagement;
 
 import CustomerManagement.CustomerManagementBeanLocal;
 import EntityManager.Contact;
+import EntityManager.CreditNote;
 import EntityManager.Invoice;
 import EntityManager.PaymentRecord;
 import EntityManager.ReturnHelper;
@@ -254,6 +255,16 @@ public class PaymentManagementController extends HttpServlet {
                             } else {
                                 nextPage = "InvoiceManagement/invoice.jsp?errMsg=" + returnHelper.getDescription();
                             }
+                        }
+                        break;
+
+                    case "PrintPDF":
+                        CreditNote creditNote = pmbl.getCreditNote(Long.parseLong(creditNoteID));
+                        if (creditNote == null) {
+                            nextPage = "error500.html";
+                        } else {
+                            session.setAttribute("creditNote", creditNote);
+                            nextPage = "CreditNoteManagement/creditNote-print.jsp";
                         }
                         break;
 

@@ -56,9 +56,7 @@
                     <h1>Delivery Order</h1>
                 </div>
             </div>
-
             <br>
-
             <div  class="row">
                 <div class="col-xs-6">
                     <div  class="row">
@@ -126,7 +124,7 @@
                 </thead>
                 <tbody>
                     <tr class="text-center">
-                        <td><%=staff.getName()%></td>
+                        <td><%=deliveryOrder.getSalesConfirmationOrder().getSalesPerson().getName()%></td>
                         <td><%=deliveryOrder.getSalesConfirmationOrder().getSalesConfirmationOrderNumber()%></td>
                         <td><%=deliveryOrder.getCustomerPurchaseOrderNumber()%></td>
                         <td><%=deliveryOrder.getContactName()%></td>

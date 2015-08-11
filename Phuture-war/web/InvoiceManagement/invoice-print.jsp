@@ -133,7 +133,7 @@
                 </thead>
                 <tbody>
                     <tr class="text-center">
-                        <td><%=staff.getName()%></td>
+                        <td><%=invoice.getSalesConfirmationOrder().getSalesPerson().getName()%></td>
                         <td><%=invoice.getSalesConfirmationOrder().getSalesConfirmationOrderNumber()%></td>
                         <td><%=invoice.getCustomerPurchaseOrderNumber()%></td>
                         <td>

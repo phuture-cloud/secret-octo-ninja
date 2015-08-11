@@ -1,4 +1,4 @@
-<%@page import="EntityManager.Invoice"%>
+<%@page import="EntityManager.CreditNote"%>
 <%@page import="java.text.NumberFormat"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="EntityManager.Staff"%>
@@ -6,16 +6,17 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
     Staff staff = (Staff) (session.getAttribute("staff"));
-    Invoice invoice = (Invoice) (session.getAttribute("invoice"));
+    CreditNote creditNote = (CreditNote) (session.getAttribute("creditNote"));
     if (session.isNew()) {
         response.sendRedirect("../index.jsp?errMsg=Invalid Request. Please login.");
     } else if (staff == null) {
         response.sendRedirect("../index.jsp?errMsg=Session Expired.");
-    } else if (invoice == null) {
+    } else if (creditNote == null) {
         response.sendRedirect("invoice.jsp?errMsg=An Error Occured.");
     } else {
         NumberFormat formatter = NumberFormat.getCurrencyInstance();
         SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
+
 %>
 <!doctype html>
 <html lang="en">
@@ -69,9 +70,9 @@
                         </div>
                         <div class="col-xs-9">
                             <p>
-                                <strong><%=invoice.getCustomerName()%></strong>
+                                <strong><%=creditNote.getCustomer().getCustomerName()%></strong>
                                 <br>
-                                <%=invoice.getContactAddress()%>
+                                <%=creditNote.getContactAddress()%>
                             </p>
                         </div>
                     </div>
@@ -81,11 +82,10 @@
                             <p>Attention</p>
                         </div>
                         <div class="col-xs-9">
-                            <p><%=invoice.getContactName()%></p>
+                            <p><%=creditNote.getContactName()%></p>
                         </div>
                     </div>
                 </div>
-
                 <div class="col-xs-2"><!--gap--></div>
 
                 <div class="col-xs-2">
@@ -103,17 +103,16 @@
                 </div>
                 <div class="col-xs-2">
                     <strong>
-                        <%=invoice.getInvoiceNumber()%>
+                        <%=creditNote.getCreditNoteNumber()%>
                     </strong>
                     <br>
-                    <%=DATE_FORMAT.format(invoice.getDateSent())%>
-                    
+                    <%=DATE_FORMAT.format(creditNote.getDateIssued())%>
                     <br>
-                    <%=invoice.getContactOfficeNo()%>
+                    <%=creditNote.getContactOfficeNo()%>
                     <br>
-                    <%=invoice.getContactFaxNo()%>
+                    <%=creditNote.getContactFaxNo()%>
                     <br>
-                    <%=invoice.getContactMobileNo()%>
+                    <%=creditNote.getContactMobileNo()%>
                 </div>
             </div>
 
@@ -125,26 +124,28 @@
                 <th class='text-center'><h4>SALESPERSON</h4></th>
                 <th class='text-center'><h4>SCO</h4></th>
                 <th class='text-center'><h4>PO Number</h4></th>
-                <th class='text-center'><h4>PAYMENT TERMS</h4></th>
+                <th class='text-center'><h4>INVOICE</h4></th>
                 <th class='text-center'><h4>BUYER</h4></th>
                 </thead>
                 <tbody>
                     <tr class="text-center">
-                        <td><%=staff.getName()%></td>
-                        <td><%=invoice.getSalesConfirmationOrder().getSalesConfirmationOrderNumber()%></td>
-                        <td><%=invoice.getCustomerPurchaseOrderNumber()%></td>
+                        <td><%if (creditNote.getAppliedToInvoice() != null) {
+                                out.print(creditNote.getAppliedToInvoice().getSalesConfirmationOrder().getSalesPerson().getName());
+                            }%></td>
+                            <td><%if (creditNote.getAppliedToInvoice() != null) {
+                                out.print(creditNote.getAppliedToInvoice().getSalesConfirmationOrder().getSalesConfirmationOrderNumber());
+                            }%></td>
+                            <td><%if (creditNote.getAppliedToInvoice() != null) {
+                                out.print(creditNote.getAppliedToInvoice().getSalesConfirmationOrder().getCustomerPurchaseOrderNumber());
+                            }%></td>
                         <td>
                             <%
-                                if (invoice.getTerms() == 0) {
-                                    out.print("Cash on delivery");
-                                } else if (invoice.getTerms() == 14) {
-                                    out.print("14 Days");
-                                } else if (invoice.getTerms() == 30) {
-                                    out.print("30 Days");
+                                if (creditNote.getAppliedToInvoice() != null) {
+                                    out.print(creditNote.getAppliedToInvoice().getInvoiceNumber());
                                 }
                             %>
                         </td>
-                        <td><%=invoice.getContactName()%></td>
+                        <td><%=creditNote.getContactName()%></td>
                     </tr>
                 </tbody>
             </table>
@@ -154,45 +155,34 @@
                 <th class='text-center'><h4>ITEM</h4></th>
                 <th class='text-center'><h4>DESCRIPTION</h4></th>
                 <th class='text-center'><h4>QTY</h4></th>
-                <th class='text-center'><h4>UNIT PRICE</h4> </th>
-                <th class='text-center'><h4>AMOUNT</h4></th>
+                <th class='text-center'><h4>UPRICE S$</h4> </th>
+                <th class='text-center'><h4>TOTAL S$</h4></th>
                 </thead>
                 <tbody>
-                    <%
-                        for (int i = 0; i < invoice.getItems().size(); i++) {
-                            double price = 0;
-                            out.print("<tr>");
-                            out.print("<td>" + invoice.getItems().get(i).getItemName() + "</td>");
-                            out.print("<td>" + invoice.getItems().get(i).getItemDescription() + "</td>");
-
-                            out.print("<td class='text-center'>" + invoice.getItems().get(i).getItemQty() + "</td>");
-
-                            price = invoice.getItems().get(i).getItemUnitPrice();
-                            out.print("<td class='text-center'>" + formatter.format(price) + "</td>");
-
-                            price = invoice.getItems().get(i).getItemUnitPrice() * invoice.getItems().get(i).getItemQty();
-                            out.print("<td class='text-center'>" + formatter.format(price) + "</td>");
-
-                            out.print("</tr>");
-                        }
-                    %>
+                    <tr>
+                        <td>
+                            Item
+                        </td>
+                        <td>
+                            Credit Given Off Invoice (<%if (creditNote.getAppliedToInvoice() != null) {
+                                    out.print(creditNote.getAppliedToInvoice().getInvoiceNumber());
+                                }%>)
+                        </td>
+                        <td class='text-center'>
+                            1
+                        </td>
+                        <td>
+                            <%=formatter.format(creditNote.getCreditAmount())%>
+                        </td>
+                        <td>
+                            (<%=formatter.format(creditNote.getCreditAmount())%>)
+                        </td>
+                    </tr>
                 </tbody>
             </table>
 
             <div class="row text-right">
                 <div class="col-xs-7 text-left">
-                    <u>Terms & Conditions</u>
-                    <ul>
-                        <li>Acceptance of this merchandise constitutes a contract between the buyer & Phuture International Pte Ltd whereby buyer will adhere to conditions stated on this invoice</li>
-                        <li>All cheques payment are to be crossed & payable to "<strong>Phuture International Pte Ltd</strong>"</li>
-                    </ul>
-
-                    <%
-                        if (invoice.getRemarks() != null && !invoice.getRemarks().isEmpty()) {
-                            out.print("REMARKS: ");
-                            out.print(invoice.getRemarks().replaceAll("\\r", "<br>"));
-                        }
-                    %>
                 </div>
 
                 <div class="col-xs-3">
@@ -207,17 +197,17 @@
                 <div class="col-xs-2">
                     <strong>
                         <%
-                            double formatedPrice = 0;
-                            formatedPrice = (invoice.getTotalPriceBeforeCreditNote() / 107) * 100;
-                            out.print(formatter.format(formatedPrice));
+                            //double formatedPrice = 0;
+                            // formatedPrice = (creditNote.getTotalPriceBeforeCreditNote() / 107) * 100;
+                            //out.print(formatter.format(formatedPrice));
                         %>
                         <br>
                         <%
-                            formatedPrice = invoice.getTotalTax();
-                            out.print(formatter.format(formatedPrice));
-                        %>
+                            //formatedPrice = creditNote.getTotalTax();
+                            //out.print(formatter.format(formatedPrice));
+%>
                         <br>
-                        <%=formatter.format(invoice.getTotalPriceBeforeCreditNote())%>
+                        <%=formatter.format(creditNote.getCreditAmount())%>
                         <br>
                     </strong>
                 </div>
@@ -238,7 +228,7 @@
                     <br><br><br><br><br>
                     <img src="../assets/images/thin-black-line.png">
                     <%}%>
-                    <br><%=staff.getName()%>
+                    <br>Authorized Signature
                 </div>
             </div>
         </div>

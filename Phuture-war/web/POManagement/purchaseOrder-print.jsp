@@ -143,11 +143,7 @@
                 <tbody>
                     <tr class="text-center">
                         <td>
-                            <%
-                                if (purchaseOrder.getSupplierName() != null) {
-                                    out.print(purchaseOrder.getSupplierName());
-                                }
-                            %>
+                            <%=purchaseOrder.getSalesConfirmationOrder().getSalesPerson().getName()%>
                         </td>
                         <td>
                             <%

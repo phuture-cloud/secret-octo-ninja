@@ -29,8 +29,8 @@
     <body onload="alertFunc()">
         <jsp:include page="../displayNotification.jsp" />
         <script>
-            function viewCreditNote(id) {
-                window.location.href = "../PurchaseOrderManagementController?target=RetrievePO&id=" + id;
+            function printCreditNote(creditNoteID) {
+                window.open("../PaymentManagementController?target=PrintPDF&creditNoteID=" + creditNoteID);
             }
 
             function voidCreditNote(id, name, creditNoteID) {
@@ -112,7 +112,7 @@
                                         %>
                                         <td>
                                             <div class="btn-group" role="group" aria-label="...">
-                                                <button type="button" class="btn btn-default" onclick="javascript:viewCreditNote('<%=creditNotes.get(i).getId()%>')">Print</button>
+                                                <button type="button" class="btn btn-default" onclick="javascript:printCreditNote(<%=creditNotes.get(i).getId()%>)">Print</button>
                                                 <button type='button' class='btn btn-default modal-with-form' href='#modalUpdateCN<%=creditNotes.get(i).getId()%>'>Update</button>
                                                 <button type="button" class="btn btn-danger" onclick="javascript:voidCreditNote('<%=customerID%>', '<%=customerName%>', '<%=creditNotes.get(i).getId()%>')">Void</button>
                                             </div>
