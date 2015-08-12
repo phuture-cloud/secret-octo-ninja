@@ -200,8 +200,8 @@
                             double taxRate = 7.0;
                             double totalTax = creditNote.getCreditAmount() * (taxRate / 100);
                             double subtotal = creditNote.getCreditAmount() - totalTax;
-                            out.print(subtotal + "<br>");
-                            out.print(totalTax);
+                            out.print(formatter.format(subtotal) + "<br>");
+                            out.print(formatter.format(totalTax));
                         %>
                         <br>
                         <%=formatter.format(creditNote.getCreditAmount())%>
