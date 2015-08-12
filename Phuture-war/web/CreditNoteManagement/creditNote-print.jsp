@@ -132,10 +132,10 @@
                         <td><%if (creditNote.getAppliedToInvoice() != null) {
                                 out.print(creditNote.getAppliedToInvoice().getSalesConfirmationOrder().getSalesPerson().getName());
                             }%></td>
-                            <td><%if (creditNote.getAppliedToInvoice() != null) {
+                        <td><%if (creditNote.getAppliedToInvoice() != null) {
                                 out.print(creditNote.getAppliedToInvoice().getSalesConfirmationOrder().getSalesConfirmationOrderNumber());
                             }%></td>
-                            <td><%if (creditNote.getAppliedToInvoice() != null) {
+                        <td><%if (creditNote.getAppliedToInvoice() != null) {
                                 out.print(creditNote.getAppliedToInvoice().getSalesConfirmationOrder().getCustomerPurchaseOrderNumber());
                             }%></td>
                         <td>
@@ -197,15 +197,12 @@
                 <div class="col-xs-2">
                     <strong>
                         <%
-                            //double formatedPrice = 0;
-                            // formatedPrice = (creditNote.getTotalPriceBeforeCreditNote() / 107) * 100;
-                            //out.print(formatter.format(formatedPrice));
+                            double taxRate = 7.0;
+                            double totalTax = creditNote.getCreditAmount() * (taxRate / 100);
+                            double subtotal = creditNote.getCreditAmount() - totalTax;
+                            out.print(subtotal + "<br>");
+                            out.print(totalTax);
                         %>
-                        <br>
-                        <%
-                            //formatedPrice = creditNote.getTotalTax();
-                            //out.print(formatter.format(formatedPrice));
-%>
                         <br>
                         <%=formatter.format(creditNote.getCreditAmount())%>
                         <br>
