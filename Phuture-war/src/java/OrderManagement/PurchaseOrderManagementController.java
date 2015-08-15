@@ -2,7 +2,6 @@ package OrderManagement;
 
 import EntityManager.PurchaseOrder;
 import EntityManager.ReturnHelper;
-import EntityManager.SalesConfirmationOrder;
 import EntityManager.Staff;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -25,7 +24,6 @@ public class PurchaseOrderManagementController extends HttpServlet {
     Long loggedInStaffID = null;
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("Welcome to DeliveryOrderManagementController");
         String target = request.getParameter("target");
         String source = request.getParameter("source");
 
@@ -89,7 +87,7 @@ public class PurchaseOrderManagementController extends HttpServlet {
                                 } else { //coming from po
                                     session.setAttribute("listOfPO", purchaseOrderManagementBean.listAllPurchaseOrder(loggedInStaffID));
                                 }
-                                
+
                                 nextPage = "POManagement/purchaseOrders.jsp?goodMsg=" + returnHelper.getDescription();
                             } else {
                                 nextPage = "POManagement/purchaseOrders.jsp?errMsg=" + returnHelper.getDescription();
@@ -205,10 +203,13 @@ public class PurchaseOrderManagementController extends HttpServlet {
                         break;
 
                 }//end switch
-            }//end checkLogin
+            } else {
+                response.sendRedirect("index.jsp?errMsg=Session Expired.");
+                return;
+            }
 
             if (nextPage.equals("")) {
-                response.sendRedirect("index.jsp?errMsg=Session Expired.");
+                response.sendRedirect("POManagement/purchaseOrders.jsp?errMsg=An error has occured");
                 return;
             } else {
                 response.sendRedirect(nextPage);
@@ -224,12 +225,12 @@ public class PurchaseOrderManagementController extends HttpServlet {
     public boolean checkLogin() {
         try {
             Staff staff = (Staff) (session.getAttribute("staff"));
-            if (staff.getIsAdmin()) {
-                loggedInStaffID = staff.getId();
-            }
             if (staff == null) {
                 return false;
             } else {
+                if (staff.getIsAdmin()) {
+                    loggedInStaffID = staff.getId();
+                }
                 return true;
             }
         } catch (Exception ex) {

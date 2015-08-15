@@ -107,7 +107,8 @@ public class PaymentManagementController extends HttpServlet {
                         if (invoice != null) {
                             paymentRecords = pmbl.listPaymentByInvoice(invoice.getId());
                             if (paymentRecords == null) {
-                                nextPage = "error500.html";
+                                response.sendRedirect("error500.html");
+                                return;
                             } else {
                                 session.setAttribute("paymentRecords", paymentRecords);
                             }
@@ -124,7 +125,8 @@ public class PaymentManagementController extends HttpServlet {
                             if (returnHelper.getResult()) {
                                 paymentRecords = pmbl.listPaymentByInvoice(invoice.getId());
                                 if (paymentRecords == null) {
-                                    nextPage = "error500.html";
+                                    response.sendRedirect("error500.html");
+                                    return;
                                 } else {
                                     session.setAttribute("paymentRecords", paymentRecords);
                                 }
@@ -146,7 +148,8 @@ public class PaymentManagementController extends HttpServlet {
                             if (returnHelper.getResult()) {
                                 paymentRecords = pmbl.listPaymentByInvoice(invoice.getId());
                                 if (paymentRecords == null) {
-                                    nextPage = "error500.html";
+                                    response.sendRedirect("error500.html");
+                                    return;
                                 } else {
                                     session.setAttribute("paymentRecords", paymentRecords);
                                 }
@@ -164,7 +167,8 @@ public class PaymentManagementController extends HttpServlet {
                         if (id != null && !id.isEmpty()) {
                             List<Contact> contacts = customerManagementBean.listCustomerContacts(Long.parseLong(id));
                             if (contacts == null) {
-                                nextPage = "error500.html";
+                                response.sendRedirect("error500.html");
+                                return;
                             } else {
                                 session.setAttribute("contacts", contacts);
                                 session.setAttribute("listOfCreditNotes", pmbl.listAllCreditNote(Long.parseLong(id)));
@@ -227,8 +231,6 @@ public class PaymentManagementController extends HttpServlet {
 
                     case "AttachCreditNote":
                         //id here refers to custoemr ID
-                        System.out.println("creditNoteID " + creditNoteID);
-                        System.out.println("invoiceID " + invoiceID);
                         if (creditNoteID != null && !creditNoteID.isEmpty() && invoiceID != null && !invoiceID.isEmpty()) {
                             returnHelper = pmbl.attachCreditNote(Long.parseLong(creditNoteID), Long.parseLong(invoiceID));
 
@@ -261,7 +263,8 @@ public class PaymentManagementController extends HttpServlet {
                     case "PrintPDF":
                         CreditNote creditNote = pmbl.getCreditNote(Long.parseLong(creditNoteID));
                         if (creditNote == null) {
-                            nextPage = "error500.html";
+                            response.sendRedirect("error500.html");
+                            return;
                         } else {
                             session.setAttribute("creditNote", creditNote);
                             nextPage = "CreditNoteManagement/creditNote-print.jsp";
@@ -269,10 +272,13 @@ public class PaymentManagementController extends HttpServlet {
                         break;
 
                 }//end switch
-            }//end checkLogin
+            } else {
+                response.sendRedirect("index.jsp?errMsg=Session Expired.");
+                return;
+            }
 
             if (nextPage.equals("")) {
-                response.sendRedirect("index.jsp?errMsg=Session Expired.");
+                response.sendRedirect("OrderManagement/paymentManagement.jsp?errMsg=An error has occured");
                 return;
             } else {
                 response.sendRedirect(nextPage);
@@ -288,14 +294,13 @@ public class PaymentManagementController extends HttpServlet {
     public boolean checkLogin() {
         try {
             Staff staff = (Staff) (session.getAttribute("staff"));
-            if (staff.getIsAdmin()) {
-                isAdmin = true;
-                loggedInStaffID = staff.getId();
-            }
-
             if (staff == null) {
                 return false;
             } else {
+                if (staff.getIsAdmin()) {
+                    isAdmin = true;
+                    loggedInStaffID = staff.getId();
+                }
                 return true;
             }
         } catch (Exception ex) {

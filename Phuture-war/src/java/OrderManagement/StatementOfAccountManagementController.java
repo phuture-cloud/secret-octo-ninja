@@ -32,7 +32,6 @@ public class StatementOfAccountManagementController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         System.out.println("Welcome to StatementOfAccountManagementController");
         String target = request.getParameter("target");
-        String source = request.getParameter("source");
 
         session = request.getSession();
         ReturnHelper returnHelper = null;
@@ -44,7 +43,8 @@ public class StatementOfAccountManagementController extends HttpServlet {
                     case "ListAllSOA":
                         statementOfAccounts = soabl.listAllStatementOfAccounts();
                         if (statementOfAccounts == null) {
-                            nextPage = "error500.html";
+                            response.sendRedirect("error500.html");
+                            return;
                         } else {
                             session.setAttribute("statementOfAccounts", statementOfAccounts);
                             nextPage = "PaymentManagement/statementOfAccounts.jsp";
@@ -56,7 +56,8 @@ public class StatementOfAccountManagementController extends HttpServlet {
                         if (returnHelper.getResult()) {
                             statementOfAccounts = soabl.listAllStatementOfAccounts();
                             if (statementOfAccounts == null) {
-                                nextPage = "error500.html";
+                                response.sendRedirect("error500.html");
+                                return;
                             } else {
                                 session.setAttribute("statementOfAccounts", statementOfAccounts);
                                 nextPage = "PaymentManagement/statementOfAccounts.jsp?goodMsg=" + returnHelper.getDescription();
@@ -106,9 +107,13 @@ public class StatementOfAccountManagementController extends HttpServlet {
                             break;
                         }
                 }
-            }
-            if (nextPage.equals("")) {
+            } else {
                 response.sendRedirect("index.jsp?errMsg=Session Expired.");
+                return;
+            }
+
+            if (nextPage.equals("")) {
+                response.sendRedirect("AccountManagement/workspace.jsp?errMsg=An error has occured");
                 return;
             } else {
                 response.sendRedirect(nextPage);
@@ -124,12 +129,12 @@ public class StatementOfAccountManagementController extends HttpServlet {
     public boolean checkLogin() {
         try {
             Staff staff = (Staff) (session.getAttribute("staff"));
-            if (staff.getIsAdmin()) {
-                loggedInStaffID = staff.getId();
-            }
             if (staff == null) {
                 return false;
             } else {
+                if (staff.getIsAdmin()) {
+                    loggedInStaffID = staff.getId();
+                }
                 return true;
             }
         } catch (Exception ex) {

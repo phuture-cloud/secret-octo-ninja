@@ -56,31 +56,8 @@ public class OrderManagementController extends HttpServlet {
         if (terms == null) {
             terms = "";
         }
-        String status = request.getParameter("status");
-        if (status == null) {
-            status = "";
-        }
 
-        String remarks = request.getParameter("remarks");
-        String notes = request.getParameter("notes");
-        String itemName = request.getParameter("itemName");
-        String itemDescription = request.getParameter("itemDescription");
-        String itemQty = request.getParameter("itemQty");
-        String itemUnitPrice = request.getParameter("itemUnitPrice");
         String source = request.getParameter("source");
-
-        String company = request.getParameter("company");
-        String name = request.getParameter("name");
-        String email = request.getParameter("email");
-        String officeNo = request.getParameter("officeNo");
-        String mobileNo = request.getParameter("mobileNo");
-        String faxNo = request.getParameter("faxNo");
-        String address = request.getParameter("address");
-
-        String doDate = request.getParameter("doDate");
-        if (doDate == null) {
-            doDate = "";
-        }
 
         session = request.getSession();
         ReturnHelper returnHelper = null;
@@ -106,7 +83,8 @@ public class OrderManagementController extends HttpServlet {
                         if (true) {
                             List<SalesConfirmationOrderHelper> salesConfirmationOrders = orderManagementBean.listAllSalesConfirmationOrder(loggedInStaffID);
                             if (salesConfirmationOrders == null) {
-                                nextPage = "error500.html";
+                                response.sendRedirect("error500.html");
+                                return;
                             } else {
                                 session.setAttribute("salesConfirmationOrders", salesConfirmationOrders);
                                 session.setAttribute("previousManagementPage", "sco");
@@ -124,7 +102,8 @@ public class OrderManagementController extends HttpServlet {
                         if (true) {
                             List<Customer> customers = customerManagementBean.listCustomers();
                             if (customers == null) {
-                                nextPage = "error500.html";
+                                response.sendRedirect("error500.html");
+                                return;
                             } else {
                                 session.setAttribute("customers", customers);
                                 if (source != null && source.equals("addressBook")) {
@@ -140,7 +119,8 @@ public class OrderManagementController extends HttpServlet {
                         if (true) {
                             List<Contact> contacts = customerManagementBean.listCustomerContacts(Long.parseLong(customerID));
                             if (contacts == null) {
-                                nextPage = "error500.html";
+                                response.sendRedirect("error500.html");
+                                return;
                             } else {
                                 session.setAttribute("contacts", contacts);
                                 if (source != null && source.equals("addressBook")) {
@@ -154,6 +134,10 @@ public class OrderManagementController extends HttpServlet {
 
                     case "SaveSCO":
                         if (true) {
+                            String itemName = request.getParameter("itemName");
+                            String itemDescription = request.getParameter("itemDescription");
+                            String itemQty = request.getParameter("itemQty");
+                            String itemUnitPrice = request.getParameter("itemUnitPrice");
                             if (source.equals("AddLineItemToNewSCO")) {
                                 if (itemName == null || itemName.isEmpty() || itemDescription == null || itemDescription.isEmpty() || itemQty == null || itemQty.isEmpty() || itemUnitPrice == null || itemUnitPrice.isEmpty()) {
                                     nextPage = "OrderManagement/scoManagement_add.jsp?selectedCustomerID=" + customerID + "&selectedContactID=" + contactID + "&terms=" + terms + "&scoDate=" + scoDate + "&errMsg=Please fill in all the fields for the item.";
@@ -196,6 +180,11 @@ public class OrderManagementController extends HttpServlet {
 
                     case "UpdateSCO":
                         if (true) {
+                            String itemName = request.getParameter("itemName");
+                            String itemDescription = request.getParameter("itemDescription");
+                            String itemQty = request.getParameter("itemQty");
+                            String itemUnitPrice = request.getParameter("itemUnitPrice");
+
                             if (source.equals("AddLineItemToExistingSCO")) {
                                 if (itemName == null || itemName.isEmpty() || itemDescription == null || itemDescription.isEmpty() || itemQty == null || itemQty.isEmpty() || itemUnitPrice == null || itemUnitPrice.isEmpty()) {
                                     nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&terms=" + terms + "&scoDate=" + scoDate + "&errMsg=Please fill in all the fields for the item.";
@@ -209,6 +198,8 @@ public class OrderManagementController extends HttpServlet {
                                 Date scoDateDate = formatter.parse(scoDate);
 
                                 //Update SCO
+                                String status = request.getParameter("status");
+
                                 returnHelper = orderManagementBean.updateSalesConfirmationOrder(Long.parseLong(id), scoDateDate, estimatedDeliveryDate, poNumber, Long.parseLong(customerID), status, Integer.parseInt(terms), isAdmin);
                                 if (returnHelper.getResult()) {
 
@@ -238,6 +229,13 @@ public class OrderManagementController extends HttpServlet {
 
                     case "UpdateSCOContact":
                         if (true) {
+                            String company = request.getParameter("company");
+                            String name = request.getParameter("name");
+                            String email = request.getParameter("email");
+                            String officeNo = request.getParameter("officeNo");
+                            String mobileNo = request.getParameter("mobileNo");
+                            String faxNo = request.getParameter("faxNo");
+                            String address = request.getParameter("address");
                             //if address book
                             if (source != null && source.equals("UpdateContact")) {
                                 returnHelper = orderManagementBean.updateSalesConfirmationOrderCustomerContactDetails(Long.parseLong(id), Long.parseLong(customerID), Long.parseLong(contactID), isAdmin);
@@ -264,6 +262,7 @@ public class OrderManagementController extends HttpServlet {
 
                     case "UpdateSCONotes":
                         if (true) {
+                            String notes = request.getParameter("notes");
                             returnHelper = orderManagementBean.updateSalesConfirmationOrderNotes(Long.parseLong(id), notes, isAdmin);
                             SalesConfirmationOrder sco = orderManagementBean.getSalesConfirmationOrder(Long.parseLong(id));
                             if (returnHelper.getResult() && sco != null) {
@@ -277,6 +276,7 @@ public class OrderManagementController extends HttpServlet {
 
                     case "UpdateSCORemarks":
                         if (true) {
+                            String remarks = request.getParameter("remarks");
                             returnHelper = orderManagementBean.updateSalesConfirmationOrderRemarks(Long.parseLong(id), remarks, isAdmin);
                             SalesConfirmationOrder sco = orderManagementBean.getSalesConfirmationOrder(Long.parseLong(id));
                             if (returnHelper.getResult() && sco != null) {
@@ -293,7 +293,8 @@ public class OrderManagementController extends HttpServlet {
                             List<Customer> customers = customerManagementBean.listCustomers();
                             SalesConfirmationOrder sco = orderManagementBean.getSalesConfirmationOrder(Long.parseLong(id));
                             if (customers == null || sco == null) {
-                                nextPage = "error500.html";
+                                response.sendRedirect("error500.html");
+                                return;
                             } else {
                                 session.setAttribute("customers", customers);
                                 session.setAttribute("sco", sco);
@@ -306,7 +307,8 @@ public class OrderManagementController extends HttpServlet {
                         if (true) {
                             SalesConfirmationOrder sco = orderManagementBean.getSalesConfirmationOrder(Long.parseLong(id));
                             if (sco == null) {
-                                nextPage = "error500.html";
+                                response.sendRedirect("error500.html");
+                                return;
                             } else {
                                 session.setAttribute("sco", sco);
                                 nextPage = "OrderManagement/sco-print.jsp?id=" + id;
@@ -316,23 +318,26 @@ public class OrderManagementController extends HttpServlet {
 
                     case "EditLineItem":
                         if (true) {
+                            String itemName = request.getParameter("itemName");
+                            String itemDescription = request.getParameter("itemDescription");
+                            String itemQty = request.getParameter("itemQty");
+                            String itemUnitPrice = request.getParameter("itemUnitPrice");
+                            String status = request.getParameter("status");
+
                             //Check for empty fields
                             if (itemName == null || itemName.isEmpty() || itemDescription == null || itemDescription.isEmpty() || itemQty == null || itemQty.isEmpty() || itemUnitPrice == null || itemUnitPrice.isEmpty()) {
                                 nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&selectedCustomerID=" + customerID + "&terms=" + terms + "&editingLineItem=" + lineItemID + "&scoDate=" + scoDate + "&errMsg=Please fill in all the fields for the item.";
                                 break;
                             }
-
                             //Edit line item
                             returnHelper = orderManagementBean.updateSCOlineItem(Long.parseLong(id), Long.parseLong(lineItemID), itemName, itemDescription, Integer.parseInt(itemQty), Double.parseDouble(itemUnitPrice), isAdmin);
                             SalesConfirmationOrder sco = orderManagementBean.getSalesConfirmationOrder(Long.parseLong(id));
                             if (returnHelper.getResult() && sco != null) {
                                 session.setAttribute("sco", orderManagementBean.getSalesConfirmationOrder(sco.getId()));
                                 nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&terms=" + terms + "&scoDate=" + scoDate + "&goodMsg=" + returnHelper.getDescription();
-
                             } else {
                                 nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&terms=" + terms + "&scoDate=" + scoDate + "&status=" + status + "&editingLineItem=" + lineItemID + "&errMsg=" + returnHelper.getDescription();
                             }
-
                         }
                         break;
 
@@ -355,7 +360,8 @@ public class OrderManagementController extends HttpServlet {
                             if (returnHelper.getResult()) {
                                 List<SalesConfirmationOrderHelper> salesConfirmationOrders = orderManagementBean.listAllSalesConfirmationOrder(loggedInStaffID);
                                 if (salesConfirmationOrders == null) {
-                                    nextPage = "error500.html";
+                                    response.sendRedirect("error500.html");
+                                    return;
                                 } else {
                                     session.setAttribute("salesConfirmationOrders", salesConfirmationOrders);
                                 }
@@ -372,7 +378,8 @@ public class OrderManagementController extends HttpServlet {
                             if (returnHelper.getResult()) {
                                 List<SalesConfirmationOrderHelper> salesConfirmationOrders = orderManagementBean.listAllSalesConfirmationOrder(loggedInStaffID);
                                 if (salesConfirmationOrders == null) {
-                                    nextPage = "error500.html";
+                                    response.sendRedirect("error500.html");
+                                    return;
                                 } else {
                                     session.setAttribute("salesConfirmationOrders", salesConfirmationOrders);
                                 }
@@ -385,17 +392,19 @@ public class OrderManagementController extends HttpServlet {
                         break;
                     case "GenerateDO":
                         if (true) {
-                            DateFormat sourceFormat = new SimpleDateFormat("dd/MM/yyyy");
-                            Date doDateDate = sourceFormat.parse(doDate);
-
-                            returnHelper = deliveryOrderManagementBean.createDeliveryOrder(Long.parseLong(id), doDateDate);
-                            if (returnHelper.getResult()) {
-                                SalesConfirmationOrder sco = orderManagementBean.getSalesConfirmationOrder(Long.parseLong(id));
-                                session.setAttribute("sco", sco);
-                                //session.setAttribute("do", deliveryOrderManagementBean.getDeliveryOrder(returnHelper.getID()));
-                                nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&goodMsg=" + returnHelper.getDescription();
+                            String doDate = request.getParameter("doDate");
+                            if (doDate != null && !doDate.isEmpty()) {
+                                DateFormat sourceFormat = new SimpleDateFormat("dd/MM/yyyy");
+                                returnHelper = deliveryOrderManagementBean.createDeliveryOrder(Long.parseLong(id), sourceFormat.parse(doDate));
+                                if (returnHelper.getResult()) {
+                                    SalesConfirmationOrder sco = orderManagementBean.getSalesConfirmationOrder(Long.parseLong(id));
+                                    session.setAttribute("sco", sco);
+                                    nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&goodMsg=" + returnHelper.getDescription();
+                                } else {
+                                    nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&errMsg=" + returnHelper.getDescription();
+                                }
                             } else {
-                                nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&errMsg=" + returnHelper.getDescription();
+                                nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&errMsg=Delivery Order date can not be empty";
                             }
                         }
                         break;
@@ -410,7 +419,6 @@ public class OrderManagementController extends HttpServlet {
                             if (returnHelper.getResult()) {
                                 SalesConfirmationOrder sco = orderManagementBean.getSalesConfirmationOrder(Long.parseLong(id));
                                 session.setAttribute("sco", sco);
-                                //session.setAttribute("po", purchaseOrderManagementBean.getPurchaseOrder(returnHelper.getID()));
                                 nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&goodMsg=" + returnHelper.getDescription();
                             } else {
                                 nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&errMsg=" + returnHelper.getDescription();
@@ -421,24 +429,29 @@ public class OrderManagementController extends HttpServlet {
                     case "GenerateInvoice":
                         if (true) {
                             String invoiceDate = request.getParameter("invoiceDate");
-                            DateFormat sourceFormat = new SimpleDateFormat("dd/MM/yyyy");
-                            Date invoiceDateDate = sourceFormat.parse(invoiceDate);
-                            returnHelper = invoiceManagementBean.createInvoice(Long.parseLong(id), invoiceDateDate);
-                            if (returnHelper.getResult()) {
-                                SalesConfirmationOrder sco = orderManagementBean.getSalesConfirmationOrder(Long.parseLong(id));
-                                session.setAttribute("sco", sco);
-                                nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&goodMsg=" + returnHelper.getDescription();
+                            if (invoiceDate != null && !invoiceDate.isEmpty()) {
+                                DateFormat sourceFormat = new SimpleDateFormat("dd/MM/yyyy");
+                                returnHelper = invoiceManagementBean.createInvoice(Long.parseLong(id), sourceFormat.parse(invoiceDate));
+                                if (returnHelper.getResult()) {
+                                    SalesConfirmationOrder sco = orderManagementBean.getSalesConfirmationOrder(Long.parseLong(id));
+                                    session.setAttribute("sco", sco);
+                                    nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&goodMsg=" + returnHelper.getDescription();
+                                } else {
+                                    nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&errMsg=" + returnHelper.getDescription();
+                                }
                             } else {
-                                nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&errMsg=" + returnHelper.getDescription();
+                                nextPage = "OrderManagement/scoManagement_add.jsp?id=" + id + "&errMsg=Invoice date can not be empty";
                             }
                         }
                         break;
+
                     case "RefreshSCOs":
                         if (true) {
                             returnHelper = orderManagementBean.refreshSCOs(staff.getId());
                             List<SalesConfirmationOrderHelper> salesConfirmationOrders = orderManagementBean.listAllSalesConfirmationOrder(loggedInStaffID);
                             if (salesConfirmationOrders == null) {
-                                nextPage = "error500.html";
+                                response.sendRedirect("error500.html");
+                                return;
                             } else {
                                 session.setAttribute("salesConfirmationOrders", salesConfirmationOrders);
                                 if (returnHelper.getResult()) {
@@ -454,10 +467,13 @@ public class OrderManagementController extends HttpServlet {
                         System.out.println("OrderManagementController: Unknown target value.");
                         break;
                 }
+            } else {
+                response.sendRedirect("index.jsp?errMsg=Session Expired.");
+                return;
             }
 
             if (nextPage.equals("")) {
-                response.sendRedirect("index.jsp?errMsg=Session Expired.");
+                response.sendRedirect("OrderManagement/scoManagement.jsp?errMsg=An error has occured");
                 return;
             } else {
                 response.sendRedirect(nextPage);
@@ -475,9 +491,8 @@ public class OrderManagementController extends HttpServlet {
             Staff staff = (Staff) (session.getAttribute("staff"));
             if (staff == null) {
                 return false;
-            } else {
-                return true;
             }
+            return true;
         } catch (Exception ex) {
             return false;
         }

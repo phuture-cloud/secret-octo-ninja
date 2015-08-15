@@ -5,11 +5,9 @@ import EntityManager.Contact;
 import EntityManager.Customer;
 import EntityManager.DeliveryOrder;
 import EntityManager.ReturnHelper;
-import EntityManager.SalesConfirmationOrder;
 import EntityManager.Staff;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
@@ -19,9 +17,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 public class DeliveryOrderManagementController extends HttpServlet {
-
-    @EJB
-    private OrderManagementBeanLocal orderManagementBean;
 
     @EJB
     private DeliveryOrderManagementBeanLocal deliveryOrderManagementBean;
@@ -35,37 +30,24 @@ public class DeliveryOrderManagementController extends HttpServlet {
     Long loggedInStaffID = null;
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("Welcome to DeliveryOrderManagementController");
         String target = request.getParameter("target");
         String source = request.getParameter("source");
 
-        String remarks = request.getParameter("remarks");
-        String notes = request.getParameter("notes");
         String itemName = request.getParameter("itemName");
         String itemDescription = request.getParameter("itemDescription");
         String itemQty = request.getParameter("itemQty");
 
         String poNumber = request.getParameter("poNumber");
-        String doDate = request.getParameter("doDate");
-        if (doDate == null) {
-            doDate = "";
-        }
+
         String status = request.getParameter("status");
         if (status == null) {
             status = "";
         }
 
-        String customerID = "";
-        String lineItemID = request.getParameter("lineItemID");
-
         session = request.getSession();
         ReturnHelper returnHelper = null;
         DeliveryOrder deliveryOrder = (DeliveryOrder) (session.getAttribute("do"));
 
-//        String previousManagementPage = request.getParameter("previousManagementPage");
-//        if (previousManagementPage != null && !previousManagementPage.isEmpty()) {
-//            session.setAttribute("previousManagementPage", previousManagementPage);
-//        }
         try {
             if (checkLogin()) {
                 switch (target) {
@@ -75,19 +57,25 @@ public class DeliveryOrderManagementController extends HttpServlet {
                         session.setAttribute("previousManagementPage", "deliveryOrders");
                         nextPage = "DOManagement/deliveryOrders.jsp";
                         break;
+
                     case "ListDoTiedToSCO":
-                        String id = request.getParameter("id");
-                        if (id != null) {
-                            session.setAttribute("listOfDO", deliveryOrderManagementBean.listDeliveryOrdersTiedToSCO(Long.parseLong(id)));
-                            session.setAttribute("previousManagementPage", "sco");
-                            nextPage = "DOManagement/deliveryOrders.jsp";
+                        if (true) {
+                            String id = request.getParameter("id");
+                            if (id != null) {
+                                session.setAttribute("listOfDO", deliveryOrderManagementBean.listDeliveryOrdersTiedToSCO(Long.parseLong(id)));
+                                session.setAttribute("previousManagementPage", "sco");
+                                nextPage = "DOManagement/deliveryOrders.jsp";
+                            }
                         }
                         break;
+
                     case "RetrieveDO":
-                        id = request.getParameter("id");
-                        if (id != null) {
-                            session.setAttribute("do", deliveryOrderManagementBean.getDeliveryOrder(Long.parseLong(id)));
-                            nextPage = "DOManagement/deliveryOrder.jsp";
+                        if (true) {
+                            String id = request.getParameter("id");
+                            if (id != null) {
+                                session.setAttribute("do", deliveryOrderManagementBean.getDeliveryOrder(Long.parseLong(id)));
+                                nextPage = "DOManagement/deliveryOrder.jsp";
+                            }
                         }
                         break;
 
@@ -106,20 +94,20 @@ public class DeliveryOrderManagementController extends HttpServlet {
                         break;
 
                     case "UpdateDO":
+                        String doDate = request.getParameter("doDate");
                         if (source.equals("AddLineItemToExistingDO")) {
                             if (itemName == null || itemName.isEmpty() || itemDescription == null || itemDescription.isEmpty() || itemQty == null || itemQty.isEmpty()) {
                                 nextPage = "DOManagement/deliveryOrder.jsp?doDate=" + doDate + "&errMsg=Please fill in all the fields for the item.";
                                 break;
                             }
                         }
-                        if (doDate.isEmpty()) {
+                        if (doDate == null || doDate.isEmpty()) {
                             nextPage = "DOManagement/deliveryOrder.jsp?doDate=" + doDate + "&errMsg=Please fill in all the fields for the DO.";
                         } else {
                             SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-                            Date doDateDate = formatter.parse(doDate);
 
                             //Update DO
-                            returnHelper = deliveryOrderManagementBean.updateDeliveryOrder(deliveryOrder.getId(), doDateDate, poNumber, status, isAdmin);
+                            returnHelper = deliveryOrderManagementBean.updateDeliveryOrder(deliveryOrder.getId(), formatter.parse(doDate), poNumber, status, isAdmin);
                             if (returnHelper.getResult()) {
                                 Long doID = returnHelper.getID();
                                 deliveryOrder = deliveryOrderManagementBean.getDeliveryOrder(doID);
@@ -145,6 +133,7 @@ public class DeliveryOrderManagementController extends HttpServlet {
                         break;
 
                     case "UpdateDONotes":
+                        String notes = request.getParameter("notes");
                         returnHelper = deliveryOrderManagementBean.updateDeliveryOrderNotes(deliveryOrder.getId(), notes, isAdmin);
                         deliveryOrder = deliveryOrderManagementBean.getDeliveryOrder(deliveryOrder.getId());
                         if (returnHelper.getResult() && deliveryOrder != null) {
@@ -156,6 +145,7 @@ public class DeliveryOrderManagementController extends HttpServlet {
                         break;
 
                     case "UpdateDORemarks":
+                        String remarks = request.getParameter("remarks");
                         returnHelper = deliveryOrderManagementBean.updateDeliveryOrderRemarks(deliveryOrder.getId(), remarks, isAdmin);
                         deliveryOrder = deliveryOrderManagementBean.getDeliveryOrder(deliveryOrder.getId());
                         if (returnHelper.getResult() && deliveryOrder != null) {
@@ -167,37 +157,43 @@ public class DeliveryOrderManagementController extends HttpServlet {
                         break;
 
                     case "RemoveLineItem":
-                        returnHelper = deliveryOrderManagementBean.deleteDOlineItem(deliveryOrder.getId(), Long.parseLong(lineItemID), isAdmin);
-                        deliveryOrder = deliveryOrderManagementBean.getDeliveryOrder(deliveryOrder.getId());
-                        if (returnHelper.getResult() && deliveryOrder != null) {
-                            session.setAttribute("do", deliveryOrder);
-                            nextPage = "DOManagement/deliveryOrder.jsp?goodMsg=" + returnHelper.getDescription();
-                        } else {
-                            nextPage = "DOManagement/deliveryOrder.jsp?errMsg=" + returnHelper.getDescription();
+                        if (true) {
+                            String lineItemID = request.getParameter("lineItemID");
+                            returnHelper = deliveryOrderManagementBean.deleteDOlineItem(deliveryOrder.getId(), Long.parseLong(lineItemID), isAdmin);
+                            deliveryOrder = deliveryOrderManagementBean.getDeliveryOrder(deliveryOrder.getId());
+                            if (returnHelper.getResult() && deliveryOrder != null) {
+                                session.setAttribute("do", deliveryOrder);
+                                nextPage = "DOManagement/deliveryOrder.jsp?goodMsg=" + returnHelper.getDescription();
+                            } else {
+                                nextPage = "DOManagement/deliveryOrder.jsp?errMsg=" + returnHelper.getDescription();
+                            }
                         }
                         break;
 
                     case "EditLineItem":
-                        //Check for empty fields
-                        if (itemName == null || itemName.isEmpty() || itemDescription == null || itemDescription.isEmpty() || itemQty == null || itemQty.isEmpty()) {
-                            nextPage = "DOManagement/deliveryOrder.jsp?errMsg=Please fill in all the fields for the item.";
-                            break;
-                        }
+                        if (true) {
+                            //Check for empty fields
+                            if (itemName == null || itemName.isEmpty() || itemDescription == null || itemDescription.isEmpty() || itemQty == null || itemQty.isEmpty()) {
+                                nextPage = "DOManagement/deliveryOrder.jsp?errMsg=Please fill in all the fields for the item.";
+                                break;
+                            }
 
-                        //Edit line item
-                        returnHelper = deliveryOrderManagementBean.updateDOlineItem(deliveryOrder.getId(), Long.parseLong(lineItemID), itemName, itemDescription, Integer.parseInt(itemQty), isAdmin);
-                        deliveryOrder = deliveryOrderManagementBean.getDeliveryOrder(deliveryOrder.getId());
-                        if (returnHelper.getResult() && deliveryOrder != null) {
-                            session.setAttribute("do", deliveryOrder);
-                            nextPage = "DOManagement/deliveryOrder.jsp?goodMsg=" + returnHelper.getDescription();
-                        } else {
-                            nextPage = "DOManagement/deliveryOrder.jsp?errMsg=" + returnHelper.getDescription();
+                            //Edit line item
+                            String lineItemID = request.getParameter("lineItemID");
+                            returnHelper = deliveryOrderManagementBean.updateDOlineItem(deliveryOrder.getId(), Long.parseLong(lineItemID), itemName, itemDescription, Integer.parseInt(itemQty), isAdmin);
+                            deliveryOrder = deliveryOrderManagementBean.getDeliveryOrder(deliveryOrder.getId());
+                            if (returnHelper.getResult() && deliveryOrder != null) {
+                                session.setAttribute("do", deliveryOrder);
+                                nextPage = "DOManagement/deliveryOrder.jsp?goodMsg=" + returnHelper.getDescription();
+                            } else {
+                                nextPage = "DOManagement/deliveryOrder.jsp?errMsg=" + returnHelper.getDescription();
+                            }
                         }
                         break;
 
                     case "UpdateDOContact":
                         if (source != null && source.equals("UpdateContact")) {
-                            customerID = request.getParameter("customerID");
+                            String customerID = request.getParameter("customerID");
                             String contactID = request.getParameter("contactID");
                             returnHelper = deliveryOrderManagementBean.updateDeliveryOrderCustomerContactDetails(deliveryOrder.getId(), Long.parseLong(customerID), Long.parseLong(contactID), isAdmin);
                             deliveryOrder = deliveryOrderManagementBean.getDeliveryOrder(deliveryOrder.getId());
@@ -233,7 +229,8 @@ public class DeliveryOrderManagementController extends HttpServlet {
                     case "ListAllCustomer":
                         List<Customer> customers = customerManagementBean.listCustomers();
                         if (customers == null) {
-                            nextPage = "error500.html";
+                            response.sendRedirect("error500.html");
+                            return;
                         } else {
                             session.setAttribute("customers", customers);
                             nextPage = "DOManagement/updateContact.jsp?previousPage=delivery";
@@ -241,10 +238,11 @@ public class DeliveryOrderManagementController extends HttpServlet {
                         break;
 
                     case "ListCustomerContacts":
-                        customerID = request.getParameter("customerID");
+                        String customerID = request.getParameter("customerID");
                         List<Contact> contacts = customerManagementBean.listCustomerContacts(Long.parseLong(customerID));
                         if (contacts == null) {
-                            nextPage = "error500.html";
+                            response.sendRedirect("error500.html");
+                            return;
                         } else {
                             session.setAttribute("contacts", contacts);
                             if (source != null && source.equals("addressBook")) {
@@ -253,10 +251,13 @@ public class DeliveryOrderManagementController extends HttpServlet {
                         }
                         break;
                 }//end switch
-            }//end checkLogin
+            } else {
+                response.sendRedirect("index.jsp?errMsg=Session Expired.");
+                return;
+            }
 
             if (nextPage.equals("")) {
-                response.sendRedirect("index.jsp?errMsg=Session Expired.");
+                response.sendRedirect("DOManagement/deliveryOrder.jsp?errMsg=An error has occured");
                 return;
             } else {
                 response.sendRedirect(nextPage);
@@ -264,7 +265,6 @@ public class DeliveryOrderManagementController extends HttpServlet {
             }
         } catch (Exception ex) {
             response.sendRedirect("DOManagement/deliveryOrder.jsp?errMsg=An error has occured");
-            ex.printStackTrace();
             return;
         }
     }
@@ -272,13 +272,13 @@ public class DeliveryOrderManagementController extends HttpServlet {
     public boolean checkLogin() {
         try {
             Staff staff = (Staff) (session.getAttribute("staff"));
-            if (staff.getIsAdmin()) {
-                isAdmin = true;
-                loggedInStaffID = staff.getId();
-            }
             if (staff == null) {
                 return false;
             } else {
+                if (staff.getIsAdmin()) {
+                    isAdmin = true;
+                    loggedInStaffID = staff.getId();
+                }
                 return true;
             }
         } catch (Exception ex) {
@@ -286,7 +286,7 @@ public class DeliveryOrderManagementController extends HttpServlet {
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+// <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
