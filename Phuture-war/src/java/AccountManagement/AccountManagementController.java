@@ -1,7 +1,13 @@
 package AccountManagement;
 
+import EntityManager.DeliveryOrder;
+import EntityManager.Invoice;
 import EntityManager.ReturnHelper;
+import EntityManager.SalesConfirmationOrderHelper;
 import EntityManager.Staff;
+import OrderManagement.DeliveryOrderManagementBeanLocal;
+import OrderManagement.InvoiceManagementBeanLocal;
+import OrderManagement.OrderManagementBeanLocal;
 import java.io.IOException;
 import java.util.List;
 import javax.ejb.EJB;
@@ -15,6 +21,15 @@ import javax.servlet.http.Part;
 
 @MultipartConfig
 public class AccountManagementController extends HttpServlet {
+
+    @EJB
+    private InvoiceManagementBeanLocal invoiceManagementBean;
+
+    @EJB
+    private OrderManagementBeanLocal orderManagementBean;
+
+    @EJB
+    private DeliveryOrderManagementBeanLocal deliveryOrderManagementBean;
 
     @EJB
     private AccountManagementBeanLocal accountManagementBean;
@@ -42,6 +57,17 @@ public class AccountManagementController extends HttpServlet {
                         if (staff == null) {
                             nextPage = "error500.html";
                         } else {
+
+                            //for workspace
+                            List<SalesConfirmationOrderHelper> salesConfirmationOrders = orderManagementBean.listAllSalesConfirmationOrder(staff.getId());
+                            session.setAttribute("salesConfirmationOrders", salesConfirmationOrders);
+
+                            List<Invoice> invoices = invoiceManagementBean.listAllInvoice(staff.getId());
+                            session.setAttribute("listOfInvoice", invoices);
+
+                            List<DeliveryOrder> deliveryOrders = deliveryOrderManagementBean.listAllDeliveryOrder(staff.getId());
+                            session.setAttribute("listOfDO", deliveryOrders);
+
                             session.setAttribute("staff", staff);
                             nextPage = "AccountManagement/workspace.jsp";
                         }

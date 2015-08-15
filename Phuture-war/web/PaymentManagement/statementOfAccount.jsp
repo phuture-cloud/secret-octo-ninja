@@ -77,22 +77,8 @@
                                     <div class="row">
                                         <div class="col-sm-6 mt-md">
                                             <h2 class="h2 mt-none mb-sm text-dark text-weight-bold">Statement of Account</h2>
-                                            <br><h3><%=statementOfAccount.getCustomer().getCustomerName()%></h3>
-                                        </div>
-                                        <br/>
-                                        <div class="col-sm-6 text-right mt-md mb-md">
-                                            <address class="ib mr-xlg">
-                                                Phuture International Ltd
-                                                <br/>
-                                                28 Sin Ming Lane, #06-145 Midview City S(573972)
-                                                <br/>
-                                                Phone: (65) 6842 0198
-                                                <br/>
-                                                Fax: (65) 6285 6753
-                                            </address>
-                                            <div class="ib">
-                                                <img src="../assets/images/invoice-logo.png" alt="Phuture International" />
-                                            </div>
+                                            <h3><%=statementOfAccount.getCustomer().getCustomerName()%></h3>
+                                            <br>
                                         </div>
                                     </div>
                                 </header>
@@ -161,7 +147,11 @@
                                                         %>
                                                     </span>
                                                 </p>
-                                                <button class="btn btn-default" onclick="javascript:viewOverdueInvoice(<%=statementOfAccount.getCustomer().getId()%>);">View Overdue Invoices</button>
+                                                <p class="mb-none">
+                                                    <span class="value text-dark" style="min-width: 200px; font-size: 10.5pt; text-align: left; margin-top: 5px; margin-right: 30px;">
+                                                        <button class="btn btn-default" onclick="javascript:viewOverdueInvoice(<%=statementOfAccount.getCustomer().getId()%>);">View Overdue Invoices</button>
+                                                    </span>
+                                                </p>
                                             </div>
                                         </div>
                                     </div>
@@ -189,7 +179,6 @@
                                                     for (int i = 0; i < soali.size(); i++) {
                                             %>
                                             <tr>        
-
                                                 <td>
                                                     <%
                                                         if (soali.get(i).getEntryDate() != null) {
@@ -235,23 +224,23 @@
                                     </table>
                                 </div>
 
+                                <br>
 
-                            </div>
-
-                            <div class="row">
-                                <div class="col-sm-6 mt-md">
-                                    <div class="btn-group">
-                                        <%
-                                            if (statementOfAccount != null) {
-                                                out.print("<a href='../OrderManagementController?target=PrintPDF&id=" + statementOfAccount.getId() + "' target='_blank' class='btn btn-default'><i class='fa fa-print'></i> Print PDF</a>");
-                                            }
-                                        %> 
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="btn-group">
+                                            <%
+                                                if (statementOfAccount != null) {
+                                                    out.print("<a href='../OrderManagementController?target=PrintPDF&id=" + statementOfAccount.getId() + "' target='_blank' class='btn btn-default'><i class='fa fa-print'></i> Print PDF</a>");
+                                                }
+                                            %> 
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div class="col-sm-6 text-right mt-md mb-md">
-                                    <div class="btn-group">
-                                        <button type="button" class="btn btn-default" onclick="javascript:back()">Back</button>
+                                    <div class="col-sm-6 text-right">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-default" onclick="javascript:back()">Back</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
