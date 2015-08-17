@@ -323,6 +323,9 @@ public class AccountManagementBean implements AccountManagementBeanLocal {
             if (signature == null) {
                 result.setDescription("No file selected.");
                 return result;
+            } else if (signature.getSize() > 1500000) {
+                result.setDescription("Signature file size cannot be larger than 1.5MB");
+                return result;
             }
 
             //Write the signature file to server filesystem first

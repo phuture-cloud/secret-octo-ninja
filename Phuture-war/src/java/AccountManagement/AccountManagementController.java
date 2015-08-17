@@ -105,6 +105,7 @@ public class AccountManagementController extends HttpServlet {
                             returnHelper = accountManagementBean.updateStaffPassword(Long.parseLong(id), password);
                             if (!returnHelper.getResult()) {
                                 nextPage = "AccountManagement/staffManagement_update.jsp?id=" + id + "&errMsg=" + returnHelper.getDescription();
+                                 break;
                             }
                         }
                         Part signature = request.getPart("signature");
@@ -112,6 +113,7 @@ public class AccountManagementController extends HttpServlet {
                             returnHelper = accountManagementBean.updateStaffSignature(Long.parseLong(id), signature);
                             if (!returnHelper.getResult()) {
                                 nextPage = "AccountManagement/staffManagement_update.jsp?id=" + id + "&errMsg=" + returnHelper.getDescription();
+                                 break;
                             }
                         }
                         returnHelper = accountManagementBean.updateStaff(Long.parseLong(id), name, prefix);
@@ -122,7 +124,7 @@ public class AccountManagementController extends HttpServlet {
                                 nextPage = "error500.html";
                             } else {
                                 session.setAttribute("staffs", staffs);
-                                nextPage = "AccountManagement/staffManagement_update.jsp?id=" + id + "&goodMsg=" + returnHelper.getDescription();
+                                nextPage = "AccountManagement/staffManagement_update.jsp?id=" + id + "&goodMsg=Staff updated";
                             }
                         } else {
                             nextPage = "AccountManagement/staffManagement_update.jsp?id=" + id + "&errMsg=" + returnHelper.getDescription();
@@ -165,13 +167,15 @@ public class AccountManagementController extends HttpServlet {
                             returnHelper = accountManagementBean.updateStaffPassword(Long.parseLong(id), password);
                             if (!returnHelper.getResult()) {
                                 nextPage = "profile.jsp?errMsg=" + returnHelper.getDescription();
+                                 break;
                             }
                         }
                         Part signature = request.getPart("signature");
                         if (signature != null) {
                             returnHelper = accountManagementBean.updateStaffSignature(Long.parseLong(id), signature);
                             if (!returnHelper.getResult()) {
-                                nextPage = "AccountManagement/staffManagement_update.jsp?id=" + id + "&errMsg=" + returnHelper.getDescription();
+                                nextPage = "profile.jsp?errMsg=" + returnHelper.getDescription();
+                                break;
                             }
                         }
                         returnHelper = accountManagementBean.updateStaff(Long.parseLong(id), name, prefix);
@@ -183,7 +187,7 @@ public class AccountManagementController extends HttpServlet {
                                 nextPage = "error500.html";
                             } else {
                                 session.setAttribute("staff", staff);
-                                nextPage = "profile.jsp?goodMsg=" + returnHelper.getDescription();
+                                nextPage = "profile.jsp?goodMsg=Profile updated";
                             }
                         } else {
                             nextPage = "profile.jsp?errMsg=" + returnHelper.getDescription();
