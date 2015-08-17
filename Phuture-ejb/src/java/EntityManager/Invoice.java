@@ -81,7 +81,7 @@ public class Invoice implements Serializable {
         this.totalPriceAfterCreditNote = 0.0;
         this.totalPriceBeforeCreditNote = 0.0;
         this.totalTax = 0.0;
-        setStatusAsCreated();
+        setStatusAsSent();
         this.numOfPaymentRecords=0;
         this.totalAmountPaid=0.0;
         this.creditNotes = new ArrayList();
@@ -99,7 +99,7 @@ public class Invoice implements Serializable {
         this.totalPriceAfterCreditNote = 0.0;
         this.totalPriceBeforeCreditNote = 0.0;
         this.totalTax = 0.0;
-        setStatusAsCreated();
+        setStatusAsSent();
         this.numOfPaymentRecords=0;
         this.totalAmountPaid=0.0;
         this.creditNotes = new ArrayList();
