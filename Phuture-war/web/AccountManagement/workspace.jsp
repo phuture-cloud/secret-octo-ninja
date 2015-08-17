@@ -1,3 +1,4 @@
+<%@page import="EntityManager.SalesConfirmationOrder"%>
 <%@page import="EntityManager.DeliveryOrder"%>
 <%@page import="EntityManager.Invoice"%>
 <%@page import="EntityManager.SalesConfirmationOrderHelper"%>
@@ -14,6 +15,52 @@
         List<SalesConfirmationOrderHelper> salesConfirmationOrders = (List<SalesConfirmationOrderHelper>) (session.getAttribute("salesConfirmationOrders"));
         List<Invoice> invoices = (List<Invoice>) (session.getAttribute("listOfInvoice"));
         List<DeliveryOrder> deliveryOrders = (List<DeliveryOrder>) (session.getAttribute("listOfDO"));
+        int scoCompleted = 0;
+        int scoUnfulfilled = 0;
+        int scoWriteOff = 0;
+        int scoVoided = 0;
+        int invoiceSent = 0;
+        int invoicePaid = 0;
+        int invoiceVoided = 0;
+        int doCreated = 0;
+        int doShipped = 0;
+        int doVoided = 0;
+
+        for (SalesConfirmationOrderHelper salesConfirmationOrderHelper : salesConfirmationOrders) {
+            SalesConfirmationOrder sco = salesConfirmationOrderHelper.getSco();
+            String status = sco.getStatus();
+            if (status.equals("Completed")) {
+                scoCompleted++;
+            } else if (status.equals("Unfulfilled")) {
+                scoUnfulfilled++;
+            } else if (status.equals("Write-Off")) {
+                scoWriteOff++;
+            } else if (status.equals("Voided")) {
+                scoVoided++;
+            }
+        }
+
+        for (Invoice invoice : invoices) {
+            String status = invoice.getStatus();
+            if (status.equals("Sent")) {
+                invoiceSent++;
+            } else if (status.equals("Paid")) {
+                invoicePaid++;
+            } else if (status.equals("Voided")) {
+                invoiceVoided++;
+            }
+        }
+
+        for (DeliveryOrder deliveryOrder : deliveryOrders) {
+            String status = deliveryOrder.getStatus();
+            if (status.equals("Created")) {
+                doCreated++;
+            } else if (status.equals("Shipped")) {
+                doShipped++;
+            } else if (status.equals("Voided")) {
+                doVoided++;
+            }
+        }
 %>
 <!doctype html>
 <html class="fixed">
@@ -179,10 +226,10 @@
         function drawSCOChart() {
             var data = google.visualization.arrayToDataTable([
                 ['Status', 'Orders'],
-                ['Completed', 11],
-                ['Unfufilled', 2],
-                ['Write-Off', 2],
-                ['Void', 2]
+                ['Completed', <%=scoCompleted%>],
+                ['Unfufilled', <%=scoUnfulfilled%>],
+                ['Write-Off', <%=scoWriteOff%>],
+                ['Voided', <%=scoVoided%>]
             ]);
 
             var options = {
@@ -197,10 +244,9 @@
         function drawInvoiceChart() {
             var data = google.visualization.arrayToDataTable([
                 ['Status', 'Orders'],
-                ['Completed', 11],
-                ['Unfufilled', 2],
-                ['Write-Off', 2],
-                ['Void', 2]
+                ['Sent', <%=invoiceSent%>],
+                ['Paid', <%=invoicePaid%>],
+                ['Voided', <%=invoiceVoided%>]
             ]);
 
             var options = {
@@ -215,10 +261,9 @@
         function drawDOChart() {
             var data = google.visualization.arrayToDataTable([
                 ['Status', 'Orders'],
-                ['Created', 11],
-                ['Shipped', 2],
-                ['Delivered', 2],
-                ['Void', 2]
+                ['Created', <%=doCreated%>],
+                ['Shipped', <%=doShipped%>],
+                ['Void', <%=doVoided%>]
             ]);
 
             var options = {
