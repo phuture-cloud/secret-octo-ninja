@@ -247,21 +247,14 @@
                                                                         if (selectedStatus.equals("Created")) {
                                                                             out.print("<option value='Created' selected>Created</option>");
                                                                             out.print("<option value='Shipped'>Shipped</option>");
-                                                                            out.print("<option value='Delivered'>Delivered</option>");
                                                                         } else if (selectedStatus.equals("Shipped")) {
                                                                             out.print("<option value='Created'>Created</option>");
                                                                             out.print("<option value='Shipped' selected>Shipped</option>");
-                                                                            out.print("<option value='Delivered'>Delivered</option>");
-                                                                        } else if (selectedStatus.equals("Delivered")) {
-                                                                            out.print("<option value='Created'>Created</option>");
-                                                                            out.print("<option value='Shipped'>Shipped</option>");
-                                                                            out.print("<option value='Delivered' selected>Delivered</option>");
                                                                         } else if (selectedStatus.equals("Voided")) {
                                                                             out.print("<option value='Voided'>Voided</option>");
                                                                         } else {
                                                                             out.print("<option value='Created'>Created</option>");
                                                                             out.print("<option value='Shipped'>Shipped</option>");
-                                                                            out.print("<option value='Delivered'>Delivered</option>");
                                                                         }
                                                                     }
                                                                 %>
