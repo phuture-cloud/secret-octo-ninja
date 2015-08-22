@@ -142,13 +142,13 @@
                                             </td>
                                             <td>
                                                 <%
-                                                    if (salesConfirmationOrders.get(i).getInvoices()!= null) {
+                                                    if (salesConfirmationOrders.get(i).getInvoices() != null) {
                                                         for (int k = 0; k < salesConfirmationOrders.get(i).getInvoices().size(); k++) {
                                                             if ((k + 1) == salesConfirmationOrders.get(i).getInvoices().size()) {
                                                                 out.print(salesConfirmationOrders.get(i).getInvoices().get(k).getInvoiceNumber());
                                                             } else {
                                                                 out.print(salesConfirmationOrders.get(i).getInvoices().get(k).getInvoiceNumber() + ", ");
-                                                           }
+                                                            }
                                                         }
                                                     }
                                                 %>
@@ -193,18 +193,14 @@
                                 <input type="hidden" name="id" value="">    
                                 <input type="hidden" name="target" value="">    
                             </form>
-
-
                         </div>
                     </section>
                     <!-- end: page -->
                 </section>
             </div>
         </section>
-
         <jsp:include page="../jspIncludePages/foot.html" />
     </body>
 </html>
-<%
-    }
-%>
+<%}%>
+

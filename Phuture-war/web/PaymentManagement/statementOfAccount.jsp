@@ -231,7 +231,7 @@
                                         <div class="btn-group">
                                             <%
                                                 if (statementOfAccount != null) {
-                                                    out.print("<a href='../OrderManagementController?target=PrintPDF&id=" + statementOfAccount.getId() + "' target='_blank' class='btn btn-default'><i class='fa fa-print'></i> Print PDF</a>");
+                                                    out.print("<a href='statementOfAccount-print.jsp' target='_blank' class='btn btn-default'><i class='fa fa-print'></i> Print PDF</a>");
                                                 }
                                             %> 
                                         </div>
