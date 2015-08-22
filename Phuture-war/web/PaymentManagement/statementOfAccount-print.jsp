@@ -1,3 +1,4 @@
+<%@page import="java.time.format.DateTimeFormatter"%>
 <%@page import="java.util.Date"%>
 <%@page import="EntityManager.SOALineItem"%>
 <%@page import="java.util.ArrayList"%>
@@ -63,7 +64,7 @@
                 <div class="col-xs-6">
                     <div  class="row">
                         <div class="col-xs-12">
-                            <p>Aged as of <%=DATE_FORMAT.format(new Date())%></p>
+                            <p>Aged as of <%=statementOfAccount.getVersion().toLocalDateTime().format(DateTimeFormatter.ISO_DATE)%></p>
                         </div>
                     </div>
                 </div>

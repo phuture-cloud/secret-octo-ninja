@@ -37,6 +37,14 @@ public class StatementOfAccount implements Serializable {
     private Double amountOverDueOver91Days;
     private Double totalAmountOverDue;
 
+    public Timestamp getVersion() {
+        return version;
+    }
+
+    public void setVersion(Timestamp version) {
+        this.version = version;
+    }
+
     public Long getId() {
         return id;
     }
