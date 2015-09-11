@@ -91,7 +91,6 @@
                                 <tbody>
                                     <%
                                         for (int i = 0; i < paymentRecords.size(); i++) {
-                                            System.out.print(i);
                                             PaymentRecord paymentRecord = paymentRecords.get(i);
                                             if (!paymentRecord.getIsDeleted()) {
 

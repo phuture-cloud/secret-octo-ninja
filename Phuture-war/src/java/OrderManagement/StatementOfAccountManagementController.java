@@ -30,7 +30,6 @@ public class StatementOfAccountManagementController extends HttpServlet {
     Long loggedInStaffID = null;
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("Welcome to StatementOfAccountManagementController");
         String target = request.getParameter("target");
 
         session = request.getSession();

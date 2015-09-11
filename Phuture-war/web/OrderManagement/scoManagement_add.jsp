@@ -1010,7 +1010,7 @@
                                     <div class="form-group">
                                         <label class="col-sm-3 control-label">Remarks</label>
                                         <div class="col-sm-9">
-                                            <textarea class="form-control" rows="5" name="remarks"><%if (sco.getRemarks() != null) {
+                                            <textarea class="form-control" rows="5" id="remarks" name="remarks"><%if (sco.getRemarks() != null) {
                                                     out.print(sco.getRemarks());
                                                 }%></textarea>
                                         </div>

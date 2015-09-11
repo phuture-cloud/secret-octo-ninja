@@ -38,7 +38,6 @@ public class PaymentManagementController extends HttpServlet {
     Invoice invoice;
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("Welcome to PaymentManagementController");
         String target = request.getParameter("target");
         String id = request.getParameter("id");
 
