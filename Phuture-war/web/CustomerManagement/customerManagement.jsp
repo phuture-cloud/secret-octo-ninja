@@ -29,7 +29,7 @@
                 window.location.href = "customerManagement_add.jsp";
             }
             function viewContact(id) {
-                window.location.href = "../CustomerManagementController?target=ListCustomerContacts?id=" + id;
+                window.location.href = "../CustomerManagementController?target=ListCustomerContacts&id=" + id;
             }
             function viewCreditNotes(id, name) {
                 window.location.href = "../PaymentManagementController?target=ListCustomerCreditNotes&id=" + id + "&name=" + name;
