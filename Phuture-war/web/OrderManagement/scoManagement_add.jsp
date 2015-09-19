@@ -453,14 +453,16 @@
 
                                                     <p class="mb-none">
                                                         <span class="text-dark">Estimated Delivery Date:</span>
-                                                        <span class="value" style="min-width: 200px">
+                                                        <span class="value" style="min-width: 110px">
                                                             <%
                                                                 if (estimatedDeliveryDate != null && !estimatedDeliveryDate.isEmpty()) {
-                                                                    out.print("<input " + formDisablerFlag + " id='estimatedDeliveryDate' name='estimatedDeliveryDate' type='text' class='form-control' value='" + estimatedDeliveryDate + "'>");
+                                                                    out.print("<input " + formDisablerFlag + " id='estimatedDeliveryDate' name='estimatedDeliveryDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + estimatedDeliveryDate + "' required>");
                                                                 } else if (sco != null && scoID != null && !scoID.isEmpty() && !sco.getEstimatedDeliveryDate().isEmpty()) {
-                                                                    out.print("<input " + formDisablerFlag + " id='estimatedDeliveryDate' name='estimatedDeliveryDate' type='text' class='form-control' value='" + sco.getEstimatedDeliveryDate() + "'>");
+                                                                    SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
+                                                                    String date = DATE_FORMAT.format(sco.getEstimatedDeliveryDate());
+                                                                    out.print("<input " + formDisablerFlag + " id='estimatedDeliveryDate' name='estimatedDeliveryDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "' required>");
                                                                 } else {
-                                                                    out.print("<input " + formDisablerFlag + " id='estimatedDeliveryDate' name='estimatedDeliveryDate' type='text' class='form-control' placeholder='Estimated date'>");
+                                                                    out.print("<input " + formDisablerFlag + " id='estimatedDeliveryDate' name='estimatedDeliveryDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' required placeholder='dd/mm/yyyy'>");
                                                                 }
                                                             %>
                                                         </span>
@@ -547,9 +549,9 @@
                                                     <td>
                                                         <%
                                                             if (scoID == null && (customers == null || selectedContactID == null || selectedContactID.equals("")) || !editingLineItem.equals("")) {
-                                                                out.println("<textarea class='form-control' rows='1' name='itemDescription' disabled></textarea>");
+                                                                out.println("<textarea class='form-control' rows='2' name='itemDescription' disabled></textarea>");
                                                             } else {
-                                                                out.println("<textarea class='form-control' rows='1' name='itemDescription'></textarea>");
+                                                                out.println("<textarea class='form-control' rows='2' name='itemDescription'></textarea>");
                                                             }
                                                         %>
                                                     </td>

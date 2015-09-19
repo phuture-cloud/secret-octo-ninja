@@ -337,14 +337,16 @@
 
                                                     <p class="mb-none">
                                                         <span class="text-dark">Estimated Delivery Date:</span>
-                                                        <span class="value" style="min-width: 200px">
+                                                        <span class="value" style="min-width: 110px">
                                                             <%
                                                                 if (estimatedDeliveryDate != null && !estimatedDeliveryDate.isEmpty()) {
-                                                                    out.print("<input " + formDisablerFlag + " id='estimatedDeliveryDate' name='estimatedDeliveryDate' type='text' class='form-control' value='" + estimatedDeliveryDate + "'>");
+                                                                    String date = DATE_FORMAT.format(estimatedDeliveryDate);
+                                                                    out.print("<input " + formDisablerFlag + " id='estimatedDeliveryDate' name='estimatedDeliveryDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "'>");
                                                                 } else if (invoice.getEstimatedDeliveryDate() != null && !invoice.getEstimatedDeliveryDate().isEmpty()) {
-                                                                    out.print("<input " + formDisablerFlag + " id='estimatedDeliveryDate' name='estimatedDeliveryDate' type='text' class='form-control' value='" + invoice.getEstimatedDeliveryDate() + "'>");
+                                                                    String date = DATE_FORMAT.format(invoice.getEstimatedDeliveryDate());
+                                                                    out.print("<input " + formDisablerFlag + " id='estimatedDeliveryDate' name='estimatedDeliveryDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "'>");
                                                                 } else {
-                                                                    out.print("<input " + formDisablerFlag + " id='estimatedDeliveryDate' name='estimatedDeliveryDate' type='text' class='form-control' placeholder='Estimated date'>");
+                                                                    out.print("<input " + formDisablerFlag + " id='estimatedDeliveryDate' name='estimatedDeliveryDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' placeholder='dd/mm/yyyy'>");
                                                                 }
                                                             %>
                                                         </span>
