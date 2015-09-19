@@ -180,7 +180,7 @@ public class StatementOfAccountBean implements StatementOfAccountBeanLocal {
                 soali.setEntryDate(invoice.getDateSent());
                 soali.setReferenceNo(invoice.getInvoiceNumber());
                 soali.setMethod("");
-                soali.setType("Invoice for " + invoice.getSalesConfirmationOrder().getSalesConfirmationOrderNumber());
+                soali.setType("Invoice");
                 soali.setDueDate(invoice.getDateDue());
                 soali.setScoID(invoice.getSalesConfirmationOrder().getId());
                 soali.setInvoiceID(invoice.getId());
@@ -205,7 +205,7 @@ public class StatementOfAccountBean implements StatementOfAccountBeanLocal {
                     soali2.setEntryDate(paymentRecord.getPaymentDate());
                     soali2.setReferenceNo(paymentRecord.getPaymentReferenceNumber());
                     soali2.setMethod(paymentRecord.getPaymentMethod());
-                    soali2.setType("Pymt for " + paymentRecord.getInvoice().getInvoiceNumber());
+                    soali2.setType("Payment");
                     soali2.setDueDate(paymentRecord.getInvoice().getDateDue());
                     soali2.setScoID(paymentRecord.getInvoice().getSalesConfirmationOrder().getId());
                     soali2.setInvoiceID(paymentRecord.getInvoice().getId());
@@ -256,8 +256,8 @@ public class StatementOfAccountBean implements StatementOfAccountBeanLocal {
                     soali3.setEntryDate(creditNote.getDateIssued());
                 }
                 soali3.setReferenceNo(creditNote.getCreditNoteNumber());
-                soali3.setMethod("Credit Note");
-                soali3.setType("");
+                soali3.setMethod("");
+                soali3.setType("Credit Note");
                 soali3.setDueDate(null);
                 Invoice currentInvoice = creditNote.getAppliedToInvoice();
                 //If applied to invoice
@@ -277,7 +277,6 @@ public class StatementOfAccountBean implements StatementOfAccountBeanLocal {
                     }
                     soali3.setScoID(currentInvoice.getSalesConfirmationOrder().getId());
                     soali3.setInvoiceID(currentInvoice.getId());
-                    soali3.setType("Applied on " + currentInvoice.getInvoiceNumber());
                 } else {
                     soali3.setCredit(creditNote.getCreditAmount());
                     soali3.setScoID(null);

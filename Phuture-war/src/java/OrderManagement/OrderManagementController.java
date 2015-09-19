@@ -79,8 +79,11 @@ public class OrderManagementController extends HttpServlet {
                 Long loggedInStaffID = staff.getId();
 
                 String estimatedDeliveryDateString = request.getParameter("estimatedDeliveryDate");
-                DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-                Date estimatedDeliveryDate = dateFormat.parse(estimatedDeliveryDateString);
+                Date estimatedDeliveryDate = null;
+                if (estimatedDeliveryDateString != null && !estimatedDeliveryDateString.isEmpty()) {
+                    DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                    estimatedDeliveryDate = dateFormat.parse(estimatedDeliveryDateString);
+                }
 
                 switch (target) {
                     case "ListAllSCO":

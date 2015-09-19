@@ -161,14 +161,14 @@
                                     <table class="table invoice-items">
                                         <thead>
                                             <tr class="h4 text-dark">
+                                                <th class="text-weight-semibold">Type</th>
                                                 <th class="text-weight-semibold">Entry Date</th>
                                                 <th class="text-weight-semibold">Ref. No</th>
                                                 <th class="text-weight-semibold">Method</th>
-                                                <th style="width:200px;" class="text-weight-semibold">Desc.</th>
-                                                <th class="text-weight-semibold">Due Date</th>
                                                 <th id="cell-price" class="text-weight-semibold">Debit</th>
                                                 <th id="cell-price" class="text-weight-semibold">Credit</th>
                                                 <th class="text-weight-semibold">Balance</th>
+                                                <th class="text-weight-semibold">Due Date</th>
                                                 <th class="text-weight-semibold" style="width: 240px; text-align: center">Details</th>
                                             </tr>
                                         </thead>
@@ -188,9 +188,16 @@
                                                         }
                                                     %>
                                                 </td>
+                                                <td><%=soali.get(i).getType()%></td>
                                                 <td><%=soali.get(i).getReferenceNo()%></td>
                                                 <td><%=soali.get(i).getMethod()%></td>
-                                                <td><%=soali.get(i).getDescription()%></td>
+                                                <td><%=formatter.format(soali.get(i).getDebit())%></td>
+                                                <td><%=formatter.format(soali.get(i).getCredit())%></td>
+                                                <%if (i==soali.size()){%>
+                                                <td><b><%=formatter.format(soali.get(i).getBalance())%></b></td>
+                                                <%} else {%>
+                                                <td><%=formatter.format(soali.get(i).getBalance())%></td>
+                                                <%}%>
                                                 <td>
                                                     <%
                                                         if (soali.get(i).getDueDate() != null) {
@@ -200,9 +207,6 @@
                                                         }
                                                     %>
                                                 </td>
-                                                <td><%=formatter.format(soali.get(i).getDebit())%></td>
-                                                <td><%=formatter.format(soali.get(i).getCredit())%></td>
-                                                <td><%=formatter.format(soali.get(i).getBalance())%></td>
                                                 <td>
                                                     <%if (soali.get(i).getScoID() != null) {%>
                                                     <button type="button" class="btn btn-default" onclick="javascript:viewSCO('<%=soali.get(i).getScoID()%>');">SCO</button>
