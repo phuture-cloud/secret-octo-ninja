@@ -378,6 +378,7 @@ public class OrderManagementController extends HttpServlet {
                             }
                         }
                         break;
+                        
                     case "VoidSCO":
                         if (true) {
                             returnHelper = orderManagementBean.voidSalesConfirmationOrder(Long.parseLong(id), isAdmin);
@@ -396,6 +397,7 @@ public class OrderManagementController extends HttpServlet {
                             }
                         }
                         break;
+                        
                     case "GenerateDO":
                         if (true) {
                             String doDate = request.getParameter("doDate");

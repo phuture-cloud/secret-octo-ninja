@@ -846,12 +846,6 @@
                                 </header>
                                 <div class="panel-body">
                                     <div class="form-group">
-                                        <label class="col-sm-3 control-label">PO No <span class="required">*</span></label>
-                                        <div class="col-sm-9">
-                                            <input type="text" name="poNumber" class="form-control" required/>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
                                         <label class="col-md-3 control-label">Date <span class="required">*</span></label>
                                         <div class="col-md-9">
                                             <input type="text" name="poDate" data-plugin-datepicker data-date-format="dd/mm/yyyy" class="form-control" placeholder="dd/mm/yyyy" required/>
