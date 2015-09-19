@@ -22,6 +22,7 @@
         } else {//Disable unneccessary fields when editing line item
             formDisablerFlag = "disabled";
         }
+        SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
         NumberFormat formatter = NumberFormat.getCurrencyInstance();
 %>
 <!doctype html>
@@ -260,7 +261,6 @@
                                                         <span class="value" style="min-width: 200px">
                                                             <%
                                                                 if (purchaseOrder.getPurchaseOrderDate() != null) {
-                                                                    SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
                                                                     String date = DATE_FORMAT.format(purchaseOrder.getPurchaseOrderDate());
                                                                     out.print("<input " + formDisablerFlag + " id='poDate' name='poDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "' required>");
                                                                 } else {
@@ -308,11 +308,14 @@
                                                     <p class="mb-none">
                                                         <span class="text-dark">Delivery Date: </span>
                                                         <span class="value" style="min-width: 200px; font-size: 10.5pt; text-align: left;">
-                                                            <%if (purchaseOrder.getTerms() != null && !purchaseOrder.getTerms().isEmpty()) {%>
-                                                            <input type='text' <%=formDisablerFlag%> class='form-control' name='deliveryDate' value='<%=purchaseOrder.getDeliveryDate()%>'>
-                                                            <%} else {%>
-                                                            <input type='text' <%=formDisablerFlag%> class='form-control' name='deliveryDate' placeholder='eg TT in advance'>
-                                                            <%}%>
+                                                            <%
+                                                                if (purchaseOrder.getTerms() != null && !purchaseOrder.getTerms().isEmpty()) {
+                                                                    String date = DATE_FORMAT.format(purchaseOrder.getDeliveryDate());
+                                                                    out.print("<input " + formDisablerFlag + " id='deliveryDate' name='deliveryDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "' required>");
+                                                                } else {
+                                                                    out.print("<input " + formDisablerFlag + " id='deliveryDate' name='deliveryDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' required placeholder='dd/mm/yyyy'>");
+                                                                }
+                                                            %>
                                                         </span>
                                                     </p>
 
