@@ -213,11 +213,9 @@
                     <%
                         if (staff.getSignature() != null && staff.getSignature().length > 0) {
                             out.write("<img class='img-responsive' src='http://localhost:8080/Phuture-war/sig?id=" + staff.getId() + "'>");
-                        } else {
+                        }
                     %>
-                    <br><br><br><br><br>
-                    <img src="../assets/images/thin-black-line.png">
-                    <%}%>
+                    <img src="../assets/images/thin-black-line.png" style='padding-bottom: 5px;'>
                     <br>Authorized Signature
                 </div>
             </div>

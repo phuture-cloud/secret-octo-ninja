@@ -211,7 +211,7 @@
                 </div>
             </div>
 
-            <br> <br>
+            <br><br>
 
             <div class="row text-left">
                 <div class="col-xs-8">
@@ -228,7 +228,7 @@
                         }
                     %>
                     <img src="../assets/images/thin-black-line.png" style='padding-bottom: 5px;'>
-                    <br><%=staff.getName()%>
+                    <br>Authorized Signature
                 </div>
             </div>
         </div>
