@@ -400,9 +400,9 @@
                                                     </td>
                                                     <td>
                                                         <%if (!editingLineItem.equals("")) {
-                                                                out.println("<textarea class='form-control' rows='1' name='itemDescription' disabled></textarea>");
+                                                                out.println("<textarea class='form-control' rows='2' name='itemDescription' disabled></textarea>");
                                                             } else {
-                                                                out.println("<textarea class='form-control' rows='1' name='itemDescription'></textarea>");
+                                                                out.println("<textarea class='form-control' rows='2' name='itemDescription'></textarea>");
                                                             }
                                                         %>
                                                     </td>
