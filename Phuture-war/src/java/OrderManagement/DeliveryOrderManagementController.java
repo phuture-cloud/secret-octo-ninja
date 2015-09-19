@@ -1,6 +1,6 @@
 package OrderManagement;
 
-import CustomerManagement.CustomerManagementBeanLocal;
+import CustomerManagement.SupplierManagementBeanLocal;
 import EntityManager.Contact;
 import EntityManager.Customer;
 import EntityManager.DeliveryOrder;
@@ -22,7 +22,7 @@ public class DeliveryOrderManagementController extends HttpServlet {
     private DeliveryOrderManagementBeanLocal deliveryOrderManagementBean;
 
     @EJB
-    private CustomerManagementBeanLocal customerManagementBean;
+    private SupplierManagementBeanLocal customerManagementBean;
 
     String nextPage = "", goodMsg = "", errMsg = "";
     HttpSession session;

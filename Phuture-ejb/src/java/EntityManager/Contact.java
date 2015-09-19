@@ -21,6 +21,8 @@ public class Contact implements Serializable {
     private Timestamp version;
     @ManyToOne
     private Customer customer;
+    @ManyToOne
+    private Supplier supplier;
     @Lob
     private String name;
     private String email;
@@ -39,6 +41,13 @@ public class Contact implements Serializable {
 
     public Contact(Customer customer, String name) {
         this.customer = customer;
+        this.supplier = null;
+        this.name = name;
+    }
+
+    public Contact(Supplier supplier, String name) {
+        this.customer = null;
+        this.supplier = supplier;
         this.name = name;
     }
 
@@ -56,6 +65,14 @@ public class Contact implements Serializable {
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
+    }
+
+    public Supplier getSupplier() {
+        return supplier;
+    }
+
+    public void setSupplier(Supplier supplier) {
+        this.supplier = supplier;
     }
 
     public String getName() {

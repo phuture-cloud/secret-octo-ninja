@@ -1,6 +1,6 @@
 package OrderManagement;
 
-import CustomerManagement.CustomerManagementBeanLocal;
+import CustomerManagement.SupplierManagementBeanLocal;
 import EntityManager.Contact;
 import EntityManager.CreditNote;
 import EntityManager.Invoice;
@@ -23,7 +23,7 @@ import javax.servlet.http.HttpSession;
 public class PaymentManagementController extends HttpServlet {
 
     @EJB
-    private CustomerManagementBeanLocal customerManagementBean;
+    private SupplierManagementBeanLocal customerManagementBean;
 
     @EJB
     private PaymentManagementBeanLocal pmbl;

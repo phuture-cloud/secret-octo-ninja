@@ -33,14 +33,16 @@ public class PurchaseOrder implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date purchaseOrderDate;
 
-    private String companyName;
+    @ManyToOne
+    private Supplier supplierLink;
     private String supplierName;
-    private String supplierEmail;
-    private String supplierOfficeNo;
-    private String supplierMobileNo;
-    private String supplierFaxNo;
+    private String contactName;
+    private String contactEmail;
+    private String contactOfficeNo;
+    private String contactMobileNo;
+    private String contactFaxNo;
     @Lob
-    private String supplierAddress;
+    private String contactAddress;
 
     private String terms;
     @Temporal(TemporalType.DATE)
@@ -64,16 +66,16 @@ public class PurchaseOrder implements Serializable {
         this.items = new ArrayList<>();
         this.totalPrice = 0.0;
         this.isDeleted = false;
-        this.companyName = "";
         this.supplierName = "";
-        this.supplierEmail = "";
-        this.supplierOfficeNo = "";
-        this.supplierMobileNo = "";
-        this.supplierFaxNo = "";
-        this.supplierAddress = "";
+        this.contactName = "";
+        this.contactEmail = "";
+        this.contactOfficeNo = "";
+        this.contactMobileNo = "";
+        this.contactFaxNo = "";
+        this.contactAddress = "";
         this.terms = "";
-        this.remarks="";
-        this.currency="";
+        this.remarks = "";
+        this.currency = "";
     }
 
     public Long getId() {
@@ -92,12 +94,12 @@ public class PurchaseOrder implements Serializable {
         this.salesConfirmationOrder = salesConfirmationOrder;
     }
 
-    public String getSupplierAddress() {
-        return supplierAddress;
+    public String getContactAddress() {
+        return contactAddress;
     }
 
-    public void setSupplierAddress(String supplierAddress) {
-        this.supplierAddress = supplierAddress;
+    public void setContactAddress(String contactAddress) {
+        this.contactAddress = contactAddress;
     }
 
     public String getPurchaseOrderNumber() {
@@ -164,52 +166,52 @@ public class PurchaseOrder implements Serializable {
         this.purchaseOrderDate = purchaseOrderDate;
     }
 
+    public String getContactName() {
+        return contactName;
+    }
+
+    public void setContactName(String contactName) {
+        this.contactName = contactName;
+    }
+
+    public String getContactEmail() {
+        return contactEmail;
+    }
+
+    public void setContactEmail(String contactEmail) {
+        this.contactEmail = contactEmail;
+    }
+
+    public String getContactOfficeNo() {
+        return contactOfficeNo;
+    }
+
+    public void setContactOfficeNo(String contactOfficeNo) {
+        this.contactOfficeNo = contactOfficeNo;
+    }
+
+    public String getContactMobileNo() {
+        return contactMobileNo;
+    }
+
+    public void setContactMobileNo(String contactMobileNo) {
+        this.contactMobileNo = contactMobileNo;
+    }
+
+    public String getContactFaxNo() {
+        return contactFaxNo;
+    }
+
+    public void setContactFaxNo(String contactFaxNo) {
+        this.contactFaxNo = contactFaxNo;
+    }
+
     public String getSupplierName() {
         return supplierName;
     }
 
     public void setSupplierName(String supplierName) {
         this.supplierName = supplierName;
-    }
-
-    public String getSupplierEmail() {
-        return supplierEmail;
-    }
-
-    public void setSupplierEmail(String supplierEmail) {
-        this.supplierEmail = supplierEmail;
-    }
-
-    public String getSupplierOfficeNo() {
-        return supplierOfficeNo;
-    }
-
-    public void setSupplierOfficeNo(String supplierOfficeNo) {
-        this.supplierOfficeNo = supplierOfficeNo;
-    }
-
-    public String getSupplierMobileNo() {
-        return supplierMobileNo;
-    }
-
-    public void setSupplierMobileNo(String supplierMobileNo) {
-        this.supplierMobileNo = supplierMobileNo;
-    }
-
-    public String getSupplierFaxNo() {
-        return supplierFaxNo;
-    }
-
-    public void setSupplierFaxNo(String supplierFaxNo) {
-        this.supplierFaxNo = supplierFaxNo;
-    }
-
-    public String getCompanyName() {
-        return companyName;
-    }
-
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
     }
 
     public String getTerms() {
@@ -242,6 +244,14 @@ public class PurchaseOrder implements Serializable {
 
     public void setRemarks(String remarks) {
         this.remarks = remarks;
+    }
+
+    public Supplier getSupplierLink() {
+        return supplierLink;
+    }
+
+    public void setSupplierLink(Supplier supplierLink) {
+        this.supplierLink = supplierLink;
     }
 
     @Override

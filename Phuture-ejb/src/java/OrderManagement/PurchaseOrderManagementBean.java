@@ -1,13 +1,14 @@
 package OrderManagement;
 
-import EntityManager.DeliveryOrder;
-import EntityManager.Invoice;
+import EntityManager.Contact;
+import EntityManager.Customer;
 import EntityManager.LineItem;
 import EntityManager.OrderNumbers;
 import EntityManager.PurchaseOrder;
 import EntityManager.ReturnHelper;
 import EntityManager.SalesConfirmationOrder;
 import EntityManager.Staff;
+import EntityManager.Supplier;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -101,7 +102,7 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
     }
 
     @Override
-    public ReturnHelper updatePurchaseOrder(Long purchaseOrderID, String purchaseOrderNumber, Date purchaseOrderDate, String status, String supplierName, String supplierEmail, String supplierOfficeNo, String supplierMobileNo, String supplierFaxNo, String supplierAddress, String companyName, String terms, Date deliveryDate, String remarks, String currency) {
+    public ReturnHelper updatePurchaseOrder(Long purchaseOrderID, String purchaseOrderNumber, Date purchaseOrderDate, String status, String terms, Date deliveryDate, String remarks, String currency) {
         System.out.println("PurchaseOrderManagementBean: updatePurchaseOrder() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -124,13 +125,6 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
             }
             po.setPurchaseOrderDate(purchaseOrderDate);
             po.setPurchaseOrderNumber(purchaseOrderNumber);
-            po.setSupplierName(supplierName);
-            po.setSupplierEmail(supplierEmail);
-            po.setSupplierOfficeNo(supplierOfficeNo);
-            po.setSupplierMobileNo(supplierMobileNo);
-            po.setSupplierFaxNo(supplierFaxNo);
-            po.setSupplierAddress(supplierAddress);
-            po.setCompanyName(companyName);
             po.setTerms(terms);
             po.setDeliveryDate(deliveryDate);
             po.setRemarks(remarks);
@@ -147,6 +141,101 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
             System.out.println("PurchaseOrderManagementBean: updatePurchaseOrder() failed");
             ex.printStackTrace();
             result.setDescription("Failed to edit the PO due to internal server error.");
+        }
+        return result;
+    }
+    
+    @Override
+    public ReturnHelper updatePurchaseOrderSupplierContactDetails(Long purchaseOrderID, String supplierName, String contactName, String email, String officeNo, String mobileNo, String faxNo, String address, Boolean adminOverwrite) {
+        System.out.println("PurchaseOrderManagementBean: updatePurchaseOrderSupplierContactDetails() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        try {
+            Query q = em.createQuery("SELECT s FROM PurchaseOrder s WHERE s.id=:id");
+            q.setParameter("id", purchaseOrderID);
+            PurchaseOrder purchaseOrder = (PurchaseOrder) q.getSingleResult();
+            if (purchaseOrder.getIsDeleted()) {
+                result.setDescription("Failed to edit the PO as it has been deleted.");
+                return result;
+            }
+            purchaseOrder.setContactName(supplierName);
+            purchaseOrder.setContactAddress(address);
+            purchaseOrder.setContactEmail(email);
+            purchaseOrder.setContactOfficeNo(officeNo);
+            purchaseOrder.setContactFaxNo(faxNo);
+            purchaseOrder.setContactMobileNo(mobileNo);
+            purchaseOrder.setContactName(contactName);
+            em.merge(purchaseOrder);
+            result.setResult(true);
+            result.setDescription("PO edited successfully.");
+        } catch (NoResultException ex) {
+            System.out.println("PurchaseOrderManagementBean: updatePurchaseOrderSupplierContactDetails() could not find one or more ID(s).");
+            result.setDescription("Failed to edit a PO. The PO selected no longer exist in the system.");
+        } catch (Exception ex) {
+            System.out.println("PurchaseOrderManagementBean: updatePurchaseOrderSupplierContactDetails() failed");
+            ex.printStackTrace();
+            result.setDescription("Failed to edit a PO due to internal server error.");
+        }
+        return result;
+    }
+
+    @Override
+    public ReturnHelper updatePurchaseOrderSupplierContactDetails(Long purchaseOrderID, Long supplierID, Long contactID, Boolean adminOverwrite) {
+        System.out.println("PurchaseOrderManagementBean: updatePurchaseOrderSupplierContactDetails() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        try {
+            Query q = em.createQuery("SELECT s FROM PurchaseOrder s WHERE s.id=:id");
+            q.setParameter("id", purchaseOrderID);
+            PurchaseOrder purchaseOrder = (PurchaseOrder) q.getSingleResult();
+            if (purchaseOrder.getIsDeleted()) {
+                result.setDescription("Failed to edit the PO as it has been deleted.");
+                return result;
+            }
+            
+            q = em.createQuery("SELECT c FROM Contact c WHERE c.id=:id");
+            q.setParameter("id", contactID);
+            Contact contact = (Contact) q.getSingleResult();
+            q = em.createQuery("SELECT c FROM Supplier c WHERE c.id=:id");
+            q.setParameter("id", supplierID);
+            Supplier newSupplier = (Supplier) q.getSingleResult();
+            String newSupplierName = newSupplier.getSupplierName();
+            if (newSupplier.getIsDeleted()) {
+                result.setDescription("Failed to edit the PO. The selected supplier may have been deleted while the PO is being updated. Please try again.");
+                return result;
+            }
+            // Update customer link if it's different
+            if (newSupplier.getId() != purchaseOrder.getSupplierLink().getId()) {
+                //Remove away the old links
+                Supplier oldSupplier = purchaseOrder.getSupplierLink();
+                List<PurchaseOrder> oldSupplierPOs = oldSupplier.getPurchaseOrders();
+                oldSupplierPOs.remove(purchaseOrder);
+                em.merge(oldSupplier);
+                //Add links to other
+                List<PurchaseOrder> supplierPOs = newSupplier.getPurchaseOrders();
+                supplierPOs.add(purchaseOrder);
+                newSupplier.setPurchaseOrders(supplierPOs);
+                em.merge(newSupplier);
+                //Update fields
+                purchaseOrder.setSupplierName(newSupplierName);
+                purchaseOrder.setSupplierLink(newSupplier);
+            }
+            purchaseOrder.setContactAddress(contact.getAddress());
+            purchaseOrder.setContactEmail(contact.getEmail());
+            purchaseOrder.setContactOfficeNo(contact.getOfficeNo());
+            purchaseOrder.setContactFaxNo(contact.getFaxNo());
+            purchaseOrder.setContactMobileNo(contact.getMobileNo());
+            purchaseOrder.setContactName(contact.getName());
+            em.merge(purchaseOrder);
+            result.setResult(true);
+            result.setDescription("SCO edited successfully.");
+        } catch (NoResultException ex) {
+            System.out.println("PurchaseOrderManagementBean: updatePurchaseOrderSupplierContactDetails() could not find one or more ID(s).");
+            result.setDescription("Failed to edit a PO. The PO or supplier or contact selected no longer exist in the system.");
+        } catch (Exception ex) {
+            System.out.println("PurchaseOrderManagementBean: updatePurchaseOrderSupplierContactDetails() failed");
+            ex.printStackTrace();
+            result.setDescription("Failed to edit a PO due to internal server error.");
         }
         return result;
     }

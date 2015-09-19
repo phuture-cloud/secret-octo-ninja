@@ -10,7 +10,9 @@ import javax.ejb.Local;
 @Local
 public interface PurchaseOrderManagementBeanLocal {
     public ReturnHelper createPurchaseOrder(Long salesConfirmationOrderID, Date purchaseOrderDate);
-    public ReturnHelper updatePurchaseOrder(Long purchaseOrderID, String purchaseOrderNumber, Date purchaseOrderDate, String status, String supplierName, String supplierEmail, String supplierOfficeNo, String supplierMobileNo, String supplierFaxNo, String supplierAddress, String companyName, String terms, Date deliveryDate, String remarks, String currency);
+    public ReturnHelper updatePurchaseOrder(Long purchaseOrderID, String purchaseOrderNumber, Date purchaseOrderDate, String status, String terms, Date deliveryDate, String remarks, String currency);
+    public ReturnHelper updatePurchaseOrderSupplierContactDetails(Long salesConfirmationOrderID, String supplierName, String contactName, String email, String officeNo, String mobileNo, String faxNo, String address, Boolean adminOverwrite);
+    public ReturnHelper updatePurchaseOrderSupplierContactDetails(Long salesConfirmationOrderID, Long supplierID, Long contactID, Boolean adminOverwrite);
     public ReturnHelper updatePurchaseOrderStatus(Long purchaseOrderID, String status);
     public ReturnHelper updatePurchaseOrderNotes(Long purchaseOrderID, String notes);
     public ReturnHelper updatePurchaseOrderRemarks(Long purchaseOrderID, String remarks);
