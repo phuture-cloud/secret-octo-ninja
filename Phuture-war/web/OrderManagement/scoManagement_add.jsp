@@ -529,8 +529,8 @@
                                                 <tr class="h4 text-dark">
                                                     <th id="cell-item" class="text-weight-semibold">Item</th>
                                                     <th id="cell-desc" class="text-weight-semibold">Description</th>
-                                                    <th id="cell-price" class="text-center text-weight-semibold">Unit Price</th>
                                                     <th id="cell-qty" class="text-center text-weight-semibold">Quantity</th>
+                                                    <th id="cell-price" class="text-center text-weight-semibold">Unit Price</th>
                                                     <th id="cell-total" class="text-center text-weight-semibold">Amount</th>
                                                     <th id="cell-total" class="text-center text-weight-semibold"></th>
                                                 </tr>
@@ -556,6 +556,15 @@
                                                         %>
                                                     </td>
                                                     <td class="text-center">
+                                                        <%
+                                                            if (scoID == null && (customers == null || selectedContactID == null || selectedContactID.equals("")) || !editingLineItem.equals("")) {
+                                                                out.println("<input type='number' class='form-control' id='input_itemQty' min='0' name='itemQty' disabled/>");
+                                                            } else {
+                                                                out.println("<input type='number' class='form-control' id='input_itemQty' min='0' name='itemQty'/>");
+                                                            }
+                                                        %>
+                                                    </td>
+                                                    <td class="text-center">
                                                         <div class="input-group">
                                                             <span class="input-group-addon">
                                                                 <i class="fa fa-dollar"></i>
@@ -568,15 +577,6 @@
                                                                 }
                                                             %>
                                                         </div>
-                                                    </td>
-                                                    <td class="text-center">
-                                                        <%
-                                                            if (scoID == null && (customers == null || selectedContactID == null || selectedContactID.equals("")) || !editingLineItem.equals("")) {
-                                                                out.println("<input type='number' class='form-control' id='input_itemQty' min='0' name='itemQty' disabled/>");
-                                                            } else {
-                                                                out.println("<input type='number' class='form-control' id='input_itemQty' min='0' name='itemQty'/>");
-                                                            }
-                                                        %>
                                                     </td>
                                                     <td class="text-center">
                                                         <div class="input-group">
@@ -616,15 +616,15 @@
                                                         <textarea class='form-control' rows='5' name='itemDescription' id='itemDescription<%=sco.getItems().get(i).getId()%>'><%=sco.getItems().get(i).getItemDescription()%></textarea>
                                                     </td>
                                                     <td class="text-center">
+                                                        <input type='number' class='form-control' id='itemQty<%=sco.getItems().get(i).getId()%>' min='0' name='itemQty' value='<%=sco.getItems().get(i).getItemQty()%>'/>
+                                                    </td>
+                                                    <td class="text-center">
                                                         <div class="input-group">
                                                             <span class="input-group-addon">
                                                                 <i class="fa fa-dollar"></i>
                                                             </span>
                                                             <input type='number' class='form-control' id='itemUnitPrice<%=sco.getItems().get(i).getId()%>' name='itemUnitPrice' min='0' step='any' value='<%=price%>'/>
                                                         </div>
-                                                    </td>
-                                                    <td class="text-center">
-                                                        <input type='number' class='form-control' id='itemQty<%=sco.getItems().get(i).getId()%>' min='0' name='itemQty' value='<%=sco.getItems().get(i).getItemQty()%>'/>
                                                     </td>
                                                     <td class="text-center">
                                                         <div class="input-group">
@@ -646,9 +646,9 @@
                                                                 out.print("<tr>");
                                                                 out.print("<td class='text-weight-semibold text-dark'>" + sco.getItems().get(i).getItemName() + "</td>");
                                                                 out.print("<td>" + sco.getItems().get(i).getItemDescription().replaceAll("\\r", "<br>") + "</td>");
+                                                                out.print("<td class='text-center'>" + sco.getItems().get(i).getItemQty() + "</td>");
                                                                 price = sco.getItems().get(i).getItemUnitPrice();
                                                                 out.print("<td class='text-center'>" + formatter.format(price) + "</td>");
-                                                                out.print("<td class='text-center'>" + sco.getItems().get(i).getItemQty() + "</td>");
                                                                 price = sco.getItems().get(i).getItemUnitPrice() * sco.getItems().get(i).getItemQty();
                                                                 out.print("<td class='text-center'>" + formatter.format(price) + "</td>");
                                                                 out.print("<td class='text-center'><div class='btn-group'><button " + formDisablerFlag + " class='btn btn-default' type='button' onclick='javascript:editLineItem(" + sco.getId() + "," + sco.getItems().get(i).getId() + ")'>Edit</button>&nbsp;");
