@@ -37,9 +37,21 @@
                 margin-top: 0;
                 margin-bottom: 0;
             }
-            
+
             .container {
                 min-height: 920px;
+            }
+
+            @media print{
+                .table-bordered > thead > tr > th, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > th, .table-bordered > thead > tr > td, .table-bordered > tbody > tr > td, .table-bordered > tfoot > tr > td{
+                    -webkit-print-color-adjust: exact;
+                    border: 1px solid #5D5D5D !important;
+                }
+
+                .table th {  
+                    -webkit-print-color-adjust: exact;
+                    background-color: #BDBDBD !important; 
+                } 
             }
         </style>
     </head>
@@ -58,9 +70,9 @@
 
             <br>
 
-            <div  class="row">
+            <div class="row">
                 <div class="col-xs-6">
-                    <div  class="row">
+                    <div class="row">
                         <div class="col-xs-3">
                             <p><strong>To</strong></p>
                         </div>
@@ -115,9 +127,8 @@
 
             <br>
             <!-- / end client details section -->
-
             <table class="table table-bordered">
-                <thead style="background: #eeece1;">
+                <thead>
                 <th class='text-center'><h4>SALESPERSON</h4></th>
                 <th class='text-center'><h4>PO Number</h4></th>
                 <th class='text-center'><h4>EST. DELIVERY DATE</h4></th>
@@ -144,7 +155,7 @@
             </table>
 
             <table class="table table-bordered">
-                <thead style="background: #eeece1;">
+                <thead>
                 <th class='text-center'><h4>QTY</h4></th>
                 <th class='text-center'><h4>ITEM</h4></th>
                 <th class='text-center'><h4>DESCRIPTION</h4></th>
