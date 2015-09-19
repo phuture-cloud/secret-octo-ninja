@@ -116,7 +116,7 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
     }
 
     @Override
-    public ReturnHelper updateInvoice(Long invoiceID, Date invoiceDate, Date invoicePaid, String estimatedDeliveryDate, Integer terms, String customerPurchaseOrderNumber, Boolean adminOverwrite) {
+    public ReturnHelper updateInvoice(Long invoiceID, Date invoiceDate, Date invoicePaid, Date estimatedDeliveryDate, Integer terms, String customerPurchaseOrderNumber, Boolean adminOverwrite) {
         System.out.println("InvoiceManagementBean: updateInvoice() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);

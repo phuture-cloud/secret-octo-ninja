@@ -9,6 +9,7 @@ import EntityManager.SalesConfirmationOrder;
 import EntityManager.Staff;
 import PaymentManagement.PaymentManagementBeanLocal;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -147,7 +148,9 @@ public class InvoiceManagementController extends HttpServlet {
                         if (true) {
                             String invoiceSent = request.getParameter("invoiceSent");
                             String invoicePaid = request.getParameter("invoicePaid");
-                            String estimatedDeliveryDate = request.getParameter("estimatedDeliveryDate");
+                            String estimatedDeliveryDateString = request.getParameter("estimatedDeliveryDate");
+                            DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                            Date estimatedDeliveryDate = dateFormat.parse(estimatedDeliveryDateString);
 
                             String itemName = request.getParameter("itemName");
                             String itemDescription = request.getParameter("itemDescription");

@@ -43,7 +43,8 @@ public class PurchaseOrder implements Serializable {
     private String supplierAddress;
 
     private String terms;
-    private String deliveryDate;
+    @Temporal(TemporalType.DATE)
+    private Date deliveryDate;
 
     private String status;
     @OneToMany
@@ -71,7 +72,6 @@ public class PurchaseOrder implements Serializable {
         this.supplierFaxNo = "";
         this.supplierAddress = "";
         this.terms = "";
-        this.deliveryDate = "";
         this.remarks="";
         this.currency="";
     }
@@ -220,11 +220,11 @@ public class PurchaseOrder implements Serializable {
         this.terms = terms;
     }
 
-    public String getDeliveryDate() {
+    public Date getDeliveryDate() {
         return deliveryDate;
     }
 
-    public void setDeliveryDate(String deliveryDate) {
+    public void setDeliveryDate(Date deliveryDate) {
         this.deliveryDate = deliveryDate;
     }
 

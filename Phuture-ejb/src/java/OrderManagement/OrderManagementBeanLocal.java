@@ -11,8 +11,8 @@ import javax.ejb.Local;
 @Local
 public interface OrderManagementBeanLocal {
     //SCO
-    public ReturnHelper createSalesConfirmationOrder(Date salesConfirmationOrderDate, String estimatedDeliveryDate, String customerPurchaseOrderNumber, Long customerID, Long contactID, Long salesStaffID, Integer terms);
-    public ReturnHelper updateSalesConfirmationOrder(Long salesConfirmationOrderID, Date newSalesConfirmationOrderDate, String newEstimatedDeliveryDate, String customerPurchaseOrderNumber, Long newCustomerID, String status, Integer newTerms, Boolean adminOverwrite);
+    public ReturnHelper createSalesConfirmationOrder(Date salesConfirmationOrderDate, Date estimatedDeliveryDate, String customerPurchaseOrderNumber, Long customerID, Long contactID, Long salesStaffID, Integer terms);
+    public ReturnHelper updateSalesConfirmationOrder(Long salesConfirmationOrderID, Date newSalesConfirmationOrderDate, Date newEstimatedDeliveryDate, String customerPurchaseOrderNumber, Long newCustomerID, String status, Integer newTerms, Boolean adminOverwrite);
     public ReturnHelper updateSalesConfirmationOrderCustomerContactDetails(Long salesConfirmationOrderID, String customerName, String contactName, String email, String officeNo, String mobileNo, String faxNo, String address, Boolean adminOverwrite);
     public ReturnHelper updateSalesConfirmationOrderCustomerContactDetails(Long salesConfirmationOrderID, Long customerID, Long contactID, Boolean adminOverwrite);
     public ReturnHelper updateSalesConfirmationOrderRemarks(Long salesConfirmationOrderID, String remarks, Boolean adminOverwrite);

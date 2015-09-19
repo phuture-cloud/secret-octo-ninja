@@ -50,7 +50,7 @@ public class OrderManagementController extends HttpServlet {
         if (scoDate == null) {
             scoDate = "";
         }
-        String estimatedDeliveryDate = request.getParameter("estimatedDeliveryDate");
+
         String poNumber = request.getParameter("poNumber");
         String terms = request.getParameter("terms");
         if (terms == null) {
@@ -77,6 +77,10 @@ public class OrderManagementController extends HttpServlet {
                     isAdmin = true;
                 }
                 Long loggedInStaffID = staff.getId();
+
+                String estimatedDeliveryDateString = request.getParameter("estimatedDeliveryDate");
+                DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                Date estimatedDeliveryDate = dateFormat.parse(estimatedDeliveryDateString);
 
                 switch (target) {
                     case "ListAllSCO":
@@ -415,7 +419,7 @@ public class OrderManagementController extends HttpServlet {
                             DateFormat sourceFormat = new SimpleDateFormat("dd/MM/yyyy");
                             Date poDateDate = sourceFormat.parse(poDate);
 
-                            returnHelper = purchaseOrderManagementBean.createPurchaseOrder(Long.parseLong(id), poNumber, poDateDate);
+                            returnHelper = purchaseOrderManagementBean.createPurchaseOrder(Long.parseLong(id), poDateDate);
                             if (returnHelper.getResult()) {
                                 SalesConfirmationOrder sco = orderManagementBean.getSalesConfirmationOrder(Long.parseLong(id));
                                 session.setAttribute("sco", sco);

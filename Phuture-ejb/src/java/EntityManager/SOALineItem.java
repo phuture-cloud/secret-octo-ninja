@@ -29,7 +29,7 @@ public class SOALineItem implements Serializable {
     @ManyToOne
     private StatementOfAccount statementOfAccount;
     @Lob
-    private String description;
+    private String type;
     @Temporal(TemporalType.DATE)
     private Date dueDate;
     private Double debit;
@@ -63,12 +63,12 @@ public class SOALineItem implements Serializable {
         this.entryDate = entryDate;
     }
 
-    public String getDescription() {
-        return description;
+    public String getType() {
+        return type;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setType(String type) {
+        this.type = type;
     }
 
     public StatementOfAccount getStatementOfAccount() {

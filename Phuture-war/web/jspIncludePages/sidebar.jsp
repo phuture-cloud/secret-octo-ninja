@@ -1,3 +1,10 @@
+<%@page import="java.util.List"%>
+<%@page import="EntityManager.Staff"%>
+<%@page import="EntityManager.Staff"%>
+<%
+    Staff staff = (Staff) (session.getAttribute("staff"));
+%>
+
 <aside id="sidebar-left" class="sidebar-left">
 
     <div class="sidebar-header">
@@ -19,12 +26,18 @@
                             <span>Dashboard</span>
                         </a>
                     </li>
+                    <%
+                        if (staff != null && staff.getIsAdmin()) {
+                    %>
                     <li>
                         <a href="../AccountManagementController?target=ListAllStaff">
                             <i class="fa fa-users" aria-hidden="true"></i>
                             <span>Staffs</span>
                         </a>
                     </li>
+                    <%
+                        }
+                    %>
                     <li>
                         <a href="../CustomerManagementController?target=ListAllCustomer">
                             <i class="fa fa-user" aria-hidden="true"></i>

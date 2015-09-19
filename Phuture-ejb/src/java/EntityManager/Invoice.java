@@ -57,7 +57,8 @@ public class Invoice implements Serializable {
     private Date dateSent;
     @Temporal(TemporalType.DATE)
     private Date datePaid;
-    private String estimatedDeliveryDate;
+    @Temporal(TemporalType.DATE)
+    private Date estimatedDeliveryDate;
 
     private String customerPurchaseOrderNumber;
     private String customerName;
@@ -82,8 +83,8 @@ public class Invoice implements Serializable {
         this.totalPriceBeforeCreditNote = 0.0;
         this.totalTax = 0.0;
         setStatusAsSent();
-        this.numOfPaymentRecords=0;
-        this.totalAmountPaid=0.0;
+        this.numOfPaymentRecords = 0;
+        this.totalAmountPaid = 0.0;
         this.creditNotes = new ArrayList();
         this.totalCreditNoteAmount = 0.0;
     }
@@ -100,8 +101,8 @@ public class Invoice implements Serializable {
         this.totalPriceBeforeCreditNote = 0.0;
         this.totalTax = 0.0;
         setStatusAsSent();
-        this.numOfPaymentRecords=0;
-        this.totalAmountPaid=0.0;
+        this.numOfPaymentRecords = 0;
+        this.totalAmountPaid = 0.0;
         this.creditNotes = new ArrayList();
         this.totalCreditNoteAmount = 0.0;
     }
@@ -121,7 +122,7 @@ public class Invoice implements Serializable {
     public void setNumOfPaymentRecords(Integer numOfPaymentRecords) {
         this.numOfPaymentRecords = numOfPaymentRecords;
     }
- 
+
     public Date getDateDue() {
         return dateDue;
     }
@@ -201,7 +202,7 @@ public class Invoice implements Serializable {
     public void setStatusAsPaid() {
         this.status = "Paid";
     }
-    
+
     public void setStatusAsVoided() {
         this.status = "Voided";
     }
@@ -334,11 +335,11 @@ public class Invoice implements Serializable {
         this.customerName = customerName;
     }
 
-    public String getEstimatedDeliveryDate() {
+    public Date getEstimatedDeliveryDate() {
         return estimatedDeliveryDate;
     }
 
-    public void setEstimatedDeliveryDate(String estimatedDeliveryDate) {
+    public void setEstimatedDeliveryDate(Date estimatedDeliveryDate) {
         this.estimatedDeliveryDate = estimatedDeliveryDate;
     }
 

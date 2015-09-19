@@ -66,7 +66,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
     
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Override
-    public ReturnHelper createSalesConfirmationOrder(Date salesConfirmationOrderDate, String estimatedDeliveryDate, String customerPurchaseOrderNumber, Long customerID, Long contactID, Long salesStaffID, Integer terms) {
+    public ReturnHelper createSalesConfirmationOrder(Date salesConfirmationOrderDate, Date estimatedDeliveryDate, String customerPurchaseOrderNumber, Long customerID, Long contactID, Long salesStaffID, Integer terms) {
         System.out.println("OrderManagementBean: createSalesConfirmationOrder() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -128,7 +128,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
     }
 
     @Override
-    public ReturnHelper updateSalesConfirmationOrder(Long salesConfirmationOrderID, Date newSalesConfirmationOrderDate, String newEstimatedDeliveryDate, String customerPurchaseOrderNumber, Long newCustomerID, String status, Integer newTerms, Boolean adminOverwrite) {
+    public ReturnHelper updateSalesConfirmationOrder(Long salesConfirmationOrderID, Date newSalesConfirmationOrderDate, Date newEstimatedDeliveryDate, String customerPurchaseOrderNumber, Long newCustomerID, String status, Integer newTerms, Boolean adminOverwrite) {
         System.out.println("OrderManagementBean: updateSalesConfirmationOrder() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);

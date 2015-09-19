@@ -4,6 +4,7 @@ import EntityManager.PurchaseOrder;
 import EntityManager.ReturnHelper;
 import EntityManager.Staff;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -119,7 +120,11 @@ public class PurchaseOrderManagementController extends HttpServlet {
                             String supplierAddress = request.getParameter("supplierAddress");
 
                             String remarks = request.getParameter("remarks");
-                            String deliveryDate = request.getParameter("deliveryDate");
+
+                            String deliveryDateString = request.getParameter("deliveryDate");
+                            DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                            Date deliveryDate = dateFormat.parse(deliveryDateString);
+                            
                             String terms = request.getParameter("terms");
                             String currency = request.getParameter("currency");
 

@@ -3,6 +3,7 @@ package OrderManagement;
 import EntityManager.DeliveryOrder;
 import EntityManager.Invoice;
 import EntityManager.LineItem;
+import EntityManager.OrderNumbers;
 import EntityManager.PurchaseOrder;
 import EntityManager.ReturnHelper;
 import EntityManager.SalesConfirmationOrder;
@@ -10,8 +11,13 @@ import EntityManager.Staff;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.annotation.Resource;
+import javax.ejb.EJBContext;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -22,13 +28,29 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
     public PurchaseOrderManagementBean() {
     }
 
+    @Resource
+    private EJBContext context;
     @PersistenceContext
     private EntityManager em;
 
     private static final Double gstRate = 7.0;//7%
 
+    @TransactionAttribute(TransactionAttributeType.MANDATORY)
+    private String getNewPurchaseOrderNumber() {
+        System.out.println("PurchaseOrderManagementBean: TransactionAttributeType() called");
+        Query q = em.createQuery("SELECT e FROM OrderNumbers e");
+        q.setLockMode(LockModeType.PESSIMISTIC_FORCE_INCREMENT);
+        OrderNumbers orderNumbers = (OrderNumbers) q.getResultList().get(0);
+        Long nextOrderNumber = orderNumbers.getNextPO();
+        orderNumbers.setNextPO(nextOrderNumber + 1);
+        orderNumbers.setLastGeneratedPO(new Date());
+        em.merge(orderNumbers);
+        return nextOrderNumber.toString();
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Override
-    public ReturnHelper createPurchaseOrder(Long salesConfirmationOrderID, String purchaseOrderNumber, Date purchaseOrderDate) {
+    public ReturnHelper createPurchaseOrder(Long salesConfirmationOrderID, Date purchaseOrderDate) {
         System.out.println("PurchaseOrderManagementBean: createPurchaseOrder() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -40,11 +62,13 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
                 result.setDescription("Failed to create a new PO. The selected SCO may have been deleted while the PO is being created. Please try again.");
                 return result;
             }
-            ReturnHelper uniqueResult = checkIfPOnumberIsUnique(purchaseOrderNumber);
-            if (!uniqueResult.getResult()) {
-                uniqueResult.setDescription("Failed to save the PO as the PO number is already in use.");
-                return uniqueResult;
-            }
+//            ReturnHelper uniqueResult = checkIfPOnumberIsUnique(purchaseOrderNumber);
+//            if (!uniqueResult.getResult()) {
+//                uniqueResult.setDescription("Failed to save the PO as the PO number is already in use.");
+//                return uniqueResult;
+//            }
+            String purchaseOrderNumber = getNewPurchaseOrderNumber();
+
             //Create new PO
             PurchaseOrder po = new PurchaseOrder();
             po.setSalesConfirmationOrder(sco);
@@ -64,9 +88,11 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
             result.setDescription("PO created successfully.");
             return result;
         } catch (NoResultException ex) {
+            context.setRollbackOnly();
             System.out.println("PurchaseOrderManagementBean: createPurchaseOrder() could not find one or more ID(s).");
             result.setDescription("Failed to create the PO. The SCO selected no longer exist in the system.");
         } catch (Exception ex) {
+            context.setRollbackOnly();
             System.out.println("PurchaseOrderManagementBean: createPurchaseOrder() failed");
             ex.printStackTrace();
             result.setDescription("Failed to create a new PO due to internal server error.");
@@ -75,7 +101,7 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
     }
 
     @Override
-    public ReturnHelper updatePurchaseOrder(Long purchaseOrderID, String purchaseOrderNumber, Date purchaseOrderDate, String status, String supplierName, String supplierEmail, String supplierOfficeNo, String supplierMobileNo, String supplierFaxNo, String supplierAddress, String companyName, String terms, String deliveryDate, String remarks, String currency) {
+    public ReturnHelper updatePurchaseOrder(Long purchaseOrderID, String purchaseOrderNumber, Date purchaseOrderDate, String status, String supplierName, String supplierEmail, String supplierOfficeNo, String supplierMobileNo, String supplierFaxNo, String supplierAddress, String companyName, String terms, Date deliveryDate, String remarks, String currency) {
         System.out.println("PurchaseOrderManagementBean: updatePurchaseOrder() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -191,6 +217,7 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
         }
         return result;
     }
+
     @Override
     public ReturnHelper updatePurchaseOrderRemarks(Long purchaseOrderID, String remarks) {
         System.out.println("PurchaseOrderManagementBean: updatePurchaseOrderRemarks() called");
