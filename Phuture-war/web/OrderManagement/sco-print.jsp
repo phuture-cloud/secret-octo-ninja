@@ -26,14 +26,14 @@
         <style>
             body {
                 font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-                font-size: 12px;
+                font-size: 10px;
                 line-height: 1.42857143;
                 color: #333333;
                 background-color: #ffffff;
             }
 
             h4, .h4, h5, .h5, h6, .h6 {
-                font-size: 12px;
+                font-size: 10px;
                 margin-top: 0;
                 margin-bottom: 0;
             }
@@ -45,16 +45,9 @@
             <div class="row">
                 <div class="col-xs-6">
                     <img src="../assets/images/invoice-logo.png" alt="Phuture International" />
-                    <p style="margin-top: 5px;">
-                        <strong>Phuture International Pte Ltd</strong><br>
-                        28 Sin Ming Lane #06-145<br/>
-                        Midview City, Singapore 573972<br/>
-                        Tel: (65) 6842 0198<br/>
-                        Fax: (65) 6285 6753
-                    </p>
                 </div>
                 <div class="col-xs-6 text-right">
-                    <h1>SALES ORDER</h1>
+                    <h3>SALES ORDER</h3>
                     <p>Co / GST Reg: 200919866N</p>
                 </div>
             </div>
@@ -221,27 +214,36 @@
             <div class="row text-left">
                 <div class="col-xs-8">
                     <strong>AGREED & CONFIRMED</strong>
-
-                    <br><br><br><br><br>
-                    <img src="../assets/images/thin-black-line.png">
                     <br>
-                    Customer's Signature & Co. Stamp
+                    <img src="../assets/images/thin-black-line.png" style='padding-top: 80px; padding-bottom: 5px;'>
+                    <br>Customer's Signature & Co. Stamp
                 </div>
                 <div class="col-xs-4">
                     <strong>Phuture International Pte Ltd</strong>
-
                     <%
                         if (staff.getSignature() != null && staff.getSignature().length > 0) {
-                            out.write("<img class='img-responsive' src='http://localhost:8080/Phuture-war/sig?id=" + staff.getId() + "'>");
-                        } else {
+                            out.write("<img class='img-responsive' style='height: 80px;' src='http://localhost:8080/Phuture-war/sig?id=" + staff.getId() + "'>");
+                        }
                     %>
-                    <br><br><br><br><br>
-                    <img src="../assets/images/thin-black-line.png">
-                    <%}%>
+                    <img src="../assets/images/thin-black-line.png" style='padding-bottom: 5px;'>
                     <br><%=staff.getName()%>
                 </div>
             </div>
         </div>
+
+
+
+        <div class="row">
+            <p style="text-align: center; color: #000;">
+                <strong>Phuture International Pte Ltd</strong><br>
+                28 Sin Ming Lane #06-145<br/>
+                Midview City, Singapore 573972<br/>
+                Tel: (65) 6842 0198<br/>
+                Fax: (65) 6285 6753
+            </p>
+        </div>
+
+
     </body>
 </html>
 <%}%>

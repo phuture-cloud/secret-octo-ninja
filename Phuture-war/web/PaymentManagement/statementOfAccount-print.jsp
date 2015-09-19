@@ -24,7 +24,6 @@
 %>
 <!doctype html>
 <html lang="en">
-
     <head>
         <meta charset="UTF-8">
         <title>Statement of Account</title>
@@ -32,14 +31,14 @@
         <style>
             body {
                 font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-                font-size: 12px;
+                font-size: 10px;
                 line-height: 1.42857143;
                 color: #333333;
                 background-color: #ffffff;
             }
 
             h4, .h4, h5, .h5, h6, .h6 {
-                font-size: 12px;
+                font-size: 10px;
                 margin-top: 0;
                 margin-bottom: 0;
             }
@@ -51,10 +50,18 @@
             <div class="row">
                 <div class="col-xs-6">
                     <h3>Aged Accounts Receivable</h3>
-                    <p><%=statementOfAccount.getCustomer().getCustomerName()%></p>
+                    <p>
+                        <%=statementOfAccount.getCustomer().getCustomerName()%>
+                        <br>
+                        <%
+                            if (statementOfAccount.getCustomer().getPrimaryContact() != null) {
+                                out.print(statementOfAccount.getCustomer().getPrimaryContact().getAddress().replaceAll("\\r", "<br>"));
+                            }
+                        %>
+                    </p>
                 </div>
                 <div class="col-xs-6 text-right">
-                    <p></p>
+
                 </div>
             </div>
 

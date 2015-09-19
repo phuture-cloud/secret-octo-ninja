@@ -27,14 +27,14 @@
         <style>
             body {
                 font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-                font-size: 12px;
+                font-size: 10px;
                 line-height: 1.42857143;
                 color: #333333;
                 background-color: #ffffff;
             }
 
             h4, .h4, h5, .h5, h6, .h6 {
-                font-size: 12px;
+                font-size: 10px;
                 margin-top: 0;
                 margin-bottom: 0;
             }
