@@ -22,6 +22,7 @@
         } else {//Disable unneccessary fields when editing line item
             formDisablerFlag = "disabled";
         }
+        NumberFormat formatter = NumberFormat.getCurrencyInstance();
 %>
 <!doctype html>
 <html class="fixed">
@@ -365,7 +366,11 @@
                                                     <td class="text-center">
                                                         <div class="input-group">
                                                             <span class="input-group-addon">
-                                                                <i class="fa fa-dollar"></i>
+                                                                <%
+                                                                    if (purchaseOrder.getCurrency() != null) {
+                                                                        out.print(purchaseOrder.getCurrency());
+                                                                    }
+                                                                %>
                                                             </span>
                                                             <%
                                                                 if (!editingLineItem.equals("")) {
@@ -388,7 +393,11 @@
                                                     <td class="text-center">
                                                         <div class="input-group">
                                                             <span class="input-group-addon">
-                                                                <i class="fa fa-dollar"></i>
+                                                                <%
+                                                                    if (purchaseOrder.getCurrency() != null) {
+                                                                        out.print(purchaseOrder.getCurrency());
+                                                                    }
+                                                                %>
                                                             </span>
                                                             <input type="text" class="form-control" id="input_itemAmount" name="itemAmount" disabled/>
                                                         </div>
@@ -401,7 +410,6 @@
                                                 <!-- loop line item page -->
                                                 <%
                                                     if (purchaseOrder != null && purchaseOrder.getItems() != null) {
-                                                        NumberFormat formatter = NumberFormat.getCurrencyInstance();
                                                         for (int i = 0; i < purchaseOrder.getItems().size(); i++) {
                                                             if (!editingLineItem.isEmpty() && editingLineItem.equals(purchaseOrder.getItems().get(i).getId() + "")) {
                                                                 //Print editable fields
@@ -417,7 +425,11 @@
                                                     <td class="text-center">
                                                         <div class="input-group">
                                                             <span class="input-group-addon">
-                                                                <i class="fa fa-dollar"></i>
+                                                                <%
+                                                                    if (purchaseOrder.getCurrency() != null) {
+                                                                        out.print(purchaseOrder.getCurrency());
+                                                                    }
+                                                                %>
                                                             </span>
                                                             <input type='number' class='form-control' id='itemUnitPrice<%=purchaseOrder.getItems().get(i).getId()%>' name='itemUnitPrice' min='0' step='any' value='<%=price%>'/>
                                                         </div>
@@ -428,7 +440,11 @@
                                                     <td class="text-center">
                                                         <div class="input-group">
                                                             <span class="input-group-addon">
-                                                                <i class="fa fa-dollar"></i>
+                                                                <%
+                                                                    if (purchaseOrder.getCurrency() != null) {
+                                                                        out.print(purchaseOrder.getCurrency());
+                                                                    }
+                                                                %>
                                                             </span>
                                                             <input type="text" class="form-control" id="input_itemAmount" name="itemAmount" disabled="" value=""/>
                                                         </div>
@@ -479,16 +495,20 @@
                                                 <table class="table h5 text-dark">
                                                     <tbody>
                                                         <tr class="h4">
-                                                            <td colspan="2">Total (SGD)</td>
+                                                            <td colspan="2">
+                                                                Total 
+                                                                <%
+                                                                    if (purchaseOrder.getCurrency() != null) {
+                                                                        out.print("(" + purchaseOrder.getCurrency() + ")");
+                                                                    }
+                                                                %>
+                                                            </td>
                                                             <td class="text-left">
                                                                 <%
                                                                     if (purchaseOrder == null) {
                                                                         out.print("<span id='output_totalPrice'>$0.00</span>");
                                                                     } else {
-                                                                        double formatedPrice = 0;
-                                                                        NumberFormat formatter = NumberFormat.getCurrencyInstance();
-                                                                        formatedPrice = purchaseOrder.getTotalPrice();
-                                                                        out.print("<span id='output_totalPrice'>" + formatter.format(formatedPrice) + "</span>");
+                                                                        out.print("<span id='output_totalPrice'>" + formatter.format(purchaseOrder.getTotalPrice()) + "</span>");
                                                                         out.print("<input type='hidden' value='" + purchaseOrder.getTotalPrice() + "' id='totalPrice'>");
                                                                     }
                                                                 %>

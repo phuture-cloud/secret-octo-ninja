@@ -45,16 +45,9 @@
             <div class="row">
                 <div class="col-xs-6">
                     <img src="../assets/images/invoice-logo.png" alt="Phuture International" />
-                    <p style="margin-top: 5px;">
-                        <strong>Phuture International Pte Ltd</strong><br>
-                        28 Sin Ming Lane #06-145<br/>
-                        Midview City, Singapore 573972<br/>
-                        Tel: (65) 6842 0198<br/>
-                        Fax: (65) 6285 6753
-                    </p>
                 </div>
                 <div class="col-xs-6 text-right">
-                    <h1>TAX INVOICE</h1>
+                    <h3>TAX INVOICE</h3>
                     <p>Co / GST Reg: 200919866N</p>
                 </div>
             </div>

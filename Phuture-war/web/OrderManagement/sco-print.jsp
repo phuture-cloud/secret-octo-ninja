@@ -115,12 +115,14 @@
             <table class="table table-bordered">
                 <thead style="background: #eeece1;">
                 <th class='text-center'><h4>SALESPERSON</h4></th>
+                <th class='text-center'><h4>PO Number</h4></th>
                 <th class='text-center'><h4>EST. DELIVERY DATE</h4></th>
                 <th class='text-center'><h4>TERMS</h4> </th>
                 </thead>
                 <tbody>
                     <tr class="text-center">
                         <td><%=staff.getName()%></td>
+                        <td><%=sco.getCustomerPurchaseOrderNumber()%></td>
                         <td><%=sco.getEstimatedDeliveryDate()%></td>
                         <td>
                             <%
@@ -167,7 +169,7 @@
             </table>
 
             <div class="row text-right">
-                <div class="col-xs-7 text-left">
+                <div class="col-xs-7 text-left" style="font-size: 9px;">
                     <u>Terms & Conditions</u>
                     <ul style="padding-left: 20px;">
                         <li>Acceptance of this Sales Order constitutes a contract between the buyer & Phuture International Pte Ltd whereby buyer will adhere to conditions stated on this Sales Order</li>
