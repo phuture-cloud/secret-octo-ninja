@@ -178,9 +178,7 @@
                                     <header class="clearfix">
                                         <div class="row">
                                             <div class="col-sm-6 mt-md">
-                                                <h2 class="h2 mt-none mb-sm text-dark text-weight-bold">Purchase Order</h2>
-                                                <input type='text' <%=formDisablerFlag%> class='form-control' id='poNumber' name='poNumber' value='<%=purchaseOrder.getPurchaseOrderNumber()%>' style='max-width: 300px' required/>
-                                                <br/>
+                                                <h2 class="h2 mt-none mb-sm text-dark text-weight-bold">Purchase Order <%=purchaseOrder.getPurchaseOrderNumber()%></h2><br/>
                                             </div>
                                         </div>
                                     </header>
