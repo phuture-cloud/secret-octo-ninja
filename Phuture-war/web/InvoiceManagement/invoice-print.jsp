@@ -176,7 +176,7 @@
             </table>
 
             <div class="row text-right">
-                <div class="col-xs-7 text-left">
+                <div class="col-xs-7 text-left" style="font-size: 9px;">
                     <u>Terms & Conditions</u>
                     <ul style="padding-left: 20px;">
                         <li>Acceptance of this merchandise constitutes a contract between the buyer & Phuture International Pte Ltd whereby buyer will adhere to conditions stated on this invoice</li>

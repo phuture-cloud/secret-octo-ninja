@@ -147,7 +147,7 @@
             </table>
 
             <div class="row text-right">
-                <div class="col-xs-7 text-left">
+                <div class="col-xs-7 text-left" style="font-size: 9px;">
                     <u>Terms & Conditions</u>
                     <ul style="padding-left: 20px;">
                         <li>All Goods Delivered Are Non Returnable / Refundable</li>

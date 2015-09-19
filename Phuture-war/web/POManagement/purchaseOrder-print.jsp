@@ -197,7 +197,7 @@
             </table>
 
             <div class="row text-right">
-                <div class="col-xs-7 text-left">
+                <div class="col-xs-7 text-left" style="font-size: 9px;">
                     <u>Terms & Conditions</u>
                     <ul style="padding-left: 20px;">
                         <li>Phuture International Pte Ltd reserves all right to cancel this Purchase Order due to supplier unable to fulfill or meet the buyer's requirements.</li>
