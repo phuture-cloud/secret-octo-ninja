@@ -342,7 +342,7 @@
                                                                 if (estimatedDeliveryDate != null && !estimatedDeliveryDate.isEmpty()) {
                                                                     String date = DATE_FORMAT.format(estimatedDeliveryDate);
                                                                     out.print("<input " + formDisablerFlag + " id='estimatedDeliveryDate' name='estimatedDeliveryDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "'>");
-                                                                } else if (invoice.getEstimatedDeliveryDate() != null && !invoice.getEstimatedDeliveryDate().isEmpty()) {
+                                                                } else if (invoice.getEstimatedDeliveryDate() != null && invoice.getEstimatedDeliveryDate()!=null) {
                                                                     String date = DATE_FORMAT.format(invoice.getEstimatedDeliveryDate());
                                                                     out.print("<input " + formDisablerFlag + " id='estimatedDeliveryDate' name='estimatedDeliveryDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "'>");
                                                                 } else {

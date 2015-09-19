@@ -161,8 +161,8 @@
                                     <table class="table invoice-items">
                                         <thead>
                                             <tr class="h4 text-dark">
-                                                <th class="text-weight-semibold">Type</th>
                                                 <th class="text-weight-semibold">Entry Date</th>
+                                                <th class="text-weight-semibold">Type</th>
                                                 <th class="text-weight-semibold">Ref. No</th>
                                                 <th class="text-weight-semibold">Method</th>
                                                 <th id="cell-price" class="text-weight-semibold">Debit</th>
@@ -193,7 +193,7 @@
                                                 <td><%=soali.get(i).getMethod()%></td>
                                                 <td><%=formatter.format(soali.get(i).getDebit())%></td>
                                                 <td><%=formatter.format(soali.get(i).getCredit())%></td>
-                                                <%if (i==soali.size()){%>
+                                                <%if (i==soali.size()-1){%>
                                                 <td><b><%=formatter.format(soali.get(i).getBalance())%></b></td>
                                                 <%} else {%>
                                                 <td><%=formatter.format(soali.get(i).getBalance())%></td>
