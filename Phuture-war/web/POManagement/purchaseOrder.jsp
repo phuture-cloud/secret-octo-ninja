@@ -178,9 +178,7 @@
                                     <header class="clearfix">
                                         <div class="row">
                                             <div class="col-sm-6 mt-md">
-                                                <h2 class="h2 mt-none mb-sm text-dark text-weight-bold">Purchase Order</h2>
-                                                <input type='text' <%=formDisablerFlag%> class='form-control' id='poNumber' name='poNumber' value='<%=purchaseOrder.getPurchaseOrderNumber()%>' style='max-width: 300px' required/>
-                                                <br/>
+                                                <h2 class="h2 mt-none mb-sm text-dark text-weight-bold">Purchase Order <%=purchaseOrder.getPurchaseOrderNumber()%></h2><br/>
                                             </div>
                                         </div>
                                     </header>
@@ -309,7 +307,7 @@
                                                         <span class="text-dark">Delivery Date: </span>
                                                         <span class="value" style="min-width: 200px; font-size: 10.5pt; text-align: left;">
                                                             <%
-                                                                if (purchaseOrder.getTerms() != null && !purchaseOrder.getTerms().isEmpty()) {
+                                                                if (purchaseOrder.getDeliveryDate() != null) {
                                                                     String date = DATE_FORMAT.format(purchaseOrder.getDeliveryDate());
                                                                     out.print("<input " + formDisablerFlag + " id='deliveryDate' name='deliveryDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "' required>");
                                                                 } else {
@@ -550,8 +548,6 @@
                                                 if (purchaseOrder != null) {
                                                     out.print("<button type='button' class='modal-with-move-anim btn btn-danger' href='#modalRemove'>Delete</button>");
                                                     out.print("<button " + formDisablerFlag + " class='btn btn-success' onclick='javascript:updatePO();'>Save</button>");
-                                                } else {
-                                                    out.print("<button " + formDisablerFlag + " class='btn btn-success' type='submit'>Save</button>");
                                                 }
                                             %>
                                         </div>
@@ -566,7 +562,7 @@
                             }
                         %>
                         <input type="hidden" name="lineItemID" value="">   
-                        <input type="hidden" name="target" value="SavePO">    
+                        <input type="hidden" name="target" value="">    
                         <input type="hidden" name="source" value="">    
                         <input type="hidden" name="id" value="">    
                     </form>

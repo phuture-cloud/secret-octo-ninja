@@ -457,7 +457,7 @@
                                                             <%
                                                                 if (estimatedDeliveryDate != null && !estimatedDeliveryDate.isEmpty()) {
                                                                     out.print("<input " + formDisablerFlag + " id='estimatedDeliveryDate' name='estimatedDeliveryDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + estimatedDeliveryDate + "' required>");
-                                                                } else if (sco != null && scoID != null && !scoID.isEmpty() && sco.getEstimatedDeliveryDate()!=null) {
+                                                                } else if (sco != null && sco.getEstimatedDeliveryDate() != null) {
                                                                     SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
                                                                     String date = DATE_FORMAT.format(sco.getEstimatedDeliveryDate());
                                                                     out.print("<input " + formDisablerFlag + " id='estimatedDeliveryDate' name='estimatedDeliveryDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "' required>");
@@ -845,12 +845,6 @@
                                     <h2 class="panel-title">Generate Purchase Order</h2>
                                 </header>
                                 <div class="panel-body">
-                                    <div class="form-group">
-                                        <label class="col-sm-3 control-label">PO No <span class="required">*</span></label>
-                                        <div class="col-sm-9">
-                                            <input type="text" name="poNumber" class="form-control" required/>
-                                        </div>
-                                    </div>
                                     <div class="form-group">
                                         <label class="col-md-3 control-label">Date <span class="required">*</span></label>
                                         <div class="col-md-9">

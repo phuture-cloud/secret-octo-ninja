@@ -50,6 +50,10 @@ public class OrderManagementController extends HttpServlet {
         if (scoDate == null) {
             scoDate = "";
         }
+        String estimatedDeliveryDate = request.getParameter("estimatedDeliveryDate");
+        if (estimatedDeliveryDate == null) {
+            estimatedDeliveryDate = "";
+        }
 
         String poNumber = request.getParameter("poNumber");
         String terms = request.getParameter("terms");
@@ -77,13 +81,6 @@ public class OrderManagementController extends HttpServlet {
                     isAdmin = true;
                 }
                 Long loggedInStaffID = staff.getId();
-
-                String estimatedDeliveryDateString = request.getParameter("estimatedDeliveryDate");
-                Date estimatedDeliveryDate = null;
-                if (estimatedDeliveryDateString != null && !estimatedDeliveryDateString.isEmpty()) {
-                    DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-                    estimatedDeliveryDate = dateFormat.parse(estimatedDeliveryDateString);
-                }
 
                 switch (target) {
                     case "ListAllSCO":
@@ -157,9 +154,10 @@ public class OrderManagementController extends HttpServlet {
 
                                 DateFormat sourceFormat = new SimpleDateFormat("dd/MM/yyyy");
                                 Date scoDateDate = sourceFormat.parse(scoDate);
+                                Date estimatedDeliveryDateDate = sourceFormat.parse(estimatedDeliveryDate);
 
                                 //Create SCO
-                                returnHelper = orderManagementBean.createSalesConfirmationOrder(scoDateDate, estimatedDeliveryDate, poNumber, Long.parseLong(customerID), Long.parseLong(contactID), loggedInStaffID, Integer.parseInt(terms));
+                                returnHelper = orderManagementBean.createSalesConfirmationOrder(scoDateDate, estimatedDeliveryDateDate, poNumber, Long.parseLong(customerID), Long.parseLong(contactID), loggedInStaffID, Integer.parseInt(terms));
                                 if (returnHelper.getResult()) {
                                     Long scoID = returnHelper.getID();
                                     SalesConfirmationOrder sco = orderManagementBean.getSalesConfirmationOrder(scoID);
@@ -203,11 +201,12 @@ public class OrderManagementController extends HttpServlet {
                             } else {
                                 SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
                                 Date scoDateDate = formatter.parse(scoDate);
+                                Date estimatedDeliveryDateDate = formatter.parse(estimatedDeliveryDate);
 
                                 //Update SCO
                                 String status = request.getParameter("status");
 
-                                returnHelper = orderManagementBean.updateSalesConfirmationOrder(Long.parseLong(id), scoDateDate, estimatedDeliveryDate, poNumber, Long.parseLong(customerID), status, Integer.parseInt(terms), isAdmin);
+                                returnHelper = orderManagementBean.updateSalesConfirmationOrder(Long.parseLong(id), scoDateDate, estimatedDeliveryDateDate, poNumber, Long.parseLong(customerID), status, Integer.parseInt(terms), isAdmin);
                                 if (returnHelper.getResult()) {
 
                                     SalesConfirmationOrder sco = orderManagementBean.getSalesConfirmationOrder(returnHelper.getID());
@@ -379,6 +378,7 @@ public class OrderManagementController extends HttpServlet {
                             }
                         }
                         break;
+                        
                     case "VoidSCO":
                         if (true) {
                             returnHelper = orderManagementBean.voidSalesConfirmationOrder(Long.parseLong(id), isAdmin);
@@ -397,6 +397,7 @@ public class OrderManagementController extends HttpServlet {
                             }
                         }
                         break;
+                        
                     case "GenerateDO":
                         if (true) {
                             String doDate = request.getParameter("doDate");
