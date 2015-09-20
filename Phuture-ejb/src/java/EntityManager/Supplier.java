@@ -23,9 +23,9 @@ public class Supplier implements Serializable {
     private Timestamp version;
     private String supplierName;
     @OneToOne
-    private Contact primaryContact;
+    private SupplierContact primaryContact;
     @OneToMany
-    private List<Contact> companyContacts;
+    private List<SupplierContact> companyContacts;
     @OneToMany
     private List<PurchaseOrder> purchaseOrders;
     private Double totalAvailableCredits;
@@ -62,19 +62,19 @@ public class Supplier implements Serializable {
         this.supplierName = supplierName;
     }
 
-    public Contact getPrimaryContact() {
+    public SupplierContact getPrimaryContact() {
         return primaryContact;
     }
 
-    public void setPrimaryContact(Contact primaryContact) {
+    public void setPrimaryContact(SupplierContact primaryContact) {
         this.primaryContact = primaryContact;
     }
 
-    public List<Contact> getCompanyContacts() {
+    public List<SupplierContact> getCompanyContacts() {
         return companyContacts;
     }
 
-    public void setCompanyContacts(List<Contact> companyContacts) {
+    public void setCompanyContacts(List<SupplierContact> companyContacts) {
         this.companyContacts = companyContacts;
     }
 

@@ -11,7 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Version;
 
 @Entity
-public class Contact implements Serializable {
+public class SupplierContact implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -20,7 +20,7 @@ public class Contact implements Serializable {
     @Version
     private Timestamp version;
     @ManyToOne
-    private Customer customer;
+    private Supplier supplier;
     @Lob
     private String name;
     private String email;
@@ -34,11 +34,11 @@ public class Contact implements Serializable {
     private boolean isPrimaryContact;
     private boolean isDeleted;
 
-    public Contact() {
+    public SupplierContact() {
     }
 
-    public Contact(Customer customer, String name) {
-        this.customer = customer;
+    public SupplierContact(Supplier supplier, String name) {
+        this.supplier = supplier;
         this.name = name;
     }
 
@@ -50,12 +50,12 @@ public class Contact implements Serializable {
         this.id = id;
     }
 
-    public Customer getCustomer() {
-        return customer;
+    public Supplier getSupplier() {
+        return supplier;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
+    public void setSupplier(Supplier supplier) {
+        this.supplier = supplier;
     }
 
     public String getName() {
@@ -143,7 +143,7 @@ public class Contact implements Serializable {
         if (!(object instanceof Contact)) {
             return false;
         }
-        Contact other = (Contact) object;
+        SupplierContact other = (SupplierContact) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }

@@ -1,6 +1,6 @@
 package SupplierManagement;
 
-import EntityManager.Contact;
+import EntityManager.SupplierContact;
 import EntityManager.PurchaseOrder;
 import EntityManager.Supplier;
 import EntityManager.ReturnHelper;
@@ -63,8 +63,8 @@ public class SupplierManagementBean implements SupplierManagementBeanLocal {
                 }
                 supplier.setIsDeleted(true);
                 //Loop all it's contact and mark them as deleted also
-                List<Contact> contacts = supplier.getCompanyContacts();
-                for (Contact contact:contacts) {
+                List<SupplierContact> contacts = supplier.getCompanyContacts();
+                for (SupplierContact contact:contacts) {
                     contact.setIsDeleted(true);
                     em.merge(contact);
                 }
@@ -130,7 +130,7 @@ public class SupplierManagementBean implements SupplierManagementBeanLocal {
             Query q = em.createQuery("SELECT c FROM Supplier c where c.id=:id");
             q.setParameter("id", supplierID);
             Supplier supplier = (Supplier) q.getSingleResult();
-            Contact contact = new Contact(supplier, name);
+            SupplierContact contact = new SupplierContact(supplier, name);
             contact.setEmail(email);
             contact.setOfficeNo(officeNo);
             contact.setMobileNo(mobileNo);
@@ -138,14 +138,14 @@ public class SupplierManagementBean implements SupplierManagementBeanLocal {
             contact.setAddress(address);
             contact.setNotes(notes);
             em.persist(contact);
-            List<Contact> companyContacts = supplier.getCompanyContacts();
+            List<SupplierContact> companyContacts = supplier.getCompanyContacts();
             companyContacts.add(contact);
             supplier.setCompanyContacts(companyContacts);
             em.flush();
             result.setID(contact.getId());
             em.merge(supplier);
             result.setResult(true);
-            result.setDescription("Contact added successfully.");
+            result.setDescription("SupplierContact added successfully.");
         } catch (NoResultException ex) {
             System.out.println("SupplierManagementBean: addContact() failed");
             result.setResult(false);
@@ -163,26 +163,26 @@ public class SupplierManagementBean implements SupplierManagementBeanLocal {
     public ReturnHelper deleteContact(Long contactID) {
         System.out.println("SupplierManagementBean: deleteContact() called");
         ReturnHelper result = new ReturnHelper();
-        Query q = em.createQuery("SELECT c FROM Contact c where c.id=:id");
+        Query q = em.createQuery("SELECT c FROM SupplierContact c where c.id=:id");
         q.setParameter("id", contactID);
         try {
-            Contact contact = (Contact) q.getSingleResult();
+            SupplierContact contact = (SupplierContact) q.getSingleResult();
             if (contact.getIsPrimaryContact()) {
                 result.setResult(false);
-                result.setDescription("Contact is the primary contact for this supplier and cannot be deleted. Set another contact as primary before deleting this contact.");
+                result.setDescription("SupplierContact is the primary contact for this supplier and cannot be deleted. Set another contact as primary before deleting this contact.");
             } else if (contact.getIsDeleted() == true) {
                 result.setResult(false);
-                result.setDescription("Contact is already deleted.");
+                result.setDescription("SupplierContact is already deleted.");
             } else {
                 contact.setIsDeleted(true);
                 em.merge(contact);
                 Supplier supplier = contact.getSupplier();
-                List<Contact> companyContacts = supplier.getCompanyContacts();
+                List<SupplierContact> companyContacts = supplier.getCompanyContacts();
                 companyContacts.remove(contact);
                 supplier.setCompanyContacts(companyContacts);
                 em.merge(supplier);
                 result.setResult(true);
-                result.setDescription("Contact deleted successfully.");
+                result.setDescription("SupplierContact deleted successfully.");
             }
         } catch (Exception ex) {
             System.out.println("SupplierManagementBean: deleteContact() failed");
@@ -196,13 +196,13 @@ public class SupplierManagementBean implements SupplierManagementBeanLocal {
     public ReturnHelper updateContact(Long contactID, String newName, String newEmail, String newOfficeNo, String newMobileNo, String newFaxNo, String newAddress, String newNotes) {
         System.out.println("SupplierManagementBean: updateContact() called");
         ReturnHelper result = new ReturnHelper();
-        Query q = em.createQuery("SELECT c FROM Contact c where c.id=:id");
+        Query q = em.createQuery("SELECT c FROM SupplierContact c where c.id=:id");
         q.setParameter("id", contactID);
         try {
-            Contact contact = (Contact) q.getSingleResult();
+            SupplierContact contact = (SupplierContact) q.getSingleResult();
            if (contact.getIsDeleted() == true) {
                 result.setResult(false);
-                result.setDescription("Contact is deleted and cannot be updated.");
+                result.setDescription("SupplierContact is deleted and cannot be updated.");
             } else {
                contact.setName(newName);
                 contact.setEmail(newEmail);
@@ -213,7 +213,7 @@ public class SupplierManagementBean implements SupplierManagementBeanLocal {
                 contact.setNotes(newNotes);
                 em.merge(contact);
                 result.setResult(true);
-                result.setDescription("Contact updated successfully.");
+                result.setDescription("SupplierContact updated successfully.");
             }
         } catch (Exception ex) {
             System.out.println("SupplierManagementBean: updateContact() failed");
@@ -225,13 +225,13 @@ public class SupplierManagementBean implements SupplierManagementBeanLocal {
     }
 
     @Override
-    public List<Contact> listSupplierContacts(Long supplierID) {
+    public List<SupplierContact> listSupplierContacts(Long supplierID) {
         System.out.println("SupplierManagementBean: listSupplierContacts() called");
         ReturnHelper result = new ReturnHelper();
-        Query q = em.createQuery("SELECT c FROM Contact c WHERE c.supplier.id=:id and c.isDeleted=false ORDER BY c.isPrimaryContact DESC");
+        Query q = em.createQuery("SELECT c FROM SupplierContact c WHERE c.supplier.id=:id and c.isDeleted=false ORDER BY c.isPrimaryContact DESC");
         q.setParameter("id", supplierID);
         try {
-            List<Contact> supplierContacts = q.getResultList();
+            List<SupplierContact> supplierContacts = q.getResultList();
             return supplierContacts;
         } catch (Exception ex) {
             System.out.println("SupplierManagementBean: listSupplierContacts() failed");
@@ -244,13 +244,13 @@ public class SupplierManagementBean implements SupplierManagementBeanLocal {
     public ReturnHelper setPrimaryContact(Long supplierID, Long contactID) {
         System.out.println("SupplierManagementBean: setPrimaryContact() called");
         ReturnHelper result = new ReturnHelper();
-        Query q = em.createQuery("SELECT c FROM Contact c where c.id=:id");
+        Query q = em.createQuery("SELECT c FROM SupplierContact c where c.id=:id");
         q.setParameter("id", contactID);
         try {
-            Contact contact = (Contact) q.getSingleResult();
+            SupplierContact contact = (SupplierContact) q.getSingleResult();
             if (contact.getIsPrimaryContact()) {
                 result.setResult(false);
-                result.setDescription("Contact is already the primary contact for this supplier.");
+                result.setDescription("SupplierContact is already the primary contact for this supplier.");
             } else if (contact.getIsDeleted() == true) {
                 result.setResult(false);
                 result.setDescription("Unable to set contact as primary as it has been deleted.");
@@ -263,7 +263,7 @@ public class SupplierManagementBean implements SupplierManagementBeanLocal {
                     result.setDescription("Unable to set contact as primary as the supplier has been deleted.");
                 } else {
                     //Clear away the current primary contact first
-                    Contact currentPrimaryContact = supplier.getPrimaryContact();
+                    SupplierContact currentPrimaryContact = supplier.getPrimaryContact();
                     if (currentPrimaryContact != null) {
                         currentPrimaryContact.setIsPrimaryContact(false);
                         em.merge(currentPrimaryContact);
@@ -277,7 +277,7 @@ public class SupplierManagementBean implements SupplierManagementBeanLocal {
                     if (supplier.getCompanyContacts().size() == 1) {
                         result.setDescription("Supplier and primary contact added successfully.");
                     } else {
-                        result.setDescription("Contact marked as primary contact.");
+                        result.setDescription("SupplierContact marked as primary contact.");
                     }
                 }
             }
