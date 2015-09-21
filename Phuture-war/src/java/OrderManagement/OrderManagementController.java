@@ -1,6 +1,6 @@
 package OrderManagement;
 
-import CustomerManagement.CustomerManagementBean;
+import CustomerManagement.CustomerManagementBeanLocal;
 import EntityManager.Contact;
 import EntityManager.Customer;
 import EntityManager.ReturnHelper;
@@ -34,7 +34,7 @@ public class OrderManagementController extends HttpServlet {
     private OrderManagementBeanLocal orderManagementBean;
 
     @EJB
-    private CustomerManagementBean customerManagementBean;
+    private CustomerManagementBeanLocal customerManagementBean;
 
     String nextPage = "", goodMsg = "", errMsg = "";
     HttpSession session;
