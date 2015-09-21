@@ -20,7 +20,7 @@ public class CustomerManagementController extends HttpServlet {
     private PaymentManagementBeanLocal paymentManagementBean;
 
     @EJB
-    private SupplierManagementBeanLocal customerManagementBean;
+    private CustomerManagementBean customerManagementBean;
 
     String nextPage = "", goodMsg = "", errMsg = "";
     HttpSession session;
