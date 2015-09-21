@@ -41,6 +41,18 @@
             .container {
                 min-height: 920px;
             }
+
+            @media print{
+                .table-bordered > thead > tr > th, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > th, .table-bordered > thead > tr > td, .table-bordered > tbody > tr > td, .table-bordered > tfoot > tr > td{
+                    -webkit-print-color-adjust: exact;
+                    border: 1px solid #5D5D5D !important;
+                }
+
+                .table th {  
+                    -webkit-print-color-adjust: exact;
+                    background-color: #BDBDBD !important; 
+                } 
+            }
         </style>
     </head>
 
