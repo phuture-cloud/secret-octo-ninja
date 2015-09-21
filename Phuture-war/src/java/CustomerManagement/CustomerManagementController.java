@@ -4,7 +4,6 @@ import EntityManager.Contact;
 import EntityManager.Customer;
 import EntityManager.ReturnHelper;
 import EntityManager.Staff;
-import PaymentManagement.PaymentManagementBeanLocal;
 import java.io.IOException;
 import java.util.List;
 import javax.ejb.EJB;
@@ -17,10 +16,7 @@ import javax.servlet.http.HttpSession;
 public class CustomerManagementController extends HttpServlet {
 
     @EJB
-    private PaymentManagementBeanLocal paymentManagementBean;
-
-    @EJB
-    private CustomerManagementBean customerManagementBean;
+    private CustomerManagementBeanLocal customerManagementBean;
 
     String nextPage = "", goodMsg = "", errMsg = "";
     HttpSession session;

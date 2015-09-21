@@ -1,6 +1,6 @@
 package OrderManagement;
 
-import CustomerManagement.CustomerManagementBean;
+import CustomerManagement.CustomerManagementBeanLocal;
 import EntityManager.Contact;
 import EntityManager.Customer;
 import EntityManager.Invoice;
@@ -30,7 +30,7 @@ public class InvoiceManagementController extends HttpServlet {
     private OrderManagementBeanLocal orderManagementBean;
 
     @EJB
-    private CustomerManagementBean customerManagementBean;
+    private CustomerManagementBeanLocal customerManagementBean;
 
     @EJB
     private PaymentManagementBeanLocal paymentManagementBeanLocal;

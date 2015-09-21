@@ -1,0 +1,227 @@
+<%@page import="EntityManager.Supplier"%>
+<%@page import="EntityManager.SupplierContact"%>
+<%@page import="java.util.List"%>
+<%@page import="EntityManager.Staff"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%
+    Staff staff = (Staff) (session.getAttribute("staff"));
+    List<SupplierContact> supplierContacts = (List<SupplierContact>) (session.getAttribute("supplierContacts"));
+    List<Supplier> suppliers = (List<Supplier>) session.getAttribute("suppliers");
+    if (session.isNew()) {
+        response.sendRedirect("../index.jsp?errMsg=Invalid Request. Please login.");
+    } else if (staff == null) {
+        response.sendRedirect("../index.jsp?errMsg=Session Expired.");
+    } else {
+        String supplierID = request.getParameter("id");
+        if (supplierID == null || supplierID.isEmpty() || suppliers == null) {
+            response.sendRedirect("supplierManagement.jsp?errMsg=An error has occured.");
+        } else {
+            Supplier supplier = new Supplier();
+            for (int i = 0; i < suppliers.size(); i++) {
+                if (suppliers.get(i).getId() == Long.parseLong(supplierID)) {
+                    supplier = suppliers.get(i);
+                }
+            }
+%>
+<!doctype html>
+<html class="fixed">
+    <head>
+        <jsp:include page="../jspIncludePages/head.html" />
+    </head>
+    <body onload="alertFunc()">
+        <jsp:include page="../displayNotification.jsp" />
+        <script>
+            function updateContact(id, supplierContactID) {
+                window.location.href = "supplierContactManagement_update.jsp?id=" + id + "&supplierContactID=" + supplierContactID;
+            }
+
+            function removeContact(id) {
+                checkboxes = document.getElementsByName('delete');
+                var numOfTicks = 0;
+                for (var i = 0, n = checkboxes.length; i < n; i++) {
+                    if (checkboxes[i].checked) {
+                        numOfTicks++;
+                    }
+                }
+                supplierContactManagement.id.value = id;
+                supplierContactManagement.target.value = "RemoveSupplierContact";
+                document.supplierContactManagement.action = "../SupplierManagementController";
+                document.supplierContactManagement.submit();
+            }
+
+            function checkAll(source) {
+                checkboxes = document.getElementsByName('delete');
+                for (var i = 0, n = checkboxes.length; i < n; i++) {
+                    checkboxes[i].checked = source.checked;
+                }
+            }
+
+            function addContact(id) {
+                window.location.href = "supplierContactManagement_add.jsp?id=" + id;
+            }
+
+            function back() {
+                window.location.href = "../SupplierManagementController?target=ListAllSupplier";
+            }
+        </script>
+
+        <section class="body">
+            <jsp:include page="../jspIncludePages/header.jsp" />
+
+            <div class="inner-wrapper">
+                <jsp:include page="../jspIncludePages/sidebar.jsp" />
+                <section role="main" class="content-body">
+                    <header class="page-header">
+                        <h2>Contact Management</h2>
+                        <div class="right-wrapper pull-right">
+                            <ol class="breadcrumbs">
+                                <li>
+                                    <a href="workspace.jsp">
+                                        <i class="fa fa-home"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="../SupplierManagementController?target=ListAllSupplier">
+                                        Supplier Management
+                                    </a>
+                                </li>
+                                <li><span>Contact Management &nbsp;&nbsp</span></li>
+                            </ol>
+                        </div>
+                    </header>
+
+                    <!-- start: page -->
+                    <form name="supplierContactManagement">
+                        <section class="panel">
+                            <header class="panel-heading">
+                                <h2 class="panel-title">Contact Management - <%=supplier.getSupplierName()%></h2>
+                            </header>
+                            <div class="panel-body">
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <input class="btn btn-primary" type="button" value="Add Contact" onclick="addContact(<%=supplierID%>)"  />
+                                        <a class="modal-with-move-anim btn btn-danger" href="#modalRemove<%=supplierID%>">Remove Contact</a>
+                                        <div id="modalRemove<%=supplierID%>" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+                                            <section class="panel">
+                                                <header class="panel-heading">
+                                                    <h2 class="panel-title">Are you sure?</h2>
+                                                </header>
+                                                <div class="panel-body">
+                                                    <div class="modal-wrapper">
+                                                        <div class="modal-icon">
+                                                            <i class="fa fa-question-circle"></i>
+                                                        </div>
+                                                        <div class="modal-text">
+                                                            <p>Are you sure that you want to remove these contact(s)?</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <footer class="panel-footer">
+                                                    <div class="row">
+                                                        <div class="col-md-12 text-right">
+                                                            <input class="btn btn-primary modal-confirm" name="btnRemove" type="submit" value="Confirm" onclick="removeContact(<%=supplierID%>)"  />
+                                                            <button class="btn btn-default modal-dismiss">Cancel</button>
+                                                        </div>
+                                                    </div>
+                                                </footer>
+                                            </section>
+                                        </div>
+                                        <input class="btn btn-default" name="btnBack" type="button" value="Back" onclick="back()"  />
+                                    </div>
+                                </div>
+                                <br/>
+
+
+                                <table class="table table-bordered table-striped mb-none" id="datatable-default">
+                                    <thead>
+                                        <tr>
+                                            <th><input type="checkbox"onclick="checkAll(this)" /></th>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Office Number</th>
+                                            <th>Mobile Number</th>
+                                            <th>Fax Number</th>
+                                            <th>Address</th>
+                                            <th>Notes</th>
+                                            <th>Action</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <%
+                                            if (supplierContacts != null && supplierContacts.size() > 0) {
+                                                for (int i = 0; i < supplierContacts.size(); i++) {
+                                                    if (!supplierContacts.get(i).getIsDeleted()) {
+                                        %>
+                                        <tr>
+                                            <td><input type="checkbox" name="delete" value="<%=supplierContacts.get(i).getId()%>" /></td>
+                                            <td><%=supplierContacts.get(i).getName()%></td>
+                                            <td><%=supplierContacts.get(i).getEmail()%></td>
+                                            <td><%=supplierContacts.get(i).getOfficeNo()%></td>
+                                            <td><%=supplierContacts.get(i).getMobileNo()%></td>
+                                            <td><%=supplierContacts.get(i).getFaxNo()%></td>
+                                            <td><%=supplierContacts.get(i).getAddress()%></td>
+                                            <td>
+                                                <a class="modal-with-move-anim btn btn-default btn-block" href="#modalNotes<%=supplierContacts.get(i).getId()%>">View</a>
+
+                                                <div id="modalNotes<%=supplierContacts.get(i).getId()%>" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+                                                    <section class="panel">
+                                                        <header class="panel-heading">
+                                                            <h2 class="panel-title">Notes</h2>
+                                                        </header>
+                                                        <div class="panel-body">
+                                                            <div class="modal-wrapper">
+                                                                <div class="modal-text" style="height: 350px;">
+                                                                    <textarea style="height:100%; width: 100%;"><%=supplierContacts.get(i).getNotes()%></textarea>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <footer class="panel-footer">
+                                                            <div class="row">
+                                                                <div class="col-md-12 text-right">
+                                                                    <button class="btn btn-default modal-dismiss">Close</button>
+                                                                </div>
+                                                            </div>
+                                                        </footer>
+                                                    </section>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <input type="button" class="btn btn-primary btn-block" value="Update" onclick="javascript:updateContact('<%=supplierID%>', '<%=supplierContacts.get(i).getId()%>')"/>
+                                            </td>
+                                            <td>
+                                                <%
+                                                    if (supplierContacts.get(i).getIsPrimaryContact()) {
+                                                        out.print("<i class='fa fa-star' style='color:gold'></i>");
+                                                    } else {
+                                                        out.print("<a href='../SupplierManagementController?target=SetPrimaryContact&id=" + supplierID + "&id2=" + supplierContacts.get(i).getId() + "'><i class='fa fa-star-o'></i></a>");
+                                                    }
+                                                %>
+                                            </td>
+                                        </tr>
+                                        <%
+                                                    }
+                                                }
+                                            }
+                                        %>
+
+                                    </tbody>
+                                </table>
+                                <input type="hidden" name="supplierContactID" value="">
+                                <input type="hidden" name="id" value="">
+                                <input type="hidden" name="target" value="">    
+                            </div>
+                        </section>
+                    </form>
+                    <!-- end: page -->
+                </section>
+            </div>
+        </section>
+        <jsp:include page="../jspIncludePages/foot.html" />
+    </body>
+</html>
+<%
+        }
+    }
+%>

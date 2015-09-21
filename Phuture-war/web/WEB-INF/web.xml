@@ -32,6 +32,10 @@
         <servlet-name>StatementOfAccountManagementController</servlet-name>
         <servlet-class>OrderManagement.StatementOfAccountManagementController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>SupplierManagementController</servlet-name>
+        <servlet-class>SupplierManagement.SupplierManagementController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>AccountManagementController</servlet-name>
         <url-pattern>/AccountManagementController</url-pattern>
@@ -63,6 +67,10 @@
     <servlet-mapping>
         <servlet-name>StatementOfAccountManagementController</servlet-name>
         <url-pattern>/StatementOfAccountManagementController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SupplierManagementController</servlet-name>
+        <url-pattern>/SupplierManagementController</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

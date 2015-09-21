@@ -1,3 +1,5 @@
+<%@page import="EntityManager.SupplierContact"%>
+<%@page import="EntityManager.Supplier"%>
 <%@page import="EntityManager.PurchaseOrder"%>
 <%@page import="java.text.NumberFormat"%>
 <%@page import="java.text.SimpleDateFormat"%>
@@ -8,6 +10,10 @@
 <%
     Staff staff = (Staff) (session.getAttribute("staff"));
     PurchaseOrder purchaseOrder = (PurchaseOrder) (session.getAttribute("po"));
+    List<Supplier> suppliers = (List<Supplier>) (session.getAttribute("suppliers"));
+    List<SupplierContact> supplierContacts = (List<SupplierContact>) (session.getAttribute("supplierContact"));
+    SupplierContact supplierContact = null;
+    
     if (session.isNew()) {
         response.sendRedirect("../index.jsp?errMsg=Invalid Request. Please login.");
     } else if (staff == null) {
@@ -22,6 +28,9 @@
         } else {//Disable unneccessary fields when editing line item
             formDisablerFlag = "disabled";
         }
+
+        String selectedSupplierID = request.getParameter("selectedSupplierID");
+        String selectedSupplierContactID = request.getParameter("selectedSupplierContactID");
         SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
         NumberFormat formatter = NumberFormat.getCurrencyInstance();
 %>
@@ -131,8 +140,8 @@
 
                 function addressBook() {
                     window.onbeforeunload = null;
-                    editContactForm.target.value = "ListAllCustomer";
-                    document.editContactForm.action = "../OrderManagementController";
+                    editContactForm.target.value = "ListAllSupplier";
+                    document.editContactForm.action = "../PurchaseOrderManagementController";
                     document.editContactForm.submit();
                 }
 
@@ -191,51 +200,78 @@
                                                     <address>
                                                         <div class="col-md-6" style="padding-left: 0px;">
                                                             <%
-                                                                if (purchaseOrder != null) {
-                                                                    String s_coyname = purchaseOrder.getCompanyName();
-                                                                    String s_name = purchaseOrder.getSupplierName();
-                                                                    String s_email = purchaseOrder.getSupplierEmail();
-                                                                    String s_officeNo = purchaseOrder.getSupplierOfficeNo();
-                                                                    String s_mobileNo = purchaseOrder.getSupplierMobileNo();
-                                                                    String s_faxNo = purchaseOrder.getSupplierFaxNo();
-                                                                    String s_address = purchaseOrder.getSupplierAddress();
+                                                                if (purchaseOrder.getSupplierLink() != null) {
+                                                                    out.print("<b>" + purchaseOrder.getSupplierName()+ "</b>");
+                                                                    String repl = purchaseOrder.getContactAddress().replaceAll("\\r", "<br>");
+                                                                    out.print("<br>" + repl);
+                                                                    out.print("<br>" + purchaseOrder.getContactOfficeNo());
+                                                                    if (purchaseOrder.getContactFaxNo() != null && !purchaseOrder.getContactFaxNo().isEmpty()) {
+                                                                        out.print("<br>" + purchaseOrder.getContactFaxNo());
+                                                                    }
+                                                                    out.print("<p class='h5 mb-xs text-dark text-weight-semibold'>Attention:</p>");
+                                                                    out.print(purchaseOrder.getContactName() + " ");
+                                                                    if (purchaseOrder.getContactMobileNo() != null && !purchaseOrder.getContactMobileNo().isEmpty()) {
+                                                                        out.print("<br>" + purchaseOrder.getContactMobileNo());
+                                                                    }
+                                                                    if (purchaseOrder.getContactEmail() != null && !purchaseOrder.getContactEmail().isEmpty()) {
+                                                                        out.print("<br>" + purchaseOrder.getContactEmail() + "<br>");
+                                                                    }
+                                                                    if (!formDisablerFlag.equals("disabled")) {
+                                                                        out.print("<div class='text-right'><a href='#modalEditForm' class='modal-with-form'>edit</a></div>");
+                                                                    }
+                                                                    out.print("<br><br>");
+                                                                } else {
+                                                            %>
+                                                            <select id="customerList" name="customerID" data-plugin-selectTwo class="form-control populate" onchange="javascript:getCustomerContacts()" required>
+                                                                <option value="">Select a supplier</option>
+                                                                <%
+                                                                    if (suppliers != null && suppliers.size() > 0) {
+                                                                        for (int i = 0; i < suppliers.size(); i++) {
+                                                                            if (selectedSupplierID != null && selectedSupplierID.equals(suppliers.get(i).getId().toString())) {
+                                                                                out.print("<option value='" + suppliers.get(i).getId() + "' selected>" + suppliers.get(i).getSupplierName() + "</option>");
+                                                                            } else {
+                                                                                out.print("<option value='" + suppliers.get(i).getId() + "'>" + suppliers.get(i).getSupplierName() + "</option>");
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                %>
+                                                            </select>
+                                                            <%}%>
+                                                        </div>
 
-                                                                    if (s_name == null) {
-                                                                        s_name = "";
+                                                        <%
+                                                            if (purchaseOrder.getSupplierLink() == null) {
+                                                        %>
+                                                        <br/><br/>
+                                                        <div class="col-md-6" style="padding-left: 0px;">
+                                                            <select id="customerContactid" name="contactID" data-plugin-selectTwo class="form-control populate"  onchange="javascript:selectCustomerContact()" required>
+                                                                <option value="">Select a contact</option>
+                                                                <%
+                                                                    if (suppliers != null && suppliers.size() > 0) {
+                                                                        for (int i = 0; i < suppliers.size(); i++) {
+                                                                            if (selectedSupplierContactID != null && selectedSupplierContactID.equals(supplierContacts.get(i).getId().toString())) {
+                                                                                supplierContact = supplierContacts.get(i);
+                                                                                out.print("<option value='" + suppliers.get(i).getId() + "' selected>" + supplierContacts.get(i).getName() + "</option>");
+                                                                            } else {
+                                                                                out.print("<option value='" + suppliers.get(i).getId() + "'>" + supplierContacts.get(i).getName() + "</option>");
+                                                                            }
+                                                                        }
                                                                     }
-                                                                    if (s_email == null) {
-                                                                        s_email = "";
-                                                                    }
-                                                                    if (s_officeNo == null) {
-                                                                        s_officeNo = "";
-                                                                    }
-                                                                    if (s_mobileNo == null) {
-                                                                        s_mobileNo = "";
-                                                                    }
-                                                                    if (s_faxNo == null) {
-                                                                        s_faxNo = "";
-                                                                    }
-                                                                    if (s_address == null) {
-                                                                        s_address = "";
-                                                                    }
-
-                                                                    out.print("<input type='text' " + formDisablerFlag + " class='form-control' name='companyName' value='" + s_coyname + "' placeholder='Company'/>");
-                                                                    out.print("<input type='text' " + formDisablerFlag + " class='form-control' name='supplierName' value='" + s_name + "' placeholder='Supplier Name'/>");
-                                                                    out.print("<input type='text' " + formDisablerFlag + " class='form-control' name='supplierEmail' value='" + s_email + "' placeholder='Supplier Email' />");
-                                                                    out.print("<input type='text' " + formDisablerFlag + " class='form-control' name='supplierOfficeNo' value='" + s_officeNo + "' placeholder='Supplier Office No' />");
-                                                                    out.print("<input type='text' " + formDisablerFlag + " class='form-control' name='supplierMobileNo' value='" + s_mobileNo + "' placeholder='Supplier Mobile No' />");
-                                                                    out.print("<input type='text' " + formDisablerFlag + " class='form-control' name='supplierFaxNo' value='" + s_faxNo + "' placeholder='Supplier Fax No' />");
-                                                                    if (!s_address.equals("")) {
-                                                                        out.print("<textarea " + formDisablerFlag + "  placeholder='Supplier Address' class='form-control' rows='3' name='supplierAddress'>" + s_address + " </textarea>");
-                                                                    } else {
-                                                                        out.print("<textarea " + formDisablerFlag + "  placeholder='Supplier Address' class='form-control' rows='3' name='supplierAddress'></textarea>");
-                                                                    }
-                                                                    out.print("<br>");
+                                                                %>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-md-8" style="padding-top: 4px;">
+                                                            <%
+                                                                if (supplierContact != null) {
+                                                                    String repl = supplierContact.getAddress().replaceAll("\\r", "<br>");
+                                                                    out.println(repl);
+                                                                    out.println("<br/>" + supplierContact.getOfficeNo());
+                                                                    out.println("<br/>" + supplierContact.getFaxNo());
+                                                                    out.println("<br/>" + supplierContact.getMobileNo() + "<br/><br/>");
                                                                 }
                                                             %>
-
                                                         </div>
-                                                        <br/><br/>
+                                                        <%}%>
                                                     </address>
                                                 </div>
                                             </div>
@@ -526,17 +562,15 @@
                                     <div class="col-sm-6 mt-md">
                                         <div class="btn-group">
                                             <%
-                                                if (purchaseOrder != null) {
-                                                    if (purchaseOrder.getItems().size() > 0) {
-                                                        out.print("<a href='purchaseOrder-print.jsp' target='_blank' class='btn btn-default'><i class='fa fa-print'></i> Print PDF</a>");
-                                                    }
-                                                    if (purchaseOrder.getNotes() != null && !purchaseOrder.getNotes().isEmpty()) {
-                                                        out.print("<button type='button' class='btn btn-info modal-with-form' href='#modalNotes'>Notes</button>");
-                                                    } else {
-                                                        out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalNotes'>Notes</button>");
-                                                    }
-                                                    out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalRemarks' data-toggle='tooltip' data-placement='top' title='*Remarks will be reflected in the PO'>Remarks</button>");
+                                                if (purchaseOrder.getItems().size() > 0) {
+                                                    out.print("<a href='purchaseOrder-print.jsp' target='_blank' class='btn btn-default'><i class='fa fa-print'></i> Print PDF</a>");
                                                 }
+                                                if (purchaseOrder.getNotes() != null && !purchaseOrder.getNotes().isEmpty()) {
+                                                    out.print("<button type='button' class='btn btn-info modal-with-form' href='#modalNotes'>Notes</button>");
+                                                } else {
+                                                    out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalNotes'>Notes</button>");
+                                                }
+                                                out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalRemarks' data-toggle='tooltip' data-placement='top' title='*Remarks will be reflected in the PO'>Remarks</button>");
                                             %> 
                                         </div>
                                     </div>
@@ -545,10 +579,8 @@
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-default" onclick="javascript:back()">Back</button>
                                             <%
-                                                if (purchaseOrder != null) {
-                                                    out.print("<button type='button' class='modal-with-move-anim btn btn-danger' href='#modalRemove'>Delete</button>");
-                                                    out.print("<button " + formDisablerFlag + " class='btn btn-success' onclick='javascript:updatePO();'>Save</button>");
-                                                }
+                                                out.print("<button type='button' class='modal-with-move-anim btn btn-danger' href='#modalRemove'>Delete</button>");
+                                                out.print("<button " + formDisablerFlag + " class='btn btn-success' onclick='javascript:updatePO();'>Save</button>");
                                             %>
                                         </div>
                                     </div>
@@ -556,11 +588,7 @@
                             </div>
                         </section>
 
-                        <%
-                            if (purchaseOrder != null) {
-                                out.print("<input type='hidden' name='customerID' value='" + purchaseOrder.getSalesConfirmationOrder().getCustomer().getId() + "'>");
-                            }
-                        %>
+                        <input type='hidden' name='customerID' value='<%=purchaseOrder.getSalesConfirmationOrder().getCustomer().getId()%>'>
                         <input type="hidden" name="lineItemID" value="">   
                         <input type="hidden" name="target" value="">    
                         <input type="hidden" name="source" value="">    
@@ -568,7 +596,6 @@
                     </form>
                     <!-- end: page -->
 
-                    <%if (purchaseOrder != null) {%>
                     <div id="modalEditForm" class="modal-block modal-block-primary mfp-hide">
                         <section class="panel">
                             <form name="editContactForm" action="../PurchaseOrderManagementController" class="form-horizontal mb-lg">
@@ -585,39 +612,39 @@
                                     <div class="form-group">
                                         <label class="col-md-3 control-label">Address <span class="required">*</span></label>
                                         <div class="col-md-9">
-                                            <textarea class="form-control" rows="3" name="address" required><%=purchaseOrder.getSupplierAddress()%></textarea>
+                                            <textarea class="form-control" rows="3" name="address" required><%=purchaseOrder.getContactAddress()%></textarea>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-sm-3 control-label">Telephone <span class="required">*</span></label>
                                         <div class="col-sm-9">
-                                            <input type="text" name="officeNo" class="form-control" value="<%=purchaseOrder.getSupplierOfficeNo()%>" required/>
+                                            <input type="text" name="officeNo" class="form-control" value="<%=purchaseOrder.getContactOfficeNo()%>" required/>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-sm-3 control-label">Fasimile</label>
                                         <div class="col-sm-9">
-                                            <input type="text" name="faxNo" class="form-control" value="<%=purchaseOrder.getSupplierFaxNo()%>"/>
+                                            <input type="text" name="faxNo" class="form-control" value="<%=purchaseOrder.getContactFaxNo()%>"/>
                                         </div>
                                     </div>
                                     <hr>
                                     <div class="form-group mt-lg">
                                         <label class="col-sm-3 control-label">Name <span class="required">*</span></label>
                                         <div class="col-sm-9">
-                                            <input type="text" name="name" class="form-control" value="<%=purchaseOrder.getSupplierName()%>" required/>
+                                            <input type="text" name="name" class="form-control" value="<%=purchaseOrder.getContactName()%>" required/>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-sm-3 control-label">Mobile</label>
                                         <div class="col-sm-9">
-                                            <input type="text" name="mobileNo" class="form-control" value="<%=purchaseOrder.getSupplierMobileNo()%>"/>
+                                            <input type="text" name="mobileNo" class="form-control" value="<%=purchaseOrder.getContactMobileNo()%>"/>
                                         </div>
                                     </div>
 
                                     <div class="form-group">
                                         <label class="col-sm-3 control-label">Email <span class="required">*</span></label>
                                         <div class="col-sm-9">
-                                            <input type="email" name="email" class="form-control" value="<%=purchaseOrder.getSupplierEmail()%>" required/>
+                                            <input type="email" name="email" class="form-control" value="<%=purchaseOrder.getContactEmail()%>" required/>
                                         </div>
                                     </div>
                                     <br>
@@ -724,7 +751,7 @@
                             </footer>
                         </section>
                     </div>
-                    <%}%>
+
                 </section>
             </div>
         </section>
