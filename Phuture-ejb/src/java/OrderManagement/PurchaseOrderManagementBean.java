@@ -1,7 +1,6 @@
 package OrderManagement;
 
 import EntityManager.Contact;
-import EntityManager.Customer;
 import EntityManager.LineItem;
 import EntityManager.OrderNumbers;
 import EntityManager.PurchaseOrder;
@@ -9,6 +8,7 @@ import EntityManager.ReturnHelper;
 import EntityManager.SalesConfirmationOrder;
 import EntityManager.Staff;
 import EntityManager.Supplier;
+import EntityManager.SupplierContact;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -102,7 +102,7 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
     }
 
     @Override
-    public ReturnHelper updatePurchaseOrder(Long purchaseOrderID, Long newSupplierID, Date purchaseOrderDate, String status, String terms, Date deliveryDate, String remarks, String currency) {
+    public ReturnHelper updatePurchaseOrder(Long purchaseOrderID, Long newSupplierContactID, Date purchaseOrderDate, String status, String terms, Date deliveryDate, String remarks, String currency) {
         System.out.println("PurchaseOrderManagementBean: updatePurchaseOrder() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -123,12 +123,12 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
             if (updateStatusResult.getResult() == false) {
                 return updateStatusResult;
             }
-            q = em.createQuery("SELECT c FROM Supplier c WHERE c.id=:id");
-            q.setParameter("id", newSupplierID);
-            Supplier newSupplier = (Supplier) q.getSingleResult();
-            String newSupplierName = newSupplier.getSupplierName();
-            if (newSupplier.getIsDeleted()) {
-                result.setDescription("Failed to edit the PO. The selected supplier may have been deleted while the PO is being updated. Please try again.");
+            q = em.createQuery("SELECT c FROM SupplierContact c WHERE c.id=:id");
+            q.setParameter("id", newSupplierContactID);
+            SupplierContact newSupplierContact = (SupplierContact) q.getSingleResult();
+            String newSupplierName = newSupplierContact.getSupplier().getSupplierName();
+            if (newSupplierContact.getIsDeleted()) {
+                result.setDescription("Failed to edit the PO. The selected supplier contact may have been deleted while the PO is being updated. Please try again.");
                 return result;
             }
             //Remove away the old links
@@ -139,13 +139,19 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
                 em.merge(oldSupplier);
             }
             //Add links to other
-            List<PurchaseOrder> supplierPOs = newSupplier.getPurchaseOrders();
+            List<PurchaseOrder> supplierPOs = newSupplierContact.getSupplier().getPurchaseOrders();
             supplierPOs.add(po);
-            newSupplier.setPurchaseOrders(supplierPOs);
-            em.merge(newSupplier);
+            newSupplierContact.getSupplier().setPurchaseOrders(supplierPOs);
+            em.merge(newSupplierContact);
             //Update fields 
             po.setSupplierName(newSupplierName);
-            po.setSupplierLink(newSupplier);
+            po.setSupplierLink(newSupplierContact.getSupplier());
+            po.setContactName(newSupplierContact.getName());
+            po.setContactEmail(newSupplierContact.getEmail());
+            po.setContactOfficeNo(newSupplierContact.getOfficeNo());
+            po.setContactMobileNo(newSupplierContact.getMobileNo());
+            po.setContactFaxNo(newSupplierContact.getFaxNo());
+            po.setContactAddress(newSupplierContact.getAddress());
 
             po.setPurchaseOrderDate(purchaseOrderDate);
 //            po.setPurchaseOrderNumber(purchaseOrderNumber);
