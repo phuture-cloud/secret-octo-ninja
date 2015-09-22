@@ -240,9 +240,11 @@
                     <%
                         if (staff.getSignature() != null && staff.getSignature().length > 0) {
                             out.write("<img class='img-responsive' style='height: 80px;' src='http://localhost:8080/Phuture-war/sig?id=" + staff.getId() + "'>");
+                            out.write("<img src='../assets/images/thin-black-line.png' style='padding-bottom: 5px;'>");
+                        } else {
+                            out.write("<br><img src='../assets/images/thin-black-line.png' style='padding-top: 80px; padding-bottom: 5px;'>");
                         }
                     %>
-                    <img src="../assets/images/thin-black-line.png" style='padding-bottom: 5px;'>
                     <br>Authorized Signature
                 </div>
             </div>

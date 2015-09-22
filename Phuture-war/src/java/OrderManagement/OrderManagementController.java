@@ -196,7 +196,7 @@ public class OrderManagementController extends HttpServlet {
                                     break;
                                 }
                             }
-                            if (scoDate == null || scoDate.isEmpty() || terms == null || terms.isEmpty()) {
+                            if (scoDate.isEmpty() || terms.isEmpty()) {
                                 nextPage = "OrderManagement/scoManagement_add.jsp?selectedCustomerID=" + customerID + "&selectedContactID=" + contactID + "&terms=" + terms + "&scoDate=" + scoDate + "&id=" + id + "&errMsg=Please fill in all the fields for the SCO.";
                             } else {
                                 SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
@@ -208,7 +208,6 @@ public class OrderManagementController extends HttpServlet {
 
                                 returnHelper = orderManagementBean.updateSalesConfirmationOrder(Long.parseLong(id), scoDateDate, estimatedDeliveryDateDate, poNumber, Long.parseLong(customerID), status, Integer.parseInt(terms), isAdmin);
                                 if (returnHelper.getResult()) {
-
                                     SalesConfirmationOrder sco = orderManagementBean.getSalesConfirmationOrder(returnHelper.getID());
                                     session.setAttribute("sco", sco);
                                     nextPage = "OrderManagement/scoManagement_add.jsp?goodMsg=" + returnHelper.getDescription() + "&id=" + returnHelper.getID();

@@ -41,7 +41,7 @@
             .container {
                 min-height: 920px;
             }
-            
+
             @media print{
                 .table-bordered > thead > tr > th, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > th, .table-bordered > thead > tr > td, .table-bordered > tbody > tr > td, .table-bordered > tfoot > tr > td{
                     -webkit-print-color-adjust: exact;
@@ -77,9 +77,9 @@
                         </div>
                         <div class="col-xs-9">
                             <p>
-                                <strong><%=purchaseOrder.getCompanyName()%></strong>
+                                <strong><%=purchaseOrder.getSupplierName()%></strong>
                                 <br>
-                                <%=purchaseOrder.getSupplierAddress().replaceAll("\\r", "<br>")%>
+                                <%=purchaseOrder.getContactAddress().replaceAll("\\r", "<br>")%>
                             </p>
                         </div>
                     </div>
@@ -117,22 +117,22 @@
                     <%=DATE_FORMAT.format(purchaseOrder.getPurchaseOrderDate())%>
                     <br>
                     <%
-                        if (purchaseOrder.getSupplierOfficeNo() != null) {
-                            out.print(purchaseOrder.getSupplierOfficeNo());
+                        if (purchaseOrder.getContactOfficeNo() != null) {
+                            out.print(purchaseOrder.getContactOfficeNo());
                         }
                     %>
 
                     <br>
                     <%
-                        if (purchaseOrder.getSupplierFaxNo() != null) {
-                            out.print(purchaseOrder.getSupplierFaxNo());
+                        if (purchaseOrder.getContactFaxNo() != null) {
+                            out.print(purchaseOrder.getContactFaxNo());
                         }
                     %>
 
                     <br>
                     <%
-                        if (purchaseOrder.getSupplierMobileNo() != null) {
-                            out.print(purchaseOrder.getSupplierMobileNo());
+                        if (purchaseOrder.getContactMobileNo() != null) {
+                            out.print(purchaseOrder.getContactMobileNo());
                         }
                     %>
                 </div>
@@ -230,9 +230,9 @@
                 <div class="col-xs-3">
                     <p>
                         <strong>
-                            Total (<%if (purchaseOrder.getCurrency() != null) {
-                                    out.print(purchaseOrder.getCurrency());
-                                }%>) : <br>
+                            Total <%if (purchaseOrder.getCurrency() != null && !purchaseOrder.getCurrency().isEmpty()) {
+                                    out.print("(" + purchaseOrder.getCurrency() + ")");
+                                }%> : <br>
                         </strong>
                     </p>
                 </div>
@@ -254,10 +254,12 @@
                     <%
                         if (staff.getSignature() != null && staff.getSignature().length > 0) {
                             out.write("<img class='img-responsive' src='http://localhost:8080/Phuture-war/sig?id=" + staff.getId() + "'>");
+                            out.write("<img src='../assets/images/thin-black-line.png' style='padding-bottom: 5px;'>");
+                        } else {
+                            out.write("<br><img src='../assets/images/thin-black-line.png' style='padding-top: 80px; padding-bottom: 5px;'>");
                         }
                     %>
-                    <img src="../assets/images/thin-black-line.png" style='padding-bottom: 5px;'>
-                    <br>Authorized Signature
+                    <br>Authorized Signature 
                 </div>
             </div>
         </div>
