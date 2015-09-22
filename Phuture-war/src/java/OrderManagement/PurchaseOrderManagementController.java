@@ -168,46 +168,56 @@ public class PurchaseOrderManagementController extends HttpServlet {
 
                             if (source.equals("AddLineItemToExistingPO")) {
                                 if (supplierID == null || supplierID.isEmpty() || itemName == null || itemName.isEmpty() || itemDescription == null || itemDescription.isEmpty() || itemQty == null || itemQty.isEmpty() || itemUnitPrice == null || itemUnitPrice.isEmpty()) {
-                                    nextPage = "POManagement/purchaseOrder.jsp?poDate=" + poDate + "&status=" + status + "&terms=" + terms + "&deliveryDateString=" + deliveryDateString + "&currency=" + currency + "&errMsg=Please fill in all the fields for the item.";
+                                    nextPage = "POManagement/purchaseOrder.jsp?poDate=" + poDate + "&status=" + status + "&terms=" + terms + "&deliveryDate=" + deliveryDateString + "&currency=" + currency + "&errMsg=Please fill in all the fields for the item.";
                                     break;
                                 }
                             }
 
-                            if (supplierID == null || supplierID.isEmpty() || currency == null || currency.isEmpty() || poDate.isEmpty()) {
-                                nextPage = "POManagement/purchaseOrder.jsp?poDate=" + poDate + "&status=" + status + "&terms=" + terms + "&deliveryDateString=" + deliveryDateString + "&currency=" + currency + "&errMsg=Please fill in all the fields for the PO.";
+                            if (purchaseOrder.getSupplierLink() != null) {
+                                supplierID = purchaseOrder.getSupplierLink().getId().toString();
+                                if (currency == null || currency.isEmpty() || poDate.isEmpty()) {
+                                    nextPage = "POManagement/purchaseOrder.jsp?poDate=" + poDate + "&status=" + status + "&terms=" + terms + "&deliveryDate=" + deliveryDateString + "&currency=" + currency + "&errMsg=Please fill in all the fields for the PO.";
+                                    break;
+                                }
                             } else {
-                                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-                                Date poDateDate = formatter.parse(poDate);
-
-                                String remarks = request.getParameter("remarks");
-
-                                DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-                                Date deliveryDate = dateFormat.parse(deliveryDateString);
-
-                                //Update PO
-                                returnHelper = purchaseOrderManagementBean.updatePurchaseOrder(purchaseOrder.getId(), Long.parseLong(supplierID), poDateDate, status, terms, deliveryDate, remarks, currency);
-                                if (returnHelper.getResult()) {
-                                    Long poID = returnHelper.getID();
-                                    purchaseOrder = purchaseOrderManagementBean.getPurchaseOrder(poID);
-                                    session.setAttribute("po", purchaseOrder);
-                                    nextPage = "POManagement/purchaseOrder.jsp?goodMsg=" + returnHelper.getDescription();
-
-                                    //Update line item if there is any
-                                    if (itemName != null && !itemName.isEmpty() && itemDescription != null && !itemDescription.isEmpty() && itemQty != null && !itemQty.isEmpty() && itemUnitPrice != null && !itemUnitPrice.isEmpty()) {
-                                        returnHelper = purchaseOrderManagementBean.addPOlineItem(poID, itemName, itemDescription, Integer.parseInt(itemQty), Double.parseDouble(itemUnitPrice));
-                                        purchaseOrder = purchaseOrderManagementBean.getPurchaseOrder(poID);
-                                        if (returnHelper.getResult() && purchaseOrder != null) {
-                                            session.setAttribute("po", purchaseOrder);
-                                            nextPage = "POManagement/purchaseOrder.jsp?goodMsg=" + returnHelper.getDescription();
-                                        } else {
-                                            nextPage = "POManagement/purchaseOrder.jsp?errMsg=" + returnHelper.getDescription();
-                                        }
-                                    }
-                                } else {
-                                    nextPage = "POManagement/purchaseOrder.jsp?errMsg=" + returnHelper.getDescription();
+                                if (supplierID == null || supplierID.isEmpty() || currency == null || currency.isEmpty() || poDate.isEmpty()) {
+                                    nextPage = "POManagement/purchaseOrder.jsp?poDate=" + poDate + "&status=" + status + "&terms=" + terms + "&deliveryDate=" + deliveryDateString + "&currency=" + currency + "&errMsg=Please fill in all the fields for the PO.";
                                     break;
                                 }
                             }
+
+                            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+                            Date poDateDate = formatter.parse(poDate);
+
+                            String remarks = request.getParameter("remarks");
+
+                            DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                            Date deliveryDate = dateFormat.parse(deliveryDateString);
+
+                            //Update PO
+                            returnHelper = purchaseOrderManagementBean.updatePurchaseOrder(purchaseOrder.getId(), Long.parseLong(supplierID), poDateDate, status, terms, deliveryDate, remarks, currency);
+                            if (returnHelper.getResult()) {
+                                Long poID = returnHelper.getID();
+                                purchaseOrder = purchaseOrderManagementBean.getPurchaseOrder(poID);
+                                session.setAttribute("po", purchaseOrder);
+                                nextPage = "POManagement/purchaseOrder.jsp?goodMsg=" + returnHelper.getDescription();
+
+                                //Update line item if there is any
+                                if (itemName != null && !itemName.isEmpty() && itemDescription != null && !itemDescription.isEmpty() && itemQty != null && !itemQty.isEmpty() && itemUnitPrice != null && !itemUnitPrice.isEmpty()) {
+                                    returnHelper = purchaseOrderManagementBean.addPOlineItem(poID, itemName, itemDescription, Integer.parseInt(itemQty), Double.parseDouble(itemUnitPrice));
+                                    purchaseOrder = purchaseOrderManagementBean.getPurchaseOrder(poID);
+                                    if (returnHelper.getResult() && purchaseOrder != null) {
+                                        session.setAttribute("po", purchaseOrder);
+                                        nextPage = "POManagement/purchaseOrder.jsp?goodMsg=" + returnHelper.getDescription();
+                                    } else {
+                                        nextPage = "POManagement/purchaseOrder.jsp?errMsg=" + returnHelper.getDescription();
+                                    }
+                                }
+                            } else {
+                                nextPage = "POManagement/purchaseOrder.jsp?errMsg=" + returnHelper.getDescription();
+                                break;
+                            }
+
                         }
                         break;
 

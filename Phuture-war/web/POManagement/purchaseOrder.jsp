@@ -232,7 +232,7 @@
                                                         <div class="col-md-6" style="padding-left: 0px;">
                                                             <%
                                                                 if (purchaseOrder.getSupplierLink() != null) {
-                                                                    out.print("<b>" + purchaseOrder.getSupplierName() + "</b>");
+                                                                    out.print("<b>" + purchaseOrder.getSupplierLink().getSupplierName() + "</b>");
                                                                     String repl = purchaseOrder.getContactAddress().replaceAll("\\r", "<br>");
                                                                     out.print("<br>" + repl);
                                                                     out.print("<br>" + purchaseOrder.getContactOfficeNo());
@@ -625,7 +625,7 @@
                             </div>
                         </section>
 
-                        <input type='hidden' name='supplierID'>
+                        <input type='hidden' name='supplierID' value="">
                         <input type="hidden" name="lineItemID" value="">   
                         <input type="hidden" name="target" value="">    
                         <input type="hidden" name="source" value="">    
