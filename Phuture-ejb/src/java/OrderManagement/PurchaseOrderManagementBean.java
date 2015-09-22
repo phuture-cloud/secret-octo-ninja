@@ -102,7 +102,7 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
     }
 
     @Override
-    public ReturnHelper updatePurchaseOrder(Long purchaseOrderID, String purchaseOrderNumber, Date purchaseOrderDate, String status, String terms, Date deliveryDate, String remarks, String currency) {
+    public ReturnHelper updatePurchaseOrder(Long purchaseOrderID, Long newSupplierID, Date purchaseOrderDate, String status, String terms, Date deliveryDate, String remarks, String currency) {
         System.out.println("PurchaseOrderManagementBean: updatePurchaseOrder() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -114,17 +114,39 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
                 result.setDescription("Failed to edit the PO as it has been deleted.");
                 return result;
             }
-            ReturnHelper uniqueResult = checkIfPOnumberIsUnique(purchaseOrderNumber);
-            if (!uniqueResult.getResult() && !purchaseOrderNumber.equals(po.getPurchaseOrderNumber())) {
-                uniqueResult.setDescription("Failed to save the PO as the PO number is already in use.");
-                return uniqueResult;
-            }
+//            ReturnHelper uniqueResult = checkIfPOnumberIsUnique(purchaseOrderNumber);
+//            if (!uniqueResult.getResult() && !purchaseOrderNumber.equals(po.getPurchaseOrderNumber())) {
+//                uniqueResult.setDescription("Failed to save the PO as the PO number is already in use.");
+//                return uniqueResult;
+//            }
             ReturnHelper updateStatusResult = updatePurchaseOrderStatus(purchaseOrderID, status);
             if (updateStatusResult.getResult() == false) {
                 return updateStatusResult;
             }
+            q = em.createQuery("SELECT c FROM Supplier c WHERE c.id=:id");
+            q.setParameter("id", newSupplierID);
+            Supplier newSupplier = (Supplier) q.getSingleResult();
+            String newSupplierName = newSupplier.getSupplierName();
+            if (newSupplier.getIsDeleted()) {
+                result.setDescription("Failed to edit the PO. The selected supplier may have been deleted while the PO is being updated. Please try again.");
+                return result;
+            }
+            //Remove away the old links
+            Supplier oldSupplier = po.getSupplierLink();
+            List<PurchaseOrder> oldSupplierPOs = oldSupplier.getPurchaseOrders();
+            oldSupplierPOs.remove(po);
+            em.merge(oldSupplier);
+            //Add links to other
+            List<PurchaseOrder> supplierPOs = newSupplier.getPurchaseOrders();
+            supplierPOs.add(po);
+            newSupplier.setPurchaseOrders(supplierPOs);
+            em.merge(newSupplier);
+            //Update fields 
+            po.setSupplierName(newSupplierName);
+            po.setSupplierLink(newSupplier);
+            
             po.setPurchaseOrderDate(purchaseOrderDate);
-            po.setPurchaseOrderNumber(purchaseOrderNumber);
+//            po.setPurchaseOrderNumber(purchaseOrderNumber);
             po.setTerms(terms);
             po.setDeliveryDate(deliveryDate);
             po.setRemarks(remarks);
@@ -144,7 +166,7 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
         }
         return result;
     }
-    
+
     @Override
     public ReturnHelper updatePurchaseOrderSupplierContactDetails(Long purchaseOrderID, String supplierName, String contactName, String email, String officeNo, String mobileNo, String faxNo, String address, Boolean adminOverwrite) {
         System.out.println("PurchaseOrderManagementBean: updatePurchaseOrderSupplierContactDetails() called");
@@ -192,7 +214,7 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
                 result.setDescription("Failed to edit the PO as it has been deleted.");
                 return result;
             }
-            
+
             q = em.createQuery("SELECT c FROM Contact c WHERE c.id=:id");
             q.setParameter("id", contactID);
             Contact contact = (Contact) q.getSingleResult();
