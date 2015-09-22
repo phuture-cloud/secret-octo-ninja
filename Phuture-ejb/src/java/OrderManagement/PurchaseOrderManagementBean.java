@@ -133,9 +133,11 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
             }
             //Remove away the old links
             Supplier oldSupplier = po.getSupplierLink();
-            List<PurchaseOrder> oldSupplierPOs = oldSupplier.getPurchaseOrders();
-            oldSupplierPOs.remove(po);
-            em.merge(oldSupplier);
+            if (oldSupplier != null) {
+                List<PurchaseOrder> oldSupplierPOs = oldSupplier.getPurchaseOrders();
+                oldSupplierPOs.remove(po);
+                em.merge(oldSupplier);
+            }
             //Add links to other
             List<PurchaseOrder> supplierPOs = newSupplier.getPurchaseOrders();
             supplierPOs.add(po);
@@ -144,7 +146,7 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
             //Update fields 
             po.setSupplierName(newSupplierName);
             po.setSupplierLink(newSupplier);
-            
+
             po.setPurchaseOrderDate(purchaseOrderDate);
 //            po.setPurchaseOrderNumber(purchaseOrderNumber);
             po.setTerms(terms);
