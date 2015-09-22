@@ -139,6 +139,9 @@ public class CustomerManagementBean implements CustomerManagementBeanLocal {
             contact.setNotes(notes);
             em.persist(contact);
             List<Contact> companyContacts = customer.getCustomerContacts();
+            if(companyContacts.size()==0) {
+                setPrimaryContact(customerID, contact.getId());
+            }
             companyContacts.add(contact);
             customer.setCompanyContacts(companyContacts);
             em.flush();

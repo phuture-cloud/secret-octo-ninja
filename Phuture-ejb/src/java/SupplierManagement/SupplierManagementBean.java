@@ -55,7 +55,7 @@ public class SupplierManagementBean implements SupplierManagementBeanLocal {
             } else {
                 //Allow delete only if all the SCO has been deleted
                 List<PurchaseOrder> pos = supplier.getPurchaseOrders();
-                for (PurchaseOrder po:pos) {
+                for (PurchaseOrder po : pos) {
                     if (!po.getIsDeleted()) {
                         result.setDescription("Supplier has exisiting purchase orders and cannot be deleted.");
                         return result;
@@ -64,7 +64,7 @@ public class SupplierManagementBean implements SupplierManagementBeanLocal {
                 supplier.setIsDeleted(true);
                 //Loop all it's contact and mark them as deleted also
                 List<SupplierContact> contacts = supplier.getCompanyContacts();
-                for (SupplierContact contact:contacts) {
+                for (SupplierContact contact : contacts) {
                     contact.setIsDeleted(true);
                     em.merge(contact);
                 }
@@ -139,6 +139,9 @@ public class SupplierManagementBean implements SupplierManagementBeanLocal {
             contact.setNotes(notes);
             em.persist(contact);
             List<SupplierContact> companyContacts = supplier.getCompanyContacts();
+            if (companyContacts.size() == 0) {
+                setPrimaryContact(supplierID, contact.getId());
+            }
             companyContacts.add(contact);
             supplier.setCompanyContacts(companyContacts);
             em.flush();
@@ -192,7 +195,8 @@ public class SupplierManagementBean implements SupplierManagementBeanLocal {
         }
         return result;
     }
- @Override
+
+    @Override
     public ReturnHelper updateContact(Long contactID, String newName, String newEmail, String newOfficeNo, String newMobileNo, String newFaxNo, String newAddress, String newNotes) {
         System.out.println("SupplierManagementBean: updateContact() called");
         ReturnHelper result = new ReturnHelper();
@@ -200,11 +204,11 @@ public class SupplierManagementBean implements SupplierManagementBeanLocal {
         q.setParameter("id", contactID);
         try {
             SupplierContact contact = (SupplierContact) q.getSingleResult();
-           if (contact.getIsDeleted() == true) {
+            if (contact.getIsDeleted() == true) {
                 result.setResult(false);
                 result.setDescription("SupplierContact is deleted and cannot be updated.");
             } else {
-               contact.setName(newName);
+                contact.setName(newName);
                 contact.setEmail(newEmail);
                 contact.setOfficeNo(newOfficeNo);
                 contact.setMobileNo(newMobileNo);
