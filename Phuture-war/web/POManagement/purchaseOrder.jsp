@@ -11,9 +11,9 @@
     Staff staff = (Staff) (session.getAttribute("staff"));
     PurchaseOrder purchaseOrder = (PurchaseOrder) (session.getAttribute("po"));
     List<Supplier> suppliers = (List<Supplier>) (session.getAttribute("suppliers"));
-    List<SupplierContact> supplierContacts = (List<SupplierContact>) (session.getAttribute("supplierContact"));
+    List<SupplierContact> supplierContacts = (List<SupplierContact>) (session.getAttribute("supplierContacts"));
     SupplierContact supplierContact = null;
-    
+
     if (session.isNew()) {
         response.sendRedirect("../index.jsp?errMsg=Invalid Request. Please login.");
     } else if (staff == null) {
@@ -31,6 +31,12 @@
 
         String selectedSupplierID = request.getParameter("selectedSupplierID");
         String selectedSupplierContactID = request.getParameter("selectedSupplierContactID");
+        String status = request.getParameter("status");
+        String terms = request.getParameter("terms");
+        String poDate = request.getParameter("poDate");
+        String deliveryDate = request.getParameter("deliveryDate");
+        String currency = request.getParameter("currency");
+
         SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
         NumberFormat formatter = NumberFormat.getCurrencyInstance();
 %>
@@ -90,6 +96,31 @@
                 function back2() {
                     window.onbeforeunload = null;
                     window.location.href = "purchaseOrder.jsp";
+                }
+
+                function getSupplierContacts() {
+                    window.onbeforeunload = null;
+                    var supplierID = document.getElementById("supplierList").value;
+                    var poDate = document.getElementById("poDate").value;
+                    var terms = document.getElementById("terms").value;
+                    var currency = document.getElementById("currency").value;
+                    var deliveryDate = document.getElementById("deliveryDate").value;
+                    if (supplierID !== "") {
+                        window.location.href = "../PurchaseOrderManagementController?target=ListSupplierContacts&supplierID=" + supplierID + "&poDate=" + poDate + "&terms=" + terms + "&deliveryDate=" + deliveryDate + "&currency=" + currency;
+                    }
+                }
+
+                function selectSupplierContact() {
+                    window.onbeforeunload = null;
+                    var supplierID = document.getElementById("supplierList").value;
+                    var poDate = document.getElementById("poDate").value;
+                    var terms = document.getElementById("terms").value;
+                    var currency = document.getElementById("currency").value;
+                    var deliveryDate = document.getElementById("deliveryDate").value;
+                    if (supplierID !== "") {
+                        var supplierContactID = document.getElementById("supplierContactList").value;
+                        window.location.href = "purchaseOrder.jsp?selectedSupplierID=" + supplierID + "&selectedSupplierContactID=" + supplierContactID + "&poDate=" + poDate + "&terms=" + terms + "&deliveryDate=" + deliveryDate + "&currency=" + currency;
+                    }
                 }
 
                 function addLineItemToExistingPO() {
@@ -201,7 +232,7 @@
                                                         <div class="col-md-6" style="padding-left: 0px;">
                                                             <%
                                                                 if (purchaseOrder.getSupplierLink() != null) {
-                                                                    out.print("<b>" + purchaseOrder.getSupplierName()+ "</b>");
+                                                                    out.print("<b>" + purchaseOrder.getSupplierLink().getSupplierName() + "</b>");
                                                                     String repl = purchaseOrder.getContactAddress().replaceAll("\\r", "<br>");
                                                                     out.print("<br>" + repl);
                                                                     out.print("<br>" + purchaseOrder.getContactOfficeNo());
@@ -222,7 +253,7 @@
                                                                     out.print("<br><br>");
                                                                 } else {
                                                             %>
-                                                            <select id="customerList" name="customerID" data-plugin-selectTwo class="form-control populate" onchange="javascript:getCustomerContacts()" required>
+                                                            <select id="supplierList" name="supplierID" data-plugin-selectTwo class="form-control populate" onchange="javascript:getSupplierContacts()" required>
                                                                 <option value="">Select a supplier</option>
                                                                 <%
                                                                     if (suppliers != null && suppliers.size() > 0) {
@@ -236,30 +267,26 @@
                                                                     }
                                                                 %>
                                                             </select>
-                                                            <%}%>
-                                                        </div>
 
-                                                        <%
-                                                            if (purchaseOrder.getSupplierLink() == null) {
-                                                        %>
-                                                        <br/><br/>
-                                                        <div class="col-md-6" style="padding-left: 0px;">
-                                                            <select id="customerContactid" name="contactID" data-plugin-selectTwo class="form-control populate"  onchange="javascript:selectCustomerContact()" required>
+                                                            <select id="supplierContactList" name="supplierContactID" data-plugin-selectTwo class="form-control populate" onchange="javascript:selectSupplierContact()" style="margin-top: 5px;" required>
                                                                 <option value="">Select a contact</option>
                                                                 <%
-                                                                    if (suppliers != null && suppliers.size() > 0) {
-                                                                        for (int i = 0; i < suppliers.size(); i++) {
+                                                                    if (supplierContacts != null && supplierContacts.size() > 0) {
+                                                                        for (int i = 0; i < supplierContacts.size(); i++) {
                                                                             if (selectedSupplierContactID != null && selectedSupplierContactID.equals(supplierContacts.get(i).getId().toString())) {
                                                                                 supplierContact = supplierContacts.get(i);
-                                                                                out.print("<option value='" + suppliers.get(i).getId() + "' selected>" + supplierContacts.get(i).getName() + "</option>");
+                                                                                out.print("<option value='" + supplierContacts.get(i).getId() + "' selected>" + supplierContacts.get(i).getName() + "</option>");
                                                                             } else {
-                                                                                out.print("<option value='" + suppliers.get(i).getId() + "'>" + supplierContacts.get(i).getName() + "</option>");
+                                                                                out.print("<option value='" + supplierContacts.get(i).getId() + "'>" + supplierContacts.get(i).getName() + "</option>");
                                                                             }
                                                                         }
                                                                     }
                                                                 %>
                                                             </select>
+
+                                                            <%}%>
                                                         </div>
+
                                                         <div class="col-md-8" style="padding-top: 4px;">
                                                             <%
                                                                 if (supplierContact != null) {
@@ -271,7 +298,6 @@
                                                                 }
                                                             %>
                                                         </div>
-                                                        <%}%>
                                                     </address>
                                                 </div>
                                             </div>
@@ -294,9 +320,10 @@
                                                         <span class="text-dark">Date:</span>
                                                         <span class="value" style="min-width: 200px">
                                                             <%
-                                                                if (purchaseOrder.getPurchaseOrderDate() != null) {
-                                                                    String date = DATE_FORMAT.format(purchaseOrder.getPurchaseOrderDate());
-                                                                    out.print("<input " + formDisablerFlag + " id='poDate' name='poDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "' required>");
+                                                                if (poDate != null && !poDate.isEmpty()) {
+                                                                    out.print("<input " + formDisablerFlag + " id='poDate' name='poDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + poDate + "' required>");
+                                                                } else if (purchaseOrder.getPurchaseOrderDate() != null) {
+                                                                    out.print("<input " + formDisablerFlag + " id='poDate' name='poDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + DATE_FORMAT.format(purchaseOrder.getPurchaseOrderDate()) + "' required>");
                                                                 } else {
                                                                     out.print("<input " + formDisablerFlag + " id='poDate' name='poDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' required placeholder='dd/mm/yyyy'>");
                                                                 }
@@ -310,7 +337,14 @@
                                                             <select <%=formDisablerFlag%> id="status" name="status" class="form-control input-sm" required>
                                                                 <%
                                                                     if ((purchaseOrder.getStatus() != null && !purchaseOrder.getStatus().isEmpty())) {
-                                                                        String selectedStatus = purchaseOrder.getStatus();
+                                                                        String selectedStatus;
+                                                                        if (status != null && !status.isEmpty()) {
+                                                                            //Get from request (haven't saved to PO)
+                                                                            selectedStatus = status;
+                                                                        } else {
+                                                                            //Get from PO
+                                                                            selectedStatus = purchaseOrder.getStatus();
+                                                                        }
 
                                                                         if (selectedStatus.equals("Created")) {
                                                                             out.print("<option value='Pending' selected>Pending</option>");
@@ -332,9 +366,11 @@
                                                         <span class="text-dark">Terms: </span>
                                                         <span class="value" style="min-width: 200px; font-size: 10.5pt; text-align: left;">
                                                             <%if (purchaseOrder.getTerms() != null && !purchaseOrder.getTerms().isEmpty()) {%>
-                                                            <input type='text' <%=formDisablerFlag%> class='form-control' name='terms' value='<%=purchaseOrder.getTerms()%>'>
+                                                            <input type='text' <%=formDisablerFlag%> class='form-control' id='terms' name='terms' value='<%=purchaseOrder.getTerms()%>'>
+                                                            <%} else if (terms != null) {%>
+                                                            <input type='text' <%=formDisablerFlag%> class='form-control' id='terms' name='terms' value='<%=terms%>' placeholder='eg TT in advance'> 
                                                             <%} else {%>
-                                                            <input type='text' <%=formDisablerFlag%> class='form-control' name='terms' placeholder='eg TT in advance'>
+                                                            <input type='text' <%=formDisablerFlag%> class='form-control' id='terms' name='terms' placeholder='eg TT in advance'>
                                                             <%}%>
                                                         </span>
                                                     </p>
@@ -344,8 +380,9 @@
                                                         <span class="value" style="min-width: 200px; font-size: 10.5pt; text-align: left;">
                                                             <%
                                                                 if (purchaseOrder.getDeliveryDate() != null) {
-                                                                    String date = DATE_FORMAT.format(purchaseOrder.getDeliveryDate());
-                                                                    out.print("<input " + formDisablerFlag + " id='deliveryDate' name='deliveryDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "' required>");
+                                                                    out.print("<input " + formDisablerFlag + " id='deliveryDate' name='deliveryDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + DATE_FORMAT.format(purchaseOrder.getDeliveryDate()) + "' required>");
+                                                                } else if (deliveryDate != null && !deliveryDate.isEmpty()) {
+                                                                    out.print("<input " + formDisablerFlag + " id='deliveryDate' name='deliveryDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + deliveryDate + "' required>");
                                                                 } else {
                                                                     out.print("<input " + formDisablerFlag + " id='deliveryDate' name='deliveryDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' required placeholder='dd/mm/yyyy'>");
                                                                 }
@@ -357,9 +394,11 @@
                                                         <span class="text-dark">Currency: </span>
                                                         <span class="value" style="min-width: 200px; font-size: 10.5pt; text-align: left;">
                                                             <%if (purchaseOrder.getCurrency() != null && !purchaseOrder.getCurrency().isEmpty()) {%>
-                                                            <input type='text' <%=formDisablerFlag%> class='form-control' name='currency' value='<%=purchaseOrder.getCurrency()%>'>
+                                                            <input type='text' <%=formDisablerFlag%> class='form-control' id="currency" name='currency' value='<%=purchaseOrder.getCurrency()%>'>
+                                                            <%} else if (currency != null) {%>
+                                                            <input type='text' <%=formDisablerFlag%> class='form-control' id='currency' name='currency' value='<%=currency%>' placeholder='eg RMB'> 
                                                             <%} else {%>
-                                                            <input type='text' <%=formDisablerFlag%> class='form-control' name='currency' placeholder='eg RMB'>
+                                                            <input type='text' <%=formDisablerFlag%> class='form-control' id="currency" name='currency' placeholder='eg RMB'>
                                                             <%}%>
                                                         </span>
                                                     </p>
@@ -535,7 +574,7 @@
                                                             <td colspan="2">
                                                                 Total 
                                                                 <%
-                                                                    if (purchaseOrder.getCurrency() != null) {
+                                                                    if (purchaseOrder.getCurrency() != null && !purchaseOrder.getCurrency().isEmpty()) {
                                                                         out.print("(" + purchaseOrder.getCurrency() + ")");
                                                                     }
                                                                 %>
@@ -578,17 +617,15 @@
                                     <div class="col-sm-6 text-right mt-md mb-md">
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-default" onclick="javascript:back()">Back</button>
-                                            <%
-                                                out.print("<button type='button' class='modal-with-move-anim btn btn-danger' href='#modalRemove'>Delete</button>");
-                                                out.print("<button " + formDisablerFlag + " class='btn btn-success' onclick='javascript:updatePO();'>Save</button>");
-                                            %>
+                                            <button type='button' class='modal-with-move-anim btn btn-danger' href='#modalRemove'>Delete</button>
+                                            <button <%=formDisablerFlag%> class='btn btn-success' onclick='javascript:updatePO();'>Save</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </section>
 
-                        <input type='hidden' name='customerID' value='<%=purchaseOrder.getSalesConfirmationOrder().getCustomer().getId()%>'>
+                        <input type='hidden' name='supplierID' value="">
                         <input type="hidden" name="lineItemID" value="">   
                         <input type="hidden" name="target" value="">    
                         <input type="hidden" name="source" value="">    

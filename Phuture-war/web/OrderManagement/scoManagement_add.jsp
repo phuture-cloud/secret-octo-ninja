@@ -322,15 +322,8 @@
                                                                     }
                                                                 %>
                                                             </select>
-                                                            <%}%>
-                                                        </div>
 
-                                                        <%
-                                                            if (sco == null || scoID == null || scoID.isEmpty()) {
-                                                        %>
-                                                        <br/><br/>
-                                                        <div class="col-md-6" style="padding-left: 0px;">
-                                                            <select id="customerContactid" name="contactID" data-plugin-selectTwo class="form-control populate"  onchange="javascript:selectCustomerContact()" required>
+                                                            <select id="customerContactid" name="contactID" data-plugin-selectTwo class="form-control populate"  onchange="javascript:selectCustomerContact()" style="margin-top: 5px;" required>
                                                                 <option value="">Select a contact</option>
                                                                 <%
                                                                     if (contacts != null && contacts.size() > 0) {
@@ -345,19 +338,22 @@
                                                                     }
                                                                 %>
                                                             </select>
+                                                            <%}%>
                                                         </div>
+
                                                         <div class="col-md-8" style="padding-top: 4px;">
                                                             <%
-                                                                if (contact != null) {
-                                                                    String repl = contact.getAddress().replaceAll("\\r", "<br>");
-                                                                    out.println(repl);
-                                                                    out.println("<br/>" + contact.getOfficeNo());
-                                                                    out.println("<br/>" + contact.getFaxNo());
-                                                                    out.println("<br/>" + contact.getMobileNo() + "<br/><br/>");
+                                                                if (sco == null || scoID == null || scoID.isEmpty()) {
+                                                                    if (contact != null) {
+                                                                        String repl = contact.getAddress().replaceAll("\\r", "<br>");
+                                                                        out.println(repl);
+                                                                        out.println("<br/>" + contact.getOfficeNo());
+                                                                        out.println("<br/>" + contact.getFaxNo());
+                                                                        out.println("<br/>" + contact.getMobileNo() + "<br/><br/>");
+                                                                    }
                                                                 }
                                                             %>
                                                         </div>
-                                                        <%}%>
                                                     </address>
                                                 </div>
                                             </div>
@@ -381,7 +377,7 @@
                                                             <%
                                                                 if (scoDate != null && !scoDate.isEmpty()) {
                                                                     out.print("<input " + formDisablerFlag + " id='scoDate' name='scoDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + scoDate + "' required>");
-                                                                } else if (sco != null && scoID != null && !scoID.isEmpty()) {
+                                                                } else if (sco != null && scoID != null && !scoID.isEmpty() && sco.getSalesConfirmationOrderDate() != null) {
                                                                     SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
                                                                     String date = DATE_FORMAT.format(sco.getSalesConfirmationOrderDate());
                                                                     out.print("<input " + formDisablerFlag + " id='scoDate' name='scoDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "' required>");
@@ -459,8 +455,7 @@
                                                                     out.print("<input " + formDisablerFlag + " id='estimatedDeliveryDate' name='estimatedDeliveryDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + estimatedDeliveryDate + "' required>");
                                                                 } else if (sco != null && sco.getEstimatedDeliveryDate() != null) {
                                                                     SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
-                                                                    String date = DATE_FORMAT.format(sco.getEstimatedDeliveryDate());
-                                                                    out.print("<input " + formDisablerFlag + " id='estimatedDeliveryDate' name='estimatedDeliveryDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "' required>");
+                                                                    out.print("<input " + formDisablerFlag + " id='estimatedDeliveryDate' name='estimatedDeliveryDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + DATE_FORMAT.format(sco.getEstimatedDeliveryDate()) + "' required>");
                                                                 } else {
                                                                     out.print("<input " + formDisablerFlag + " id='estimatedDeliveryDate' name='estimatedDeliveryDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' required placeholder='dd/mm/yyyy'>");
                                                                 }
