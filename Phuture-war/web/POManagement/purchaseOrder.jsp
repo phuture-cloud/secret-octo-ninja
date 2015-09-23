@@ -232,7 +232,7 @@
                                                         <div class="col-md-6" style="padding-left: 0px;">
                                                             <%
                                                                 if (purchaseOrder.getSupplierLink() != null) {
-                                                                    out.print("<b>" + purchaseOrder.getSupplierLink().getSupplierName() + "</b>");
+                                                                    out.print("<b>" + purchaseOrder.getContactName() + "</b>");
                                                                     String repl = purchaseOrder.getContactAddress().replaceAll("\\r", "<br>");
                                                                     out.print("<br>" + repl);
                                                                     out.print("<br>" + purchaseOrder.getContactOfficeNo());

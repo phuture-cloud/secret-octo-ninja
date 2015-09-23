@@ -74,7 +74,7 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="col-md-3 control-label">Signature <br>(select file only if updating signature)</label>
+                                            <label class="col-md-3 control-label">Signature <span style="color: red;" data-toggle='tooltip' data-placement='top' title='Upload image width:150px - 350px, height: 80px'>(?)</span><br>(select file only if updating signature)</label>
                                             <div class="col-md-6">
                                                 <div class="fileupload fileupload-new" data-provides="fileupload">
                                                     <div class="input-append">
