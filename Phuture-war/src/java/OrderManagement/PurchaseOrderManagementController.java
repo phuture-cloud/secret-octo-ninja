@@ -176,7 +176,7 @@ public class PurchaseOrderManagementController extends HttpServlet {
                             if (status == null) {
                                 status = "";
                             }
-                            String supplierID = request.getParameter("supplierID");
+                            String supplierContactID = request.getParameter("supplierContactID");
                             String terms = request.getParameter("terms");
                             String currency = request.getParameter("currency");
                             String deliveryDateString = request.getParameter("deliveryDate");
@@ -189,20 +189,20 @@ public class PurchaseOrderManagementController extends HttpServlet {
                             String source = request.getParameter("source");
 
                             if (source.equals("AddLineItemToExistingPO")) {
-                                if (supplierID == null || supplierID.isEmpty() || itemName == null || itemName.isEmpty() || itemDescription == null || itemDescription.isEmpty() || itemQty == null || itemQty.isEmpty() || itemUnitPrice == null || itemUnitPrice.isEmpty()) {
+                                if (supplierContactID == null || supplierContactID.isEmpty() || itemName == null || itemName.isEmpty() || itemDescription == null || itemDescription.isEmpty() || itemQty == null || itemQty.isEmpty() || itemUnitPrice == null || itemUnitPrice.isEmpty()) {
                                     nextPage = "POManagement/purchaseOrder.jsp?poDate=" + poDate + "&status=" + status + "&terms=" + terms + "&deliveryDate=" + deliveryDateString + "&currency=" + currency + "&errMsg=Please fill in all the fields for the item.";
                                     break;
                                 }
                             }
 
                             if (purchaseOrder.getSupplierLink() != null) {
-                                supplierID = purchaseOrder.getSupplierLink().getId().toString();
+                                supplierContactID = purchaseOrder.getSupplierLink().getId().toString();
                                 if (currency == null || currency.isEmpty() || poDate.isEmpty()) {
                                     nextPage = "POManagement/purchaseOrder.jsp?poDate=" + poDate + "&status=" + status + "&terms=" + terms + "&deliveryDate=" + deliveryDateString + "&currency=" + currency + "&errMsg=Please fill in all the fields for the PO.";
                                     break;
                                 }
                             } else {
-                                if (supplierID == null || supplierID.isEmpty() || currency == null || currency.isEmpty() || poDate.isEmpty()) {
+                                if (supplierContactID == null || supplierContactID.isEmpty() || currency == null || currency.isEmpty() || poDate.isEmpty()) {
                                     nextPage = "POManagement/purchaseOrder.jsp?poDate=" + poDate + "&status=" + status + "&terms=" + terms + "&deliveryDate=" + deliveryDateString + "&currency=" + currency + "&errMsg=Please fill in all the fields for the PO.";
                                     break;
                                 }
