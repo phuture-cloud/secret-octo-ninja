@@ -85,6 +85,8 @@ public class DeliveryOrderManagementController extends HttpServlet {
                             if (returnHelper.getResult()) {
                                 session.removeAttribute("do");
                                 nextPage = "DOManagement/deliveryOrders.jsp?goodMsg=" + returnHelper.getDescription();
+                                deliveryOrders = deliveryOrderManagementBean.listAllDeliveryOrder(loggedInStaffID);
+                                session.setAttribute("listOfDO", deliveryOrders);
                             } else {
                                 nextPage = "DOManagement/deliveryOrders.jsp?errMsg=" + returnHelper.getDescription();
                             }
@@ -112,6 +114,8 @@ public class DeliveryOrderManagementController extends HttpServlet {
                                 Long doID = returnHelper.getID();
                                 deliveryOrder = deliveryOrderManagementBean.getDeliveryOrder(doID);
                                 session.setAttribute("do", deliveryOrder);
+                                deliveryOrders = deliveryOrderManagementBean.listAllDeliveryOrder(loggedInStaffID);
+                                session.setAttribute("listOfDO", deliveryOrders);
                                 nextPage = "DOManagement/deliveryOrder.jsp?goodMsg=" + returnHelper.getDescription();
 
                                 //Update line item if there is any
