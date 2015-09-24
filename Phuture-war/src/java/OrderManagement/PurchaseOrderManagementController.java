@@ -28,6 +28,7 @@ public class PurchaseOrderManagementController extends HttpServlet {
 
     String nextPage = "", goodMsg = "", errMsg = "";
     HttpSession session;
+    Boolean isAdmin = false;
     Long loggedInStaffID = null;
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -144,6 +145,27 @@ public class PurchaseOrderManagementController extends HttpServlet {
                         }
                         break;
 
+                    case "VoidPO":
+                        if (purchaseOrder != null) {
+                            returnHelper = purchaseOrderManagementBean.voidPurchaseOrder(purchaseOrder.getId(),isAdmin);
+                            if (returnHelper.getResult()) {
+                                session.removeAttribute("po");
+                                String previousMgtPage = (String) session.getAttribute("previousManagementPage");
+                                if (previousMgtPage.equals("sco")) {
+                                    session.setAttribute("listOfPO", purchaseOrderManagementBean.listPurchaseOrdersTiedToSCO(purchaseOrder.getSalesConfirmationOrder().getId()));
+                                } else { //coming from po
+                                    session.setAttribute("listOfPO", purchaseOrderManagementBean.listAllPurchaseOrder(loggedInStaffID));
+                                }
+
+                                nextPage = "POManagement/purchaseOrders.jsp?goodMsg=" + returnHelper.getDescription();
+                            } else {
+                                nextPage = "POManagement/purchaseOrders.jsp?errMsg=" + returnHelper.getDescription();
+                            }
+                        } else {
+                            nextPage = "POManagement/purchaseOrders.jsp?errMsg=Delete Purchase Order failed. An error has occured.";
+                        }
+                        break;
+                    
                     case "UpdatePO":
                         if (true) {
                             String poDate = request.getParameter("poDate");
@@ -313,8 +335,9 @@ public class PurchaseOrderManagementController extends HttpServlet {
                 return false;
             } else {
                 if (staff.getIsAdmin()) {
-                    loggedInStaffID = staff.getId();
+                    isAdmin=true;
                 }
+                loggedInStaffID = staff.getId();
                 return true;
             }
         } catch (Exception ex) {

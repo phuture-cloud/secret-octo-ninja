@@ -27,6 +27,7 @@ public class StatementOfAccountManagementController extends HttpServlet {
 
     String nextPage = "", goodMsg = "", errMsg = "";
     HttpSession session;
+    Boolean isAdmin = false;
     Long loggedInStaffID = null;
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -132,8 +133,9 @@ public class StatementOfAccountManagementController extends HttpServlet {
                 return false;
             } else {
                 if (staff.getIsAdmin()) {
-                    loggedInStaffID = staff.getId();
+                    isAdmin=true;
                 }
+                loggedInStaffID = staff.getId();
                 return true;
             }
         } catch (Exception ex) {

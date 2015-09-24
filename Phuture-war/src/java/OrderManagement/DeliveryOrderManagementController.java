@@ -277,8 +277,8 @@ public class DeliveryOrderManagementController extends HttpServlet {
             } else {
                 if (staff.getIsAdmin()) {
                     isAdmin = true;
-                    loggedInStaffID = staff.getId();
                 }
+                loggedInStaffID = staff.getId();
                 return true;
             }
         } catch (Exception ex) {
