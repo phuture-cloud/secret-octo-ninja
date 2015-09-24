@@ -106,7 +106,7 @@ public class PurchaseOrderManagementController extends HttpServlet {
                                 session.setAttribute("supplierContacts", supplierContacts);
                                 String source = request.getParameter("source");
                                 if (source != null && source.equals("addressBook")) {
-                                    nextPage = "POManamgenet/updateSupplier.jsp?previousPage=po&selectedSupplierID=" + supplierID;
+                                    nextPage = "POManagement/updateSupplier.jsp?previousPage=po&selectedSupplierID=" + supplierID;
                                 } else {
                                     String terms = request.getParameter("terms");
                                     String poDate = request.getParameter("poDate");
