@@ -13,8 +13,6 @@
     } else if (staff == null) {
         response.sendRedirect("../index.jsp?errMsg=Session Expired.");
     } else {
-        String previousPage = request.getParameter("previousPage");
-        String scoID = request.getParameter("id");
         List<SupplierContact> supplierContacts = (List<SupplierContact>) (session.getAttribute("supplierContacts"));
         List<Supplier> suppliers = (List<Supplier>) session.getAttribute("suppliers");
         String selectedSupplierID = request.getParameter("selectedSupplierID");
@@ -36,48 +34,23 @@
                 });
             });
 
-            function getSupplierSupplierContacts1() {
+            function getSupplierContacts2() {
                 window.onbeforeunload = null;
-                var scoID = document.getElementById("scoID").value;
-                var customerID = document.getElementById("customerList").value;
-                if (customerID !== "") {
-                    window.location.href = "../OrderManagementController?target=ListSupplierSupplierContacts&customerID=" + customerID + "&source=addressBook&id=" + scoID;
-                }
-            }
-
-            function getSupplierSupplierContacts2() {
-                window.onbeforeunload = null;
-                var customerID = document.getElementById("customerList").value;
-                if (customerID !== "") {
-            <%if (previousPage.equals("delivery")) {%>
-                    window.location.href = "../DeliveryOrderManagementController?target=ListSupplierSupplierContacts&customerID=" + customerID + "&source=addressBook";
-            <%} else if (previousPage.equals("invoice")) {%>
-                    window.location.href = "../InvoiceManagementController?target=ListSupplierSupplierContacts&customerID=" + customerID + "&source=addressBook";
-            <%}%>
+                var supplierID = document.getElementById("supplierList").value;
+                if (supplierID !== "") {
+                    window.location.href = "../PurchaseOrderManagementController?target=ListSupplierContacts&supplierID=" + supplierID + "&source=addressBook";
                 }
             }
 
             function save() {
                 window.onbeforeunload = null;
-            <% if (previousPage.equals("sco")) {%>
-                document.UpdateSupplierContactForm.action = "../OrderManagementController";
-            <%} else if (previousPage.equals("delivery")) {%>
-                document.UpdateSupplierContactForm.action = "../DeliveryOrderManagementController";
-            <%} else if (previousPage.equals("invoice")) {%>
-                document.UpdateSupplierContactForm.action = "../InvoiceManagementController";
-            <%}%>
+                document.UpdateSupplierContactForm.action = "../PurchaseOrderManagementController";
                 document.UpdateSupplierContactForm.submit();
             }
 
             function back() {
                 window.onbeforeunload = null;
-            <% if (previousPage.equals("sco")) {%>
-                window.location.href = "scoManagement_add.jsp?id=" + <%=scoID%>;
-            <%} else if (previousPage.equals("delivery")) {%>
-                window.location.href = "deliveryOrder.jsp";
-            <%} else if (previousPage.equals("invoice")) {%>
-                window.location.href = "invoice.jsp";
-            <%}%>
+                window.location.href = "purchaseOrder.jsp";
             }
         </script>
         <section class="body">
@@ -113,12 +86,8 @@
                                             <label class="col-md-3 control-label">Supplier</label>
                                             <div class="col-md-6">
                                                 <%
-                                                    if (scoID != null) {
-                                                        out.print("<select id='customerList' name='customerID' data-plugin-selectTwo class='form-control populate' onchange='javascript:getSupplierSupplierContacts1()' required>");
-                                                    } else {
-                                                        out.print("<select id='customerList' name='customerID' data-plugin-selectTwo class='form-control populate' onchange='javascript:getSupplierSupplierContacts2()' required>");
-                                                    }
-                                                    out.print("<option value=''>Select a customer</option>");
+                                                    out.print("<select id='supplierList' name='supplierID' data-plugin-selectTwo class='form-control populate' onchange='javascript:getSupplierContacts2()' required>");
+                                                    out.print("<option value=''>Select a supplier</option>");
                                                     if (suppliers != null && suppliers.size() > 0) {
                                                         for (int i = 0; i < suppliers.size(); i++) {
                                                             if (selectedSupplierID != null && selectedSupplierID.equals(suppliers.get(i).getId().toString())) {
@@ -138,7 +107,7 @@
                                         <div class="form-group">
                                             <label class="col-md-3 control-label">Contact Person</label>
                                             <div class="col-md-6">
-                                                <select id="customerSupplierContactid" name="contactID" data-plugin-selectTwo class="form-control populate" required>
+                                                <select id="supplierContactid" name="contactID" data-plugin-selectTwo class="form-control populate" required>
                                                     <option value="">Select a contact</option>
                                                     <%
                                                         if (supplierContacts != null && supplierContacts.size() > 0) {
@@ -162,18 +131,8 @@
                                         </div>
                                     </footer>
                                 </section>
-
-                                <%if (previousPage.equals("sco")) {%>
-                                <input type="hidden" name="id" id="scoID" value="<%=scoID%>">   
-                                <input type="hidden" name="target" value="UpdateSCOSupplierContact">   
+                                <input type="hidden" name="target" value="UpdatePOSupplierContact">   
                                 <input type="hidden" name="source" value="UpdateSupplierContact">   
-                                <%} else if (previousPage.equals("invoice")) {%>
-                                <input type="hidden" name="target" value="UpdateInvoiceSupplierContact">   
-                                <input type="hidden" name="source" value="UpdateSupplierContact">   
-                                <%} else if (previousPage.equals("delivery")) {%>
-                                <input type="hidden" name="target" value="UpdateDOSupplierContact">   
-                                <input type="hidden" name="source" value="UpdateSupplierContact">   
-                                <%}%>
                             </form>
                         </div>
                     </div>
