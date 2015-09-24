@@ -43,6 +43,10 @@
                 margin-bottom: 0;
             }
 
+            .container {
+                min-height: 920px;
+            }
+
             @media print{
                 .table-bordered > thead > tr > th, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > th, .table-bordered > thead > tr > td, .table-bordered > tbody > tr > td, .table-bordered > tfoot > tr > td{
                     -webkit-print-color-adjust: exact;
@@ -61,7 +65,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-xs-6">
-                    <h3>Aged Accounts Receivable</h3>
+                    <h3>Statement of Account</h3>
                     <p>
                         <%=statementOfAccount.getCustomer().getCustomerName()%>
                         <br>
@@ -99,8 +103,6 @@
                         31 to 60 days
                         <br>
                         0 to 30 days
-                        <br>
-                        Total Overdue
                     </p>
                 </div>
                 <div class="col-xs-2">
@@ -127,12 +129,6 @@
                             out.print(formatter.format(statementOfAccount.getAmountOverDueFrom0to30Days()));
                         }
                     %>
-                    <br>
-                    <%
-                        if (statementOfAccount != null && statementOfAccount.getTotalAmountOverDue() != null) {
-                            out.print(formatter.format(statementOfAccount.getTotalAmountOverDue()));
-                        }
-                    %>
                 </div>
             </div>
 
@@ -144,11 +140,10 @@
                 <th class='text-center'><h4>Entry Date</h4></th>
                 <th class='text-center'><h4>Ref. No</h4></th>
                 <th class='text-center'><h4>Method</h4></th>
-                <th class='text-center'><h4>Description</h4></th>
-                <th class='text-center'><h4>Due Date</h4></th>
                 <th class='text-right'><h4>Debit</h4></th>
                 <th class='text-right'><h4>Credit</h4></th>
                 <th class='text-right'><h4>Balance</h4></th>
+                <th class='text-center'><h4>Due Date</h4></th>
                 </thead>
                 <tbody>
                     <%
@@ -166,25 +161,56 @@
 
                                 out.print("<td>" + soali.get(i).getReferenceNo() + "</td>");
                                 out.print("<td>" + soali.get(i).getMethod() + "</td>");
-                                out.print("<td>" + soali.get(i).getDescription() + "</td>");
-
-                                out.print("<td>");
-                                if (soali.get(i).getDueDate() != null) {
-                                    String date = DATE_FORMAT.format(soali.get(i).getDueDate());
-                                    out.print(date);
-                                }
-                                out.print("</td>");
 
                                 out.print("<td class='text-right'>" + formatter.format(soali.get(i).getDebit()) + "</td>");
                                 out.print("<td class='text-right'>" + formatter.format(soali.get(i).getCredit()) + "</td>");
                                 out.print("<td class='text-right'>" + formatter.format(soali.get(i).getBalance()) + "</td>");
 
+                                out.print("<td class='text-center'>");
+                                if (soali.get(i).getDueDate() != null) {
+                                    String date = DATE_FORMAT.format(soali.get(i).getDueDate());
+                                    out.print(date);
+                                }
+                                out.print("</td>");
                                 out.print("</tr>");
                             }
                         }
                     %>
                 </tbody>
             </table>
+
+
+
+            <div class="row text-right">
+                <div class="col-xs-7 text-left" style="font-size: 9px;"></div>
+
+                <div class="col-xs-3">
+                    <p>
+                        <strong>
+                            Total :
+                        </strong>
+                    </p>
+                </div>
+                <div class="col-xs-2">
+                    <strong>
+                        <%
+                            if (statementOfAccount != null && statementOfAccount.getTotalAmountOverDue() != null) {
+                                out.print(formatter.format(statementOfAccount.getTotalAmountOverDue()));
+                            }
+                        %>
+                        <br>
+                    </strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <p style="text-align: center; color: #000;">
+                <strong>Phuture International Pte Ltd</strong><br>
+                28 Sin Ming Lane #06-145<br/>
+                Midview City, Singapore 573972<br/>
+                Tel: (65) 6842 0198 &nbsp; Fax: (65) 6285 6753
+            </p>
         </div>
     </body>
 </html>
