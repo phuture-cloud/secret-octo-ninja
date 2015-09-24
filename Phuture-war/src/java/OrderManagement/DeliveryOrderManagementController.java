@@ -237,7 +237,7 @@ public class DeliveryOrderManagementController extends HttpServlet {
                             return;
                         } else {
                             session.setAttribute("customers", customers);
-                            nextPage = "DOManagement/updateContact.jsp?previousPage=delivery";
+                            nextPage = "OrderManagement/updateContact.jsp?previousPage=delivery";
                         }
                         break;
 
@@ -250,7 +250,7 @@ public class DeliveryOrderManagementController extends HttpServlet {
                         } else {
                             session.setAttribute("contacts", contacts);
                             if (source != null && source.equals("addressBook")) {
-                                nextPage = "DOManagement/updateContact.jsp?previousPage=delivery&selectedCustomerID=" + customerID;
+                                nextPage = "OrderManagement/updateContact.jsp?previousPage=delivery&selectedCustomerID=" + customerID;
                             }
                         }
                         break;

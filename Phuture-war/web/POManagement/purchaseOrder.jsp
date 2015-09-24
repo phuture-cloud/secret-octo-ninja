@@ -610,7 +610,7 @@
                                     <div class="col-sm-6 text-right mt-md mb-md">
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-default" onclick="javascript:back()">Back</button>
-                                            <button type='button' class='modal-with-move-anim btn btn-danger' href='#modalRemove'>Void Purchase Order</button>
+                                            <button type="button" class='modal-with-move-anim btn btn-danger' href='#modalRemove'>Void Purchase Order</button>
                                             <button <%=formDisablerFlag%> class='btn btn-success' onclick='javascript:updatePO();'>Save</button>
                                         </div>
                                     </div>
