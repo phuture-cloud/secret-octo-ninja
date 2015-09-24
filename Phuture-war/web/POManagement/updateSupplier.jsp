@@ -95,8 +95,6 @@
                                         <i class="fa fa-home"></i>
                                     </a>
                                 </li>
-                                <li><span><a href= "../PurchaseOrderManagementController?target=ListAllPO">Purchase Orders</a></span></li>
-                                <li><span><a href= "../PurchaseOrderManagementController?target=RetrievePO&id=<%=purchaseOrder.getId()%>"><%=purchaseOrder.getSalesConfirmationOrder().getSalesPerson().getStaffPrefix()%><%=purchaseOrder.getPurchaseOrderNumber()%></a></span></li>
                                 <li><span>Update Order Supplier Details &nbsp;&nbsp</span></li>
                             </ol>
                         </div>

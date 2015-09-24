@@ -59,7 +59,7 @@
                         <div class="right-wrapper pull-right">
                             <ol class="breadcrumbs">
                                 <li>
-                                    <a href="workspace.jsp">
+                                    <a href="../AccountManagement/workspace.jsp">
                                         <i class="fa fa-home"></i>
                                     </a>
                                 </li>
