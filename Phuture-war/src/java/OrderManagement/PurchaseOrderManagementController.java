@@ -217,11 +217,14 @@ public class PurchaseOrderManagementController extends HttpServlet {
                             Date deliveryDate = dateFormat.parse(deliveryDateString);
 
                             //Update PO
-                            returnHelper = purchaseOrderManagementBean.updatePurchaseOrder(purchaseOrder.getId(), Long.parseLong(supplierID), poDateDate, status, terms, deliveryDate, remarks, currency, isAdmin);
+                            returnHelper = purchaseOrderManagementBean.updatePurchaseOrder(purchaseOrder.getId(), Long.parseLong(supplierContactID), poDateDate, status, terms, deliveryDate, remarks, currency, isAdmin);
                             if (returnHelper.getResult()) {
                                 Long poID = returnHelper.getID();
                                 purchaseOrder = purchaseOrderManagementBean.getPurchaseOrder(poID);
                                 session.setAttribute("po", purchaseOrder);
+
+                                purchaseOrders = purchaseOrderManagementBean.listAllPurchaseOrder(loggedInStaffID);
+                                session.setAttribute("listOfPO", purchaseOrders);
                                 nextPage = "POManagement/purchaseOrder.jsp?goodMsg=" + returnHelper.getDescription();
 
                                 //Update line item if there is any

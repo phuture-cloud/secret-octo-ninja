@@ -196,6 +196,9 @@ public class InvoiceManagementController extends HttpServlet {
                                     invoice = invoiceManagementBean.getInvoice(invoiceID);
                                     session.setAttribute("invoice", invoice);
                                     session.setAttribute("customerAvailableCreditNotes", paymentManagementBeanLocal.listAvailableCreditNote(invoice.getSalesConfirmationOrder().getCustomer().getId()));
+
+                                    List<Invoice> invoices = invoiceManagementBean.listAllInvoice(loggedInStaffID);
+                                    session.setAttribute("listOfInvoice", invoices);
                                     nextPage = "InvoiceManagement/invoice.jsp?goodMsg=" + returnHelper.getDescription();
 
                                     //Update line item if there is any
