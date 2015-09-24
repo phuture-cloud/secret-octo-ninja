@@ -753,9 +753,9 @@
                                 <footer class="panel-footer">
                                     <div class="row">
                                         <div class="col-md-12 text-right">
-                                            <button class="btn btn-success" type="submit">Save</button>
-                                            <button class="btn btn-default" type="reset">Clear</button>
-                                            <button class="btn btn-default modal-dismiss">Cancel</button>
+                                            <button <%=formDisablerFlag%> class="btn btn-success" type="submit">Save</button>
+                                            <button <%=formDisablerFlag%> class="btn btn-default" type="reset">Clear</button>
+                                            <button class="btn btn-default modal-dismiss">Close</button>
                                         </div>
                                     </div>
                                 </footer>
