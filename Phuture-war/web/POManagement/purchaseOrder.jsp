@@ -93,11 +93,6 @@
                     window.location.href = "purchaseOrders.jsp";
                 }
 
-                function back2() {
-                    window.onbeforeunload = null;
-                    window.location.href = "purchaseOrder.jsp";
-                }
-
                 function getSupplierContacts() {
                     window.onbeforeunload = null;
                     var supplierID = document.getElementById("supplierList").value;
@@ -166,7 +161,7 @@
 
                 function voidPO() {
                     window.onbeforeunload = null;
-                    window.location.href = "../PurchaseOrderManagementController?target=voidPO";
+                    window.location.href = "../PurchaseOrderManagementController?target=VoidPO";
                 }
 
                 function addressBook() {
@@ -525,7 +520,7 @@
                                                     </td>
                                                     <% //Print buttons for current editing line item
                                                         out.print("<td class='text-center'><div class='btn-group'><button class='btn btn-default' type='button' onclick='javascript:saveEditLineItem(" + purchaseOrder.getItems().get(i).getId() + ")'>Save</button>&nbsp;");
-                                                        out.print("<button class='btn btn-default' type='button' onclick='javascript:back2()' >Back</button></div></td>");
+                                                        out.print("<button class='btn btn-default' type='button' onclick='javascript:back()' >Back</button></div></td>");
                                                     %>
                                                 </tr> 
                                                 <%
@@ -779,7 +774,7 @@
                             <footer class="panel-footer">
                                 <div class="row">
                                     <div class="col-md-12 text-right">
-                                        <button class="btn btn-primary modal-confirm" onclick="javascript:voidPO();">Confirm</button>
+                                        <button class="btn btn-primary modal-confirm" onclick="javascript:voidPO(<%=purchaseOrder.getId()%>);">Confirm</button>
                                         <button class="btn btn-default modal-dismiss">Cancel</button>
                                     </div>
                                 </div>
