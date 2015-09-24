@@ -57,18 +57,12 @@ public class SupplierManagementController extends HttpServlet {
                             Long supID = returnHelper.getID();
                             returnHelper = supplierManagementBean.addContact(supID, name, email, officeNo, mobileNo, faxNo, address, notes);
                             if (returnHelper.getResult()) {
-                                Long supplierContactID = returnHelper.getID();
-                                returnHelper = supplierManagementBean.setPrimaryContact(supID, supplierContactID);
-                                if (returnHelper.getResult()) {
-                                    List<Supplier> suppliers = supplierManagementBean.listSuppliers();
-                                    if (suppliers == null) {
-                                        nextPage = "error500.html";
-                                    } else {
-                                        session.setAttribute("suppliers", suppliers);
-                                        nextPage = "SupplierManagement/supplierManagement.jsp?goodMsg=" + returnHelper.getDescription();
-                                    }
+                                List<Supplier> suppliers = supplierManagementBean.listSuppliers();
+                                if (suppliers == null) {
+                                    nextPage = "error500.html";
                                 } else {
-                                    nextPage = "SupplierManagement/supplierManagement.jsp?errMsg=" + returnHelper.getDescription();
+                                    session.setAttribute("suppliers", suppliers);
+                                    nextPage = "SupplierManagement/supplierManagement.jsp?goodMsg=" + returnHelper.getDescription();
                                 }
                             } else {
                                 nextPage = "SupplierManagement/supplierManagement.jsp?errMsg=" + returnHelper.getDescription();
