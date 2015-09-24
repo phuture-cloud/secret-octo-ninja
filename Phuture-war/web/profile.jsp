@@ -103,7 +103,7 @@
                                                         <div class="panel-body">
                                                             <div class="form-group mt-lg">
                                                                 <div class="col-sm-12">
-                                                                    <center><img class="img-responsive" src="http://localhost:8080/Phuture-war/sig?id=<%=staff.getId()%>"></center>
+                                                                    <center><img class="img-responsive" src="/sig?id=<%=staff.getId()%>"></center>
                                                                 </div>
                                                             </div>
                                                         </div>
