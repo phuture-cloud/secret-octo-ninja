@@ -78,7 +78,7 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
             po.setPurchaseOrderDate(purchaseOrderDate);
             em.persist(po);
             //Copy line items from SCO
-            replacePOlineItemWithSCOitems(sco.getId(), po.getId(),true);
+            replacePOlineItemWithSCOitems(sco.getId(), po.getId(), true);
             //Update SCO list of POs
             List<PurchaseOrder> purchaseOrders = sco.getPurchaseOrders();
             purchaseOrders.add(po);
@@ -129,35 +129,37 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
             if (updateStatusResult.getResult() == false) {
                 return updateStatusResult;
             }
-            q = em.createQuery("SELECT c FROM SupplierContact c WHERE c.id=:id");
-            q.setParameter("id", newSupplierContactID);
-            SupplierContact newSupplierContact = (SupplierContact) q.getSingleResult();
-            String newSupplierName = newSupplierContact.getSupplier().getSupplierName();
-            if (newSupplierContact.getIsDeleted()) {
-                result.setDescription("Failed to edit the PO. The selected supplier contact may have been deleted while the PO is being updated. Please try again.");
-                return result;
+            if (newSupplierContactID != null) {
+                q = em.createQuery("SELECT c FROM SupplierContact c WHERE c.id=:id");
+                q.setParameter("id", newSupplierContactID);
+                SupplierContact newSupplierContact = (SupplierContact) q.getSingleResult();
+                String newSupplierName = newSupplierContact.getSupplier().getSupplierName();
+                if (newSupplierContact.getIsDeleted()) {
+                    result.setDescription("Failed to edit the PO. The selected supplier contact may have been deleted while the PO is being updated. Please try again.");
+                    return result;
+                }
+                //Remove away the old links
+                Supplier oldSupplier = po.getSupplierLink();
+                if (oldSupplier != null) {
+                    List<PurchaseOrder> oldSupplierPOs = oldSupplier.getPurchaseOrders();
+                    oldSupplierPOs.remove(po);
+                    em.merge(oldSupplier);
+                }
+                //Add links to other
+                List<PurchaseOrder> supplierPOs = newSupplierContact.getSupplier().getPurchaseOrders();
+                supplierPOs.add(po);
+                newSupplierContact.getSupplier().setPurchaseOrders(supplierPOs);
+                em.merge(newSupplierContact);
+                //Update fields 
+                po.setSupplierName(newSupplierName);
+                po.setSupplierLink(newSupplierContact.getSupplier());
+                po.setContactName(newSupplierContact.getName());
+                po.setContactEmail(newSupplierContact.getEmail());
+                po.setContactOfficeNo(newSupplierContact.getOfficeNo());
+                po.setContactMobileNo(newSupplierContact.getMobileNo());
+                po.setContactFaxNo(newSupplierContact.getFaxNo());
+                po.setContactAddress(newSupplierContact.getAddress());
             }
-            //Remove away the old links
-            Supplier oldSupplier = po.getSupplierLink();
-            if (oldSupplier != null) {
-                List<PurchaseOrder> oldSupplierPOs = oldSupplier.getPurchaseOrders();
-                oldSupplierPOs.remove(po);
-                em.merge(oldSupplier);
-            }
-            //Add links to other
-            List<PurchaseOrder> supplierPOs = newSupplierContact.getSupplier().getPurchaseOrders();
-            supplierPOs.add(po);
-            newSupplierContact.getSupplier().setPurchaseOrders(supplierPOs);
-            em.merge(newSupplierContact);
-            //Update fields 
-            po.setSupplierName(newSupplierName);
-            po.setSupplierLink(newSupplierContact.getSupplier());
-            po.setContactName(newSupplierContact.getName());
-            po.setContactEmail(newSupplierContact.getEmail());
-            po.setContactOfficeNo(newSupplierContact.getOfficeNo());
-            po.setContactMobileNo(newSupplierContact.getMobileNo());
-            po.setContactFaxNo(newSupplierContact.getFaxNo());
-            po.setContactAddress(newSupplierContact.getAddress());
 
             po.setPurchaseOrderDate(purchaseOrderDate);
 //            po.setPurchaseOrderNumber(purchaseOrderNumber);
@@ -216,7 +218,7 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
     }
 
     @Override
-    public ReturnHelper updatePurchaseOrderSupplierContactDetails(Long purchaseOrderID, Long supplierID, Long contactID, Boolean adminOverwrite) {
+    public ReturnHelper updatePurchaseOrderSupplierContactDetails(Long purchaseOrderID, Long newSupplierContactID, Boolean adminOverwrite) {
         System.out.println("PurchaseOrderManagementBean: updatePurchaseOrderSupplierContactDetails() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -229,12 +231,10 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
                 return result;
             }
 
-            q = em.createQuery("SELECT c FROM Contact c WHERE c.id=:id");
-            q.setParameter("id", contactID);
-            Contact contact = (Contact) q.getSingleResult();
-            q = em.createQuery("SELECT c FROM Supplier c WHERE c.id=:id");
-            q.setParameter("id", supplierID);
-            Supplier newSupplier = (Supplier) q.getSingleResult();
+            q = em.createQuery("SELECT c FROM SupplierContact c WHERE c.id=:id");
+            q.setParameter("id", newSupplierContactID);
+            SupplierContact supplierContact = (SupplierContact) q.getSingleResult();
+            Supplier newSupplier = supplierContact.getSupplier();
             String newSupplierName = newSupplier.getSupplierName();
             if (newSupplier.getIsDeleted()) {
                 result.setDescription("Failed to edit the PO. The selected supplier may have been deleted while the PO is being updated. Please try again.");
@@ -256,12 +256,12 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
                 purchaseOrder.setSupplierName(newSupplierName);
                 purchaseOrder.setSupplierLink(newSupplier);
             }
-            purchaseOrder.setContactAddress(contact.getAddress());
-            purchaseOrder.setContactEmail(contact.getEmail());
-            purchaseOrder.setContactOfficeNo(contact.getOfficeNo());
-            purchaseOrder.setContactFaxNo(contact.getFaxNo());
-            purchaseOrder.setContactMobileNo(contact.getMobileNo());
-            purchaseOrder.setContactName(contact.getName());
+            purchaseOrder.setContactAddress(supplierContact.getAddress());
+            purchaseOrder.setContactEmail(supplierContact.getEmail());
+            purchaseOrder.setContactOfficeNo(supplierContact.getOfficeNo());
+            purchaseOrder.setContactFaxNo(supplierContact.getFaxNo());
+            purchaseOrder.setContactMobileNo(supplierContact.getMobileNo());
+            purchaseOrder.setContactName(supplierContact.getName());
             em.merge(purchaseOrder);
             result.setResult(true);
             result.setDescription("SCO edited successfully.");
@@ -594,7 +594,7 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
                 return result;
             }
             //Delete all the line items first
-            ReturnHelper deleteResult = deleteallPOlineItem(purchaseOrderID,adminOverwrite);
+            ReturnHelper deleteResult = deleteallPOlineItem(purchaseOrderID, adminOverwrite);
             if (!deleteResult.getResult()) {
                 return deleteResult;
             }

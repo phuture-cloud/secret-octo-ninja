@@ -196,12 +196,12 @@ public class PurchaseOrderManagementController extends HttpServlet {
                             }
 
                             if (purchaseOrder.getSupplierLink() != null) {
-                                supplierContactID = purchaseOrder.getSupplierLink().getId().toString();
                                 if (currency == null || currency.isEmpty() || poDate.isEmpty()) {
                                     nextPage = "POManagement/purchaseOrder.jsp?poDate=" + poDate + "&status=" + status + "&terms=" + terms + "&deliveryDate=" + deliveryDateString + "&currency=" + currency + "&errMsg=Please fill in all the fields for the PO.";
                                     break;
                                 }
                             } else {
+                                System.out.println("wub>>!!!!"+supplierContactID);
                                 if (supplierContactID == null || supplierContactID.isEmpty() || currency == null || currency.isEmpty() || poDate.isEmpty()) {
                                     nextPage = "POManagement/purchaseOrder.jsp?poDate=" + poDate + "&status=" + status + "&terms=" + terms + "&deliveryDate=" + deliveryDateString + "&currency=" + currency + "&errMsg=Please fill in all the fields for the PO.";
                                     break;
@@ -217,9 +217,13 @@ public class PurchaseOrderManagementController extends HttpServlet {
                             Date deliveryDate = dateFormat.parse(deliveryDateString);
 
                             //Update PO
-                            System.out.println(">>>>>>>>>> " + purchaseOrder.getId());
-
-                            returnHelper = purchaseOrderManagementBean.updatePurchaseOrder(purchaseOrder.getId(), Long.parseLong(supplierContactID), poDateDate, status, terms, deliveryDate, remarks, currency, isAdmin);
+                            Long supplierContactIDlong;
+                            if (supplierContactID != null && !supplierContactID.isEmpty()) {
+                                supplierContactIDlong = Long.parseLong(supplierContactID);
+                            } else {
+                                supplierContactIDlong = null;
+                            }
+                            returnHelper = purchaseOrderManagementBean.updatePurchaseOrder(purchaseOrder.getId(), supplierContactIDlong, poDateDate, status, terms, deliveryDate, remarks, currency, isAdmin);
                             if (returnHelper.getResult()) {
                                 Long poID = returnHelper.getID();
                                 purchaseOrder = purchaseOrderManagementBean.getPurchaseOrder(poID);
@@ -323,13 +327,12 @@ public class PurchaseOrderManagementController extends HttpServlet {
                             String faxNo = request.getParameter("faxNo");
                             String address = request.getParameter("address");
 
-                            String supplierID = request.getParameter("supplierID");
                             String supplierContactID = request.getParameter("supplierContactID");
 
                             String source = request.getParameter("source");
                             //if address book
                             if (source != null && source.equals("UpdateContact")) {
-                                returnHelper = purchaseOrderManagementBean.updatePurchaseOrderSupplierContactDetails(purchaseOrder.getSalesConfirmationOrder().getId(), Long.parseLong(supplierID), Long.parseLong(supplierContactID), isAdmin);
+                                returnHelper = purchaseOrderManagementBean.updatePurchaseOrderSupplierContactDetails(purchaseOrder.getSalesConfirmationOrder().getId(), Long.parseLong(supplierContactID), isAdmin);
                                 purchaseOrder = purchaseOrderManagementBean.getPurchaseOrder(purchaseOrder.getId());
                                 if (returnHelper.getResult() && purchaseOrder != null) {
                                     session.setAttribute("po", purchaseOrder);

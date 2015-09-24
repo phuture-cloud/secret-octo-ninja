@@ -12,7 +12,7 @@ public interface PurchaseOrderManagementBeanLocal {
     public ReturnHelper createPurchaseOrder(Long salesConfirmationOrderID, Date purchaseOrderDate);
     public ReturnHelper updatePurchaseOrder(Long purchaseOrderID, Long newSupplierContactID, Date purchaseOrderDate, String status, String terms, Date deliveryDate, String remarks, String currency, Boolean adminOverwrite);
     public ReturnHelper updatePurchaseOrderSupplierContactDetails(Long salesConfirmationOrderID, String supplierName, String contactName, String email, String officeNo, String mobileNo, String faxNo, String address, Boolean adminOverwrite);
-    public ReturnHelper updatePurchaseOrderSupplierContactDetails(Long salesConfirmationOrderID, Long supplierID, Long contactID, Boolean adminOverwrite);
+    public ReturnHelper updatePurchaseOrderSupplierContactDetails(Long salesConfirmationOrderID, Long newSupplierContactID, Boolean adminOverwrite);
     public ReturnHelper updatePurchaseOrderStatus(Long purchaseOrderID, String status, Boolean adminOverwrite);
     public ReturnHelper updatePurchaseOrderNotes(Long purchaseOrderID, String notes, Boolean adminOverwrite);
     public ReturnHelper updatePurchaseOrderRemarks(Long purchaseOrderID, String remarks, Boolean adminOverwrite);

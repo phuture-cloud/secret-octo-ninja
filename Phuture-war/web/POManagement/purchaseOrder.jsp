@@ -248,7 +248,7 @@
                                                                     if (!formDisablerFlag.equals("disabled")) {
                                                                         out.print("<div class='text-right'><a href='#modalEditForm' class='modal-with-form'>edit</a></div>");
                                                                     }
-                                                                    out.print("<br><br>");
+                                                                    out.print("<input type='hidden' name='supplierContactID' value=''><br><br>");
                                                                 } else {
                                                             %>
                                                             <select id="supplierList" name="supplierID" data-plugin-selectTwo class="form-control populate" onchange="javascript:getSupplierContacts()" required>
