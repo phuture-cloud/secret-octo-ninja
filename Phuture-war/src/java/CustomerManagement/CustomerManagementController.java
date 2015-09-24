@@ -58,18 +58,12 @@ public class CustomerManagementController extends HttpServlet {
                             Long custID = returnHelper.getID();
                             returnHelper = customerManagementBean.addContact(custID, name, email, officeNo, mobileNo, faxNo, address, notes);
                             if (returnHelper.getResult()) {
-                                Long contactID = returnHelper.getID();
-                                returnHelper = customerManagementBean.setPrimaryContact(custID, contactID);
-                                if (returnHelper.getResult()) {
-                                    List<Customer> customers = customerManagementBean.listCustomers();
-                                    if (customers == null) {
-                                        nextPage = "error500.html";
-                                    } else {
-                                        session.setAttribute("customers", customers);
-                                        nextPage = "CustomerManagement/customerManagement.jsp?goodMsg=" + returnHelper.getDescription();
-                                    }
+                                List<Customer> customers = customerManagementBean.listCustomers();
+                                if (customers == null) {
+                                    nextPage = "error500.html";
                                 } else {
-                                    nextPage = "CustomerManagement/customerManagement.jsp?errMsg=" + returnHelper.getDescription();
+                                    session.setAttribute("customers", customers);
+                                    nextPage = "CustomerManagement/customerManagement.jsp?goodMsg=" + returnHelper.getDescription();
                                 }
                             } else {
                                 nextPage = "CustomerManagement/customerManagement.jsp?errMsg=" + returnHelper.getDescription();
