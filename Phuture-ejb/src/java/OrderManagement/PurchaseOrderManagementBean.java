@@ -518,9 +518,10 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
             Double totalPrice = 0.0;
             Double totalTax = 0.0;
             for (LineItem curLineItem : poLineItems) {
-                Double currLineItemTotalPriceBeforeTax = curLineItem.getItemUnitPrice() * curLineItem.getItemQty();
-                totalPrice = totalPrice + (currLineItemTotalPriceBeforeTax * ((gstRate / 100) + 1));
-                totalTax = totalTax + (currLineItemTotalPriceBeforeTax * gstRate / 100);
+                totalPrice = totalPrice + curLineItem.getItemUnitPrice();
+                //Double currLineItemTotalPriceBeforeTax = curLineItem.getItemUnitPrice() * curLineItem.getItemQty();
+                //totalPrice = totalPrice + (currLineItemTotalPriceBeforeTax * ((gstRate / 100) + 1));
+                //totalTax = totalTax + (currLineItemTotalPriceBeforeTax * gstRate / 100);
             }
             po.setTotalPrice(totalPrice);
             em.merge(po);
@@ -564,9 +565,10 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
             Double totalPrice = 0.0;
             Double totalTax = 0.0;
             for (LineItem curLineItem : lineItems) {
-                Double currLineItemTotalPriceBeforeTax = curLineItem.getItemUnitPrice() * curLineItem.getItemQty();
-                totalPrice = totalPrice + (currLineItemTotalPriceBeforeTax * ((gstRate / 100) + 1));
-                totalTax = totalTax + (currLineItemTotalPriceBeforeTax * gstRate / 100);
+                totalPrice = totalPrice + curLineItem.getItemUnitPrice();
+                //Double currLineItemTotalPriceBeforeTax = curLineItem.getItemUnitPrice() * curLineItem.getItemQty();
+                //totalPrice = totalPrice + (currLineItemTotalPriceBeforeTax * ((gstRate / 100) + 1));
+                //totalTax = totalTax + (currLineItemTotalPriceBeforeTax * gstRate / 100);
             }
             po.setTotalPrice(totalPrice);
             em.merge(po);
@@ -609,9 +611,10 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
             Double totalTax = 0.0;
             List<LineItem> lineItems = sco.getItems();
             for (LineItem curLineItem : lineItems) {
-                Double currLineItemTotalPriceBeforeTax = curLineItem.getItemUnitPrice() * curLineItem.getItemQty();
-                totalPrice = totalPrice + (currLineItemTotalPriceBeforeTax * ((gstRate / 100) + 1));
-                totalTax = totalTax + (currLineItemTotalPriceBeforeTax * gstRate / 100);
+                totalPrice = totalPrice + curLineItem.getItemUnitPrice();
+                //Double currLineItemTotalPriceBeforeTax = curLineItem.getItemUnitPrice() * curLineItem.getItemQty();
+                //totalPrice = totalPrice + (currLineItemTotalPriceBeforeTax * ((gstRate / 100) + 1));
+                //totalTax = totalTax + (currLineItemTotalPriceBeforeTax * gstRate / 100);
             }
             sco.setTotalPrice(totalPrice);
             em.merge(sco);
@@ -652,9 +655,10 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
             Double totalPrice = 0.0;
             Double totalTax = 0.0;
             for (LineItem curLineItem : lineItems) {
-                Double currLineItemTotalPriceBeforeTax = curLineItem.getItemUnitPrice() * curLineItem.getItemQty();
-                totalPrice = totalPrice + (currLineItemTotalPriceBeforeTax * ((gstRate / 100) + 1));
-                totalTax = totalTax + (currLineItemTotalPriceBeforeTax * gstRate / 100);
+                totalPrice = totalPrice + curLineItem.getItemUnitPrice();
+                //Double currLineItemTotalPriceBeforeTax = curLineItem.getItemUnitPrice() * curLineItem.getItemQty();
+                //totalPrice = totalPrice + (currLineItemTotalPriceBeforeTax * ((gstRate / 100) + 1));
+                //totalTax = totalTax + (currLineItemTotalPriceBeforeTax * gstRate / 100);
             }
             po.setTotalPrice(totalPrice);
             em.merge(po);
