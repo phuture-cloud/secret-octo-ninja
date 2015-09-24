@@ -87,7 +87,7 @@ public class PurchaseOrderManagementController extends HttpServlet {
                                 session.setAttribute("suppliers", suppliers);
                                 String source = request.getParameter("source");
                                 if (source != null && source.equals("addressBook")) {
-                                    nextPage = "SupplierManagement/updateSupplierContact.jsp?previousPage=po";
+                                    nextPage = "SupplierManagement/updateSupplier.jsp?previousPage=po";
                                 } else {
                                     nextPage = "SupplierManagement/purchaseOrder.jsp";
                                 }
@@ -217,7 +217,7 @@ public class PurchaseOrderManagementController extends HttpServlet {
                             Date deliveryDate = dateFormat.parse(deliveryDateString);
 
                             //Update PO
-                            returnHelper = purchaseOrderManagementBean.updatePurchaseOrder(purchaseOrder.getId(), Long.parseLong(supplierID), poDateDate, status, terms, deliveryDate, remarks, currency, isAdmin);
+                            returnHelper = purchaseOrderManagementBean.updatePurchaseOrder(purchaseOrder.getId(), Long.parseLong(supplierContactID), poDateDate, status, terms, deliveryDate, remarks, currency, isAdmin);
                             if (returnHelper.getResult()) {
                                 Long poID = returnHelper.getID();
                                 purchaseOrder = purchaseOrderManagementBean.getPurchaseOrder(poID);
