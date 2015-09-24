@@ -23,6 +23,11 @@
     } else {
         String editingLineItem = request.getParameter("editingLineItem");
         String formDisablerFlag = "";
+
+        if (purchaseOrder != null && purchaseOrder.getStatus().equals("Voided")) {
+            formDisablerFlag = "disabled";
+            editingLineItem = "disabled";
+        }
         if (editingLineItem == null) {
             editingLineItem = "";
         } else {//Disable unneccessary fields when editing line item
@@ -345,6 +350,8 @@
                                                                         } else if (selectedStatus.equals("Completed")) {
                                                                             out.print("<option value='Pending'>Pending</option>");
                                                                             out.print("<option value='Completed' selected>Completed</option>");
+                                                                        } else if (selectedStatus.equals("Voided")) {
+                                                                            out.print("<option value='Voided' selected>Voided</option>");
                                                                         } else {
                                                                             out.print("<option value='Pending'>Pending</option>");
                                                                             out.print("<option value='Completed'>Completed</option>");
@@ -610,7 +617,7 @@
                                     <div class="col-sm-6 text-right mt-md mb-md">
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-default" onclick="javascript:back()">Back</button>
-                                            <button type="button" class='modal-with-move-anim btn btn-danger' href='#modalRemove'>Void Purchase Order</button>
+                                            <button <%=formDisablerFlag%> type="button" class='modal-with-move-anim btn btn-danger' href='#modalRemove'>Void Purchase Order</button>
                                             <button <%=formDisablerFlag%> class='btn btn-success' onclick='javascript:updatePO();'>Save</button>
                                         </div>
                                     </div>
@@ -678,7 +685,7 @@
                                         </div>
                                     </div>
                                     <br>
-                                    <input type="hidden" name="target" value="UpdatePOContact">    
+                                    <input type="hidden" name="target" value="UpdatePOSupplierContact">    
                                     <input type="hidden" name="id" value="<%=purchaseOrder.getId()%>">  
                                     <input type="hidden" name="source" value="addressBook"> 
                                 </div>

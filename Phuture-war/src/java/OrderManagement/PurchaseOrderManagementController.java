@@ -217,11 +217,16 @@ public class PurchaseOrderManagementController extends HttpServlet {
                             Date deliveryDate = dateFormat.parse(deliveryDateString);
 
                             //Update PO
+                            System.out.println(">>>>>>>>>> " + purchaseOrder.getId());
+
                             returnHelper = purchaseOrderManagementBean.updatePurchaseOrder(purchaseOrder.getId(), Long.parseLong(supplierContactID), poDateDate, status, terms, deliveryDate, remarks, currency, isAdmin);
                             if (returnHelper.getResult()) {
                                 Long poID = returnHelper.getID();
                                 purchaseOrder = purchaseOrderManagementBean.getPurchaseOrder(poID);
                                 session.setAttribute("po", purchaseOrder);
+
+                                purchaseOrders = purchaseOrderManagementBean.listAllPurchaseOrder(loggedInStaffID);
+                                session.setAttribute("listOfPO", purchaseOrders);
                                 nextPage = "POManagement/purchaseOrder.jsp?goodMsg=" + returnHelper.getDescription();
 
                                 //Update line item if there is any
@@ -304,6 +309,44 @@ public class PurchaseOrderManagementController extends HttpServlet {
                                 nextPage = "POManagement/purchaseOrder.jsp?goodMsg=" + returnHelper.getDescription();
                             } else {
                                 nextPage = "POManagement/purchaseOrder.jsp?errMsg=" + returnHelper.getDescription();
+                            }
+                        }
+                        break;
+
+                    case "UpdatePOSupplierContact":
+                        if (true) {
+                            String company = request.getParameter("company");
+                            String name = request.getParameter("name");
+                            String email = request.getParameter("email");
+                            String officeNo = request.getParameter("officeNo");
+                            String mobileNo = request.getParameter("mobileNo");
+                            String faxNo = request.getParameter("faxNo");
+                            String address = request.getParameter("address");
+
+                            String supplierID = request.getParameter("supplierID");
+                            String supplierContactID = request.getParameter("supplierContactID");
+
+                            String source = request.getParameter("source");
+                            //if address book
+                            if (source != null && source.equals("UpdateContact")) {
+                                returnHelper = purchaseOrderManagementBean.updatePurchaseOrderSupplierContactDetails(purchaseOrder.getSalesConfirmationOrder().getId(), Long.parseLong(supplierID), Long.parseLong(supplierContactID), isAdmin);
+                                purchaseOrder = purchaseOrderManagementBean.getPurchaseOrder(purchaseOrder.getId());
+                                if (returnHelper.getResult() && purchaseOrder != null) {
+                                    session.setAttribute("po", purchaseOrder);
+                                    nextPage = "POManagement/purchaseOrder.jsp?goodMsg=" + returnHelper.getDescription();
+                                } else {
+                                    nextPage = "POManagement/purchaseOrder.jsp?errMsg=" + returnHelper.getDescription();
+                                }
+                                //manual key in
+                            } else if (company != null && !company.isEmpty() && name != null && !name.isEmpty() && address != null && !address.isEmpty() && officeNo != null && !officeNo.isEmpty() && email != null && !email.isEmpty()) {
+                                returnHelper = purchaseOrderManagementBean.updatePurchaseOrderSupplierContactDetails(purchaseOrder.getSalesConfirmationOrder().getId(), company, name, email, officeNo, mobileNo, faxNo, address, isAdmin);
+                                purchaseOrder = purchaseOrderManagementBean.getPurchaseOrder(purchaseOrder.getId());
+                                if (returnHelper.getResult() && purchaseOrder != null) {
+                                    session.setAttribute("po", purchaseOrder);
+                                    nextPage = "POManagement/purchaseOrder.jsp?goodMsg=" + returnHelper.getDescription();
+                                } else {
+                                    nextPage = "POManagement/purchaseOrder.jsp?errMsg=" + returnHelper.getDescription();
+                                }
                             }
                         }
                         break;
