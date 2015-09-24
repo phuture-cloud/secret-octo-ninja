@@ -138,16 +138,6 @@
                                                     </span>
                                                 </p>
                                                 <p class="mb-none">
-                                                    <span class="text-dark">Total Overdue </span>
-                                                    <span class="value text-dark" style="min-width: 110px; font-size: 10.5pt; text-align: left;">
-                                                        <%
-                                                            if (statementOfAccount != null && statementOfAccount.getTotalAmountOverDue() != null) {
-                                                                out.print(formatter.format(statementOfAccount.getTotalAmountOverDue()));
-                                                            }
-                                                        %>
-                                                    </span>
-                                                </p>
-                                                <p class="mb-none">
                                                     <span class="value text-dark" style="min-width: 200px; font-size: 10.5pt; text-align: left; margin-top: 5px; margin-right: 30px;">
                                                         <button class="btn btn-default" onclick="javascript:viewOverdueInvoice(<%=statementOfAccount.getCustomer().getId()%>);">View Overdue Invoices</button>
                                                     </span>
@@ -193,7 +183,7 @@
                                                 <td><%=soali.get(i).getMethod()%></td>
                                                 <td><%=formatter.format(soali.get(i).getDebit())%></td>
                                                 <td><%=formatter.format(soali.get(i).getCredit())%></td>
-                                                <%if (i==soali.size()-1){%>
+                                                <%if (i == soali.size() - 1) {%>
                                                 <td><b><%=formatter.format(soali.get(i).getBalance())%></b></td>
                                                 <%} else {%>
                                                 <td><%=formatter.format(soali.get(i).getBalance())%></td>
@@ -227,6 +217,33 @@
                                         </tbody>
                                     </table>
                                 </div>
+
+
+                                <div class="invoice-summary" style="margin-top: 10px;">
+                                    <div class="row">
+                                        <div class="col-sm-5"></div>
+                                        <div class="col-sm-3"></div>
+                                        <div class="col-sm-4">
+                                            <table class="table h5 text-dark">
+                                                <tbody>
+                                                    <tr class="h4">
+                                                        <td colspan="2">
+                                                            Total 
+                                                        </td>
+                                                        <td class="text-left">
+                                                            <%
+                                                                if (statementOfAccount != null && statementOfAccount.getTotalAmountOverDue() != null) {
+                                                                    out.print(formatter.format(statementOfAccount.getTotalAmountOverDue()));
+                                                                }
+                                                            %>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
 
                                 <br>
 
