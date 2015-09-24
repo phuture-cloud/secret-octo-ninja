@@ -402,7 +402,7 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
         } catch (Exception ex) {
             context.setRollbackOnly();
             System.out.println("DeliveryOrderManagementBean: voidDeliveryOrder() failed");
-            result.setDescription("Failed to delete an DO due to internal server error.");
+            result.setDescription("Failed to void an DO due to internal server error.");
             ex.printStackTrace();
         }
         return result;
@@ -426,6 +426,10 @@ public class DeliveryOrderManagementBean implements DeliveryOrderManagementBeanL
             }
             if (deliveryOrder.getIsDeleted()) {
                 result.setDescription("DO can not be edited/deleted as it has already been deleted.");
+                return result;
+            }
+            if (deliveryOrder.getStatus().equals("Voided")) {
+                result.setDescription("DO can not be edited/deleted as it has already been voided.");
                 return result;
             }
             result.setResult(true);

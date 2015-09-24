@@ -164,9 +164,9 @@
                     document.poManagement.submit();
                 }
 
-                function deletePO() {
+                function voidPO() {
                     window.onbeforeunload = null;
-                    window.location.href = "../PurchaseOrderManagementController?target=DeletePO";
+                    window.location.href = "../PurchaseOrderManagementController?target=voidPO";
                 }
 
                 function addressBook() {
@@ -202,9 +202,7 @@
                                         <i class="fa fa-home"></i>
                                     </a>
                                 </li>
-                                <li><span><a href= "../OrderManagementController?target=ListAllSCO">SCO Management</a></span></li>
-                                <li><span><a href= "../OrderManagementController?target=RetrieveSCO&id=<%=purchaseOrder.getSalesConfirmationOrder().getId()%>"><%=purchaseOrder.getSalesConfirmationOrder().getSalesPerson().getStaffPrefix()%><%=purchaseOrder.getSalesConfirmationOrder().getSalesConfirmationOrderNumber()%></a></span></li>
-                                <li><span><a href= "purchaseOrders.jsp">POs</a></span></li>
+                                <li><span><a href= "../PurchaseOrderManagementController?target=ListAllPO">Purchase Orders</a></span></li>s
                                 <li><span>PO &nbsp;&nbsp</span></li>
                             </ol>
                         </div>
@@ -617,7 +615,7 @@
                                     <div class="col-sm-6 text-right mt-md mb-md">
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-default" onclick="javascript:back()">Back</button>
-                                            <button type='button' class='modal-with-move-anim btn btn-danger' href='#modalRemove'>Delete</button>
+                                            <button type='button' class='modal-with-move-anim btn btn-danger' href='#modalRemove'>Void Purchase Order</button>
                                             <button <%=formDisablerFlag%> class='btn btn-success' onclick='javascript:updatePO();'>Save</button>
                                         </div>
                                     </div>
@@ -774,14 +772,14 @@
                                         <i class="fa fa-question-circle" style="top: 0px;"></i>
                                     </div>
                                     <div class="modal-text">
-                                        <p>Are you sure that you want to delete this Purchase Order?<br/>This action cannot be reversed!</p>
+                                        <p>Are you sure that you want to void this Purchase Order?<br/>This action cannot be reversed!</p>
                                     </div>
                                 </div>
                             </div>
                             <footer class="panel-footer">
                                 <div class="row">
                                     <div class="col-md-12 text-right">
-                                        <button class="btn btn-primary modal-confirm" onclick="javascript:deletePO();">Confirm</button>
+                                        <button class="btn btn-primary modal-confirm" onclick="javascript:voidPO();">Confirm</button>
                                         <button class="btn btn-default modal-dismiss">Cancel</button>
                                     </div>
                                 </div>

@@ -126,7 +126,7 @@ public class PurchaseOrderManagementController extends HttpServlet {
 
                     case "DeletePO":
                         if (purchaseOrder != null) {
-                            returnHelper = purchaseOrderManagementBean.deletePurchaseOrder(purchaseOrder.getId());
+                            returnHelper = purchaseOrderManagementBean.deletePurchaseOrder(purchaseOrder.getId(), isAdmin);
                             if (returnHelper.getResult()) {
                                 session.removeAttribute("po");
                                 String previousMgtPage = (String) session.getAttribute("previousManagementPage");
@@ -147,7 +147,7 @@ public class PurchaseOrderManagementController extends HttpServlet {
 
                     case "VoidPO":
                         if (purchaseOrder != null) {
-                            returnHelper = purchaseOrderManagementBean.voidPurchaseOrder(purchaseOrder.getId(),isAdmin);
+                            returnHelper = purchaseOrderManagementBean.voidPurchaseOrder(purchaseOrder.getId(), isAdmin);
                             if (returnHelper.getResult()) {
                                 session.removeAttribute("po");
                                 String previousMgtPage = (String) session.getAttribute("previousManagementPage");
@@ -165,7 +165,7 @@ public class PurchaseOrderManagementController extends HttpServlet {
                             nextPage = "POManagement/purchaseOrders.jsp?errMsg=Delete Purchase Order failed. An error has occured.";
                         }
                         break;
-                    
+
                     case "UpdatePO":
                         if (true) {
                             String poDate = request.getParameter("poDate");
@@ -217,7 +217,7 @@ public class PurchaseOrderManagementController extends HttpServlet {
                             Date deliveryDate = dateFormat.parse(deliveryDateString);
 
                             //Update PO
-                            returnHelper = purchaseOrderManagementBean.updatePurchaseOrder(purchaseOrder.getId(), Long.parseLong(supplierID), poDateDate, status, terms, deliveryDate, remarks, currency);
+                            returnHelper = purchaseOrderManagementBean.updatePurchaseOrder(purchaseOrder.getId(), Long.parseLong(supplierID), poDateDate, status, terms, deliveryDate, remarks, currency, isAdmin);
                             if (returnHelper.getResult()) {
                                 Long poID = returnHelper.getID();
                                 purchaseOrder = purchaseOrderManagementBean.getPurchaseOrder(poID);
@@ -226,7 +226,7 @@ public class PurchaseOrderManagementController extends HttpServlet {
 
                                 //Update line item if there is any
                                 if (itemName != null && !itemName.isEmpty() && itemDescription != null && !itemDescription.isEmpty() && itemQty != null && !itemQty.isEmpty() && itemUnitPrice != null && !itemUnitPrice.isEmpty()) {
-                                    returnHelper = purchaseOrderManagementBean.addPOlineItem(poID, itemName, itemDescription, Integer.parseInt(itemQty), Double.parseDouble(itemUnitPrice));
+                                    returnHelper = purchaseOrderManagementBean.addPOlineItem(poID, itemName, itemDescription, Integer.parseInt(itemQty), Double.parseDouble(itemUnitPrice), isAdmin);
                                     purchaseOrder = purchaseOrderManagementBean.getPurchaseOrder(poID);
                                     if (returnHelper.getResult() && purchaseOrder != null) {
                                         session.setAttribute("po", purchaseOrder);
@@ -245,7 +245,7 @@ public class PurchaseOrderManagementController extends HttpServlet {
 
                     case "UpdatePONotes":
                         String notes = request.getParameter("notes");
-                        returnHelper = purchaseOrderManagementBean.updatePurchaseOrderNotes(purchaseOrder.getId(), notes);
+                        returnHelper = purchaseOrderManagementBean.updatePurchaseOrderNotes(purchaseOrder.getId(), notes, isAdmin);
                         purchaseOrder = purchaseOrderManagementBean.getPurchaseOrder(purchaseOrder.getId());
                         if (returnHelper.getResult() && purchaseOrder != null) {
                             session.setAttribute("po", purchaseOrder);
@@ -257,7 +257,7 @@ public class PurchaseOrderManagementController extends HttpServlet {
 
                     case "UpdatePORemarks":
                         String remarks = request.getParameter("remarks");
-                        returnHelper = purchaseOrderManagementBean.updatePurchaseOrderRemarks(purchaseOrder.getId(), remarks);
+                        returnHelper = purchaseOrderManagementBean.updatePurchaseOrderRemarks(purchaseOrder.getId(), remarks, isAdmin);
                         purchaseOrder = purchaseOrderManagementBean.getPurchaseOrder(purchaseOrder.getId());
                         if (returnHelper.getResult() && purchaseOrder != null) {
                             session.setAttribute("po", purchaseOrder);
@@ -271,7 +271,7 @@ public class PurchaseOrderManagementController extends HttpServlet {
                         if (true) {
                             String lineItemID = request.getParameter("lineItemID");
 
-                            returnHelper = purchaseOrderManagementBean.deletePOlineItem(purchaseOrder.getId(), Long.parseLong(lineItemID));
+                            returnHelper = purchaseOrderManagementBean.deletePOlineItem(purchaseOrder.getId(), Long.parseLong(lineItemID), isAdmin);
                             purchaseOrder = purchaseOrderManagementBean.getPurchaseOrder(purchaseOrder.getId());
                             if (returnHelper.getResult() && purchaseOrder != null) {
                                 session.setAttribute("po", purchaseOrder);
@@ -297,7 +297,7 @@ public class PurchaseOrderManagementController extends HttpServlet {
                             }
 
                             //Edit line item
-                            returnHelper = purchaseOrderManagementBean.updatePOlineItem(purchaseOrder.getId(), Long.parseLong(lineItemID), itemName, itemDescription, Integer.parseInt(itemQty), Double.parseDouble(itemUnitPrice));
+                            returnHelper = purchaseOrderManagementBean.updatePOlineItem(purchaseOrder.getId(), Long.parseLong(lineItemID), itemName, itemDescription, Integer.parseInt(itemQty), Double.parseDouble(itemUnitPrice), isAdmin);
                             purchaseOrder = purchaseOrderManagementBean.getPurchaseOrder(purchaseOrder.getId());
                             if (returnHelper.getResult() && purchaseOrder != null) {
                                 session.setAttribute("po", purchaseOrder);
@@ -335,7 +335,7 @@ public class PurchaseOrderManagementController extends HttpServlet {
                 return false;
             } else {
                 if (staff.getIsAdmin()) {
-                    isAdmin=true;
+                    isAdmin = true;
                 }
                 loggedInStaffID = staff.getId();
                 return true;

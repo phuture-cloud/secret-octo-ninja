@@ -148,7 +148,7 @@ public class SupplierManagementBean implements SupplierManagementBeanLocal {
             result.setID(contact.getId());
             em.merge(supplier);
             result.setResult(true);
-            result.setDescription("SupplierContact added successfully.");
+            result.setDescription("Supplier contact added successfully.");
         } catch (NoResultException ex) {
             System.out.println("SupplierManagementBean: addContact() failed");
             result.setResult(false);

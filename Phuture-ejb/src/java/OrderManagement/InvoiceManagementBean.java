@@ -438,6 +438,10 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
                 result.setDescription("Invoice can not be edited/deleted as it has already been deleted.");
                 return result;
             }
+            if (invoice.getStatus().equals("Voided")) {
+                result.setDescription("Invoice can not be edited/deleted as it has already been voided.");
+                return result;
+            }
             result.setResult(true);
             result.setDescription("Editable invoice.");
         } catch (NoResultException ex) {

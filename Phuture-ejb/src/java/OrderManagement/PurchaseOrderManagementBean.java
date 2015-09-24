@@ -1,6 +1,7 @@
 package OrderManagement;
 
 import EntityManager.Contact;
+import EntityManager.DeliveryOrder;
 import EntityManager.LineItem;
 import EntityManager.OrderNumbers;
 import EntityManager.PurchaseOrder;
@@ -77,7 +78,7 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
             po.setPurchaseOrderDate(purchaseOrderDate);
             em.persist(po);
             //Copy line items from SCO
-            replacePOlineItemWithSCOitems(sco.getId(), po.getId());
+            replacePOlineItemWithSCOitems(sco.getId(), po.getId(),true);
             //Update SCO list of POs
             List<PurchaseOrder> purchaseOrders = sco.getPurchaseOrders();
             purchaseOrders.add(po);
@@ -102,7 +103,7 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
     }
 
     @Override
-    public ReturnHelper updatePurchaseOrder(Long purchaseOrderID, Long newSupplierContactID, Date purchaseOrderDate, String status, String terms, Date deliveryDate, String remarks, String currency) {
+    public ReturnHelper updatePurchaseOrder(Long purchaseOrderID, Long newSupplierContactID, Date purchaseOrderDate, String status, String terms, Date deliveryDate, String remarks, String currency, Boolean adminOverwrite) {
         System.out.println("PurchaseOrderManagementBean: updatePurchaseOrder() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -114,12 +115,17 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
                 result.setDescription("Failed to edit the PO as it has been deleted.");
                 return result;
             }
+            ReturnHelper checkResult = checkIfPOisEditable(purchaseOrderID, adminOverwrite);
+            if (!checkResult.getResult()) {
+                result.setDescription(checkResult.getDescription());
+                return result;
+            }
 //            ReturnHelper uniqueResult = checkIfPOnumberIsUnique(purchaseOrderNumber);
 //            if (!uniqueResult.getResult() && !purchaseOrderNumber.equals(po.getPurchaseOrderNumber())) {
 //                uniqueResult.setDescription("Failed to save the PO as the PO number is already in use.");
 //                return uniqueResult;
 //            }
-            ReturnHelper updateStatusResult = updatePurchaseOrderStatus(purchaseOrderID, status);
+            ReturnHelper updateStatusResult = updatePurchaseOrderStatus(purchaseOrderID, status, adminOverwrite);
             if (updateStatusResult.getResult() == false) {
                 return updateStatusResult;
             }
@@ -271,7 +277,7 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
     }
 
     @Override
-    public ReturnHelper updatePurchaseOrderStatus(Long purchaseOrderID, String status) {
+    public ReturnHelper updatePurchaseOrderStatus(Long purchaseOrderID, String status, Boolean adminOverwrite) {
         System.out.println("PurchaseOrderManagementBean: updatePurchaseOrderStatus() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -281,6 +287,11 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
             PurchaseOrder po = (PurchaseOrder) q.getSingleResult();
             if (po.getIsDeleted()) {
                 result.setDescription("Failed to edit the SCO as it has been deleted.");
+                return result;
+            }
+            ReturnHelper checkResult = checkIfPOisEditable(purchaseOrderID, adminOverwrite);
+            if (!checkResult.getResult()) {
+                result.setDescription(checkResult.getDescription());
                 return result;
             }
             switch (status) {
@@ -310,7 +321,7 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
     }
 
     @Override
-    public ReturnHelper updatePurchaseOrderNotes(Long purchaseOrderID, String notes) {
+    public ReturnHelper updatePurchaseOrderNotes(Long purchaseOrderID, String notes, Boolean adminOverwrite) {
         System.out.println("PurchaseOrderManagementBean: updatePurchaseOrderNotes() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -320,6 +331,11 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
             PurchaseOrder po = (PurchaseOrder) q.getSingleResult();
             if (po.getIsDeleted()) {
                 result.setDescription("Failed to edit the PO as it has been deleted.");
+                return result;
+            }
+            ReturnHelper checkResult = checkIfPOisEditable(purchaseOrderID, adminOverwrite);
+            if (!checkResult.getResult()) {
+                result.setDescription(checkResult.getDescription());
                 return result;
             }
             po.setNotes(notes);
@@ -338,7 +354,7 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
     }
 
     @Override
-    public ReturnHelper updatePurchaseOrderRemarks(Long purchaseOrderID, String remarks) {
+    public ReturnHelper updatePurchaseOrderRemarks(Long purchaseOrderID, String remarks, Boolean adminOverwrite) {
         System.out.println("PurchaseOrderManagementBean: updatePurchaseOrderRemarks() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -348,6 +364,11 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
             PurchaseOrder po = (PurchaseOrder) q.getSingleResult();
             if (po.getIsDeleted()) {
                 result.setDescription("Failed to edit the PO as it has been deleted.");
+                return result;
+            }
+            ReturnHelper checkResult = checkIfPOisEditable(purchaseOrderID, adminOverwrite);
+            if (!checkResult.getResult()) {
+                result.setDescription(checkResult.getDescription());
                 return result;
             }
             po.setRemarks(remarks);
@@ -366,11 +387,16 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
     }
 
     @Override
-    public ReturnHelper deletePurchaseOrder(Long purchaseOrderID) {
+    public ReturnHelper deletePurchaseOrder(Long purchaseOrderID, Boolean adminOverwrite) {
         System.out.println("PurchaseOrderManagementBean: deletePurchaseOrder() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
         try {
+            ReturnHelper checkResult = checkIfPOisEditable(purchaseOrderID, adminOverwrite);
+            if (!checkResult.getResult()) {
+                result.setDescription(checkResult.getDescription());
+                return result;
+            }
             Query q = em.createQuery("SELECT s FROM PurchaseOrder s WHERE s.id=:id");
             q.setParameter("id", purchaseOrderID);
             PurchaseOrder po = (PurchaseOrder) q.getSingleResult();
@@ -386,6 +412,36 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
         } catch (Exception ex) {
             System.out.println("PurchaseOrderManagementBean: deletePurchaseOrder() failed");
             result.setDescription("Internal server error.");
+            ex.printStackTrace();
+        }
+        return result;
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    @Override
+    public ReturnHelper voidPurchaseOrder(Long purchaseOrderID, Boolean adminOverwrite) {
+        System.out.println("PurchaseOrderManagementBean: voidPurchaseOrder() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        try {
+            Query q = em.createQuery("SELECT s FROM PurchaseOrder s WHERE s.id=:id");
+            q.setParameter("id", purchaseOrderID);
+            PurchaseOrder purchaseOrder = (PurchaseOrder) q.getSingleResult();
+            //ReturnHelper checkResult = checkIfPOisEditable(purchaseOrderID, adminOverwrite);
+            //if (!checkResult.getResult()) {
+//                result.setDescription(checkResult.getDescription());
+//                return result;
+//            }
+            if (!purchaseOrder.getStatus().equals("Voided")) {
+                purchaseOrder.setStatus("Voided");
+                em.merge(purchaseOrder);
+            }
+            result.setResult(true);
+            result.setDescription("PO voided.");
+        } catch (Exception ex) {
+            context.setRollbackOnly();
+            System.out.println("PurchaseOrderManagementBean: voidPurchaseOrder() failed");
+            result.setDescription("Failed to void an PO due to internal server error.");
             ex.printStackTrace();
         }
         return result;
@@ -410,6 +466,43 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
             }
         } catch (Exception ex) {
             System.out.println("PurchaseOrderManagementBean: checkIfPOnumberIsUnique() failed");
+            result.setDescription("Internal server error.");
+            ex.printStackTrace();
+        }
+        return result;
+    }
+
+    @Override
+    public ReturnHelper checkIfPOisEditable(Long purchaseOrderID, Boolean adminOverwrite) {
+        System.out.println("PurchaseOrderManagementBean: checkIfPOisEditable() called");
+        ReturnHelper result = new ReturnHelper();
+        result.setResult(false);
+        try {
+            Query q = em.createQuery("SELECT s FROM PurchaseOrder s WHERE s.id=:id");
+            q.setParameter("id", purchaseOrderID);
+            PurchaseOrder purchaseOrder = (PurchaseOrder) q.getSingleResult();
+            if (!adminOverwrite) {//If not admin account
+                //Check if PO status is shipped. Prevent editing if it is already shipped.
+                //if (purchaseOrder.getStatus().equals("Shipped")) {
+                //    result.setDescription("PO can not be edited/deleted as the first invoice has already been issued.");
+                //    return result;
+                //}
+            }
+            if (purchaseOrder.getIsDeleted()) {
+                result.setDescription("PO can not be edited/deleted as it has already been deleted.");
+                return result;
+            }
+            if (purchaseOrder.getStatus().equals("Voided")) {
+                result.setDescription("PO can not be edited/deleted as it has already been voided.");
+                return result;
+            }
+            result.setResult(true);
+            result.setDescription("Editable PO.");
+        } catch (NoResultException ex) {
+            System.out.println("PurchaseOrderManagementBean: checkIfPOisEditable() can not find PO");
+            result.setDescription("Unable to complete request, PO not found.");
+        } catch (Exception ex) {
+            System.out.println("PurchaseOrderManagementBean: checkIfPOisEditable() failed");
             result.setDescription("Internal server error.");
             ex.printStackTrace();
         }
@@ -480,11 +573,16 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
     }
 
     @Override
-    public ReturnHelper replacePOlineItemWithSCOitems(Long salesConfirmationOrderID, Long purchaseOrderID) {
+    public ReturnHelper replacePOlineItemWithSCOitems(Long salesConfirmationOrderID, Long purchaseOrderID, Boolean adminOverwrite) {
         System.out.println("PurchaseOrderManagementBean: replacePOlineItemWithSCOitems() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
         try {
+            ReturnHelper checkResult = checkIfPOisEditable(purchaseOrderID, adminOverwrite);
+            if (!checkResult.getResult()) {
+                result.setDescription(checkResult.getDescription());
+                return result;
+            }
             Query q = em.createQuery("SELECT s FROM SalesConfirmationOrder s WHERE s.id=:id");
             q.setParameter("id", salesConfirmationOrderID);
             SalesConfirmationOrder sco = (SalesConfirmationOrder) q.getSingleResult();
@@ -496,7 +594,7 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
                 return result;
             }
             //Delete all the line items first
-            ReturnHelper deleteResult = deleteallPOlineItem(purchaseOrderID);
+            ReturnHelper deleteResult = deleteallPOlineItem(purchaseOrderID,adminOverwrite);
             if (!deleteResult.getResult()) {
                 return deleteResult;
             }
@@ -540,7 +638,7 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
     }
 
     @Override
-    public ReturnHelper addPOlineItem(Long purchaseOrderID, String itemName, String itemDescription, Integer itemQty, Double itemUnitPrice) {
+    public ReturnHelper addPOlineItem(Long purchaseOrderID, String itemName, String itemDescription, Integer itemQty, Double itemUnitPrice, Boolean adminOverwrite) {
         System.out.println("PurchaseOrderManagementBean: addPOlineItem() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -550,6 +648,11 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
             PurchaseOrder po = (PurchaseOrder) q.getSingleResult();
             if (po.getIsDeleted()) {
                 result.setDescription("Failed to edit the PO as it has been deleted.");
+                return result;
+            }
+            ReturnHelper checkResult = checkIfPOisEditable(purchaseOrderID, adminOverwrite);
+            if (!checkResult.getResult()) {
+                result.setDescription(checkResult.getDescription());
                 return result;
             }
             LineItem lineItem = new LineItem();
@@ -586,16 +689,21 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
     }
 
     @Override
-    public ReturnHelper updatePOlineItem(Long purchaseOrderID, Long lineItemID, String newItemName, String newItemDescription, Integer newItemQty, Double newItemUnitPrice) {
+    public ReturnHelper updatePOlineItem(Long purchaseOrderID, Long lineItemID, String newItemName, String newItemDescription, Integer newItemQty, Double newItemUnitPrice, Boolean adminOverwrite) {
         System.out.println("PurchaseOrderManagementBean: updatePOlineItem() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
         try {
             Query q = em.createQuery("SELECT s FROM PurchaseOrder s WHERE s.id=:id");
             q.setParameter("id", purchaseOrderID);
-            PurchaseOrder sco = (PurchaseOrder) q.getSingleResult();
-            if (sco.getIsDeleted()) {
+            PurchaseOrder po = (PurchaseOrder) q.getSingleResult();
+            if (po.getIsDeleted()) {
                 result.setDescription("Failed to edit the PO as it has been deleted.");
+                return result;
+            }
+            ReturnHelper checkResult = checkIfPOisEditable(purchaseOrderID, adminOverwrite);
+            if (!checkResult.getResult()) {
+                result.setDescription(checkResult.getDescription());
                 return result;
             }
             q = em.createQuery("SELECT l FROM LineItem l WHERE l.id=:id");
@@ -609,15 +717,15 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
             //Update SCO total price & tax
             Double totalPrice = 0.0;
             Double totalTax = 0.0;
-            List<LineItem> lineItems = sco.getItems();
+            List<LineItem> lineItems = po.getItems();
             for (LineItem curLineItem : lineItems) {
                 totalPrice = totalPrice + curLineItem.getItemUnitPrice();
                 //Double currLineItemTotalPriceBeforeTax = curLineItem.getItemUnitPrice() * curLineItem.getItemQty();
                 //totalPrice = totalPrice + (currLineItemTotalPriceBeforeTax * ((gstRate / 100) + 1));
                 //totalTax = totalTax + (currLineItemTotalPriceBeforeTax * gstRate / 100);
             }
-            sco.setTotalPrice(totalPrice);
-            em.merge(sco);
+            po.setTotalPrice(totalPrice);
+            em.merge(po);
             result.setResult(true);
             result.setDescription("Line item updated.");
         } catch (NoResultException ex) {
@@ -633,7 +741,7 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
     }
 
     @Override
-    public ReturnHelper deletePOlineItem(Long purchaseOrderID, Long lineItemID) {
+    public ReturnHelper deletePOlineItem(Long purchaseOrderID, Long lineItemID, Boolean adminOverwrite) {
         System.out.println("PurchaseOrderManagementBean: deletePOlineItem() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -643,6 +751,11 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
             PurchaseOrder po = (PurchaseOrder) q.getSingleResult();
             if (po.getIsDeleted()) {
                 result.setDescription("Failed to delete the item as the PO has been deleted.");
+                return result;
+            }
+            ReturnHelper checkResult = checkIfPOisEditable(purchaseOrderID, adminOverwrite);
+            if (!checkResult.getResult()) {
+                result.setDescription(checkResult.getDescription());
                 return result;
             }
             q = em.createQuery("SELECT l FROM LineItem l WHERE l.id=:id");
@@ -678,7 +791,7 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
     }
 
     @Override
-    public ReturnHelper deleteallPOlineItem(Long purchaseOrderID) {
+    public ReturnHelper deleteallPOlineItem(Long purchaseOrderID, Boolean adminOverwrite) {
         System.out.println("PurchaseOrderManagementBean: deleteallPOlineItem() called");
         ReturnHelper result = new ReturnHelper();
         result.setResult(false);
@@ -688,6 +801,11 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
             PurchaseOrder po = (PurchaseOrder) q.getSingleResult();
             if (po.getIsDeleted()) {
                 result.setDescription("Failed to edit the PO as it has been deleted.");
+                return result;
+            }
+            ReturnHelper checkResult = checkIfPOisEditable(purchaseOrderID, adminOverwrite);
+            if (!checkResult.getResult()) {
+                result.setDescription(checkResult.getDescription());
                 return result;
             }
             List<LineItem> lineItems = po.getItems();

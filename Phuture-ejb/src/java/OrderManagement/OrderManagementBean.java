@@ -63,7 +63,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
         em.merge(orderNumbers);
         return nextOrderNumber.toString();
     }
-    
+
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Override
     public ReturnHelper createSalesConfirmationOrder(Date salesConfirmationOrderDate, Date estimatedDeliveryDate, String customerPurchaseOrderNumber, Long customerID, Long contactID, Long salesStaffID, Integer terms) {
@@ -436,7 +436,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             em.merge(sco);
             List<PurchaseOrder> pos = sco.getPurchaseOrders();
             for (PurchaseOrder purchaseOrder : pos) {
-                pombl.deletePurchaseOrder(purchaseOrder.getId());
+                pombl.deletePurchaseOrder(purchaseOrder.getId(), adminOverwrite);
             }
             List<DeliveryOrder> dos = sco.getDeliveryOrders();
             for (DeliveryOrder deliveryOrder : dos) {
@@ -456,7 +456,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
         }
         return result;
     }
-    
+
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Override
     public ReturnHelper voidSalesConfirmationOrder(Long salesConfirmationOrderID, Boolean adminOverwrite) {
@@ -476,7 +476,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             em.merge(sco);
             List<PurchaseOrder> pos = sco.getPurchaseOrders();
             for (PurchaseOrder purchaseOrder : pos) {
-                pombl.deletePurchaseOrder(purchaseOrder.getId());
+                pombl.deletePurchaseOrder(purchaseOrder.getId(), adminOverwrite);
             }
             List<DeliveryOrder> dos = sco.getDeliveryOrders();
             for (DeliveryOrder deliveryOrder : dos) {
@@ -519,6 +519,10 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             }
             if (sco.getIsDeleted()) {
                 result.setDescription("SCO can not be edited/deleted as it has already been deleted.");
+                return result;
+            }
+            if (sco.getStatus().equals("Voided")) {
+                result.setDescription("SCO can not be edited/deleted as it has already been voided.");
                 return result;
             }
             result.setResult(true);
@@ -599,7 +603,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             }
             List<SalesConfirmationOrder> salesConfirmationOrders = q.getResultList();
             List<SalesConfirmationOrderHelper> salesConfirmationOrderHelpers = new ArrayList();
-            for (SalesConfirmationOrder salesConfirmationOrder: salesConfirmationOrders) {
+            for (SalesConfirmationOrder salesConfirmationOrder : salesConfirmationOrders) {
                 SalesConfirmationOrderHelper salesConfirmationOrderHelper = new SalesConfirmationOrderHelper();
                 salesConfirmationOrderHelper.setSco(salesConfirmationOrder);
                 salesConfirmationOrderHelper.setDeliveryOrders(dombl.listDeliveryOrdersTiedToSCO(salesConfirmationOrder.getId()));
@@ -626,7 +630,7 @@ public class OrderManagementBean implements OrderManagementBeanLocal {
             q.setParameter("id", customerID);
             List<SalesConfirmationOrder> salesConfirmationOrders = q.getResultList();
             List<SalesConfirmationOrderHelper> salesConfirmationOrderHelpers = new ArrayList();
-            for (SalesConfirmationOrder salesConfirmationOrder: salesConfirmationOrders) {
+            for (SalesConfirmationOrder salesConfirmationOrder : salesConfirmationOrders) {
                 SalesConfirmationOrderHelper salesConfirmationOrderHelper = new SalesConfirmationOrderHelper();
                 salesConfirmationOrderHelper.setSco(salesConfirmationOrder);
                 salesConfirmationOrderHelper.setDeliveryOrders(dombl.listDeliveryOrdersTiedToSCO(salesConfirmationOrder.getId()));
