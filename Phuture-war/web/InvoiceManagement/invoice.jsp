@@ -621,7 +621,7 @@
                                             <%
                                                 if (invoice.getItems().size() > 0) {
                                                     if (invoice.getTotalCreditNoteAmount() > 0) {
-                                                        out.print("<button type='button' class='btn btn-primary' onclick='javascript:detachCR(" + invoice.getId() + ")'>Detach Credit Note</button>");
+                                                        out.print("<button " + formDisablerFlag + " type='button' class='btn btn-primary' onclick='javascript:detachCR(" + invoice.getId() + ")'>Detach Credit Note</button>");
                                                     } else {
                                                         out.print("<button " + formDisablerFlag + " type='button' class='btn btn-primary modal-with-form' href='#modalAttachCN'>Attach Credit Note</button>");
                                                     }
