@@ -50,7 +50,7 @@
                                         </span>
                                     </span>
                                 </div>
-                                <a href="pages-recover-password.html" class="pull-right">Lost Password?</a>
+                                <!--<a href="pages-recover-password.html" class="pull-right">Lost Password?</a>-->
                             </div>
 
                             <div class="row">
