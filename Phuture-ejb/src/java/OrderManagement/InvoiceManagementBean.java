@@ -399,12 +399,12 @@ public class InvoiceManagementBean implements InvoiceManagementBeanLocal {
                 for (PaymentRecord paymentRecord : invoice.getPaymentRecords()) {
                     pmbl.deletePayment(paymentRecord.getId());
                 }
+                invoice.setStatusAsVoided();
                 //Void all the credit notes
                 List<CreditNote> creditNotes = invoice.getCreditNotes();
                 for (CreditNote creditNote : creditNotes) {
                     pmbl.voidCreditNote(creditNote.getId());
                 }
-                invoice.setStatusAsVoided();
                 em.merge(invoice);
             }
             result.setResult(true);

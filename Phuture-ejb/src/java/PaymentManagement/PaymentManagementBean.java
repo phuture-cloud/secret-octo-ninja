@@ -465,7 +465,7 @@ public class PaymentManagementBean implements PaymentManagementBeanLocal {
         result.setResult(false);
         try {
             CreditNote creditNote = em.getReference(CreditNote.class, creditNoteID);
-            if (creditNote.getAppliedToInvoice() != null) {
+            if (creditNote.getAppliedToInvoice() != null && !creditNote.getAppliedToInvoice().getStatus().equals("Voided")) {
                 result.setDescription("Credit note cannot be voided as it has been applied to an invoice.");
                 return result;
             }
