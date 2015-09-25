@@ -239,7 +239,7 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
                 return result;
             }
             // Update customer link if it's different
-            if (newSupplier.getId() != purchaseOrder.getSupplierLink().getId()) {
+            if (!newSupplier.getId().equals(purchaseOrder.getSupplierLink().getId())) {
                 //Remove away the old links
                 Supplier oldSupplier = purchaseOrder.getSupplierLink();
                 List<PurchaseOrder> oldSupplierPOs = oldSupplier.getPurchaseOrders();
