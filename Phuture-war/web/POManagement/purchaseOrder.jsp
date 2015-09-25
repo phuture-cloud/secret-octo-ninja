@@ -59,35 +59,21 @@
                         var itemUnitPrice = parseFloat($('#input_itemUnitPrice').val());
                         var itemQty = parseInt($('#input_itemQty').val());
                         var itemAmount = itemUnitPrice * itemQty;
-                        var subtotal = parseFloat($('#subtotal').val());
-                        var gst = parseFloat($('#gst').val());
                         var totalPrice = parseFloat($('#totalPrice').val());
 
                         if (!isNaN(itemAmount)) {
-                            if (isNaN(subtotal)) {
-                                subtotal = 0;
-                            }
-                            if (isNaN(gst)) {
-                                gst = 0;
-                            }
                             if (isNaN(totalPrice)) {
                                 totalPrice = 0;
                             }
 
-                            var newSubtotal = subtotal + itemAmount;
-                            var newGst = newSubtotal * 0.07;
-                            var newTotalPrice = newSubtotal + newGst;
+                            var newTotalPrice = itemAmount + totalPrice;
 
                             $('#input_itemAmount').val(itemAmount.toFixed(2));
-                            $('#output_subtotal').text("$" + newSubtotal.toFixed(2));
-                            $('#output_gst').text("$" + newGst.toFixed(2));
                             $('#output_totalPrice').text("$" + newTotalPrice.toFixed(2));
                         }
 
                         if (isNaN(itemUnitPrice) || isNaN(itemQty)) {
                             $('#input_itemAmount').val("");
-                            $('#output_subtotal').text("$" + subtotal.toFixed(2));
-                            $('#output_gst').text("$" + gst.toFixed(2));
                             $('#output_totalPrice').text("$" + totalPrice.toFixed(2));
                         }
                     });
