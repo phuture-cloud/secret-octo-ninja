@@ -465,7 +465,7 @@
                                                         </div>
                                                     </td>
                                                     <td class="text-center">
-                                                        <button class='btn btn-default btn-block' <%=formDisablerFlag%> onclick='javascript:addLineItemToExistingPO(addLineItemToExistingPO<%=purchaseOrder.getId()%>)'>Add Item</button>
+                                                        <button class='btn btn-default btn-block' <%=formDisablerFlag%> onclick='javascript:addLineItemToExistingPO(<%=purchaseOrder.getId()%>)'>Add Item</button>
                                                     </td>
                                                 </tr>
 

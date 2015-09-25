@@ -189,7 +189,7 @@ public class PurchaseOrderManagementController extends HttpServlet {
                             String source = request.getParameter("source");
 
                             if (source.equals("AddLineItemToExistingPO")) {
-                                if (supplierContactID == null || supplierContactID.isEmpty() || itemName == null || itemName.isEmpty() || itemDescription == null || itemDescription.isEmpty() || itemQty == null || itemQty.isEmpty() || itemUnitPrice == null || itemUnitPrice.isEmpty()) {
+                                if (itemName == null || itemName.isEmpty() || itemDescription == null || itemDescription.isEmpty() || itemQty == null || itemQty.isEmpty() || itemUnitPrice == null || itemUnitPrice.isEmpty()) {
                                     nextPage = "POManagement/purchaseOrder.jsp?poDate=" + poDate + "&status=" + status + "&terms=" + terms + "&deliveryDate=" + deliveryDateString + "&currency=" + currency + "&errMsg=Please fill in all the fields for the item.";
                                     break;
                                 }
