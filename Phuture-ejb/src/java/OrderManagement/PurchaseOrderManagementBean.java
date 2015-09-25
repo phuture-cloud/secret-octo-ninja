@@ -1,7 +1,5 @@
 package OrderManagement;
 
-import EntityManager.Contact;
-import EntityManager.DeliveryOrder;
 import EntityManager.LineItem;
 import EntityManager.OrderNumbers;
 import EntityManager.PurchaseOrder;
@@ -196,7 +194,7 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
                 result.setDescription("Failed to edit the PO as it has been deleted.");
                 return result;
             }
-            purchaseOrder.setContactName(supplierName);
+            purchaseOrder.setSupplierName(supplierName);
             purchaseOrder.setContactAddress(address);
             purchaseOrder.setContactEmail(email);
             purchaseOrder.setContactOfficeNo(officeNo);
@@ -252,10 +250,10 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
                 supplierPOs.add(purchaseOrder);
                 newSupplier.setPurchaseOrders(supplierPOs);
                 em.merge(newSupplier);
-                //Update fields
-                purchaseOrder.setSupplierName(newSupplierName);
                 purchaseOrder.setSupplierLink(newSupplier);
             }
+            //Update fields
+            purchaseOrder.setSupplierName(newSupplierName);
             purchaseOrder.setContactAddress(supplierContact.getAddress());
             purchaseOrder.setContactEmail(supplierContact.getEmail());
             purchaseOrder.setContactOfficeNo(supplierContact.getOfficeNo());

@@ -107,7 +107,7 @@
                                         <div class="form-group">
                                             <label class="col-md-3 control-label">Contact Person</label>
                                             <div class="col-md-6">
-                                                <select id="supplierContactid" name="contactID" data-plugin-selectTwo class="form-control populate" required>
+                                                <select id="supplierContactid" name="supplierContactID" data-plugin-selectTwo class="form-control populate" required>
                                                     <option value="">Select a contact</option>
                                                     <%
                                                         if (supplierContacts != null && supplierContacts.size() > 0) {

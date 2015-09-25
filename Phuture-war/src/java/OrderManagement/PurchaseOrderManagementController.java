@@ -331,8 +331,8 @@ public class PurchaseOrderManagementController extends HttpServlet {
 
                             String source = request.getParameter("source");
                             //if address book
-                            if (source != null && source.equals("UpdateContact")) {
-                                returnHelper = purchaseOrderManagementBean.updatePurchaseOrderSupplierContactDetails(purchaseOrder.getSalesConfirmationOrder().getId(), Long.parseLong(supplierContactID), isAdmin);
+                            if (source != null && source.equals("UpdateSupplierContact")) {
+                                returnHelper = purchaseOrderManagementBean.updatePurchaseOrderSupplierContactDetails(purchaseOrder.getId(), Long.parseLong(supplierContactID), isAdmin);
                                 purchaseOrder = purchaseOrderManagementBean.getPurchaseOrder(purchaseOrder.getId());
                                 if (returnHelper.getResult() && purchaseOrder != null) {
                                     session.setAttribute("po", purchaseOrder);
@@ -342,7 +342,7 @@ public class PurchaseOrderManagementController extends HttpServlet {
                                 }
                                 //manual key in
                             } else if (company != null && !company.isEmpty() && name != null && !name.isEmpty() && address != null && !address.isEmpty() && officeNo != null && !officeNo.isEmpty() && email != null && !email.isEmpty()) {
-                                returnHelper = purchaseOrderManagementBean.updatePurchaseOrderSupplierContactDetails(purchaseOrder.getSalesConfirmationOrder().getId(), company, name, email, officeNo, mobileNo, faxNo, address, isAdmin);
+                                returnHelper = purchaseOrderManagementBean.updatePurchaseOrderSupplierContactDetails(purchaseOrder.getId(), company, name, email, officeNo, mobileNo, faxNo, address, isAdmin);
                                 purchaseOrder = purchaseOrderManagementBean.getPurchaseOrder(purchaseOrder.getId());
                                 if (returnHelper.getResult() && purchaseOrder != null) {
                                     session.setAttribute("po", purchaseOrder);
