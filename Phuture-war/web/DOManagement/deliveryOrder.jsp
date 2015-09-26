@@ -509,7 +509,7 @@
 
                     <div id="modalRemarks" class="modal-block modal-block-primary mfp-hide">
                         <section class="panel">
-                            <form name="editRemarksForm" action="../OrderManagementController" class="form-horizontal mb-lg">
+                            <form name="editRemarksForm" action="../DeliveryOrderManagementController" class="form-horizontal mb-lg">
                                 <header class="panel-heading">
                                     <h2 class="panel-title">Remarks</h2>
                                 </header>
