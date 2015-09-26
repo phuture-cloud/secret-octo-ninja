@@ -102,9 +102,7 @@
 
                     <section class="panel">
                         <header class="panel-heading">
-                            <%
-                                if (previousMgtPage.equals("sco")) {
-                            %>
+                            <%if (previousMgtPage.equals("sco")) {%>
                             <h2 class="panel-title"><%=sco.getSalesPerson().getStaffPrefix()%><%=sco.getSalesConfirmationOrderNumber()%> - Invoices</h2>
                             <%} else {%>
                             <h2 class="panel-title">Invoices</h2>
@@ -170,13 +168,13 @@
                                                 <% if (invoices.get(i).getTotalAmountPaid() == null || invoices.get(i).getTotalCreditNoteAmount() == null || invoices.get(i).getTotalPriceAfterCreditNote() == null || invoices.get(i).getTotalPriceBeforeCreditNote() == null) {
                                                         //If there was some errors calculating the payment amount
                                                         out.println("<i class='fa fa-exclamation-triangle' style='color:yellow' data-toggle='tooltip' data-placement='top' title='Unable to calculate payment amount'></i>");
-                                                    } else if (invoices.get(i).getTotalAmountPaid() == 0 &&  Math.round(invoices.get(i).getTotalCreditNoteAmount() * 100.0) / 100.0  > Math.round(invoices.get(i).getTotalPriceBeforeCreditNote() * 100.0) / 100.0) {
+                                                    } else if (invoices.get(i).getTotalAmountPaid() == 0 && Math.round(invoices.get(i).getTotalCreditNoteAmount() * 100.0) / 100.0 > Math.round(invoices.get(i).getTotalPriceBeforeCreditNote() * 100.0) / 100.0) {
                                                         //Invoice fully paid using credit note and credit note is over invoice amount
                                                         //do nothing
-                                                    } else if ( Math.round(invoices.get(i).getTotalAmountPaid() * 100.0) / 100.0 < Math.round(invoices.get(i).getTotalPriceAfterCreditNote() * 100.0) / 100.0) {
+                                                    } else if (Math.round(invoices.get(i).getTotalAmountPaid() * 100.0) / 100.0 < Math.round(invoices.get(i).getTotalPriceAfterCreditNote() * 100.0) / 100.0) {
                                                         //If total paid less than invoiced amount
                                                         out.println("<i class='fa fa-exclamation-circle' style='color:red' data-toggle='tooltip' data-placement='top' title='Payment not fully received'></i>");
-                                                    } else if (Math.round((invoices.get(i).getTotalCreditNoteAmount() + invoices.get(i).getTotalAmountPaid()) * 100.0) / 100.0  > Math.round(invoices.get(i).getTotalPriceBeforeCreditNote()*100.0)/100.0) {
+                                                    } else if (Math.round((invoices.get(i).getTotalCreditNoteAmount() + invoices.get(i).getTotalAmountPaid()) * 100.0) / 100.0 > Math.round(invoices.get(i).getTotalPriceBeforeCreditNote() * 100.0) / 100.0) {
                                                         //If total paid more than invoiced amount
                                                         out.println("<i class='fa fa-exclamation-circle' style='color:orange' data-toggle='tooltip' data-placement='top' title='Invoice overpaid'></i>");
                                                     } else {
@@ -192,7 +190,15 @@
                                                     }
                                                 %>
                                             </td>
-                                            <td><%=invoices.get(i).getStatus()%></td>
+                                            <%
+                                                if (invoices.get(i).getStatus().equals("Paid")) {
+                                                    out.print("<td class='success'>Paid</td>");
+                                                } else if (invoices.get(i).getStatus().equals("Sent")) {
+                                                    out.print("<td class='info'>Sent</td>");
+                                                } else {
+                                                    out.print("<td class>" + invoices.get(i).getStatus() + "</td>");
+                                                }
+                                            %>
                                             <td>
                                                 <button type="button" class="btn btn-default btn-block" onclick="javascript:viewInvoice('<%=invoices.get(i).getId()%>')">View</button>
                                             </td>
@@ -205,7 +211,9 @@
                                 </table>
                                 <br>
                                 <%if (!previousMgtPage.equals("invoices")) {%>
-                                <button type="button" class="btn btn-default" onclick="javascript:back()">Back</button>
+                                <div class="col-sm-12 text-right" style="padding-right: 0px;">
+                                    <button type="button" style="min-width: 100px;" class="btn btn-default" onclick="javascript:back()">Back</button>   
+                                </div>
                                 <%}%>
                             </form>
                         </div>
@@ -218,6 +226,4 @@
         <jsp:include page="../jspIncludePages/foot.html" />
     </body>
 </html>
-<%
-    }
-%>
+<%}%>

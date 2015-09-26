@@ -67,7 +67,7 @@
                                 <% if (previousMgtPage.equals("sco")) {%>
                                 <li><span><a href= "../OrderManagementController?target=ListAllSCO">SCO Management</a></span></li>
                                 <li><span><a href= "../OrderManagementController?target=RetrieveSCO&id=<%=sco.getId()%>"><%=sco.getSalesPerson().getStaffPrefix()%><%=sco.getSalesConfirmationOrderNumber()%></a></span></li>
-                                <%}%>
+                                            <%}%>
                                 <li><span>Purchase Orders &nbsp;&nbsp</span></li>
                             </ol>
                         </div>
@@ -111,9 +111,7 @@
                                                 %>
                                             </td>
                                             <%
-                                                if (purchaseOrders.get(i).getStatus().equals("Created")) {
-                                                    out.print("<td>Created</td>");
-                                                } else if (purchaseOrders.get(i).getStatus().equals("Pending")) {
+                                                if (purchaseOrders.get(i).getStatus().equals("Pending")) {
                                                     out.print("<td class='info'>Pending</td>");
                                                 } else if (purchaseOrders.get(i).getStatus().equals("Completed")) {
                                                     out.print("<td class='success'>Completed</td>");
@@ -127,13 +125,14 @@
                                                 }
                                             }
                                         %>
-
                                     </tbody>
                                 </table>
 
                                 <br>
                                 <%if (!previousMgtPage.equals("purchaseOrders")) {%>
-                                <button type="button" class="btn btn-default" onclick="javascript:back()">Back</button>   
+                                <div class="col-sm-12 text-right" style="padding-right: 0px;">
+                                    <button type="button" style="min-width: 100px;" class="btn btn-default" onclick="javascript:back()">Back</button>   
+                                </div>
                                 <%}%>
                             </form>
                         </div>

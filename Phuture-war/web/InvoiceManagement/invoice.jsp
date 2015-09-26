@@ -342,7 +342,7 @@
                                                                 if (estimatedDeliveryDate != null && !estimatedDeliveryDate.isEmpty()) {
                                                                     String date = DATE_FORMAT.format(estimatedDeliveryDate);
                                                                     out.print("<input " + formDisablerFlag + " id='estimatedDeliveryDate' name='estimatedDeliveryDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "'>");
-                                                                } else if (invoice.getEstimatedDeliveryDate() != null && invoice.getEstimatedDeliveryDate()!=null) {
+                                                                } else if (invoice.getEstimatedDeliveryDate() != null && invoice.getEstimatedDeliveryDate() != null) {
                                                                     String date = DATE_FORMAT.format(invoice.getEstimatedDeliveryDate());
                                                                     out.print("<input " + formDisablerFlag + " id='estimatedDeliveryDate' name='estimatedDeliveryDate' type='text' data-date-format='dd/mm/yyyy' data-plugin-datepicker class='form-control' value='" + date + "'>");
                                                                 } else {
@@ -354,13 +354,18 @@
 
                                                     <p class="mb-none">
                                                         <span class="text-dark">Status: </span>
-                                                        <span class="value" style="min-width: 110px; font-size: 10.5pt; text-align: left;">
+                                                        <span class="value" style="min-width: 110px; text-align: left;">
                                                             <%
                                                                 if ((invoice.getStatus() != null && !invoice.getStatus().isEmpty())) {
-                                                                    out.print(invoice.getStatus());
+                                                                    if (invoice.getStatus().equals("Paid")) {
+                                                                        out.print("<span class='label label-success' style='display: block; font-size: 10.5pt;'>Paid</span>");
+                                                                    } else {
+                                                                        out.print("<span class='label label-info' style='display: block; font-size: 10.5pt;'>" + invoice.getStatus() + "</span>");
+                                                                    }
                                                                 }
                                                             %>
                                                         </span>
+
                                                     </p>
 
                                                     <% if (invoice.getDateDue() != null) {%>

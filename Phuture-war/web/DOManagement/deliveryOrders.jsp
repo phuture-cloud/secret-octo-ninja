@@ -43,10 +43,11 @@
             function viewDO(id) {
                 window.location.href = "../DeliveryOrderManagementController?target=RetrieveDO&id=" + id;
             }
+
             function back() {
-            <% if (previousMgtPage.equals("sco")) {%>
+            <%if (previousMgtPage.equals("sco")) {%>
                 window.location.href = "../OrderManagementController?target=RetrieveSCO&id=<%=sco.getId()%>";
-            <% } else if (previousMgtPage.equals("soa")) {%>
+            <%} else if (previousMgtPage.equals("soa")) {%>
                 window.location.href = "todo";
             <%}%>
             }
@@ -72,7 +73,6 @@
                                 <li><span><a href= "../OrderManagementController?target=RetrieveSCO&id=<%=sco.getId()%>"><%=sco.getSalesPerson().getStaffPrefix()%><%=sco.getSalesConfirmationOrderNumber()%></a></span></li>
                                             <%} else if (previousMgtPage.equals("soa")) {%>
                                             <%}%>
-
                                 <li><span>Delivery Orders &nbsp;&nbsp</span></li>
                             </ol>
                         </div>
@@ -99,9 +99,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <%
-                                            for (int i = 0; i < deliveryOrders.size(); i++) {
-                                        %>
+                                        <%for (int i = 0; i < deliveryOrders.size(); i++) {%>
                                         <tr>        
                                             <td><%=deliveryOrders.get(i).getDeliveryOrderNumber()%></td>
                                             <td>
@@ -113,31 +111,27 @@
                                             </td>
                                             <%
                                                 if (deliveryOrders.get(i).getStatus().equals("Created")) {
-                                                    out.print("<td>Created</td>");
+                                                    out.print("<td class='info'>Created</td>");
                                                 } else if (deliveryOrders.get(i).getStatus().equals("Shipped")) {
-                                                    out.print("<td class='info'>Shipped</td>");
-                                                } else if (deliveryOrders.get(i).getStatus().equals("Delivered")) {
-                                                    out.print("<td class='success'>Delivered</td>");
+                                                    out.print("<td class='success'>Shipped</td>");
                                                 } else {
                                                     out.print("<td>" + deliveryOrders.get(i).getStatus() + "</td>");
                                                 }
                                             %>
                                             <td><button type="button" class="btn btn-default btn-block" onclick="javascript:viewDO('<%=deliveryOrders.get(i).getId()%>')">View</button></td>
                                         </tr>
-                                        <%
-                                            }
-                                        %>
-
+                                        <%}%>
                                     </tbody>
                                 </table>
 
                                 <br>
                                 <%if (!previousMgtPage.equals("deliveryOrders")) {%>
-                                <button type="button" class="btn btn-default" onclick="javascript:back()">Back</button>   
+                                <div class="col-sm-12 text-right" style="padding-right: 0px;">
+                                    <button type="button" style="min-width: 100px;" class="btn btn-default" onclick="javascript:back()">Back</button>   
+                                </div>
                                 <%}%>
                             </form>
                         </div>
-
                     </section>
                     <!-- end: page -->
                 </section>
@@ -146,6 +140,4 @@
         <jsp:include page="../jspIncludePages/foot.html" />
     </body>
 </html>
-<%
-    }
-%>
+<%}%>

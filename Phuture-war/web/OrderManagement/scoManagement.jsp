@@ -177,7 +177,7 @@
                                                 } else if (salesConfirmationOrders.get(i).getSco().getStatus().equals("Write-Off")) {
                                                     out.print("<td class='warning'>Write-Off</td>");
                                                 } else if (salesConfirmationOrders.get(i).getSco().getStatus().equals("Voided")) {
-                                                    out.print("<td class='danger'>Voided</td>");
+                                                    out.print("<td>Voided</td>");
                                                 }
                                             %>
                                             <td>

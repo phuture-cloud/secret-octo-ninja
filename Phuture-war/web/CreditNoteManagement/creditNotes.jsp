@@ -74,6 +74,7 @@
                                         <th>Credit Note No.</th>
                                         <th>Credit Note Date</th>
                                         <th>Amount</th>
+                                        <th>Contact Person</th>
                                         <th>Applied To</th>
                                         <th>Date Applied</th>
                                         <th>Status</th>
@@ -89,6 +90,13 @@
                                         <td><%=creditNotes.get(i).getCreditNoteNumber()%></td>
                                         <td><%=DATE_FORMAT.format(creditNotes.get(i).getDateIssued())%></td>
                                         <td><%=formatter.format(creditNotes.get(i).getCreditAmount())%></td>
+                                        <td>
+                                            <%
+                                                if (creditNotes.get(i).getContactName() != null) {
+                                                    out.print(creditNotes.get(i).getContactName());
+                                                }
+                                            %>
+                                        </td>
                                         <td>
                                             <%
                                                 if (creditNotes.get(i).getAppliedToInvoice() != null && creditNotes.get(i).getAppliedToInvoice().getInvoiceNumber() != null) {
@@ -114,7 +122,7 @@
                                             <div class="btn-group" role="group" aria-label="...">
                                                 <button type="button" class="btn btn-default" onclick="javascript:printCreditNote(<%=creditNotes.get(i).getId()%>)">Print</button>
                                                 <button type='button' class='btn btn-default modal-with-form' href='#modalUpdateCN<%=creditNotes.get(i).getId()%>'>Update</button>
-                                                <button type="button" class="btn btn-danger" onclick="javascript:voidCreditNote('<%=customerID%>', '<%=customerName%>', '<%=creditNotes.get(i).getId()%>')">Void</button>
+                                                <button type="button" class="btn btn-default modal-with-move-anim" href='#modalVoidCN<%=creditNotes.get(i).getId()%>'>Void</button>
                                             </div>
                                             <div id="modalUpdateCN<%=creditNotes.get(i).getId()%>" class="modal-block modal-block-primary mfp-hide">
                                                 <form name="creditNotesForm" action="../PaymentManagementController">
@@ -172,6 +180,32 @@
                                                         </footer>
                                                     </section>
                                                 </form>
+                                            </div>
+
+                                            <div id="modalVoidCN<%=creditNotes.get(i).getId()%>" class="modal-block modal-block-primary mfp-hide">
+                                                <section class="panel">
+                                                    <header class="panel-heading">
+                                                        <h2 class="panel-title">Are you sure?</h2>
+                                                    </header>
+                                                    <div class="panel-body" style="padding-top: 0px;">
+                                                        <div class="modal-wrapper">
+                                                            <div class="modal-icon">
+                                                                <i class="fa fa-question-circle" style="top: 0px;"></i>
+                                                            </div>
+                                                            <div class="modal-text">
+                                                                <p>Are you sure that you want to void this Credit Note?<br>This action cannot be reversed!</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <footer class="panel-footer">
+                                                        <div class="row">
+                                                            <div class="col-md-12 text-right">
+                                                                <button class="btn btn-primary modal-confirm" onclick="javascript:voidCreditNote('<%=customerID%>', '<%=customerName%>', '<%=creditNotes.get(i).getId()%>')">Confirm</button>
+                                                                <button class="btn btn-default modal-dismiss">Cancel</button>
+                                                            </div>
+                                                        </div>
+                                                    </footer>
+                                                </section>
                                             </div>
                                         </td>
                                     </tr>
