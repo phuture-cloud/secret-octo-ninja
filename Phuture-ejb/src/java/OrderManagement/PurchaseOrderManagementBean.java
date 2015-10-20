@@ -37,7 +37,7 @@ public class PurchaseOrderManagementBean implements PurchaseOrderManagementBeanL
 
     @TransactionAttribute(TransactionAttributeType.MANDATORY)
     private String getNewPurchaseOrderNumber() {
-        System.out.println("PurchaseOrderManagementBean: TransactionAttributeType() called");
+        System.out.println("PurchaseOrderManagementBean: getNewPurchaseOrderNumber() called");
         Query q = em.createQuery("SELECT e FROM OrderNumbers e");
         q.setLockMode(LockModeType.PESSIMISTIC_FORCE_INCREMENT);
         OrderNumbers orderNumbers = (OrderNumbers) q.getResultList().get(0);
