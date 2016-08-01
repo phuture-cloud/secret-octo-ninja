@@ -14,7 +14,8 @@
     } else if (deliveryOrder == null) {
         response.sendRedirect("deliveryOrder.jsp?errMsg=An Error Occured.");
     } else {
-        SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
+        try {
+            SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd MMM yyyy");
 %>
 <!doctype html>
 <html lang="en">
@@ -22,37 +23,7 @@
         <meta charset="UTF-8">
         <title>Delivery Order</title>
         <link rel="stylesheet" href="../assets/vendor/bootstrap/css/bootstrap.css">
-        <style>
-            body {
-                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-                font-size: 10px;
-                line-height: 1.42857143;
-                color: #333333;
-                background-color: #ffffff;
-            }
-
-            h4, .h4, h5, .h5, h6, .h6 {
-                font-size: 10px;
-                margin-top: 0;
-                margin-bottom: 0;
-            }
-
-            .container {
-                min-height: 920px;
-            }
-
-            @media print{
-                .table-bordered > thead > tr > th, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > th, .table-bordered > thead > tr > td, .table-bordered > tbody > tr > td, .table-bordered > tfoot > tr > td{
-                    -webkit-print-color-adjust: exact;
-                    border: 1px solid #5D5D5D !important;
-                }
-
-                .table th {  
-                    -webkit-print-color-adjust: exact;
-                    background-color: #BDBDBD !important; 
-                } 
-            }
-        </style>
+        <link rel="stylesheet" href="../assets/stylesheets/invoice-print.css">
     </head>
 
     <body>
@@ -135,7 +106,7 @@
                 <tbody>
                     <tr class="text-center">
                         <td><%=deliveryOrder.getSalesConfirmationOrder().getSalesPerson().getName()%></td>
-                        <td><%=deliveryOrder.getSalesConfirmationOrder().getSalesConfirmationOrderNumber()%></td>
+                        <td><%=deliveryOrder.getSalesConfirmationOrder().getSalesPerson().getStaffPrefix() + deliveryOrder.getSalesConfirmationOrder().getSalesConfirmationOrderNumber()%></td>
                         <td><%=deliveryOrder.getCustomerPurchaseOrderNumber()%></td>
                         <td><%=deliveryOrder.getContactName()%></td>
                     </tr>
@@ -151,10 +122,9 @@
                 <tbody>
                     <%
                         for (int i = 0; i < deliveryOrder.getItems().size(); i++) {
-                            double price = 0;
                             out.print("<tr>");
                             out.print("<td>" + deliveryOrder.getItems().get(i).getItemName() + "</td>");
-                            out.print("<td>" + deliveryOrder.getItems().get(i).getItemDescription() + "</td>");
+                            out.print("<td>" + deliveryOrder.getItems().get(i).getItemDescription().replaceAll("\\r", "<br>") + "</td>");
                             out.print("<td class='text-center'>" + deliveryOrder.getItems().get(i).getItemQty() + "</td>");
                             out.print("</tr>");
                         }
@@ -166,7 +136,7 @@
                 <div class="col-xs-7 text-left" style="font-size: 9px;">
                     <u>Terms & Conditions</u>
                     <ul style="padding-left: 20px;">
-                        <li>All Goods Delivered Are Non Returnable / Refundable</li>
+                        <li>All Goods Delivered Are Non Returnable / Refundable.</li>
                     </ul>
                     <%
                         if (deliveryOrder != null && deliveryOrder.getRemarks() != null && !deliveryOrder.getRemarks().isEmpty()) {
@@ -184,19 +154,7 @@
                     <strong>Goods Received In Good Condition & Order</strong>
                     <br>
                     <img src="../assets/images/thin-black-line.png" style='padding-top: 80px; padding-bottom: 5px;'>
-                    <br>Signature & Company's Stamp
-                </div>
-                <div class="col-xs-4">
-                    <strong>Phuture International Pte Ltd</strong>
-                    <%
-                        if (staff.getSignature() != null && staff.getSignature().length > 0) {
-                            out.write("<img class='img-responsive' style='height: 80px;' src='../sig?id=" + staff.getId() + "'>");
-                            out.write("<img src='../assets/images/thin-black-line.png' style='padding-bottom: 5px;'>");
-                        } else {
-                            out.write("<br><img src='../assets/images/thin-black-line.png' style='padding-top: 80px; padding-bottom: 5px;'>");
-                        }
-                    %>
-                    <br>Authorized Signature
+                    <br>Customer's Signature & Co. Stamp
                 </div>
             </div>
         </div>
@@ -211,4 +169,9 @@
         </div>
     </body>
 </html>
-<%}%>
+<%
+        } catch (Exception ex) {
+            out.print("<h1>An error has occured</h1>");
+        }
+    }
+%>

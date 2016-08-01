@@ -14,8 +14,9 @@
     } else if (sco == null) {
         response.sendRedirect("../scoManagement.jsp?errMsg=An Error Occured.");
     } else {
-        NumberFormat formatter = NumberFormat.getCurrencyInstance();
-        SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
+        try {
+            NumberFormat formatter = NumberFormat.getCurrencyInstance();
+            SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd MMM yyyy");
 %>
 <!doctype html>
 <html lang="en">
@@ -23,37 +24,7 @@
         <meta charset="UTF-8">
         <title>Sales Confirmation Order</title>
         <link rel="stylesheet" href="../assets/vendor/bootstrap/css/bootstrap.css">
-        <style>
-            body {
-                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-                font-size: 10px;
-                line-height: 1.42857143;
-                color: #333333;
-                background-color: #ffffff;
-            }
-
-            h4, .h4, h5, .h5, h6, .h6 {
-                font-size: 10px;
-                margin-top: 0;
-                margin-bottom: 0;
-            }
-
-            .container {
-                min-height: 920px;
-            }
-
-            @media print{
-                .table-bordered > thead > tr > th, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > th, .table-bordered > thead > tr > td, .table-bordered > tbody > tr > td, .table-bordered > tfoot > tr > td{
-                    -webkit-print-color-adjust: exact;
-                    border: 1px solid #5D5D5D !important;
-                }
-
-                .table th {  
-                    -webkit-print-color-adjust: exact;
-                    background-color: #BDBDBD !important; 
-                } 
-            }
-        </style>
+        <link rel="stylesheet" href="../assets/stylesheets/invoice-print.css">
     </head>
 
     <body>
@@ -90,7 +61,7 @@
                             <p>Attention</p>
                         </div>
                         <div class="col-xs-9">
-                            <p><%=sco.getCustomerName()%></p>
+                            <p><%=sco.getContactName()%></p>
                         </div>
                     </div>
                 </div>
@@ -138,7 +109,7 @@
                     <tr class="text-center">
                         <td><%=staff.getName()%></td>
                         <td><%=sco.getCustomerPurchaseOrderNumber()%></td>
-                        <td><%=sco.getEstimatedDeliveryDate()%></td>
+                        <td><%=DATE_FORMAT.format(sco.getEstimatedDeliveryDate())%></td>
                         <td>
                             <%
                                 if (sco.getTerms() == 0) {
@@ -169,7 +140,7 @@
                             out.print("<tr>");
                             out.print("<td class='text-center'>" + sco.getItems().get(i).getItemQty() + "</td>");
                             out.print("<td>" + sco.getItems().get(i).getItemName() + "</td>");
-                            out.print("<td>" + sco.getItems().get(i).getItemDescription() + "</td>");
+                            out.print("<td>" + sco.getItems().get(i).getItemDescription().replaceAll("\\r", "<br>") + "</td>");
 
                             price = sco.getItems().get(i).getItemUnitPrice();
                             out.print("<td class='text-center'>" + formatter.format(price) + "</td>");
@@ -187,8 +158,8 @@
                 <div class="col-xs-7 text-left" style="font-size: 9px;">
                     <u>Terms & Conditions</u>
                     <ul style="padding-left: 20px;">
-                        <li>Acceptance of this Sales Order constitutes a contract between the buyer & Phuture International Pte Ltd whereby buyer will adhere to conditions stated on this Sales Order</li>
-                        <li>Buyer shall be liable for at least 50% of total sales amount if buyer opt to cancel the order</li>
+                        <li>Acceptance of this Sales Order constitutes a contract between the buyer & Phuture International Pte Ltd whereby buyer will adhere to conditions stated on this Sales Order.</li>
+                        <li>Buyer shall be liable for at least 50% of total sales amount if buyer opt to cancel the order.</li>
                     </ul>
                     <%
                         if (sco.getRemarks() != null && !sco.getRemarks().isEmpty()) {
@@ -259,4 +230,9 @@
         </div>
     </body>
 </html>
-<%}%>
+<%
+        } catch (Exception ex) {
+            out.print("<h1>An error has occured</h1>");
+        }
+    }
+%>

@@ -14,8 +14,9 @@
     } else if (purchaseOrder == null) {
         response.sendRedirect("purchaseOrder.jsp?errMsg=An Error Occured.");
     } else {
-        NumberFormat formatter = NumberFormat.getCurrencyInstance();
-        SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
+        try {
+            NumberFormat formatter = NumberFormat.getCurrencyInstance();
+            SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd MMM yyyy");
 %>
 <!doctype html>
 <html lang="en">
@@ -23,37 +24,7 @@
         <meta charset="UTF-8">
         <title>Purchase Order</title>
         <link rel="stylesheet" href="../assets/vendor/bootstrap/css/bootstrap.css">
-        <style>
-            body {
-                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-                font-size: 10px;
-                line-height: 1.42857143;
-                color: #333333;
-                background-color: #ffffff;
-            }
-
-            h4, .h4, h5, .h5, h6, .h6 {
-                font-size: 10px;
-                margin-top: 0;
-                margin-bottom: 0;
-            }
-
-            .container {
-                min-height: 920px;
-            }
-
-            @media print{
-                .table-bordered > thead > tr > th, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > th, .table-bordered > thead > tr > td, .table-bordered > tbody > tr > td, .table-bordered > tfoot > tr > td{
-                    -webkit-print-color-adjust: exact;
-                    border: 1px solid #5D5D5D !important;
-                }
-
-                .table th {  
-                    -webkit-print-color-adjust: exact;
-                    background-color: #BDBDBD !important; 
-                } 
-            }
-        </style>
+        <link rel="stylesheet" href="../assets/stylesheets/invoice-print.css">
     </head>
 
     <body>
@@ -89,7 +60,7 @@
                             <p>Attention</p>
                         </div>
                         <div class="col-xs-9">
-                            <p><%=purchaseOrder.getSupplierName()%></p>
+                            <p><%=purchaseOrder.getContactName()%></p>
                         </div>
                     </div>
                 </div>
@@ -156,7 +127,7 @@
                         <td>
                             <%
                                 if (purchaseOrder.getSalesConfirmationOrder().getSalesConfirmationOrderNumber() != null) {
-                                    out.print(purchaseOrder.getSalesConfirmationOrder().getSalesConfirmationOrderNumber());
+                                    out.print(purchaseOrder.getSalesConfirmationOrder().getSalesPerson().getStaffPrefix() + purchaseOrder.getSalesConfirmationOrder().getSalesConfirmationOrderNumber());
                                 }
                             %>
                         </td>
@@ -170,7 +141,7 @@
                         <td>
                             <%
                                 if (purchaseOrder.getDeliveryDate() != null) {
-                                    out.print(purchaseOrder.getDeliveryDate());
+                                    out.print(DATE_FORMAT.format(purchaseOrder.getDeliveryDate()));
                                 }
                             %>
                         </td>
@@ -196,8 +167,7 @@
                             double price = 0;
                             out.print("<tr>");
                             out.print("<td>" + purchaseOrder.getItems().get(i).getItemName() + "</td>");
-                            out.print("<td>" + purchaseOrder.getItems().get(i).getItemDescription() + "</td>");
-
+                            out.print("<td>" + purchaseOrder.getItems().get(i).getItemDescription().replaceAll("\\r", "<br>") + "</td>");
                             out.print("<td class='text-center'>" + purchaseOrder.getItems().get(i).getItemQty() + "</td>");
 
                             price = purchaseOrder.getItems().get(i).getItemUnitPrice();
@@ -217,6 +187,7 @@
                     <u>Terms & Conditions</u>
                     <ul style="padding-left: 20px;">
                         <li>Phuture International Pte Ltd reserves all right to cancel this Purchase Order due to supplier unable to fulfill or meet the buyer's requirements.</li>
+                        <li>Purchase Order is not subjected to GST/VAT.</li>
                     </ul>
                     <%
                         if (purchaseOrder.getRemarks() != null && !purchaseOrder.getRemarks().isEmpty()) {
@@ -274,4 +245,9 @@
         </div>
     </body>
 </html>
-<%}%>
+<%
+        } catch (Exception ex) {
+            out.print("<h1>An error has occured</h1>");
+        }
+    }
+%>

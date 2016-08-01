@@ -14,8 +14,9 @@
     } else if (invoice == null) {
         response.sendRedirect("invoice.jsp?errMsg=An Error Occured.");
     } else {
-        NumberFormat formatter = NumberFormat.getCurrencyInstance();
-        SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
+        try {
+            NumberFormat formatter = NumberFormat.getCurrencyInstance();
+            SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
 %>
 <!doctype html>
 <html lang="en">
@@ -23,37 +24,7 @@
         <meta charset="UTF-8">
         <title>Tax Invoice</title>
         <link rel="stylesheet" href="../assets/vendor/bootstrap/css/bootstrap.css">
-        <style>
-            body {
-                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-                font-size: 10px;
-                line-height: 1.42857143;
-                color: #333333;
-                background-color: #ffffff;
-            }
-
-            h4, .h4, h5, .h5, h6, .h6 {
-                font-size: 10px;
-                margin-top: 0;
-                margin-bottom: 0;
-            }
-
-            .container {
-                min-height: 920px;
-            }
-
-            @media print{
-                .table-bordered > thead > tr > th, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > th, .table-bordered > thead > tr > td, .table-bordered > tbody > tr > td, .table-bordered > tfoot > tr > td{
-                    -webkit-print-color-adjust: exact;
-                    border: 1px solid #5D5D5D !important;
-                }
-
-                .table th {  
-                    -webkit-print-color-adjust: exact;
-                    background-color: #BDBDBD !important; 
-                } 
-            }
-        </style>
+        <link rel="stylesheet" href="../assets/stylesheets/invoice-print.css">
     </head>
 
     <body>
@@ -119,7 +90,17 @@
                     <br>
                     <%=DATE_FORMAT.format(invoice.getDateSent())%>
                     <br>
-
+                    <%
+                        if (invoice.getSalesConfirmationOrder().getDeliveryOrders() != null) {
+                            for (int k = 0; k < invoice.getSalesConfirmationOrder().getDeliveryOrders().size(); k++) {
+                                if ((k + 1) == invoice.getSalesConfirmationOrder().getDeliveryOrders().size()) {
+                                    out.print(invoice.getSalesConfirmationOrder().getDeliveryOrders().get(k).getDeliveryOrderNumber());
+                                } else {
+                                    out.print(invoice.getSalesConfirmationOrder().getDeliveryOrders().get(k).getDeliveryOrderNumber() + ", ");
+                                }
+                            }
+                        }
+                    %>
                     <br>
                     <%=invoice.getContactOfficeNo()%>
                     <br>
@@ -143,7 +124,7 @@
                 <tbody>
                     <tr class="text-center">
                         <td><%=invoice.getSalesConfirmationOrder().getSalesPerson().getName()%></td>
-                        <td><%=invoice.getSalesConfirmationOrder().getSalesConfirmationOrderNumber()%></td>
+                        <td><%=invoice.getSalesConfirmationOrder().getSalesPerson().getStaffPrefix() + invoice.getSalesConfirmationOrder().getSalesConfirmationOrderNumber()%></td>
                         <td><%=invoice.getCustomerPurchaseOrderNumber()%></td>
                         <td>
                             <%
@@ -175,7 +156,7 @@
                             double price = 0;
                             out.print("<tr>");
                             out.print("<td>" + invoice.getItems().get(i).getItemName() + "</td>");
-                            out.print("<td>" + invoice.getItems().get(i).getItemDescription() + "</td>");
+                            out.print("<td>" + invoice.getItems().get(i).getItemDescription().replaceAll("\\r", "<br>") + "</td>");
 
                             out.print("<td class='text-center'>" + invoice.getItems().get(i).getItemQty() + "</td>");
 
@@ -195,8 +176,8 @@
                 <div class="col-xs-7 text-left" style="font-size: 9px;">
                     <u>Terms & Conditions</u>
                     <ul style="padding-left: 20px;">
-                        <li>Acceptance of this merchandise constitutes a contract between the buyer & Phuture International Pte Ltd whereby buyer will adhere to conditions stated on this invoice</li>
-                        <li>All cheques payment are to be crossed & payable to "<strong>Phuture International Pte Ltd</strong>"</li>
+                        <li>Acceptance of this merchandise constitutes a contract between the buyer & Phuture International Pte Ltd whereby buyer will adhere to conditions stated on this invoice.</li>
+                        <li>All cheques payment are to be crossed & payable to "<strong>Phuture International Pte Ltd</strong>".</li>
                     </ul>
 
                     <%
@@ -266,4 +247,9 @@
         </div>
     </body>
 </html>
-<%}%>
+<%
+        } catch (Exception ex) {
+            out.print("<h1>An error has occured</h1>");
+        }
+    }
+%>
