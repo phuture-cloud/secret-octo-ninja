@@ -65,7 +65,8 @@
                     </div>
                 </div>
 
-                <p class="text-center text-muted mt-md mb-md">&copy; Copyright 2015. All Rights Reserved</p>
+                <p class="text-center text-muted mt-md mb-md">&copy; Copyright 2016. All Rights Reserved</p>
+                <p class="text-center text-muted mt-md mb-md">Best used in Google Chrome.</p>
             </div>
         </section>
         <!-- end: page -->
