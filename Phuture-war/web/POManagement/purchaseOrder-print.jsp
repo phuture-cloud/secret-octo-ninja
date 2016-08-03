@@ -149,6 +149,16 @@
                 </tbody>
             </table>
 
+            <%
+                int totalItems = purchaseOrder.getItems().size();
+                int maxItemPerPage = 7;
+                int maxItemCounter = maxItemPerPage;
+
+                int loopCounter = (int) Math.ceil((double) totalItems / maxItemPerPage);
+                int i = 0;
+
+                for (int k = 0; k < loopCounter; k++) {
+            %> 
             <table class="table table-bordered">
                 <thead style="background: #eeece1;">
                 <th class='text-center'><h4>ITEM</h4></th>
@@ -163,7 +173,11 @@
                 </thead>
                 <tbody>
                     <%
-                        for (int i = 0; i < purchaseOrder.getItems().size(); i++) {
+                        if (purchaseOrder.getItems().size() < maxItemPerPage) {
+                            maxItemCounter = purchaseOrder.getItems().size();
+                        }
+
+                        while (i < maxItemCounter) {
                             double price = 0;
                             out.print("<tr>");
                             out.print("<td>" + purchaseOrder.getItems().get(i).getItemName() + "</td>");
@@ -177,10 +191,25 @@
                             out.print("<td class='text-center'>" + formatter.format(price) + "</td>");
 
                             out.print("</tr>");
+                            i++;
+                        }
+
+                        totalItems = totalItems - maxItemPerPage;
+
+                        if (totalItems - maxItemPerPage > 0) {
+                            maxItemCounter = maxItemCounter + maxItemPerPage;
+                        } else {
+                            maxItemCounter = maxItemCounter + totalItems;
                         }
                     %>
                 </tbody>
             </table>
+            <%
+                    if ((k + 1) < loopCounter) {
+                        out.print("<p style='page-break-after:always;'></p>");
+                    }
+                }
+            %>
 
             <div class="row text-right">
                 <div class="col-xs-7 text-left" style="font-size: 9px;">

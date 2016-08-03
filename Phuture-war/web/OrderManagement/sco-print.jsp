@@ -125,7 +125,6 @@
                 </tbody>
             </table>
 
-
             <%
                 int totalItems = sco.getItems().size();
                 int maxItemPerPage = 7;
@@ -136,7 +135,6 @@
 
                 for (int k = 0; k < loopCounter; k++) {
             %>       
-
             <table class="table table-bordered">
                 <thead>
                 <th class='text-center'><h4>QTY</h4></th>
@@ -179,7 +177,6 @@
                     %>
                 </tbody>
             </table>
-
             <%
                     if ((k + 1) < loopCounter) {
                         out.print("<p style='page-break-after:always;'></p>");
