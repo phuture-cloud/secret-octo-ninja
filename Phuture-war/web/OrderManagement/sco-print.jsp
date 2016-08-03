@@ -14,9 +14,9 @@
     } else if (sco == null) {
         response.sendRedirect("../scoManagement.jsp?errMsg=An Error Occured.");
     } else {
-        try {
-            NumberFormat formatter = NumberFormat.getCurrencyInstance();
-            SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd MMM yyyy");
+
+        NumberFormat formatter = NumberFormat.getCurrencyInstance();
+        SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd MMM yyyy");
 %>
 <!doctype html>
 <html lang="en">
@@ -125,6 +125,18 @@
                 </tbody>
             </table>
 
+
+            <%
+                int totalItems = sco.getItems().size();
+                int maxItemPerPage = 7;
+                int maxItemCounter = maxItemPerPage;
+
+                int loopCounter = (int) Math.ceil((double) totalItems / maxItemPerPage);
+                int i = 0;
+
+                for (int k = 0; k < loopCounter; k++) {
+            %>       
+
             <table class="table table-bordered">
                 <thead>
                 <th class='text-center'><h4>QTY</h4></th>
@@ -135,7 +147,11 @@
                 </thead>
                 <tbody>
                     <%
-                        for (int i = 0; i < sco.getItems().size(); i++) {
+                        if (sco.getItems().size() < maxItemPerPage) {
+                            maxItemCounter = sco.getItems().size();
+                        }
+
+                        while (i < maxItemCounter) {
                             double price = 0;
                             out.print("<tr>");
                             out.print("<td class='text-center'>" + sco.getItems().get(i).getItemQty() + "</td>");
@@ -149,10 +165,27 @@
                             out.print("<td class='text-center'>" + formatter.format(price) + "</td>");
 
                             out.print("</tr>");
+
+                            i++;
+                        }
+
+                        totalItems = totalItems - maxItemPerPage;
+
+                        if (totalItems - maxItemPerPage > 0) {
+                            maxItemCounter = maxItemCounter + maxItemPerPage;
+                        } else {
+                            maxItemCounter = maxItemCounter + totalItems;
                         }
                     %>
                 </tbody>
             </table>
+
+            <%
+                    if ((k + 1) < loopCounter) {
+                        out.print("<p style='page-break-after:always;'></p>");
+                    }
+                }
+            %>
 
             <div class="row text-right">
                 <div class="col-xs-7 text-left" style="font-size: 9px;">
@@ -219,13 +252,11 @@
                     <br>Authorized Signature
                 </div>
             </div>
+
+            <jsp:include page="../footer.html" />
         </div>
-        <jsp:include page="../footer.html" />
     </body>
 </html>
 <%
-        } catch (Exception ex) {
-            out.print("<h1>An error has occured</h1>");
-        }
     }
 %>

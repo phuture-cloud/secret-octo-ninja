@@ -16,7 +16,7 @@
     } else {
         try {
             NumberFormat formatter = NumberFormat.getCurrencyInstance();
-            SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
+            SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd MMM yyyy");
 %>
 <!doctype html>
 <html lang="en">
@@ -177,7 +177,7 @@
                     <u>Terms & Conditions</u>
                     <ul style="padding-left: 20px;">
                         <li>Acceptance of this merchandise constitutes a contract between the buyer & Phuture International Pte Ltd whereby buyer will adhere to conditions stated on this invoice.</li>
-                        <li>All cheques payment are to be crossed & payable to "<strong>Phuture International Pte Ltd</strong>".</li>
+                        <li>All cheques payment are to be crossed & made payable to "<strong>Phuture International Pte Ltd</strong>".</li>
                     </ul>
 
                     <%

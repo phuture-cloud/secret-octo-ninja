@@ -35,6 +35,11 @@
         <div class="container">
             <div class="row">
                 <div class="col-xs-6">
+                    <img src="../assets/images/invoice-logo.png" alt="Phuture International" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-6">
                     <h3>Statement of Account</h3>
                     <p>
                         <%=statementOfAccount.getCustomer().getCustomerName()%>

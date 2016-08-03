@@ -358,7 +358,7 @@
                                             <div class="col-sm-5">
                                                 Terms & Conditions
                                                 <ul>
-                                                    <li>All Goods Delivered Are Non Returnable / Refundable</li>
+                                                    <li>All Goods Delivered Are Non Returnable / Refundable.</li>
                                                 </ul>
                                                 <%
                                                     if (deliveryOrder != null && deliveryOrder.getRemarks() != null && !deliveryOrder.getRemarks().isEmpty()) {
