@@ -662,6 +662,11 @@
                                     <div class="invoice-summary" style="margin-top: 10px;">
                                         <div class="row">
                                             <div class="col-sm-5">
+                                                <u>Terms & Conditions</u>
+                                                <ul style="padding-left: 20px;">
+                                                    <li>Acceptance of this Sales Order constitutes a contract between the buyer & Phuture International Pte Ltd whereby buyer will adhere to conditions stated on this Sales Order.</li>
+                                                    <li>Buyer shall be liable for at least 50% of total sales amount if buyer opt to cancel the order.</li>
+                                                </ul>
                                                 <%
                                                     if (sco != null && scoID != null && !scoID.isEmpty() && sco.getRemarks() != null && !sco.getRemarks().isEmpty()) {
                                                         out.print("REMARKS: ");

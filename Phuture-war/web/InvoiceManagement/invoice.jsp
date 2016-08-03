@@ -520,6 +520,11 @@
                                     <div class="invoice-summary" style="margin-top: 10px;">
                                         <div class="row">
                                             <div class="col-sm-5">
+                                                Terms & Conditions
+                                                <ul>
+                                                    <li>Acceptance of this merchandise constitutes a contract between the buyer & Phuture International Pte Ltd whereby buyer will adhere to conditions stated on this invoice.</li>
+                                                    <li>All cheques payment are to be crossed & made payable to "<strong>Phuture International Pte Ltd</strong>".</li>
+                                                </ul>
                                                 <%
                                                     if (invoice.getRemarks() != null && !invoice.getRemarks().isEmpty()) {
                                                         out.print("REMARKS: ");
@@ -589,54 +594,55 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="row">
-                                    <div class="col-sm-6 mt-md">
-                                        <div class="btn-group">
-                                            <%
-                                                if (invoice.getItems().size() > 0) {
-                                                    out.print("<a href='invoice-print.jsp' target='_blank' class='btn btn-default'><i class='fa fa-print'></i> Print PDF</a>");
-                                                }
-                                                if (invoice.getNotes() != null && !invoice.getNotes().isEmpty()) {
-                                                    out.print("<button type='button' class='btn btn-info modal-with-form' href='#modalNotes'>Notes</button>");
-                                                } else {
-                                                    out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalNotes'>Notes</button>");
-                                                }
-                                                out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalRemarks' data-toggle='tooltip' data-placement='top' title='*Remarks will be reflected in the Invoice'>Remarks</button>");
-                                            %> 
-                                        </div>
-                                        &nbsp;
-                                        <div class="btn-group">
-                                            <%
-                                                if (invoicePayments != null) {
-                                                    if (invoicePayments.size() > 0) {
-                                                        out.print("<button type='button' class='btn btn-default' onclick='javascript:listAllPayment(" + invoice.getId() + ")'>Payments <span class='badge' style='background-color:#0088CC'>" + invoice.getNumOfPaymentRecords() + "</span></button>");
-                                                    }
-                                                }
-                                            %>         
-                                        </div>
+                            <div class="row">
+                                <div class="col-sm-6 mt-md">
+                                    <div class="btn-group">
+                                        <%
+                                            if (invoice.getItems().size() > 0) {
+                                                out.print("<a href='invoice-print.jsp' target='_blank' class='btn btn-default'><i class='fa fa-print'></i> Print PDF</a>");
+                                            }
+                                            if (invoice.getNotes() != null && !invoice.getNotes().isEmpty()) {
+                                                out.print("<button type='button' class='btn btn-info modal-with-form' href='#modalNotes'>Notes</button>");
+                                            } else {
+                                                out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalNotes'>Notes</button>");
+                                            }
+                                            out.print("<button type='button' class='btn btn-default modal-with-form' href='#modalRemarks' data-toggle='tooltip' data-placement='top' title='*Remarks will be reflected in the Invoice'>Remarks</button>");
+                                        %> 
                                     </div>
-
-                                    <div class="col-sm-6 text-right mt-md mb-md">
-                                        <div class="btn-group">
-                                            <button type="button" class="btn btn-default" onclick="javascript:back()">Back</button>
-                                            <%if (!invoice.getStatus().equals("Voided")) {%>
-                                            <button type='button' class='modal-with-move-anim btn btn-danger' href='#modalRemove'>Void Invoice</button>
-                                            <%}%>
-                                            <%
-                                                if (invoice.getItems().size() > 0) {
-                                                    if (invoice.getTotalCreditNoteAmount() > 0) {
-                                                        out.print("<button " + formDisablerFlag + " type='button' class='btn btn-primary' onclick='javascript:detachCR(" + invoice.getId() + ")'>Detach Credit Note</button>");
-                                                    } else {
-                                                        out.print("<button " + formDisablerFlag + " type='button' class='btn btn-primary modal-with-form' href='#modalAttachCN'>Attach Credit Note</button>");
-                                                    }
-                                                    out.print("<button type='button' " + formDisablerFlag + " class='btn btn-primary modal-with-form' href='#modalAddPayment'>Add Payment</button>");
+                                    &nbsp;
+                                    <div class="btn-group">
+                                        <%
+                                            if (invoicePayments != null) {
+                                                if (invoicePayments.size() > 0) {
+                                                    out.print("<button type='button' class='btn btn-default' onclick='javascript:listAllPayment(" + invoice.getId() + ")'>Payments <span class='badge' style='background-color:#0088CC'>" + invoice.getNumOfPaymentRecords() + "</span></button>");
                                                 }
-                                            %>
-                                            <button <%=formDisablerFlag%> class='btn btn-success' onclick='javascript:updateInvoice();'>Save</button>
-                                        </div>
+                                            }
+                                        %>         
                                     </div>
                                 </div>
+
+                                <div class="col-sm-6 text-right mt-md mb-md">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-default" onclick="javascript:back()">Back</button>
+                                        <%if (!invoice.getStatus().equals("Voided")) {%>
+                                        <button type='button' class='modal-with-move-anim btn btn-danger' href='#modalRemove'>Void Invoice</button>
+                                        <%}%>
+                                        <%
+                                            if (invoice.getItems().size() > 0) {
+                                                if (invoice.getTotalCreditNoteAmount() > 0) {
+                                                    out.print("<button " + formDisablerFlag + " type='button' class='btn btn-primary' onclick='javascript:detachCR(" + invoice.getId() + ")'>Detach Credit Note</button>");
+                                                } else {
+                                                    out.print("<button " + formDisablerFlag + " type='button' class='btn btn-primary modal-with-form' href='#modalAttachCN'>Attach Credit Note</button>");
+                                                }
+                                                out.print("<button type='button' " + formDisablerFlag + " class='btn btn-primary modal-with-form' href='#modalAddPayment'>Add Payment</button>");
+                                            }
+                                        %>
+                                        <button <%=formDisablerFlag%> class='btn btn-success' onclick='javascript:updateInvoice();'>Save</button>
+                                    </div>
+                                </div>
+                            </div>
                             </div>
                             </div>
                         </section>

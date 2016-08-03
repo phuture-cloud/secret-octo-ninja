@@ -14,9 +14,9 @@
     } else if (creditNote == null) {
         response.sendRedirect("invoice.jsp?errMsg=An Error Occured.");
     } else {
-        NumberFormat formatter = NumberFormat.getCurrencyInstance();
-        SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
-
+        try {
+            NumberFormat formatter = NumberFormat.getCurrencyInstance();
+            SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd MMM yyyy");
 %>
 <!doctype html>
 <html lang="en">
@@ -24,37 +24,7 @@
         <meta charset="UTF-8">
         <title>Credit Note</title>
         <link rel="stylesheet" href="../assets/vendor/bootstrap/css/bootstrap.css">
-        <style>
-            body {
-                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-                font-size: 10px;
-                line-height: 1.42857143;
-                color: #333333;
-                background-color: #ffffff;
-            }
-
-            h4, .h4, h5, .h5, h6, .h6 {
-                font-size: 10px;
-                margin-top: 0;
-                margin-bottom: 0;
-            }
-
-            .container {
-                min-height: 920px;
-            }
-
-            @media print{
-                .table-bordered > thead > tr > th, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > th, .table-bordered > thead > tr > td, .table-bordered > tbody > tr > td, .table-bordered > tfoot > tr > td{
-                    -webkit-print-color-adjust: exact;
-                    border: 1px solid #5D5D5D !important;
-                }
-
-                .table th {  
-                    -webkit-print-color-adjust: exact;
-                    background-color: #BDBDBD !important; 
-                } 
-            }
-        </style>
+        <link rel="stylesheet" href="../assets/stylesheets/invoice-print.css">
     </head>
 
     <body>
@@ -81,7 +51,7 @@
                             <p>
                                 <strong><%=creditNote.getCustomer().getCustomerName()%></strong>
                                 <br>
-                                <%=creditNote.getContactAddress()%>
+                                <%=creditNote.getContactAddress().replaceAll("\\r", "<br>")%>
                             </p>
                         </div>
                     </div>
@@ -142,7 +112,7 @@
                                 out.print(creditNote.getAppliedToInvoice().getSalesConfirmationOrder().getSalesPerson().getName());
                             }%></td>
                         <td><%if (creditNote.getAppliedToInvoice() != null) {
-                                out.print(creditNote.getAppliedToInvoice().getSalesConfirmationOrder().getSalesConfirmationOrderNumber());
+                                out.print(creditNote.getAppliedToInvoice().getSalesConfirmationOrder().getSalesPerson().getStaffPrefix() + creditNote.getAppliedToInvoice().getSalesConfirmationOrder().getSalesConfirmationOrderNumber());
                             }%></td>
                         <td><%if (creditNote.getAppliedToInvoice() != null) {
                                 out.print(creditNote.getAppliedToInvoice().getSalesConfirmationOrder().getCustomerPurchaseOrderNumber());
@@ -210,11 +180,9 @@
                             double totalTax = creditNote.getCreditAmount() * (taxRate / 100);
                             double subtotal = creditNote.getCreditAmount() - totalTax;
                             out.print(formatter.format(subtotal) + "<br>");
-                            out.print(formatter.format(totalTax));
+                            out.print(formatter.format(totalTax) + "<br>");
+                            out.print(formatter.format(creditNote.getCreditAmount()));
                         %>
-                        <br>
-                        <%=formatter.format(creditNote.getCreditAmount())%>
-                        <br>
                     </strong>
                 </div>
             </div>
@@ -239,14 +207,12 @@
             </div>
         </div>
 
-        <div class="row">
-            <p style="text-align: center; color: #000;">
-                <strong>Phuture International Pte Ltd</strong><br>
-                28 Sin Ming Lane #06-145<br/>
-                Midview City, Singapore 573972<br/>
-                Tel: (65) 6842 0198 &nbsp; Fax: (65) 6285 6753
-            </p>
-        </div>
+        <jsp:include page="../footer.html" />
     </body>
 </html>
-<%}%>
+<%
+        } catch (Exception ex) {
+            out.print("<h1>An error has occured</h1>");
+        }
+    }
+%>

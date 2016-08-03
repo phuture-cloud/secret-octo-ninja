@@ -216,7 +216,7 @@
                                                         <div class="col-md-6" style="padding-left: 0px;">
                                                             <%
                                                                 if (purchaseOrder.getSupplierLink() != null) {
-                                                                    out.print("<b>" + purchaseOrder.getSupplierName()+ "</b>");
+                                                                    out.print("<b>" + purchaseOrder.getSupplierName() + "</b>");
                                                                     String repl = purchaseOrder.getContactAddress().replaceAll("\\r", "<br>");
                                                                     out.print("<br>" + repl);
                                                                     out.print("<br>" + purchaseOrder.getContactOfficeNo());
@@ -545,6 +545,11 @@
                                     <div class="invoice-summary" style="margin-top: 10px;">
                                         <div class="row">
                                             <div class="col-sm-5">
+                                                <u>Terms & Conditions</u>
+                                                <ul style="padding-left: 20px;">
+                                                    <li>Phuture International Pte Ltd reserves all right to cancel this Purchase Order due to supplier unable to fulfill or meet the buyer's requirements.</li>
+                                                    <li>Purchase Order is not subjected to GST/VAT.</li>
+                                                </ul>
                                                 <%
                                                     if (purchaseOrder.getRemarks() != null && !purchaseOrder.getRemarks().isEmpty()) {
                                                         out.print("Remarks: ");
