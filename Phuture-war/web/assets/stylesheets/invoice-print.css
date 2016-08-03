@@ -12,6 +12,14 @@ h4, .h4, h5, .h5, h6, .h6 {
     margin-bottom: 0;
 }
 
+div.divFooter {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    text-align: center;
+}
+
 @media print{
     .table-bordered > thead > tr > th, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > th, .table-bordered > thead > tr > td, .table-bordered > tbody > tr > td, .table-bordered > tfoot > tr > td{
         -webkit-print-color-adjust: exact;

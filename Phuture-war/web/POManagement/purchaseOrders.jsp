@@ -36,6 +36,12 @@
     <body onload="alertFunc()">
         <jsp:include page="../displayNotification.jsp" />
         <script>
+            $(document).ready(function () {
+                $('#datatable-default').DataTable({
+                    "order": [[1, "desc"]]
+                });
+            });
+            
             function viewPO(id) {
                 window.location.href = "../PurchaseOrderManagementController?target=RetrievePO&id=" + id;
             }

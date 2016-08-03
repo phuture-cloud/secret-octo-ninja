@@ -249,10 +249,18 @@
                     <br>Authorized Signature
                 </div>
             </div>
-
-            <jsp:include page="../footer.html" />
         </div>
     </body>
+    <footer>
+        <div class="divFooter">
+            <p>
+                <strong>Phuture International Pte Ltd</strong><br>
+                28 Sin Ming Lane #06-145<br/>
+                Midview City, Singapore 573972<br/>
+                Tel: (65) 6842 0198 &nbsp; Fax: (65) 6285 6753
+            </p>
+        </div>
+    </footer>
 </html>
 <%
     }

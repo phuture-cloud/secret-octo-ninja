@@ -45,6 +45,12 @@
         <jsp:include page="../displayNotification.jsp" />
         <script src="../assets/vendor/nprogress/nprogress.js"></script>
         <script>
+        $(document).ready(function () {
+            $('#datatable-default').DataTable({
+                "order": [[1, "desc"]]
+            });
+        });
+
         function viewInvoice(id) {
             window.location.href = "../InvoiceManagementController?target=RetrieveInvoice&id=" + id;
         }

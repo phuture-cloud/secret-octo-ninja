@@ -27,6 +27,12 @@
         <jsp:include page="../displayNotification.jsp" />
         <script src="../assets/vendor/nprogress/nprogress.js"></script>
         <script>
+        $(document).ready(function () {
+            $('#datatable-default').DataTable({
+                "order": [[2, "desc"]]
+            });
+        });
+
         function createSCO() {
             window.location.href = "../OrderManagementController?target=ListAllCustomer";
         }
